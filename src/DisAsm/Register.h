@@ -1,0 +1,54 @@
+/*
+* Filename: Register.h
+* Author:   DisAsmCompany
+* Date:     21/09/2013
+*
+* Description: possible x86/x64 register values
+*              
+*              
+*
+*/
+
+#ifndef __REGISTER_H__
+#define __REGISTER_H__
+
+_ENUM_START(Register)
+
+_ENUM_ELEMENT_VALUE_SKIP(rRegister ,0x0100) /* mask */
+_ENUM_ELEMENT_VALUE_SKIP(eRegister, 0x0200) /* mask */
+
+_ENUM_ELEMENT_VALUE_SKIP(Reg8,  0x00010000UL) /* mask */
+_ENUM_ELEMENT_VALUE_SKIP(Reg16, 0x00020000UL) /* mask */
+_ENUM_ELEMENT_VALUE_SKIP(Reg32, 0x00040000UL) /* mask */
+_ENUM_ELEMENT_VALUE_SKIP(Reg64, 0x00080000UL) /* mask */
+
+_ENUM_ELEMENT_VALUE(r0, 0x00UL)
+_ENUM_ELEMENT_VALUE(r1, 0x01UL)
+_ENUM_ELEMENT_VALUE(r2, 0x02UL)
+_ENUM_ELEMENT_VALUE(r3, 0x03UL)
+_ENUM_ELEMENT_VALUE(r4, 0x04UL)
+_ENUM_ELEMENT_VALUE(r5, 0x05UL)
+_ENUM_ELEMENT_VALUE(r6, 0x06UL)
+_ENUM_ELEMENT_VALUE(r7, 0x07UL)
+
+_ENUM_ELEMENT_VALUE(rAX, rRegister | r0)
+_ENUM_ELEMENT_VALUE(rCX, rRegister | r1)
+_ENUM_ELEMENT_VALUE(rDX, rRegister | r2)
+_ENUM_ELEMENT_VALUE(rBX, rRegister | r3)
+_ENUM_ELEMENT_VALUE(rSP, rRegister | r4)
+_ENUM_ELEMENT_VALUE(rBP, rRegister | r5)
+_ENUM_ELEMENT_VALUE(rSI, rRegister | r6)
+_ENUM_ELEMENT_VALUE(rDI, rRegister | r7)
+
+_ENUM_ELEMENT_VALUE(EAX, Reg32 | r0)
+_ENUM_ELEMENT_VALUE(ECX, Reg32 | r1)
+_ENUM_ELEMENT_VALUE(EDX, Reg32 | r2)
+_ENUM_ELEMENT_VALUE(EBX, Reg32 | r3)
+_ENUM_ELEMENT_VALUE(ESP, Reg32 | r4)
+_ENUM_ELEMENT_VALUE(EBP, Reg32 | r5)
+_ENUM_ELEMENT_VALUE(ESI, Reg32 | r6)
+_ENUM_ELEMENT_VALUE(EDI, Reg32 | r7)
+
+_ENUM_STOP(Register)
+
+#endif // __REGISTER_H__

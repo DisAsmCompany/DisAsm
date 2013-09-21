@@ -1,0 +1,19 @@
+/*
+* Filename: DisAsm
+* Author:   DisAsmCompany
+* Date:     21/09/2013
+*
+* Description: all-in-one include file for DisAsm API
+*              
+*              
+*
+*/
+
+#include "StrEnum.h"
+#include "ModRM.h"
+#include "Register.h"
+#include "OperandType.h"
+#include "Mnemonic.h"
+#include "Operand.h"
+#include "InstructionInfo.h"
+#include "DisAsm.h"
