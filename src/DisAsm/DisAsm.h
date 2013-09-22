@@ -18,10 +18,10 @@ typedef void * HDISASM;
 HDISASM DisAsmCreate();
 void DisAsmDestroy(HDISASM hDisAsm);
 
-int DisAsmInstructionDecode(HDISASM hDisAsm, unsigned char * buffer, InstructionInfo * pInfo);
+uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionInfo * pInfo);
 
 /* for tests */
 
-OpCode _ChooseOpCode(unsigned char * buffer);
+OpCode _ChooseOpCode(uint8_t * buffer);
 
-#endif // __DISASM_H__
+#endif /* __DISASM_H__ */

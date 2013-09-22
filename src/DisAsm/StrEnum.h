@@ -20,10 +20,10 @@
 #define _ENUM_ELEMENT_VALUE(name, value) case name : return #name;
 #define _ENUM_ELEMENT_VALUE_SKIP(name, value)
 #define _ENUM_STOP(name) } return ""; }
-#else // _STR_ENUM
+#else /* _STR_ENUM */
 #define _ENUM_START(name) typedef enum name##_t {
 #define _ENUM_ELEMENT(name) name,
 #define _ENUM_ELEMENT_VALUE(name, value) name = (value),
 #define _ENUM_ELEMENT_VALUE_SKIP(name, value) name = (value),
 #define _ENUM_STOP(name) } name;
-#endif // _STR_ENUM
+#endif /* _STR_ENUM */

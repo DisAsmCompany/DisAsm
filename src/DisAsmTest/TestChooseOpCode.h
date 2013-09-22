@@ -15,4 +15,4 @@
 
 void TestChooseOpCode();
 
-#endif // __TESTCHOOSEOPCODE_H__
+#endif /* __TESTCHOOSEOPCODE_H__ */

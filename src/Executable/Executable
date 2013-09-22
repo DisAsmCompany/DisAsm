@@ -1,0 +1,19 @@
+/*
+* Filename: Executable
+* Author:   DisAsmCompany
+* Date:     22/09/2013
+*
+* Description: all-in-one Executable API header
+*
+*
+*
+*/
+
+#include "PEDOSHeader.h"
+#include "PEFileHeader.h"
+#include "PEDataDirectory.h"
+#include "PEOptionalHeader.h"
+#include "PENTHeaders.h"
+#include "PESectionHeader.h"
+#include "PEExportDirectory.h"
+#include "Executable.h"

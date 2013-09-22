@@ -13,6 +13,6 @@
 #ifndef __OPCODE_H__
 #define __OPCODE_H__
 
-typedef unsigned long OpCode;
+typedef uint32_t OpCode;
 
-#endif // __OPCODE_H__
+#endif /* __OPCODE_H__ */

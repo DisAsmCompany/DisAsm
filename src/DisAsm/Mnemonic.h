@@ -174,4 +174,4 @@ _ENUM_ELEMENT(OperandSize)
 _ENUM_ELEMENT(AddressSize)
 _ENUM_STOP(Mnemonic)
 
-#endif // __MNEMONIC_H__
+#endif /* __MNEMONIC_H__ */

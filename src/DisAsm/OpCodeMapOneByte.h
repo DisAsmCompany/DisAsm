@@ -104,4 +104,4 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	{CLC}, {STC}, {CLI}, {STI}, {CLD}, {STD}, {DB}, {GROUP5},
 };
 
-#endif // __OPCODEMAPONEBYTE_H__
+#endif /* __OPCODEMAPONEBYTE_H__ */

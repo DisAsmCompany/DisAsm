@@ -14,7 +14,7 @@
 
 #ifndef MAX_PREFIXES
 #define MAX_PREFIXES 4
-#endif // MAX_PREFIXES
+#endif /* MAX_PREFIXES */
 
 typedef struct Prefix_t
 {
@@ -23,4 +23,4 @@ typedef struct Prefix_t
 }
 Prefix;
 
-#endif // __PREFIX_H__
+#endif /* __PREFIX_H__ */

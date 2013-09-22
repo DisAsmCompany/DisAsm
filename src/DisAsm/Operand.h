@@ -26,4 +26,4 @@ typedef struct Operand_t
 }
 Operand;
 
-#endif // __OPERAND_H__
+#endif /* __OPERAND_H__ */

@@ -17,23 +17,22 @@
 
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
+#include "../Executable/Executable"
 
-int main(int argc, char * const argv[])
+void DisAsmFunction(uint8_t * buffer)
 {
-	/* let's dissasemble GetVersionEx() API from kernel32.dll */
 	HDISASM hDisAsm = DisAsmCreate();
-	unsigned char * buffer = (unsigned char*)GetVersionEx;
 	InstructionInfo info = {0};
-	int length = 0;
+	uint8_t length = 0;
 	while (1)
 	{
 		length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
-		if (-1 == length)
+		if (0 == length)
 		{
 			break;
 		}
 		{
-			int i;
+			uint8_t i;
 			for (i = 0; i < length; ++i)
 			{
 				printf("%X%X ", buffer[i] >> 4, buffer[i] & 0x0F);
@@ -52,5 +51,29 @@ int main(int argc, char * const argv[])
 		}
 	}
 	DisAsmDestroy(hDisAsm);
+}
+
+int main(int argc, char * const argv[])
+{
+	/* let's dissasemble GetVersionEx() API from kernel32.dll */
+	
+	{
+		//HEXECUTABLE hExecutable = ExecutableCreateFromFile("C:\\Windows\\System32\\kernel32.dll");
+		HEXECUTABLE hExecutable = ExecutableCreateFromMemory((uint8_t*)GetModuleHandleA("kernel32.dll"));
+
+		uint8_t * ptr;
+		for (;;)
+		{
+			ptr = ExecutableGetNextFunction(hExecutable);
+			if (NULL == ptr)
+			{
+				break;
+			}
+			DisAsmFunction(ptr);
+		}
+
+		ExecutableDestroy(hExecutable);
+	}
+	
 	return EXIT_SUCCESS;
 }

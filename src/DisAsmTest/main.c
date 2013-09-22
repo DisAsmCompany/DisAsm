@@ -17,13 +17,14 @@
 
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
+#include "../Executable/Executable"
 
 void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 {
 	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};
-	unsigned char * buffer = (unsigned char*) &opcode;
-	int length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
+	uint8_t * buffer = (uint8_t*) &opcode;
+	uint8_t length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
 	TestAssert(1 == length);
 	TestAssert(1 == info.length);
 	TestAssert(mnemonic == info.mnemonic);
@@ -33,17 +34,17 @@ void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 {
 	HDISASM hDisAsm = DisAsmCreate();
-	unsigned char i = 0x00;
+	uint8_t i = 0x00;
 	do
 	{
 		InstructionInfo info = {0};
 		ModRMu ModRM;
-		unsigned char hasSIB;
-		unsigned char buffer[7];
-		unsigned char SIB = 0;
-		unsigned char hasDisp;
-		int length = 0;
-		int expected = 2;
+		uint8_t hasSIB;
+		uint8_t buffer[7];
+		uint8_t SIB = 0;
+		uint8_t hasDisp;
+		uint8_t length = 0;
+		uint8_t expected = 2;
 		ModRM.value = i;
 		hasSIB = (ModRM.fields.Mod != 3) && (ModRM.fields.RM == 4);
 		if (hasSIB)
@@ -60,7 +61,7 @@ void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 			hasDisp = 1;
 			expected += 4;
 		}
-		buffer[0] = (unsigned char)opcode;
+		buffer[0] = (uint8_t) opcode;
 		buffer[1] = ModRM.value;
 		buffer[2] = SIB;
 		length = DisAsmInstructionDecode(hDisAsm, buffer, &info);

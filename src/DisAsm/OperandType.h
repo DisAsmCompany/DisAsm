@@ -70,4 +70,4 @@ typedef enum OperandType_t
 }
 OperandType;
 
-#endif // __OPERANDTYPE_H__
+#endif /* __OPERANDTYPE_H__ */

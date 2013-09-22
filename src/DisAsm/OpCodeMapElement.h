@@ -16,7 +16,7 @@
 typedef struct OpCodeMapElement_t
 {
 	Mnemonic mnemonic;
-	int operands;
+	uint8_t operands;
 	OperandType operand1type;
 	Register reg1;
 	OperandType operand2type;
@@ -26,4 +26,4 @@ typedef struct OpCodeMapElement_t
 }
 OpCodeMapElement;
 
-#endif // __OPCODEMAPELEMENT_H__
+#endif /* __OPCODEMAPELEMENT_H__ */

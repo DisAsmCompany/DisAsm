@@ -15,26 +15,26 @@
 
 typedef struct InstructionInfo_t
 {
-	int length;
+	uint8_t length;
 	OpCode opcode;
 	Mnemonic mnemonic;
-	unsigned char hasModRM;
-	unsigned char hasSIB;
-	unsigned char hasDisp;
-	unsigned char sizeDisp;
-	unsigned char hasImm;
-	unsigned char sizeImm;
+	uint8_t hasModRM;
+	uint8_t hasSIB;
+	uint8_t hasDisp;
+	uint8_t sizeDisp;
+	uint8_t hasImm;
+	uint8_t sizeImm;
 	ModRMu ModRM;
-	unsigned char SIB;
-	unsigned char operands;
+	uint8_t SIB;
+	uint8_t operands;
 	Operand operand1;
 	Operand operand2;
 	Operand operand3;
-	unsigned long disp;
-	unsigned long imm;
-	unsigned char nPrefixes;
+	uint32_t disp;
+	uint32_t imm;
+	uint8_t nPrefixes;
 	Prefix prefixes[MAX_PREFIXES];
 }
 InstructionInfo;
 
-#endif // __INSTRUCTIONINFO_H__
+#endif /* __INSTRUCTIONINFO_H__ */

@@ -104,4 +104,4 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 };
 
-#endif // __OPCODEMAPTWOBYTE0F_H__
+#endif /* __OPCODEMAPTWOBYTE0F_H__ */

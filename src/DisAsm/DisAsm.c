@@ -17,8 +17,8 @@
 
 typedef struct DisAsmContext_t
 {
-	unsigned char * buffer;
-	unsigned long length;
+	uint8_t * buffer;
+	uint8_t length;
 }
 DisAsmContext;
 
@@ -35,25 +35,25 @@ void DisAsmDestroy(HDISASM hDisAsm)
 	free(hDisAsm);
 }
 
-unsigned char Fetch1(DisAsmContext * pContext)
+uint8_t Fetch1(DisAsmContext * pContext)
 {
-	unsigned char result = pContext->buffer[pContext->length];
+	uint8_t result = pContext->buffer[pContext->length];
 	++pContext->length;
 	return result;
 }
 
-unsigned short Fetch2(DisAsmContext * pContext)
+uint16_t Fetch2(DisAsmContext * pContext)
 {
-	unsigned short result = 
+	uint16_t result = 
 		(pContext->buffer[pContext->length + 1] << 8) | 
 		(pContext->buffer[pContext->length]);
 	pContext->length += 2;
 	return result;
 }
 
-unsigned long Fetch4(DisAsmContext * pContext)
+uint32_t Fetch4(DisAsmContext * pContext)
 {
-	unsigned short result = 
+	uint32_t result = 
 		(pContext->buffer[pContext->length + 3] << 24) | 
 		(pContext->buffer[pContext->length + 2] << 16) | 
 		(pContext->buffer[pContext->length + 1] << 8) | 
@@ -62,9 +62,9 @@ unsigned long Fetch4(DisAsmContext * pContext)
 	return result;
 }
 
-unsigned long FetchN(DisAsmContext * pContext, unsigned char N)
+uint32_t FetchN(DisAsmContext * pContext, uint8_t N)
 {
-	unsigned long result = 0;
+	uint32_t result = 0;
 	switch (N)
 	{
 	case 1: result = Fetch1(pContext); break;
@@ -188,7 +188,7 @@ void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapEl
 	}
 }
 
-int DisAsmInstructionDecode(HDISASM hDisAsm, unsigned char * buffer, InstructionInfo * pInfo)
+uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionInfo * pInfo)
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	OpCodeMapElement * element = 0;
@@ -202,7 +202,7 @@ int DisAsmInstructionDecode(HDISASM hDisAsm, unsigned char * buffer, Instruction
 	if (NULL == element || DB == element->mnemonic)
 	{
 		__asm int 3;
-		return -1;
+		return 0;
 	}
 
 	pInfo->hasModRM = 0;
@@ -380,7 +380,7 @@ int DisAsmInstructionDecode(HDISASM hDisAsm, unsigned char * buffer, Instruction
 
 /* for tests */
 
-OpCode _ChooseOpCode(unsigned char * buffer)
+OpCode _ChooseOpCode(uint8_t * buffer)
 {
 	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};

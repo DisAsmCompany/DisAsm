@@ -104,4 +104,4 @@ OpCodeMapElement OpCodeMapThreeByte0F38[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 };
 
-#endif // __OPCODEMAPTHREEBYTE0F38_H__
+#endif /* __OPCODEMAPTHREEBYTE0F38_H__ */

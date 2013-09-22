@@ -15,17 +15,17 @@
 
 typedef struct ModRMs_t
 {
-	unsigned char RM  : 3;
-	unsigned char Reg : 3;
-	unsigned char Mod : 2;
+	uint8_t RM  : 3;
+	uint8_t Reg : 3;
+	uint8_t Mod : 2;
 }
 ModRMs;
 
 typedef union ModRMu_t
 {
 	ModRMs fields;
-	unsigned char value;
+	uint8_t value;
 }
 ModRMu;
 
-#endif // __MODRM_H__
+#endif /* __MODRM_H__ */

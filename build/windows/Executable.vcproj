@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="DisAsm"
-	ProjectGUID="{009348C9-4762-483E-B34F-5BA1A17281B3}"
-	RootNamespace="DisAsm"
+	Name="Executable"
+	ProjectGUID="{085554E1-679E-492C-9A12-58D04145058F}"
+	RootNamespace="Executable"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -104,7 +104,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -149,7 +149,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\src\DisAsm\DisAsm.c"
+				RelativePath="..\..\src\Executable\Executable.c"
 				>
 			</File>
 		</Filter>
@@ -159,97 +159,39 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\DisAsm\DisAsm"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\DisAsm.h"
+				RelativePath="..\..\src\Executable\Executable"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\InstructionInfo.h"
+				RelativePath="..\..\src\Executable\Executable.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\Mnemonic.h"
+				RelativePath="..\..\src\Executable\PEDataDirectory.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\ModRM.h"
+				RelativePath="..\..\src\Executable\PEDOSHeader.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCode.h"
+				RelativePath="..\..\src\Executable\PEExportDirectory.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMap.h"
+				RelativePath="..\..\src\Executable\PEFileHeader.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMapElement.h"
+				RelativePath="..\..\src\Executable\PENTHeaders.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMapOneByte.h"
+				RelativePath="..\..\src\Executable\PEOptionalHeader.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F38.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3A.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0F.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\Operand.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\OperandType.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\Prefix.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\Register.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\StrEnum.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\SupportBool.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DisAsm\SupportInt.h"
+				RelativePath="..\..\src\Executable\PESectionHeader.h"
 				>
 			</File>
 		</Filter>

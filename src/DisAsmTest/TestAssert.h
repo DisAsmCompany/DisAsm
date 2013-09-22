@@ -15,4 +15,4 @@
 
 void TestAssert(int expression);
 
-#endif // __TESTASSERT_H__
+#endif /* __TESTASSERT_H__ */
