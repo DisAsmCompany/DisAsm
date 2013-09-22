@@ -38,7 +38,15 @@ _ENUM_ELEMENT(OR)     /* Logical Inclusive Or */
 _ENUM_ELEMENT(SBB)    /* Integer Subtraction with Borrow */
 _ENUM_ELEMENT(SUB)    /* Subtract */
 _ENUM_ELEMENT(CMP)    /* Compare Two Operands */
+_ENUM_ELEMENT(INC)    /* Increment by One */
+_ENUM_ELEMENT(DEC)    /* Decrement by One */
+_ENUM_ELEMENT(JMP)    /* Jump */
+_ENUM_ELEMENT(CALL)   /* Call Procedure */
+_ENUM_ELEMENT(TEST)   /* Logical Compare */
+_ENUM_ELEMENT(XCHG)   /* Exchange Register/Memory with Register */
 _ENUM_ELEMENT(CPUID)  /* CPU Identification */
+_ENUM_ELEMENT(UD2)    /* Undefined Instruction */
+_ENUM_ELEMENT(RET)    /* Return from Procedure */
 /* Jcc - Jump if Condition Met */
 _ENUM_ELEMENT(JO)     /* Jump if Overflow */
 _ENUM_ELEMENT(JNO)    /* Jump if Not Overflow */
@@ -129,6 +137,41 @@ _ENUM_ELEMENT(CMOVLE)    /* Conditional Move if Less or Equal */
 _ENUM_ELEMENT(CMOVNG)    /* Conditional Move if not Greater (same as CMOVLE) */
 _ENUM_ELEMENT(CMOVNLE)   /* Conditional Move if not Less or Equal */
 _ENUM_ELEMENT(CMOVG)     /* Conditional Move if Greater (same as SETNLE) */
+/* OpCode Extensions */
+_ENUM_ELEMENT(GROUP1)
+_ENUM_ELEMENT(GROUP1A)
+_ENUM_ELEMENT(GROUP2)
+_ENUM_ELEMENT(GROUP3)
+_ENUM_ELEMENT(GROUP4)
+_ENUM_ELEMENT(GROUP5)
+_ENUM_ELEMENT(GROUP6)
+_ENUM_ELEMENT(GROUP7)
+_ENUM_ELEMENT(GROUP8)
+_ENUM_ELEMENT(GROUP9)
+_ENUM_ELEMENT(GROUP10)
+_ENUM_ELEMENT(GROUP11)
+_ENUM_ELEMENT(GROUP12)
+_ENUM_ELEMENT(GROUP13)
+_ENUM_ELEMENT(GROUP14)
+_ENUM_ELEMENT(GROUP15)
+_ENUM_ELEMENT(GROUP16)
+_ENUM_ELEMENT(GROUP17)
+_ENUM_ELEMENT(GROUPP)
+/* prefixes */
+_ENUM_ELEMENT(LOCK)    /* Assert #LOCK Signal Prefix */
+_ENUM_ELEMENT(REPNE)   /* Repeat String Operation Prefix */
+_ENUM_ELEMENT(REPNZ)   /* Repeat String Operation Prefix (same as REPNE) */
+_ENUM_ELEMENT(REP)     /* Repeat String Operation Prefix */
+_ENUM_ELEMENT(REPE)    /* Repeat String Operation Prefix (same as REP) */
+_ENUM_ELEMENT(REPZ)    /* Repeat String Operation Prefix (same as REPZ) */
+_ENUM_ELEMENT(CS)      /* CS Segment Override Prefix */
+_ENUM_ELEMENT(SS)      /* SS Segment Override Prefix */
+_ENUM_ELEMENT(DS)      /* DS Segment Override Prefix */
+_ENUM_ELEMENT(ES)      /* ES Segment Override Prefix */
+_ENUM_ELEMENT(FS)      /* FS Segment Override Prefix */
+_ENUM_ELEMENT(GS)      /* GS Segment Override Prefix */
+_ENUM_ELEMENT(OperandSize)
+_ENUM_ELEMENT(AddressSize)
 _ENUM_STOP(Mnemonic)
 
 #endif // __MNEMONIC_H__

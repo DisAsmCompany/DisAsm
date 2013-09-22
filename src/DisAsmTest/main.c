@@ -12,52 +12,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "TestAssert.h"
+#include "TestChooseOpCode.h"
+
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
 
-void TestAssert(int expression)
-{
-	if (!expression)
-	{
-		abort();
-	}
-}
-
 void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 {
+	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};
 	unsigned char * buffer = (unsigned char*) &opcode;
-	int length = DisAsmInstructionDecode(buffer, &info);
+	int length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
 	TestAssert(1 == length);
 	TestAssert(1 == info.length);
 	TestAssert(mnemonic == info.mnemonic);
+	DisAsmDestroy(hDisAsm);
 }
 
 void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 {
-	unsigned char ModRM = 0x00;
+	HDISASM hDisAsm = DisAsmCreate();
+	unsigned char i = 0x00;
 	do
 	{
 		InstructionInfo info = {0};
-		unsigned char hasSIB = 0x18 == (ModRM & 0x1C);
-		unsigned char buffer[3];
+		ModRMu ModRM;
+		unsigned char hasSIB;
+		unsigned char buffer[7];
 		unsigned char SIB = 0;
+		unsigned char hasDisp;
 		int length = 0;
-		int expected = hasSIB ? 3 : 2;
+		int expected = 2;
+		ModRM.value = i;
+		hasSIB = (ModRM.fields.Mod != 3) && (ModRM.fields.RM == 4);
+		if (hasSIB)
+		{
+			++expected;
+		}
+		if (ModRM.fields.Mod == 1)
+		{
+			hasDisp = 1;
+			expected += 1;
+		}
+		if (ModRM.fields.Mod == 2)
+		{
+			hasDisp = 1;
+			expected += 4;
+		}
 		buffer[0] = (unsigned char)opcode;
-		buffer[1] = ModRM;
+		buffer[1] = ModRM.value;
 		buffer[2] = SIB;
-		length = DisAsmInstructionDecode(buffer, &info);
+		length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
 		TestAssert(expected == length);
 		TestAssert(expected == info.length);
 		TestAssert(mnemonic == info.mnemonic);
 		TestAssert(1 == info.hasModRM);
-		TestAssert(ModRM == info.ModRM.value);
+		TestAssert(i == info.ModRM.value);
 		TestAssert(hasSIB == info.hasSIB);
 		TestAssert(SIB == info.SIB);
-		++ModRM;
+		++i;
 	}
-	while (ModRM != 0);
+	while (i != 0);
+	DisAsmDestroy(hDisAsm);
 }
 
 /* very simple test to decode famous x86 NOP instruction - opcode 90h */
@@ -65,6 +82,8 @@ void TestNOP()
 {
 	VerifyInstruction(0x90, NOP);
 }
+
+/* Primary Opcode Table (OpCodes 00h - FFh) */
 
 /* 
   0 1 2 3 4 5 6 7   8 9 A B C D E F
@@ -113,9 +132,40 @@ void TestPrimaryOpCodeTable()
 	VerifyInstruction(0xFD, STD);
 }
 
+/* Secondary Opcode Table (OpCodes 0F00h - 0FFFh) */
+
+/* 
+  0 1 2 3 4 5 6 7   8 9 A B C D E F
+0                 0                 0
+1                 1                 1
+2                 2                 2
+3                 3                 3
+4                 4                 4
+5                 5                 5
+6                 6                 6
+7                 7                 7
+  0 1 2 3 4 5 6 7   8 9 A B C D E F
+8                 8                 8
+9 X               9                 9
+A                 A                 A
+B                 B                 B
+C                 C                 C
+D                 D                 D
+E                 E                 E
+F                 F                 F
+  0 1 2 3 4 5 6 7   8 9 A B C D E F
+*/
+
+void TestSecondaryOpCodeTable()
+{
+
+}
+
 int main(int argc, char * const argv[])
 {
+	TestChooseOpCode();
 	TestNOP();
 	TestPrimaryOpCodeTable();
+	TestSecondaryOpCodeTable();
 	return EXIT_SUCCESS;
 }

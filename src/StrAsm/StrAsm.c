@@ -28,7 +28,7 @@ void PrintOperand(InstructionInfo * info, Operand * operand)
 	}
 	if (operand->type & (I | J))
 	{
-		printf("%xh", info->imm);
+		printf("%X%Xh", info->imm >> 4, info->imm & 0x0F);
 	}
 }
 

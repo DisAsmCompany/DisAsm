@@ -197,7 +197,31 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\OpCodeTable.h"
+				RelativePath="..\..\src\DisAsm\OpCode.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapOneByte.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F38.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3A.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0F.h"
 				>
 			</File>
 			<File
@@ -206,6 +230,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\OperandType.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\Prefix.h"
 				>
 			</File>
 			<File

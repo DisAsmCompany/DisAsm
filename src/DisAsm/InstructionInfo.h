@@ -13,8 +13,6 @@
 #ifndef __INSTRUCTIONINFO_H__
 #define __INSTRUCTIONINFO_H__
 
-typedef unsigned long OpCode;
-
 typedef struct InstructionInfo_t
 {
 	int length;
@@ -34,6 +32,8 @@ typedef struct InstructionInfo_t
 	Operand operand3;
 	unsigned long disp;
 	unsigned long imm;
+	unsigned char nPrefixes;
+	Prefix prefixes[MAX_PREFIXES];
 }
 InstructionInfo;
 

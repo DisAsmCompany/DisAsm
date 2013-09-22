@@ -9,11 +9,13 @@
 *
 */
 
+#include "OpCode.h"
 #include "StrEnum.h"
 #include "ModRM.h"
 #include "Register.h"
 #include "OperandType.h"
 #include "Mnemonic.h"
 #include "Operand.h"
+#include "Prefix.h"
 #include "InstructionInfo.h"
 #include "DisAsm.h"

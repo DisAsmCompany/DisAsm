@@ -13,6 +13,15 @@
 #ifndef __DISASM_H__
 #define __DISASM_H__
 
-int DisAsmInstructionDecode(unsigned char * buffer, InstructionInfo * info);
+typedef void * HDISASM;
+
+HDISASM DisAsmCreate();
+void DisAsmDestroy(HDISASM hDisAsm);
+
+int DisAsmInstructionDecode(HDISASM hDisAsm, unsigned char * buffer, InstructionInfo * pInfo);
+
+/* for tests */
+
+OpCode _ChooseOpCode(unsigned char * buffer);
 
 #endif // __DISASM_H__
