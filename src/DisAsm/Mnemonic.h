@@ -28,6 +28,7 @@ _ENUM_ELEMENT(STI)    /* Set Interrupt Flag */
 _ENUM_ELEMENT(CLD)    /* Clear Direction Flag */
 _ENUM_ELEMENT(STD)    /* Set Direction Flag */
 _ENUM_ELEMENT(MOV)    /* Move */
+_ENUM_ELEMENT(MOVZX)  /* Move with Zero Extend */
 _ENUM_ELEMENT(PUSH)   /* Push Onto the Stack */
 _ENUM_ELEMENT(POP)    /* Pop  From the Stack */
 _ENUM_ELEMENT(ADD)    /* Add */
@@ -47,6 +48,23 @@ _ENUM_ELEMENT(XCHG)   /* Exchange Register/Memory with Register */
 _ENUM_ELEMENT(CPUID)  /* CPU Identification */
 _ENUM_ELEMENT(UD2)    /* Undefined Instruction */
 _ENUM_ELEMENT(RET)    /* Return from Procedure */
+_ENUM_ELEMENT(LEAVE)  /* High Level Procedure Exit */
+_ENUM_ELEMENT(LEA)    /* Load Effective Address */
+_ENUM_ELEMENT(NOT)    /* One's Complement Negotiation */
+_ENUM_ELEMENT(NEG)    /* Two's Complement Negotiation */
+_ENUM_ELEMENT(MUL)    /* Unsigned Multiply */
+_ENUM_ELEMENT(IMUL)   /* Signed Multiply */
+_ENUM_ELEMENT(DIV)    /* Unsigned Divide */
+_ENUM_ELEMENT(IDIV)   /* Signed Divide */
+/* Rotate and Shift */
+_ENUM_ELEMENT(ROL)    /* Rotate Left */
+_ENUM_ELEMENT(ROR)    /* Rotate Right */
+_ENUM_ELEMENT(RCL)    /* Rotate Left through Carry */
+_ENUM_ELEMENT(RCR)    /* Rotate Right through Carry */
+_ENUM_ELEMENT(SHL)    /* Shift Logical Left */
+_ENUM_ELEMENT(SHR)    /* Shift Logical Right */
+_ENUM_ELEMENT(SAL)    /* Shift Arithmetic Left */
+_ENUM_ELEMENT(SAR)    /* Shift Arithmetic Right */
 /* Jcc - Jump if Condition Met */
 _ENUM_ELEMENT(JO)     /* Jump if Overflow */
 _ENUM_ELEMENT(JNO)    /* Jump if Not Overflow */

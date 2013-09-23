@@ -171,6 +171,58 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	return element;
 }
 
+void GROUP1Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pElement->mnemonic = ADD; break;
+	case 1: pElement->mnemonic = OR;  break;
+	case 2: pElement->mnemonic = ADC; break;
+	case 3: pElement->mnemonic = SBB; break;
+	case 4: pElement->mnemonic = AND; break;
+	case 5: pElement->mnemonic = SUB; break;
+	case 6: pElement->mnemonic = XOR; break;
+	case 7: pElement->mnemonic = CMP; break;
+	default: break;
+	}
+}
+
+void GROUP2Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pElement->mnemonic = ROL; break;
+	case 1: pElement->mnemonic = ROR; break;
+	case 2: pElement->mnemonic = RCL; break;
+	case 3: pElement->mnemonic = RCR; break;
+	case 4: pElement->mnemonic = SHL; break;
+	case 5: pElement->mnemonic = SHR; break;
+	case 6: pElement->mnemonic = SAL; break;
+	case 7: pElement->mnemonic = SAR; break;
+	default: break;
+	}
+}
+
+void GROUP3Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0:
+	case 1:
+		pElement->mnemonic = TEST;
+		pElement->operands = 2;
+		pElement->operand2type = (0xF6 == pInfo->opcode) ? Ib : Iz;
+		break;
+	case 2: pElement->mnemonic = NOT;  break;
+	case 3: pElement->mnemonic = NEG;  break;
+	case 4: pElement->mnemonic = MUL;  break;
+	case 5: pElement->mnemonic = IMUL; break;
+	case 6: pElement->mnemonic = DIV;  break;
+	case 7: pElement->mnemonic = IDIV; break;
+	default: break;
+	}
+}
+
 void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
 {
 	pElement->operands = 1;
@@ -188,107 +240,108 @@ void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapEl
 	}
 }
 
+void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
+{
+	if (pOperand->type & E)
+	{
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.RM;
+		if (pOperand->type & v)
+		{
+			pInfo->operands[0].value.reg |= Reg32;
+		}
+	}
+	if (pOperand->type & G)
+	{
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg;
+		if (pOperand->type & v)
+		{
+			pInfo->operands[0].value.reg |= Reg32;
+		}
+	}
+	if (pOperand->type & MaskImmediate)
+	{
+		pInfo->hasImm = 1;
+		if (Jb == (pOperand->type & Jb))
+		{
+			pInfo->sizeImm = 1;
+		}
+		if (Ib == (pOperand->type & Ib))
+		{
+			pInfo->sizeImm = 1;
+		}
+		if (Ob == (pOperand->type & Ob))
+		{
+			pInfo->sizeImm = 4;
+		}
+		if (pOperand->type & v)
+		{
+			pInfo->sizeImm = 4;
+		}
+		if (pOperand->type & z)
+		{
+			pInfo->sizeImm = 4;
+		}
+		if (pOperand->type & w)
+		{
+			pInfo->sizeImm = 2;
+		}
+	}
+}
+
 uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionInfo * pInfo)
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
-	OpCodeMapElement * element = 0;
+	OpCodeMapElement * pElement = 0;
 
 	pContext->buffer = buffer;
 	pContext->length = 0;
 
 	pInfo->nPrefixes = 0;
 
-	element = ChooseOpCode(pContext, pInfo);
-	if (NULL == element || DB == element->mnemonic)
+	pElement = ChooseOpCode(pContext, pInfo);
+	if (NULL == pElement || DB == pElement->mnemonic)
 	{
 		__asm int 3;
 		return 0;
 	}
 
 	pInfo->hasModRM = 0;
-	if (GROUP1 <= element->mnemonic && element->mnemonic <= GROUPP)
+	if (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP)
 	{
 		pInfo->hasModRM = 1;
 	}
 	pInfo->hasDisp = 0;
 	pInfo->hasImm  = 0;
 
-	if (element->operands > 0)
+	/* detect ModR/M */
+	if (pElement->operands > 0)
 	{
-		pInfo->hasModRM = 0 != (element->operand1type & MaskModRM);
-		if (element->operand1type & MaskImmediate)
+		pInfo->hasModRM |= 0 != (pElement->operand1type & MaskModRM);
+		
+		pInfo->operands[0].type = pElement->operand1type;
+		if (pElement->operand1type == Reg)
 		{
-			pInfo->hasImm = 1;
-			if (Jb == (element->operand1type & Jb))
-			{
-				pInfo->sizeImm = 1;
-			}
-			if (Ob == (element->operand1type & Ob))
-			{
-				pInfo->sizeImm = 4;
-			}
-			if (element->operand1type & v)
-			{
-				pInfo->sizeImm = 4;
-			}
-			if (element->operand1type & z)
-			{
-				pInfo->sizeImm = 4;
-			}
-			if (element->operand1type & w)
-			{
-				pInfo->sizeImm = 2;
-			}
-		}
-		pInfo->operand1.type = element->operand1type;
-		if (element->operand1type == Reg)
-		{
-			pInfo->operand1.value.reg = element->reg1;
+			pInfo->operands[0].value.reg = pElement->reg1;
 		}
 
-		if (element->operands > 1)
+		if (pElement->operands > 1)
 		{
-			pInfo->hasModRM = 0 != (element->operand2type & MaskModRM);
-			if (element->operand2type & MaskImmediate)
+			pInfo->hasModRM |= 0 != (pElement->operand2type & MaskModRM);
+
+			pInfo->operands[1].type = pElement->operand2type;
+			if (pElement->operand2type == Reg)
 			{
-				pInfo->hasImm = 1;
-				if (Jb == (element->operand2type & Jb))
-				{
-					pInfo->sizeImm = 1;
-				}
-				if (Ob == (element->operand2type & Ob))
-				{
-					pInfo->sizeImm = 4;
-				}
-				if (element->operand2type & v)
-				{
-					pInfo->sizeImm = 4;
-				}
-				if (element->operand2type & z)
-				{
-					pInfo->sizeImm = 4;
-				}
-			}
-			pInfo->operand2.type = element->operand2type;
-			if (element->operand2type == Reg)
-			{
-				pInfo->operand2.value.reg = element->reg2;
+				pInfo->operands[1].value.reg = pElement->reg2;
 			}
 
-			if (element->operands > 2)
+			if (pElement->operands > 2)
 			{
-				pInfo->hasModRM = 0 != (element->operand3type & MaskModRM);
-				if (element->operand3type & I)
+				pInfo->hasModRM |= 0 != (pElement->operand3type & MaskModRM);
+				if (pElement->operand3type == Reg)
 				{
-					pInfo->hasImm = 1;
-					if (element->operand3type & v)
-					{
-						pInfo->sizeImm = 4;
-					}
-				}
-				if (element->operand3type == Reg)
-				{
-					pInfo->operand3.value.reg = element->reg3;
+					pInfo->operands[2].value.reg = pElement->reg3;
 				}
 			}
 		}
@@ -298,9 +351,12 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 		pInfo->ModRM.value = Fetch1(pContext);
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
-		switch (element->mnemonic)
+		switch (pElement->mnemonic)
 		{
-		case GROUP5: GROUP5Decode(pContext, pInfo, element); break;
+		case GROUP1: GROUP1Decode(pContext, pInfo, pElement); break;
+		case GROUP2: GROUP2Decode(pContext, pInfo, pElement); break;
+		case GROUP3: GROUP3Decode(pContext, pInfo, pElement); break;
+		case GROUP5: GROUP5Decode(pContext, pInfo, pElement); break;
 		default: break;
 		}
 
@@ -327,54 +383,24 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 		{
 			pInfo->SIB = Fetch1(pContext);
 		}
-		if (element->operands > 0)
+	}
+	if (pElement->operands > 0)
+	{
+		OperandDecode(pContext, pInfo, &pInfo->operands[0]);
+		if (pElement->operands > 1)
 		{
-			if (element->operand1type & E)
+			OperandDecode(pContext, pInfo, &pInfo->operands[1]);
+			if (pElement->operands > 2)
 			{
-				pInfo->operand1.type = Reg;
-				pInfo->operand1.value.reg = pInfo->ModRM.fields.RM;
-				if (element->operand1type & v)
-				{
-					pInfo->operand1.value.reg |= Reg32;
-				}
-			}
-			if (element->operand1type & G)
-			{
-				pInfo->operand1.type = Reg;
-				pInfo->operand1.value.reg = pInfo->ModRM.fields.Reg;
-				if (element->operand1type & v)
-				{
-					pInfo->operand1.value.reg |= Reg32;
-				}
-			}
-			if (element->operands > 1)
-			{
-				if (element->operand2type & E)
-				{
-					pInfo->operand2.type = Reg;
-					pInfo->operand2.value.reg = pInfo->ModRM.fields.RM;
-					if (element->operand2type & v)
-					{
-						pInfo->operand2.value.reg |= Reg32;
-					}
-				}
-				if (element->operand2type & G)
-				{
-					pInfo->operand2.type = Reg;
-					pInfo->operand2.value.reg = pInfo->ModRM.fields.Reg;
-					if (element->operand2type & v)
-					{
-						pInfo->operand2.value.reg |= Reg32;
-					}
-				}
+				OperandDecode(pContext, pInfo, &pInfo->operands[2]);
 			}
 		}
 	}
-	pInfo->operands = element->operands;
+	pInfo->nOperands = pElement->operands;
 	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo->sizeDisp) : 0;
 	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo->sizeImm)  : 0;
 	pInfo->length = pContext->length;
-	pInfo->mnemonic = element->mnemonic;
+	pInfo->mnemonic = pElement->mnemonic;
 	return pInfo->length;
 }
 

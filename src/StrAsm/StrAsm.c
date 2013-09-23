@@ -37,19 +37,19 @@ void StrAsmPrintInstruction(InstructionInfo * info)
 	 char * mnemonic = MnemonicToString(info->mnemonic);
 	 printf("%s", mnemonic);
 
-	 if (info->operands > 0)
+	 if (info->nOperands > 0)
 	 {
 		 printf(" ");
-		 PrintOperand(info, &info->operand1);
+		 PrintOperand(info, &info->operands[0]);
 		 
-		 if (info->operands > 1)
+		 if (info->nOperands > 1)
 		 {
 			 printf(", ");
-			 PrintOperand(info, &info->operand2);
-			 if (info->operands > 2)
+			 PrintOperand(info, &info->operands[1]);
+			 if (info->nOperands > 2)
 			 {
 				 __asm int 3;
-				 PrintOperand(info, &info->operand3);
+				 PrintOperand(info, &info->operands[2]);
 			 }
 		 }
 	 }

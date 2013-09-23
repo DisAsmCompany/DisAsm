@@ -28,7 +28,7 @@
 8 X X X X X X X X 8 X X X X X X X X 8
 9 X X X X X X X X 9 X X X X X X X X 9
 A     X           A                 A
-B                 B                 B
+B             X X B                 B
 C                 C                 C
 D                 D                 D
 E                 E                 E
@@ -83,7 +83,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0FA8h - 0FAFh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FB0h - 0FB7h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVZX, 2, Gv, 0, Eb, 0}, {MOVZX, 2, Gv, 0, Ew, 0},
 	/* 0FB8h - 0FBFh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC0h - 0FC7h */

@@ -33,6 +33,16 @@ void DisAsmFunction(uint8_t * buffer)
 		}
 		{
 			uint8_t i;
+			uint32_t address = (uint32_t) buffer;
+			for (i = 0; i < 4; ++i)
+			{
+				uint8_t value = (address >> (3 - i) * 8) & 0xFF;
+				printf("%X%X", value >> 4, value & 0x0F);
+			}
+			printf(" ");
+		}
+		{
+			uint8_t i;
 			for (i = 0; i < length; ++i)
 			{
 				printf("%X%X ", buffer[i] >> 4, buffer[i] & 0x0F);
