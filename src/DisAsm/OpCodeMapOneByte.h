@@ -16,36 +16,36 @@
 
 /* 
   0 1 2 3 4 5 6 7   8 9 A B C D E F
-0 X X X X X X     0 X X X X X X   + 0
-1 X X X X X X     1 X X X X X X     1
+0 X X X X X X X X 0 X X X X X X X + 0
+1 X X X X X X X X 1 X X X X X X X X 1
 2 X X X X X X X X 2 X X X X X X X X 2
 3 X X X X X X X X 3 X X X X X X X X 3
 4 X X X X X X X X 4 X X X X X X X X 4
 5 X X X X X X X X 5 X X X X X X X X 5
-6         X X X X 6 X X X X         6
+6 X X     X X X X 6 X X X X         6
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X   X     8
-9 X               9                 9
+9 X               9             X X 9
 A X X X X X X X X A X X X X X X X X A
 B                 B X X X X X X X X B
 C X X X       X X C   X             C
 D X X X X         D                 D
 E                 E X X   X         E
-F X   X X     X X F               X F
+F X   X X X X X X F X X X X X X   X F
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
 
 OpCodeMapElement OpCodeMapOneByte[] =
 {
 	/* 00h - 07h */
-	{ADD, 2, Eb, 0, Gb, 0}, {ADD, 2, Ev, 0, Gv, 0}, {ADD, 2, Gb, 0, Eb, 0}, {ADD, 2, Gv, 0, Ev, 0}, {ADD, 2, Reg, AL, Ib, 0}, {ADD, 2, Reg, rAX, Iz, 0}, {DB}, {DB},
+	{ADD, 2, Eb, 0, Gb, 0}, {ADD, 2, Ev, 0, Gv, 0}, {ADD, 2, Gb, 0, Eb, 0}, {ADD, 2, Gv, 0, Ev, 0}, {ADD, 2, Reg, AL, Ib, 0}, {ADD, 2, Reg, rAX, Iz, 0}, {PUSH, 1, Reg, ES}, {POP, 1, Reg, ES},
 	/* 08h - 0Fh */
-	{OR , 2, Eb, 0, Gb, 0}, {OR , 2, Ev, 0, Gv, 0}, {OR , 2, Gb, 0, Eb, 0}, {OR , 2, Gv, 0, Ev, 0}, {OR , 2, Reg, AL, Ib, 0}, {OR , 2, Reg, rAX, Iz, 0}, {DB}, {DB},
+	{OR , 2, Eb, 0, Gb, 0}, {OR , 2, Ev, 0, Gv, 0}, {OR , 2, Gb, 0, Eb, 0}, {OR , 2, Gv, 0, Ev, 0}, {OR , 2, Reg, AL, Ib, 0}, {OR , 2, Reg, rAX, Iz, 0}, {PUSH, 1, Reg, CS}, {DB},
 	/* 10h - 17h */
-	{ADC, 2, Eb, 0, Gb, 0}, {ADC, 2, Ev, 0, Gv, 0}, {ADC, 2, Gb, 0, Eb, 0}, {ADC, 2, Gv, 0, Ev, 0}, {ADC, 2, Reg, AL, Ib, 0}, {ADC, 2, Reg, rAX, Iz, 0}, {DB}, {DB},
+	{ADC, 2, Eb, 0, Gb, 0}, {ADC, 2, Ev, 0, Gv, 0}, {ADC, 2, Gb, 0, Eb, 0}, {ADC, 2, Gv, 0, Ev, 0}, {ADC, 2, Reg, AL, Ib, 0}, {ADC, 2, Reg, rAX, Iz, 0}, {PUSH, 1, Reg, SS}, {POP, 1, Reg, SS},
 	/* 17h - 1Fh */
-	{SBB, 2, Eb, 0, Gb, 0}, {SBB, 2, Ev, 0, Gv, 0}, {SBB, 2, Gb, 0, Eb, 0}, {SBB, 2, Gv, 0, Ev, 0}, {SBB, 2, Reg, AL, Ib, 0}, {SBB, 2, Reg, rAX, Iz, 0}, {DB}, {DB},
+	{SBB, 2, Eb, 0, Gb, 0}, {SBB, 2, Ev, 0, Gv, 0}, {SBB, 2, Gb, 0, Eb, 0}, {SBB, 2, Gv, 0, Ev, 0}, {SBB, 2, Reg, AL, Ib, 0}, {SBB, 2, Reg, rAX, Iz, 0}, {PUSH, 1, Reg, DS}, {POP, 1, Reg, DS},
 	/* 20h - 27h */
 	{AND, 2, Eb, 0, Gb, 0}, {AND, 2, Ev, 0, Gv, 0}, {AND, 2, Gb, 0, Eb, 0}, {AND, 2, Gv, 0, Ev, 0}, {AND, 2, Reg, AL, Ib, 0}, {AND, 2, Reg, rAX, Iz, 0}, {ES}, {DAA},
 	/* 28h - 2Fh */
@@ -63,7 +63,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 57h - 5Fh */
 	{POP , 1, Reg, rAX}, {POP , 1, Reg, rCX}, {POP , 1, Reg, rBX}, {POP , 1, Reg, rDX}, {POP , 1, Reg, rSP}, {POP , 1, Reg, rBP}, {POP , 1, Reg, rSI}, {POP , 1, Reg, rDI},
 	/* 60h - 67h */
-	{DB}, {DB}, {DB}, {DB}, {FS}, {GS}, {OperandSize}, {AddressSize},
+	{PUSHA}, {POPA}, {DB}, {DB}, {FS}, {GS}, {OperandSize}, {AddressSize},
 	/* 68h - 6Fh */
 	{PUSH, 1, Iz}, {IMUL, 3, Gv, 0, Ev, 0, Iz, 0}, {PUSH, 1, Ib}, {IMUL, 3, Gv, 0, Ev, 0, Ib, 0}, {DB}, {DB}, {DB}, {DB},
 	/* 70h - 77h */
@@ -77,7 +77,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 90h - 97h */
 	{NOP}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 98h - 9Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {SAHF}, {LAHF},
 	/* A0h - A7h */
 	{MOV, 2, Reg, AL, Ob, 0}, {MOV, 2, Reg, rAX, Ov, 0}, {MOV, 2, Ob, 0, Reg, AL}, {MOV, 2, Ov, 0, Reg, rAX}, {MOVS, 2, Yb, 0, Xb, 0}, {MOVS, 2, Yv, 0, Xv, 0}, {CMPS, 2, Yb, 0, Xb, 0}, {CMPS, 2, Yv, 0, Xv, 0},
 	/* A8h - AFh */

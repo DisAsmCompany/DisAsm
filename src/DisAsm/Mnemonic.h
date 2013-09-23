@@ -56,6 +56,12 @@ _ENUM_ELEMENT(MUL)    /* Unsigned Multiply */
 _ENUM_ELEMENT(IMUL)   /* Signed Multiply */
 _ENUM_ELEMENT(DIV)    /* Unsigned Divide */
 _ENUM_ELEMENT(IDIV)   /* Signed Divide */
+_ENUM_ELEMENT(PUSHA)  /* Push all General-Purpose Registers */
+_ENUM_ELEMENT(PUSHAD) /* Push all General-Purpose Registers */
+_ENUM_ELEMENT(POPA)   /* Pop all General-Purpose Registers */
+_ENUM_ELEMENT(POPAD)  /* Pop all General-Purpose Registers */
+_ENUM_ELEMENT(SAHF)   /* Store AL into Flags */
+_ENUM_ELEMENT(LAHF)   /* Load Flags into AL */
 /* Move String to String */
 _ENUM_ELEMENT(MOVS)   /* Move String to String */
 _ENUM_ELEMENT(MOVSB)  /* Move String to String */
