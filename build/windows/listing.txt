@@ -1,0 +1,73 @@
+7C82D639 8B FF            mov         edi,edi 
+7C82D63B 55               push        ebp  
+7C82D63C 8B EC            mov         ebp,esp 
+7C82D63E 5D               pop         ebp  
+7C82D63F FF 25 98 15 80 7C jmp         dword ptr ds:[7C801598h] 
+7C82D645 64 A1 18 00 00 00 mov         eax,dword ptr fs:[00000018h] 
+7C82D64B 89 85 94 F6 FF FF mov         dword ptr [ebp-96Ch],eax 
+7C82D651 FF B5 28 F8 FF FF push        dword ptr [ebp-7D8h] 
+7C82D657 53               push        ebx  
+7C82D658 8B 40 30         mov         eax,dword ptr [eax+30h] 
+7C82D65B FF 70 18         push        dword ptr [eax+18h] 
+7C82D65E FF 15 10 10 80 7C call        dword ptr ds:[7C801010h] 
+7C82D664 89 9D 28 F8 FF FF mov         dword ptr [ebp-7D8h],ebx 
+7C82D66A E9 2E BF FE FF   jmp         7C81959D 
+7C82D66F 8B F1            mov         esi,ecx 
+7C82D671 E9 76 C6 FD FF   jmp         7C809CEC 
+7C82D676 68 EC 03 00 00   push        3ECh 
+7C82D67B E9 D0 6F FE FF   jmp         7C814650 
+7C82D680 8B 43 10         mov         eax,dword ptr [ebx+10h] 
+7C82D683 85 C0            test        eax,eax 
+7C82D685 0F 85 F1 C6 FD FF jne         7C809D7C 
+7C82D68B E9 E9 C6 FD FF   jmp         7C809D79 
+7C82D690 89 75 DC         mov         dword ptr [ebp-24h],esi 
+7C82D693 8D 45 E0         lea         eax,[ebp-20h] 
+7C82D696 50               push        eax  
+7C82D697 8D 45 DC         lea         eax,[ebp-24h] 
+7C82D69A 50               push        eax  
+7C82D69B 53               push        ebx  
+7C82D69C FF 75 E0         push        dword ptr [ebp-20h] 
+7C82D69F FF 35 A4 53 88 7C push        dword ptr ds:[7C8853A4h] 
+7C82D6A5 FF 15 B0 12 80 7C call        dword ptr ds:[7C8012B0h] 
+7C82D6AB 84 C0            test        al,al 
+7C82D6AD 74 1B            je          7C82D6CA 
+7C82D6AF 39 75 DC         cmp         dword ptr [ebp-24h],esi 
+7C82D6B2 0F 85 11 2D 01 00 jne         7C8403C9 
+7C82D6B8 53               push        ebx  
+7C82D6B9 6A 01            push        1    
+7C82D6BB FF 35 A4 53 88 7C push        dword ptr ds:[7C8853A4h] 
+7C82D6C1 FF 15 AC 12 80 7C call        dword ptr ds:[7C8012ACh] 
+7C82D6C7 89 45 E4         mov         dword ptr [ebp-1Ch],eax 
+7C82D6CA F6 C3 04         test        bl,4 
+7C82D6CD 0F 84 15 68 FE FF je          7C813EE8 
+7C82D6D3 E9 D9 67 FE FF   jmp         7C813EB1 
+7C82D6D8 6A 03            push        3    
+7C82D6DA E8 7F BC FD FF   call        7C80935E 
+7C82D6DF E9 24 40 FE FF   jmp         7C811708 
+7C82D6E4 6A 57            push        57h  
+7C82D6E6 EB F2            jmp         7C82D6DA 
+7C82D6E8 8D 85 D0 FB FF FF lea         eax,[ebp-430h] 
+7C82D6EE 50               push        eax  
+7C82D6EF 56               push        esi  
+7C82D6F0 FF 15 74 13 80 7C call        dword ptr ds:[7C801374h] 
+7C82D6F6 89 85 D0 FB FF FF mov         dword ptr [ebp-430h],eax 
+7C82D6FC 3B C7            cmp         eax,edi 
+7C82D6FE 0F 85 55 0F FE FF jne         7C80E659 
+7C82D704 E9 1C 36 01 00   jmp         7C840D25 
+7C82D709 90               nop              
+7C82D70A 90               nop              
+7C82D70B 90               nop              
+7C82D70C 90               nop              
+7C82D70D 90               nop              
+7C82D70E 8B FF            mov         edi,edi 
+7C82D710 55               push        ebp  
+7C82D711 8B EC            mov         ebp,esp 
+7C82D713 51               push        ecx  
+7C82D714 8D 45 FC         lea         eax,[ebp-4] 
+7C82D717 50               push        eax  
+7C82D718 FF 15 44 15 80 7C call        dword ptr ds:[7C801544h] 
+7C82D71E 85 C0            test        eax,eax 
+7C82D720 0F 8C E0 76 01 00 jl          7C844E06 
+7C82D726 8B 45 FC         mov         eax,dword ptr [ebp-4] 
+7C82D729 C9               leave            
+7C82D72A C3               ret              

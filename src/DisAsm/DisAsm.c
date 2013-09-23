@@ -212,6 +212,8 @@ void GROUP3Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapEl
 		pElement->mnemonic = TEST;
 		pElement->operands = 2;
 		pElement->operand2type = (0xF6 == pInfo->opcode) ? Ib : Iz;
+		pInfo->nOperands = 2;
+		pInfo->operands[1].type = pElement->operand2type;
 		break;
 	case 2: pElement->mnemonic = NOT;  break;
 	case 3: pElement->mnemonic = NEG;  break;
@@ -235,6 +237,22 @@ void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapEl
 	case 4: pElement->mnemonic = JMP;  pElement->operand1type = Ev; break;
 	case 5: pElement->mnemonic = JMP;  pElement->operand1type = Mp; break;
 	case 6: pElement->mnemonic = PUSH; pElement->operand1type = Ev; break;
+	case 7: break;
+	default: break;
+	}
+}
+
+void GROUP11Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pElement->mnemonic = MOV; break;
+	case 1: break;
+	case 2: break;
+	case 3: break;
+	case 4: break;
+	case 5: break;
+	case 6: break;
 	case 7: break;
 	default: break;
 	}
@@ -339,6 +357,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 			if (pElement->operands > 2)
 			{
 				pInfo->hasModRM |= 0 != (pElement->operand3type & MaskModRM);
+				pInfo->operands[2].type = pElement->operand3type;
 				if (pElement->operand3type == Reg)
 				{
 					pInfo->operands[2].value.reg = pElement->reg3;
@@ -353,10 +372,11 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 
 		switch (pElement->mnemonic)
 		{
-		case GROUP1: GROUP1Decode(pContext, pInfo, pElement); break;
-		case GROUP2: GROUP2Decode(pContext, pInfo, pElement); break;
-		case GROUP3: GROUP3Decode(pContext, pInfo, pElement); break;
-		case GROUP5: GROUP5Decode(pContext, pInfo, pElement); break;
+		case GROUP1 : GROUP1Decode (pContext, pInfo, pElement); break;
+		case GROUP2 : GROUP2Decode (pContext, pInfo, pElement); break;
+		case GROUP3 : GROUP3Decode (pContext, pInfo, pElement); break;
+		case GROUP5 : GROUP5Decode (pContext, pInfo, pElement); break;
+		case GROUP11: GROUP11Decode(pContext, pInfo, pElement); break;
 		default: break;
 		}
 

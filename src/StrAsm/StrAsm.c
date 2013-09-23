@@ -48,7 +48,7 @@ void StrAsmPrintInstruction(InstructionInfo * info)
 			 PrintOperand(info, &info->operands[1]);
 			 if (info->nOperands > 2)
 			 {
-				 __asm int 3;
+				 printf(", ");
 				 PrintOperand(info, &info->operands[2]);
 			 }
 		 }

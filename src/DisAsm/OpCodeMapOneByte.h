@@ -22,14 +22,14 @@
 3 X X X X X X X X 3 X X X X X X X X 3
 4 X X X X X X X X 4 X X X X X X X X 4
 5 X X X X X X X X 5 X X X X X X X X 5
-6         X X X X 6 X   X           6
+6         X X X X 6 X X X X         6
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X   X     8
 9 X               9                 9
 A X X X X         A                 A
 B                 B X X X X X X X X B
-C     X           C   X             C
+C     X       X X C   X             C
 D X X X X         D                 D
 E                 E X X   X         E
 F X   X X     X X F               X F
@@ -65,7 +65,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 60h - 67h */
 	{DB}, {DB}, {DB}, {DB}, {FS}, {GS}, {OperandSize}, {AddressSize},
 	/* 68h - 6Fh */
-	{PUSH, 1, Iz}, {DB}, {PUSH, 1, Ib}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PUSH, 1, Iz}, {IMUL, 3, Gv, 0, Ev, 0, Iz, 0}, {PUSH, 1, Ib}, {IMUL, 3, Gv, 0, Ev, 0, Ib, 0}, {DB}, {DB}, {DB}, {DB},
 	/* 70h - 77h */
 	{JO, 1, Jb}, {JNO, 1, Jb}, {JB, 1, Jb}, {JAE, 1, Jb}, {JE, 1, Jb}, {JNE, 1, Jb}, {JBE, 1, Jb}, {JA, 1, Jb},
 	/* 78h - 7Fh */
@@ -87,7 +87,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* B8h - BFh */
 	{MOV, 2, Reg, rAX, Iv, 0}, {MOV, 2, Reg, rCX, Iv, 0}, {MOV, 2, Reg, rBX, Iv, 0}, {MOV, 2, Reg, rDX, Iv, 0}, {MOV, 2, Reg, rSP, Iv, 0}, {MOV, 2, Reg, rBP, Iv, 0}, {MOV, 2, Reg, rSI, Iv, 0}, {MOV, 2, Reg, rDI, Iv, 0},
 	/* C0h - C7h */
-	{DB}, {DB}, {RET, 1, Iw, 0}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {RET, 1, Iw, 0}, {RET}, {DB}, {DB}, {GROUP11, 2, Eb, 0, Ib, 0}, {GROUP11, 2, Ev, 0, Iv, 0},
 	/* C8h - CFh */
 	{DB}, {LEAVE}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* D0h - D7h */
