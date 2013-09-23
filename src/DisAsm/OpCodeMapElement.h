@@ -16,13 +16,11 @@
 typedef struct OpCodeMapElement_t
 {
 	Mnemonic mnemonic;
-	uint8_t operands;
-	OperandType operand1type;
+	OperandType type;
 	Register reg1;
-	OperandType operand2type;
 	Register reg2;
-	OperandType operand3type;
 	Register reg3;
+	Register reg4;
 }
 OpCodeMapElement;
 

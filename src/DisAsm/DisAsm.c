@@ -19,6 +19,7 @@ typedef struct DisAsmContext_t
 {
 	uint8_t * buffer;
 	uint8_t length;
+	uint8_t size;
 }
 DisAsmContext;
 
@@ -27,6 +28,7 @@ HDISASM DisAsmCreate()
 	DisAsmContext * pContext = malloc(sizeof(DisAsmContext));
 	pContext->buffer = NULL;
 	pContext->length = 0;
+	pContext->size = 4;
 	return (HDISASM) pContext;
 }
 
@@ -154,6 +156,10 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case AddressSize:
 			if (pInfo->nPrefixes < MAX_PREFIXES)
 			{
+				if (OperandSize == element->mnemonic)
+				{
+					pContext->size = 2;
+				}
 				pInfo->prefixes[pInfo->nPrefixes].opcode = opcode;
 				pInfo->prefixes[pInfo->nPrefixes].mnemonic = element->mnemonic;
 				++pInfo->nPrefixes;
@@ -171,82 +177,80 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	return element;
 }
 
-void GROUP1Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+void GROUP1Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
 	{
-	case 0: pElement->mnemonic = ADD; break;
-	case 1: pElement->mnemonic = OR;  break;
-	case 2: pElement->mnemonic = ADC; break;
-	case 3: pElement->mnemonic = SBB; break;
-	case 4: pElement->mnemonic = AND; break;
-	case 5: pElement->mnemonic = SUB; break;
-	case 6: pElement->mnemonic = XOR; break;
-	case 7: pElement->mnemonic = CMP; break;
+	case 0: pInfo->mnemonic = ADD; break;
+	case 1: pInfo->mnemonic = OR;  break;
+	case 2: pInfo->mnemonic = ADC; break;
+	case 3: pInfo->mnemonic = SBB; break;
+	case 4: pInfo->mnemonic = AND; break;
+	case 5: pInfo->mnemonic = SUB; break;
+	case 6: pInfo->mnemonic = XOR; break;
+	case 7: pInfo->mnemonic = CMP; break;
 	default: break;
 	}
 }
 
-void GROUP2Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+void GROUP2Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
 	{
-	case 0: pElement->mnemonic = ROL; break;
-	case 1: pElement->mnemonic = ROR; break;
-	case 2: pElement->mnemonic = RCL; break;
-	case 3: pElement->mnemonic = RCR; break;
-	case 4: pElement->mnemonic = SHL; break;
-	case 5: pElement->mnemonic = SHR; break;
-	case 6: pElement->mnemonic = SAL; break;
-	case 7: pElement->mnemonic = SAR; break;
+	case 0: pInfo->mnemonic = ROL; break;
+	case 1: pInfo->mnemonic = ROR; break;
+	case 2: pInfo->mnemonic = RCL; break;
+	case 3: pInfo->mnemonic = RCR; break;
+	case 4: pInfo->mnemonic = SHL; break;
+	case 5: pInfo->mnemonic = SHR; break;
+	case 6: pInfo->mnemonic = SAL; break;
+	case 7: pInfo->mnemonic = SAR; break;
 	default: break;
 	}
 }
 
-void GROUP3Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+void GROUP3Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
 	{
 	case 0:
 	case 1:
-		pElement->mnemonic = TEST;
-		pElement->operands = 2;
-		pElement->operand2type = (0xF6 == pInfo->opcode) ? Ib : Iz;
+		pInfo->mnemonic = TEST;
 		pInfo->nOperands = 2;
-		pInfo->operands[1].type = pElement->operand2type;
+		pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
 		break;
-	case 2: pElement->mnemonic = NOT;  break;
-	case 3: pElement->mnemonic = NEG;  break;
-	case 4: pElement->mnemonic = MUL;  break;
-	case 5: pElement->mnemonic = IMUL; break;
-	case 6: pElement->mnemonic = DIV;  break;
-	case 7: pElement->mnemonic = IDIV; break;
+	case 2: pInfo->mnemonic = NOT;  break;
+	case 3: pInfo->mnemonic = NEG;  break;
+	case 4: pInfo->mnemonic = MUL;  break;
+	case 5: pInfo->mnemonic = IMUL; break;
+	case 6: pInfo->mnemonic = DIV;  break;
+	case 7: pInfo->mnemonic = IDIV; break;
 	default: break;
 	}
 }
 
-void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	pElement->operands = 1;
+	pInfo->nOperands = 1;
 	switch (pInfo->ModRM.fields.Reg)
 	{
-	case 0: pElement->mnemonic = INC;  pElement->operand1type = Ev; break;
-	case 1: pElement->mnemonic = DEC;  pElement->operand1type = Ev; break;
-	case 2: pElement->mnemonic = CALL; pElement->operand1type = Ev; break;
-	case 3: pElement->mnemonic = CALL; pElement->operand1type = Mp; break;
-	case 4: pElement->mnemonic = JMP;  pElement->operand1type = Ev; break;
-	case 5: pElement->mnemonic = JMP;  pElement->operand1type = Mp; break;
-	case 6: pElement->mnemonic = PUSH; pElement->operand1type = Ev; break;
+	case 0: pInfo->mnemonic = INC;  pInfo->operands[0].type = Ev; break;
+	case 1: pInfo->mnemonic = DEC;  pInfo->operands[0].type = Ev; break;
+	case 2: pInfo->mnemonic = CALL; pInfo->operands[0].type = Ev; break;
+	case 3: pInfo->mnemonic = CALL; pInfo->operands[0].type = Mp; break;
+	case 4: pInfo->mnemonic = JMP;  pInfo->operands[0].type = Ev; break;
+	case 5: pInfo->mnemonic = JMP;  pInfo->operands[0].type = Mp; break;
+	case 6: pInfo->mnemonic = PUSH; pInfo->operands[0].type = Ev; break;
 	case 7: break;
 	default: break;
 	}
 }
 
-void GROUP11Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapElement * pElement)
+void GROUP11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
 	{
-	case 0: pElement->mnemonic = MOV; break;
+	case 0: pInfo->mnemonic = MOV; break;
 	case 1: break;
 	case 2: break;
 	case 3: break;
@@ -260,51 +264,81 @@ void GROUP11Decode(DisAsmContext * pContext, InstructionInfo * pInfo, OpCodeMapE
 
 void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
 {
-	if (pOperand->type & E)
+	OperandType HiType = HITYPE(pOperand->type);
+	OperandType LoType = LOTYPE(pOperand->type);
+	switch (HiType)
 	{
+	case E:
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.RM;
-		if (pOperand->type & v)
+		if (LoType == v)
 		{
-			pInfo->operands[0].value.reg |= Reg32;
+			pOperand->value.reg |= Reg32;
 		}
-	}
-	if (pOperand->type & G)
-	{
+		else if (LoType == w)
+		{
+			pOperand->value.reg |= Reg16;
+		}
+		else if (LoType == b)
+		{
+			pOperand->value.reg |= Reg8;
+		}
+		else
+		{
+			__asm int 3;
+		}
+		break;
+	case G:
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		if (pOperand->type & v)
+		if (LoType == v)
 		{
-			pInfo->operands[0].value.reg |= Reg32;
+			pOperand->value.reg |= Reg32;
 		}
-	}
-	if (pOperand->type & MaskImmediate)
-	{
+		else if (LoType == w)
+		{
+			pOperand->value.reg |= Reg16;
+		}
+		else if (LoType == b)
+		{
+			pOperand->value.reg |= Reg8;
+		}
+		else
+		{
+			__asm int 3;
+		}
+		break;
+	case I:
+	case J:
+	case O:
 		pInfo->hasImm = 1;
-		if (Jb == (pOperand->type & Jb))
+		if (Jb == pOperand->type)
 		{
 			pInfo->sizeImm = 1;
 		}
-		if (Ib == (pOperand->type & Ib))
+		if (Ib == pOperand->type)
 		{
 			pInfo->sizeImm = 1;
 		}
-		if (Ob == (pOperand->type & Ob))
+		if (Ob == pOperand->type)
 		{
 			pInfo->sizeImm = 4;
 		}
-		if (pOperand->type & v)
+		if (LoType == v)
 		{
-			pInfo->sizeImm = 4;
+			pInfo->sizeImm = (4 == pContext->size) ? 4 : 2;
 		}
-		if (pOperand->type & z)
+		if (LoType == z)
 		{
-			pInfo->sizeImm = 4;
+			pInfo->sizeImm = (4 == pContext->size) ? 4 : 2;
 		}
-		if (pOperand->type & w)
+		if (LoType == w)
 		{
 			pInfo->sizeImm = 2;
 		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -312,9 +346,11 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	OpCodeMapElement * pElement = 0;
+	uint8_t i = 0;
 
 	pContext->buffer = buffer;
 	pContext->length = 0;
+	pContext->size = 4;
 
 	pInfo->nPrefixes = 0;
 
@@ -324,59 +360,41 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 		__asm int 3;
 		return 0;
 	}
-
+	pInfo->mnemonic = pElement->mnemonic;
 	pInfo->hasModRM = 0;
-	if (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP)
+	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
 		pInfo->hasModRM = 1;
 	}
 	pInfo->hasDisp = 0;
 	pInfo->hasImm  = 0;
 
-	/* detect ModR/M */
-	if (pElement->operands > 0)
-	{
-		pInfo->hasModRM |= 0 != (pElement->operand1type & MaskModRM);
-		
-		pInfo->operands[0].type = pElement->operand1type;
-		if (pElement->operand1type == Reg)
-		{
-			pInfo->operands[0].value.reg = pElement->reg1;
-		}
+	pInfo->nOperands = OPCOUNT(pElement->type);
+	pInfo->operands[0].type = OP1GET(pElement->type);
+	pInfo->operands[1].type = OP2GET(pElement->type);
+	pInfo->operands[2].type = OP3GET(pElement->type);
+	pInfo->operands[3].type = OP4GET(pElement->type);
+	pInfo->operands[0].value.reg = pElement->reg1;
+	pInfo->operands[1].value.reg = pElement->reg2;
+	pInfo->operands[2].value.reg = pElement->reg3;
+	pInfo->operands[3].value.reg = pElement->reg4;
+	pInfo->hasModRM |= HASMODRM(pInfo->operands[0].type);
+	pInfo->hasModRM |= HASMODRM(pInfo->operands[1].type);
+	pInfo->hasModRM |= HASMODRM(pInfo->operands[2].type);
+	pInfo->hasModRM |= HASMODRM(pInfo->operands[3].type);
 
-		if (pElement->operands > 1)
-		{
-			pInfo->hasModRM |= 0 != (pElement->operand2type & MaskModRM);
-
-			pInfo->operands[1].type = pElement->operand2type;
-			if (pElement->operand2type == Reg)
-			{
-				pInfo->operands[1].value.reg = pElement->reg2;
-			}
-
-			if (pElement->operands > 2)
-			{
-				pInfo->hasModRM |= 0 != (pElement->operand3type & MaskModRM);
-				pInfo->operands[2].type = pElement->operand3type;
-				if (pElement->operand3type == Reg)
-				{
-					pInfo->operands[2].value.reg = pElement->reg3;
-				}
-			}
-		}
-	}
 	if (pInfo->hasModRM)
 	{
 		pInfo->ModRM.value = Fetch1(pContext);
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
-		switch (pElement->mnemonic)
+		switch (pInfo->mnemonic)
 		{
-		case GROUP1 : GROUP1Decode (pContext, pInfo, pElement); break;
-		case GROUP2 : GROUP2Decode (pContext, pInfo, pElement); break;
-		case GROUP3 : GROUP3Decode (pContext, pInfo, pElement); break;
-		case GROUP5 : GROUP5Decode (pContext, pInfo, pElement); break;
-		case GROUP11: GROUP11Decode(pContext, pInfo, pElement); break;
+		case GROUP1 : GROUP1Decode (pContext, pInfo); break;
+		case GROUP2 : GROUP2Decode (pContext, pInfo); break;
+		case GROUP3 : GROUP3Decode (pContext, pInfo); break;
+		case GROUP5 : GROUP5Decode (pContext, pInfo); break;
+		case GROUP11: GROUP11Decode(pContext, pInfo); break;
 		default: break;
 		}
 
@@ -404,23 +422,13 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 			pInfo->SIB = Fetch1(pContext);
 		}
 	}
-	if (pElement->operands > 0)
+	for (i = 0; i < pInfo->nOperands; ++i)
 	{
-		OperandDecode(pContext, pInfo, &pInfo->operands[0]);
-		if (pElement->operands > 1)
-		{
-			OperandDecode(pContext, pInfo, &pInfo->operands[1]);
-			if (pElement->operands > 2)
-			{
-				OperandDecode(pContext, pInfo, &pInfo->operands[2]);
-			}
-		}
+		OperandDecode(pContext, pInfo, &pInfo->operands[i]);
 	}
-	pInfo->nOperands = pElement->operands;
 	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo->sizeDisp) : 0;
 	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo->sizeImm)  : 0;
 	pInfo->length = pContext->length;
-	pInfo->mnemonic = pElement->mnemonic;
 	return pInfo->length;
 }
 

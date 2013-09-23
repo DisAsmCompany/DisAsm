@@ -13,6 +13,7 @@
 #define __MNEMONIC_H__
 
 _ENUM_START(Mnemonic)
+_ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
 _ENUM_ELEMENT(DB)     /* Data Binary (not decoded instruction) */
 _ENUM_ELEMENT(DAA)    /* Decimal Adjust AL after Addition */
 _ENUM_ELEMENT(AAA)    /* ASCII Adjust AL after Addition */

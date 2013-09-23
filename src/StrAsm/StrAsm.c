@@ -26,7 +26,7 @@ void PrintOperand(InstructionInfo * info, Operand * operand)
 		char * reg = RegisterToString(operand->value.reg);
 		printf("%s", reg);
 	}
-	if (operand->type & (I | J))
+	if (HITYPE(operand->type) == I || HITYPE(operand->type) == J)
 	{
 		printf("%X%Xh", info->imm >> 4, info->imm & 0x0F);
 	}

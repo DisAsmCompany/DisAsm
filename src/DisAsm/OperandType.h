@@ -13,23 +13,34 @@
 #ifndef __OPERANDTYPE_H__
 #define __OPERANDTYPE_H__
 
+/*
+
+operand type for single operand is coded in one byte (uint8_t)
+lowest 4 bits describe operand size, and highest 4 bits describe operand nature
+in instruction table, operand types are really coded in double word (uint32_t)
+that means single value describes operand types for all operands (up to 4 operands)
+each byte describes single operand, if some operand is not present, its type set to zero (0)
+[op4][op3][op2][op1]
+
+*/
+
 typedef enum OperandType_t
 {
-	Reg = 0x00, /* operand is register */
-	E = 0x01, /* instruction has ModR/M byte, general-purpose register operand is defined in R/M field */
-	G = 0x02, /* instruction has ModR/M byte, general-purpose register operand is defined in Reg field */
-	I = 0x04, /* immediate data */
-	J = 0x08, /* relative offset */
-	M = 0x10, /* instruction has ModR/M byte, but it may refer to memory only */
-	O = 0x20, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
-	X = 0x40, /* Memory addressed by the DS:rSI register pair */
-	Y = 0x80, /* Memory addressed by the ES:rDI register pair */
+	Reg = 0xF0, /* operand is register (explicitly specified) */
+	E = 0x10, /* instruction has ModR/M byte, general-purpose register operand is defined in R/M field */
+	G = 0x20, /* instruction has ModR/M byte, general-purpose register operand is defined in Reg field */
+	I = 0x30, /* immediate data */
+	J = 0x40, /* relative offset */
+	M = 0x50, /* instruction has ModR/M byte, but it may refer to memory only */
+	O = 0x60, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
+	X = 0x70, /* Memory addressed by the DS:rSI register pair */
+	Y = 0x90, /* Memory addressed by the ES:rDI register pair */
 
-	b = 0x0100, /* byte, regardless of operand size attribute*/
-	v = 0x0200, /* word, double-word or quad-word, depending on operand-size attribute */
-	z = 0x0400, /* word for 16-bit operand size, double-word for 32-bit or 64-bit operand-size */
-	p = 0x0800, /* 32-bit, 48-bit, 80-bit pointer depending on operand-size attribute */
-	w = 0x1000, /* word, regardless of operand size attribute*/ 
+	b = 0x01, /* byte, regardless of operand size attribute*/
+	v = 0x02, /* word, double-word or quad-word, depending on operand-size attribute */
+	z = 0x03, /* word for 16-bit operand size, double-word for 32-bit or 64-bit operand-size */
+	p = 0x04, /* 32-bit, 48-bit, 80-bit pointer depending on operand-size attribute */
+	w = 0x05, /* word, regardless of operand size attribute*/ 
 
 	Eb = E | b,
 	Ev = E | v,
@@ -79,9 +90,34 @@ typedef enum OperandType_t
 	Yp = Y | p,
 	Yw = Y | w,
 
-	MaskModRM = E | G,
-	MaskImmediate = I | J | O,
+	ShiftOperand0 = 0,
+	ShiftOperand1 = 8,
+	ShiftOperand2 = 16,
+	ShiftOperand3 = 24,
+
+	MaskOperand1 = 0x000000FFUL,
+	MaskOperand2 = 0x0000FF00UL,
+	MaskOperand3 = 0x00FF0000UL,
+	MaskOperand4 = 0xFF000000UL,
 }
 OperandType;
+
+#define OP0             (0)
+#define OP1(x)          (((x) << ShiftOperand0) | OP0)
+#define OP2(x, y)       (((y) << ShiftOperand1) | OP1(x))
+#define OP3(x, y, z)    (((z) << ShiftOperand2) | OP2(x, y))
+#define OP4(x, y, z, w) (((w) << ShiftOperand3) | OP3(x, y, z))
+
+#define OP1GET(x) (((x) & MaskOperand1) >> ShiftOperand0)
+#define OP2GET(x) (((x) & MaskOperand2) >> ShiftOperand1)
+#define OP3GET(x) (((x) & MaskOperand3) >> ShiftOperand2)
+#define OP4GET(x) (((x) & MaskOperand4) >> ShiftOperand3)
+
+#define OPCOUNT(x) (!!OP1GET(x) + !!OP2GET(x) + !!OP3GET(x) + !!OP4GET(x))
+
+#define LOTYPE(x) ((x) & 0x0F)
+#define HITYPE(x) ((x) & 0xF0)
+
+#define HASMODRM(x) ((HITYPE(x) == E) || (HITYPE(x) == G) || (HITYPE(x) == M))
 
 #endif /* __OPERANDTYPE_H__ */

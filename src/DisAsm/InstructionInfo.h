@@ -27,7 +27,7 @@ typedef struct InstructionInfo_t
 	ModRMu ModRM;
 	uint8_t SIB;
 	uint8_t nOperands;
-	Operand operands[3];
+	Operand operands[4];
 	uint32_t disp;
 	uint32_t imm;
 	uint8_t nPrefixes;
