@@ -268,6 +268,16 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	OperandType LoType = LOTYPE(pOperand->type);
 	switch (HiType)
 	{
+	case Reg:
+		if (pOperand->value.reg & rRegister)
+		{
+			pOperand->value.reg = (pOperand->value.reg & ~rRegister) | Reg32;
+		}
+		if (pOperand->value.reg & eRegister)
+		{
+			pOperand->value.reg = (pOperand->value.reg & ~eRegister) | Reg32;
+		}
+		break;
 	case E:
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.RM;
