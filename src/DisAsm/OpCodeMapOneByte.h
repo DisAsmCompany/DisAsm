@@ -27,9 +27,9 @@
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X   X     8
 9 X               9                 9
-A X X X X         A                 A
+A X X X X X X X X A X X X X X X X X A
 B                 B X X X X X X X X B
-C     X       X X C   X             C
+C X X X       X X C   X             C
 D X X X X         D                 D
 E                 E X X   X         E
 F X   X X     X X F               X F
@@ -79,15 +79,15 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 98h - 9Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* A0h - A7h */
-	{MOV, 2, Reg, AL, Ob, 0}, {MOV, 2, Reg, rAX, Ov, 0}, {MOV, 2, Ob, 0, Reg, AL}, {MOV, 2, Ov, 0, Reg, rAX}, {DB}, {DB}, {DB}, {DB},
+	{MOV, 2, Reg, AL, Ob, 0}, {MOV, 2, Reg, rAX, Ov, 0}, {MOV, 2, Ob, 0, Reg, AL}, {MOV, 2, Ov, 0, Reg, rAX}, {MOVS, 2, Yb, 0, Xb, 0}, {MOVS, 2, Yv, 0, Xv, 0}, {CMPS, 2, Yb, 0, Xb, 0}, {CMPS, 2, Yv, 0, Xv, 0},
 	/* A8h - AFh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{TEST, 2, Reg, AL, Ib, 0}, {TEST, 2, Reg, rAX, Iz, 0}, {STOS, 2, Yb, 0, Reg, AL}, {STOS, 2, Yv, 0, Reg, rAX}, {LODS, 2, Reg, AL, Xb, 0}, {LODS, 2, Reg, rAX, Xv, 0}, {SCAS, 2, Reg, AL, Yb, 0}, {SCAS, 2, Reg, rAX, Xv, 0},
 	/* B0h - B7h */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* B8h - BFh */
 	{MOV, 2, Reg, rAX, Iv, 0}, {MOV, 2, Reg, rCX, Iv, 0}, {MOV, 2, Reg, rBX, Iv, 0}, {MOV, 2, Reg, rDX, Iv, 0}, {MOV, 2, Reg, rSP, Iv, 0}, {MOV, 2, Reg, rBP, Iv, 0}, {MOV, 2, Reg, rSI, Iv, 0}, {MOV, 2, Reg, rDI, Iv, 0},
 	/* C0h - C7h */
-	{DB}, {DB}, {RET, 1, Iw, 0}, {RET}, {DB}, {DB}, {GROUP11, 2, Eb, 0, Ib, 0}, {GROUP11, 2, Ev, 0, Iv, 0},
+	{GROUP2, 2, Eb, 0, Ib, 0}, {GROUP2, 2, Ev, 0, Ib, 0}, {RET, 1, Iw, 0}, {RET}, {DB}, {DB}, {GROUP11, 2, Eb, 0, Ib, 0}, {GROUP11, 2, Ev, 0, Iv, 0},
 	/* C8h - CFh */
 	{DB}, {LEAVE}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* D0h - D7h */

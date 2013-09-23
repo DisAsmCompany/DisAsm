@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../DisAsm/DisAsm"
 #include "Executable"
 
@@ -219,5 +220,5 @@ uint8_t * ExecutableGetNextFunction(HEXECUTABLE hExecutable)
 	{
 		ptr = ptr + pContext->buffer;
 	}
-	return ptr;
+	return (uint8_t*)ptr;
 }

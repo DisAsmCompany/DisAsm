@@ -56,6 +56,36 @@ _ENUM_ELEMENT(MUL)    /* Unsigned Multiply */
 _ENUM_ELEMENT(IMUL)   /* Signed Multiply */
 _ENUM_ELEMENT(DIV)    /* Unsigned Divide */
 _ENUM_ELEMENT(IDIV)   /* Signed Divide */
+/* Move String to String */
+_ENUM_ELEMENT(MOVS)   /* Move String to String */
+_ENUM_ELEMENT(MOVSB)  /* Move String to String */
+_ENUM_ELEMENT(MOVSW)  /* Move String to String */
+_ENUM_ELEMENT(MOVSD)  /* Move String to String */
+_ENUM_ELEMENT(MOVSQ)  /* Move String to String */
+/* Compare String Operands */
+_ENUM_ELEMENT(CMPS)   /* Compare String Operands */
+_ENUM_ELEMENT(CMPSB)  /* Compare String Operands */
+_ENUM_ELEMENT(CMPSW)  /* Compare String Operands */
+_ENUM_ELEMENT(CMPSD)  /* Compare String Operands */
+_ENUM_ELEMENT(CMPSQ)  /* Compare String Operands */
+/* Store String */
+_ENUM_ELEMENT(STOS)   /* Store String */
+_ENUM_ELEMENT(STOSB)  /* Store String */
+_ENUM_ELEMENT(STOSW)  /* Store String */
+_ENUM_ELEMENT(STOSD)  /* Store String */
+_ENUM_ELEMENT(STOSQ)  /* Store String */
+/* Load String */
+_ENUM_ELEMENT(LODS)   /* Load String */
+_ENUM_ELEMENT(LODSB)  /* Load String */
+_ENUM_ELEMENT(LODSW)  /* Load String */
+_ENUM_ELEMENT(LODSD)  /* Load String */
+_ENUM_ELEMENT(LODSQ)  /* Load String */
+/* Scan String */
+_ENUM_ELEMENT(SCAS)   /* Scan String */
+_ENUM_ELEMENT(SCASB)  /* Scan String */
+_ENUM_ELEMENT(SCASW)  /* Scan String */
+_ENUM_ELEMENT(SCASD)  /* Scan String */
+_ENUM_ELEMENT(SCASQ)  /* Scan String */
 /* Rotate and Shift */
 _ENUM_ELEMENT(ROL)    /* Rotate Left */
 _ENUM_ELEMENT(ROR)    /* Rotate Right */

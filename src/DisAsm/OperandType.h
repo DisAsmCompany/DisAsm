@@ -22,6 +22,8 @@ typedef enum OperandType_t
 	J = 0x08, /* relative offset */
 	M = 0x10, /* instruction has ModR/M byte, but it may refer to memory only */
 	O = 0x20, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
+	X = 0x40, /* Memory addressed by the DS:rSI register pair */
+	Y = 0x80, /* Memory addressed by the ES:rDI register pair */
 
 	b = 0x0100, /* byte, regardless of operand size attribute*/
 	v = 0x0200, /* word, double-word or quad-word, depending on operand-size attribute */
@@ -64,6 +66,18 @@ typedef enum OperandType_t
 	Oz = O | z,
 	Op = O | p,
 	Ow = O | w,
+
+	Xb = X | b,
+	Xv = X | v,
+	Xz = X | z,
+	Xp = X | p,
+	Xw = X | w,
+
+	Yb = Y | b,
+	Yv = Y | v,
+	Yz = Y | z,
+	Yp = Y | p,
+	Yw = Y | w,
 
 	MaskModRM = E | G,
 	MaskImmediate = I | J | O,
