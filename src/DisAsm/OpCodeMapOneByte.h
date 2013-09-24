@@ -26,9 +26,9 @@
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X   X     8
-9 X               9 X X   X     X X 9
+9 X X X X X X X X 9 X X   X     X X 9
 A X X X X X X X X A X X X X X X X X A
-B                 B X X X X X X X X B
+B X X X X X X X X B X X X X X X X X B
 C X X X       X X C   X X X         C
 D X X X X         D                 D
 E X X X           E X X   X         E
@@ -75,7 +75,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 88h - 8Fh */
 	{MOV, OP2(Eb, Gb)}, {MOV, OP2(Ev, Gv)}, {MOV, OP2(Gb, Eb)}, {MOV, OP2(Gv, Ev)}, {DB}, {LEA, OP2(Gv, M)}, {DB}, {DB},
 	/* 90h - 97h */
-	{NOP}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{NOP}, {XCHG, OP2(Reg, Reg), rCX, rAX}, {XCHG, OP2(Reg, Reg), rDX, rAX}, {XCHG, OP2(Reg, Reg), rBX, rAX}, {XCHG, OP2(Reg, Reg), rSP, rAX}, {XCHG, OP2(Reg, Reg), rBP, rAX}, {XCHG, OP2(Reg, Reg), rSI, rAX}, {XCHG, OP2(Reg, Reg), rDI, rAX},
 	/* 98h - 9Fh */
 	{CBW}, {CWD}, {DB}, {WAIT}, {DB}, {DB}, {SAHF}, {LAHF},
 	/* A0h - A7h */
@@ -83,7 +83,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* A8h - AFh */
 	{TEST, OP2(Reg, Ib), AL}, {TEST, OP2(Reg, Iz), rAX}, {STOS, OP2(Yb, Reg), 0, AL}, {STOS, OP2(Yv, Reg), 0, rAX}, {LODS, OP2(Reg, Xb), AL}, {LODS, OP2(Reg, Xv), rAX}, {SCAS, OP2(Reg, Yb), AL}, {SCAS, OP2(Reg, Xv), rAX},
 	/* B0h - B7h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{MOV, OP2(Reg, Ib), AL}, {MOV, OP2(Reg, Ib), CL}, {MOV, OP2(Reg, Ib), DL}, {MOV, OP2(Reg, Ib), BL}, {MOV, OP2(Reg, Ib), AH}, {MOV, OP2(Reg, Ib), CH}, {MOV, OP2(Reg, Ib), DH}, {MOV, OP2(Reg, Ib), BH},
 	/* B8h - BFh */
 	{MOV, OP2(Reg, Iv), rAX}, {MOV, OP2(Reg, Iv), rCX}, {MOV, OP2(Reg, Iv), rBX}, {MOV, OP2(Reg, Iv), rDX}, {MOV, OP2(Reg, Iv), rSP}, {MOV, OP2(Reg, Iv), rBP}, {MOV, OP2(Reg, Iv), rSI}, {MOV, OP2(Reg, Iv), rDI},
 	/* C0h - C7h */
