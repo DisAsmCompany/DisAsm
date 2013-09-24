@@ -23,6 +23,10 @@ typedef struct Operand_t
 {
 	OperandType type;
 	uOperand value;
+	uint8_t memory;
+	uint8_t scale;
+	uint8_t hasBase;
+	Register base;
 }
 Operand;
 
