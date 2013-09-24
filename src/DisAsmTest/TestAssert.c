@@ -9,6 +9,8 @@
 *
 */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "TestAssert.h"
 
 void TestAssert(int expression)

@@ -14,6 +14,7 @@
 #include "OpCode.h"
 #include "StrEnum.h"
 #include "ModRM.h"
+#include "SIB.h"
 #include "Register.h"
 #include "OperandType.h"
 #include "Mnemonic.h"

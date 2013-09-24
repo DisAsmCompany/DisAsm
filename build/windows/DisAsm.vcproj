@@ -152,6 +152,10 @@
 				RelativePath="..\..\src\DisAsm\DisAsm.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\GroupDecode.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -182,6 +186,14 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\DisAsm.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\DisAsmContext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\GroupDecode.h"
 				>
 			</File>
 			<File
@@ -238,6 +250,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\Register.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\SIB.h"
 				>
 			</File>
 			<File

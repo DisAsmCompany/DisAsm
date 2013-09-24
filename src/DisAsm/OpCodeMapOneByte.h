@@ -26,12 +26,12 @@
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X   X     8
-9 X               9             X X 9
+9 X               9 X X   X     X X 9
 A X X X X X X X X A X X X X X X X X A
 B                 B X X X X X X X X B
-C X X X       X X C   X             C
+C X X X       X X C   X X X         C
 D X X X X         D                 D
-E                 E X X   X         E
+E X X X           E X X   X         E
 F X   X X X X X X F X X X X X X   X F
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
@@ -77,7 +77,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 90h - 97h */
 	{NOP}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 98h - 9Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {SAHF}, {LAHF},
+	{CBW}, {CWD}, {DB}, {WAIT}, {DB}, {DB}, {SAHF}, {LAHF},
 	/* A0h - A7h */
 	{MOV, OP2(Reg, Ob), AL}, {MOV, OP2(Reg, Ov), rAX}, {MOV, OP2(Reg, Ob), AL}, {MOV, OP2(Ov, Reg), 0, rAX}, {MOVS, OP2(Yb, Xb)}, {MOVS, OP2(Yv, Xv)}, {CMPS, OP2(Yb, Xb)}, {CMPS, OP2(Yv, Xv)},
 	/* A8h - AFh */
@@ -89,13 +89,13 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* C0h - C7h */
 	{GROUP2, OP2(Eb, Ib)}, {GROUP2, OP2(Ev, Ib)}, {RET, OP1(Iw)}, {RET}, {DB}, {DB}, {GROUP11, OP2(Eb, Ib)}, {GROUP11, OP2(Ev, Iv)},
 	/* C8h - CFh */
-	{DB}, {LEAVE}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {LEAVE}, {RET, OP1(Iw)}, {RET}, {DB}, {DB}, {DB}, {DB},
 	/* D0h - D7h */
 	{GROUP2, OP2(Eb, Ib), 0, 1}, {GROUP2, OP2(Ev, Ib), 0, 1}, {GROUP2, OP2(Eb, Reg), 0, CL}, {GROUP2, OP2(Ev, Reg), 0, CL}, {DB}, {DB}, {DB}, {DB},
 	/* D8h - DFh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* E0h - E7h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{LOOPNE, OP1(Jb)}, {LOOPE, OP1(Jb)}, {LOOP, OP1(Jb)}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* E8h - EFh */
 	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {DB}, {JMP, OP1(Jb)}, {DB}, {DB}, {DB}, {DB},
 	/* F0h - F7h */

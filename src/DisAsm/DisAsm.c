@@ -14,14 +14,8 @@
 
 #include "DisAsm"
 #include "OpCodeMap.h"
-
-typedef struct DisAsmContext_t
-{
-	uint8_t * buffer;
-	uint8_t length;
-	uint8_t size;
-}
-DisAsmContext;
+#include "DisAsmContext.h"
+#include "GroupDecode.h"
 
 HDISASM DisAsmCreate()
 {
@@ -177,91 +171,6 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	return element;
 }
 
-void GROUP1Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
-{
-	switch (pInfo->ModRM.fields.Reg)
-	{
-	case 0: pInfo->mnemonic = ADD; break;
-	case 1: pInfo->mnemonic = OR;  break;
-	case 2: pInfo->mnemonic = ADC; break;
-	case 3: pInfo->mnemonic = SBB; break;
-	case 4: pInfo->mnemonic = AND; break;
-	case 5: pInfo->mnemonic = SUB; break;
-	case 6: pInfo->mnemonic = XOR; break;
-	case 7: pInfo->mnemonic = CMP; break;
-	default: break;
-	}
-}
-
-void GROUP2Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
-{
-	switch (pInfo->ModRM.fields.Reg)
-	{
-	case 0: pInfo->mnemonic = ROL; break;
-	case 1: pInfo->mnemonic = ROR; break;
-	case 2: pInfo->mnemonic = RCL; break;
-	case 3: pInfo->mnemonic = RCR; break;
-	case 4: pInfo->mnemonic = SHL; break;
-	case 5: pInfo->mnemonic = SHR; break;
-	case 6: pInfo->mnemonic = SAL; break;
-	case 7: pInfo->mnemonic = SAR; break;
-	default: break;
-	}
-}
-
-void GROUP3Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
-{
-	switch (pInfo->ModRM.fields.Reg)
-	{
-	case 0:
-	case 1:
-		pInfo->mnemonic = TEST;
-		pInfo->nOperands = 2;
-		pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
-		break;
-	case 2: pInfo->mnemonic = NOT;  break;
-	case 3: pInfo->mnemonic = NEG;  break;
-	case 4: pInfo->mnemonic = MUL;  break;
-	case 5: pInfo->mnemonic = IMUL; break;
-	case 6: pInfo->mnemonic = DIV;  break;
-	case 7: pInfo->mnemonic = IDIV; break;
-	default: break;
-	}
-}
-
-void GROUP5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
-{
-	pInfo->nOperands = 1;
-	switch (pInfo->ModRM.fields.Reg)
-	{
-	case 0: pInfo->mnemonic = INC;  pInfo->operands[0].type = Ev; break;
-	case 1: pInfo->mnemonic = DEC;  pInfo->operands[0].type = Ev; break;
-	case 2: pInfo->mnemonic = CALL; pInfo->operands[0].type = Ev; break;
-	case 3: pInfo->mnemonic = CALL; pInfo->operands[0].type = Mp; break;
-	case 4: pInfo->mnemonic = JMP;  pInfo->operands[0].type = Ev; break;
-	case 5: pInfo->mnemonic = JMP;  pInfo->operands[0].type = Mp; break;
-	case 6: pInfo->mnemonic = PUSH; pInfo->operands[0].type = Ev; break;
-	case 7: break;
-	default: break;
-	}
-}
-
-void GROUP11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
-{
-	switch (pInfo->ModRM.fields.Reg)
-	{
-	case 0: pInfo->mnemonic = MOV; break;
-	case 1: break;
-	case 2: break;
-	case 3: break;
-	case 4: break;
-	case 5: break;
-	case 6: break;
-	case 7: break;
-	default: break;
-	}
-}
-
 void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
 {
 	OperandType HiType = HITYPE(pOperand->type);
@@ -367,7 +276,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 	pElement = ChooseOpCode(pContext, pInfo);
 	if (NULL == pElement || DB == pElement->mnemonic)
 	{
-		__asm int 3;
+		//__asm int 3;
 		return 0;
 	}
 	pInfo->mnemonic = pElement->mnemonic;
@@ -398,15 +307,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 		pInfo->ModRM.value = Fetch1(pContext);
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
-		switch (pInfo->mnemonic)
-		{
-		case GROUP1 : GROUP1Decode (pContext, pInfo); break;
-		case GROUP2 : GROUP2Decode (pContext, pInfo); break;
-		case GROUP3 : GROUP3Decode (pContext, pInfo); break;
-		case GROUP5 : GROUP5Decode (pContext, pInfo); break;
-		case GROUP11: GROUP11Decode(pContext, pInfo); break;
-		default: break;
-		}
+		GroupDecode(pContext, pInfo);
 
 		switch (pInfo->ModRM.fields.Mod)
 		{
@@ -429,7 +330,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 
 		if (pInfo->hasSIB)
 		{
-			pInfo->SIB = Fetch1(pContext);
+			pInfo->SIB.value = Fetch1(pContext);
 		}
 	}
 	for (i = 0; i < pInfo->nOperands; ++i)
@@ -438,8 +339,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 	}
 	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo->sizeDisp) : 0;
 	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo->sizeImm)  : 0;
-	pInfo->length = pContext->length;
-	return pInfo->length;
+	return pInfo->length = pContext->length;
 }
 
 /* for tests */

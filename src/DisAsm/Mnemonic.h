@@ -63,6 +63,20 @@ _ENUM_ELEMENT(POPA)   /* Pop all General-Purpose Registers */
 _ENUM_ELEMENT(POPAD)  /* Pop all General-Purpose Registers */
 _ENUM_ELEMENT(SAHF)   /* Store AL into Flags */
 _ENUM_ELEMENT(LAHF)   /* Load Flags into AL */
+_ENUM_ELEMENT(CBW)    /* Convert Byte to Word */
+_ENUM_ELEMENT(CWDE)   /* Convert Word to Double Word */
+_ENUM_ELEMENT(CDQE)   /* Convert Double Word to Quad Word */
+_ENUM_ELEMENT(CWD)    /* Convert Word to Double Word */
+_ENUM_ELEMENT(CDQ)    /* Convert Double Word to Quad Word */
+_ENUM_ELEMENT(CQO)    /* Convert Double Word to Quad Word */
+_ENUM_ELEMENT(WAIT)   /* Wait */
+_ENUM_ELEMENT(FWAIT)  /* Wait */
+/* Loop */
+_ENUM_ELEMENT(LOOP)    /* Loop */
+_ENUM_ELEMENT(LOOPE)   /* Loop if Equal */
+_ENUM_ELEMENT(LOOPZ)   /* Loop if Zero (same as LOOPE) */
+_ENUM_ELEMENT(LOOPNE)  /* Loop if not Equal */
+_ENUM_ELEMENT(LOOPNZ)  /* Loop if not Zero (same as LOOPNE) */
 /* Move String to String */
 _ENUM_ELEMENT(MOVS)   /* Move String to String */
 _ENUM_ELEMENT(MOVSB)  /* Move String to String */
