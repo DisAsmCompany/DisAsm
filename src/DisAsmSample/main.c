@@ -69,9 +69,13 @@ int main(int argc, char * const argv[])
 	
 	{
 		//HEXECUTABLE hExecutable = ExecutableCreateFromFile("C:\\Windows\\System32\\kernel32.dll");
-		HEXECUTABLE hExecutable = ExecutableCreateFromMemory((uint8_t*)GetModuleHandleA("kernel32.dll"));
-
-		uint8_t * ptr;
+		HMODULE hModule = LoadLibraryA("gdi32.dll");
+		HEXECUTABLE hExecutable = ExecutableCreateFromMemory((uint8_t*)hModule);
+		uint8_t * ptr = NULL;
+		if (!hExecutable)
+		{
+			return EXIT_FAILURE;
+		}
 		for (;;)
 		{
 			ptr = ExecutableGetNextFunction(hExecutable);
@@ -83,6 +87,7 @@ int main(int argc, char * const argv[])
 		}
 
 		ExecutableDestroy(hExecutable);
+		FreeLibrary(hModule);
 	}
 	
 	return EXIT_SUCCESS;

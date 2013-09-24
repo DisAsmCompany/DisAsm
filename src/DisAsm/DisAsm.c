@@ -86,11 +86,18 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			opcode = (opcode << 8) | Fetch1(pContext);
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix 66h */
+				element = &OpCodeMapThreeByte0F38Prefix66[opcode & 0xFF];
 			}
 			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix F2h */
+				element = &OpCodeMapThreeByte0F38PrefixF2[opcode & 0xFF];
+			}
+			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
+			{
+				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix F3h */
+				element = &OpCodeMapThreeByte0F38PrefixF3[opcode & 0xFF];
 			}
 			else
 			{
@@ -102,11 +109,18 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			opcode = (opcode << 8) | Fetch1(pContext);
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix 66h */
+				element = &OpCodeMapThreeByte0F3APrefix66[opcode & 0xFF];
 			}
 			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix F2h */
+				element = &OpCodeMapThreeByte0F3APrefixF2[opcode & 0xFF];
+			}
+			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
+			{
+				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix F3h */
+				element = &OpCodeMapThreeByte0F3APrefixF3[opcode & 0xFF];
 			}
 			else
 			{
@@ -117,11 +131,18 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		default:
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix 66h */
+				element = &OpCodeMapTwoByte0FPrefix66[opcode & 0xFF];
 			}
 			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
 			{
-				__asm int 3;
+				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix F2h */
+				element = &OpCodeMapTwoByte0FPrefixF2[opcode & 0xFF];
+			}
+			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
+			{
+				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix F3h */
+				element = &OpCodeMapTwoByte0FPrefixF3[opcode & 0xFF];
 			}
 			else
 			{

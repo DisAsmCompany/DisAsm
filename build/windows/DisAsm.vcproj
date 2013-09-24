@@ -229,11 +229,47 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F38Prefix66.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F38PrefixF2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F38PrefixF3.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3A.h"
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3APrefix66.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3APrefixF2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapThreeByte0F3APrefixF3.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0F.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0FPrefix66.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0FPrefixF2.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapTwoByte0FPrefixF3.h"
 				>
 			</File>
 			<File

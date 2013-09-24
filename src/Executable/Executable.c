@@ -161,16 +161,20 @@ HEXECUTABLE ExecutableCreateFromFile(const char * name)
 
 HEXECUTABLE ExecutableCreateFromMemory(uint8_t * buffer)
 {
-	ExecutableContext * pContext = (ExecutableContext*) malloc(sizeof(ExecutableContext));
-
-	pContext->memory = 1;
-	pContext->buffer = buffer;
-	pContext->offset = 0;
-	if (NULL == pContext->f)
+	ExecutableContext * pContext = NULL; 
+	if (NULL != buffer)
 	{
-		return 0;
+		pContext = (ExecutableContext*) malloc(sizeof(ExecutableContext));
+
+		pContext->memory = 1;
+		pContext->buffer = buffer;
+		pContext->offset = 0;
+		if (NULL == pContext->f)
+		{
+			return 0;
+		}
+		ExecutableInit(pContext);
 	}
-	ExecutableInit(pContext);
 	return (HEXECUTABLE) pContext;
 }
 
