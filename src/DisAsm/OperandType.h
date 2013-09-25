@@ -27,6 +27,7 @@ each byte describes single operand, if some operand is not present, its type set
 typedef enum OperandType_t
 {
 	Reg = 0xF0, /* operand is register (explicitly specified) */
+	Imm = 0xE0, /* operand is immediate (explicitly specified) */
 	E = 0x10, /* instruction has ModR/M byte, general-purpose register operand is defined in R/M field */
 	G = 0x20, /* instruction has ModR/M byte, general-purpose register operand is defined in Reg field */
 	I = 0x30, /* immediate data */
@@ -35,6 +36,8 @@ typedef enum OperandType_t
 	O = 0x60, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
 	X = 0x70, /* Memory addressed by the DS:rSI register pair */
 	Y = 0x90, /* Memory addressed by the ES:rDI register pair */
+	S = 0xA0, /* instruction has ModR/M byte, segment register operand is defined in Reg field */
+	F = 0xB0, /* FLAGS/EFLAGS/RFLAGS */
 
 	b = 0x01, /* byte, regardless of operand size attribute*/
 	v = 0x02, /* word, double-word or quad-word, depending on operand-size attribute */
@@ -90,6 +93,18 @@ typedef enum OperandType_t
 	Yp = Y | p,
 	Yw = Y | w,
 
+	Sb = S | b,
+	Sv = S | v,
+	Sz = S | z,
+	Sp = S | p,
+	Sw = S | w,
+
+	Fb = F | b,
+	Fv = F | v,
+	Fz = F | z,
+	Fp = F | p,
+	Fw = F | w,
+
 	ShiftOperand0 = 0,
 	ShiftOperand1 = 8,
 	ShiftOperand2 = 16,
@@ -118,6 +133,6 @@ OperandType;
 #define LOTYPE(x) ((x) & 0x0F)
 #define HITYPE(x) ((x) & 0xF0)
 
-#define HASMODRM(x) ((HITYPE(x) == E) || (HITYPE(x) == G) || (HITYPE(x) == M))
+#define HASMODRM(x) ((HITYPE(x) == E) || (HITYPE(x) == G) || (HITYPE(x) == M) || (HITYPE(x) == S))
 
 #endif /* __OPERANDTYPE_H__ */

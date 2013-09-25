@@ -161,12 +161,12 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case LOCK:
 		case REPNE:
 		case REP:
-		case CS:
-		case SS:
-		case DS:
-		case ES:
-		case FS:
-		case GS:
+		case PrefixCS:
+		case PrefixSS:
+		case PrefixDS:
+		case PrefixES:
+		case PrefixFS:
+		case PrefixGS:
 		case OperandSize:
 		case AddressSize:
 			if (pInfo->nPrefixes < MAX_PREFIXES)
@@ -208,6 +208,11 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->value.reg = (pOperand->value.reg & ~eRegister) | Reg32;
 		}
+		break;
+	case S:
+		pOperand->type = Reg;
+		pOperand->memory = 0;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg | RegSeg;
 		break;
 	case E:
 		pOperand->type = Reg;

@@ -14,11 +14,14 @@
 
 _ENUM_START(Mnemonic)
 _ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
+_ENUM_ELEMENT(ESCAPEX87) /* Escape to CoProcessor Instruction Set */
 _ENUM_ELEMENT(DB)     /* Data Binary (not decoded instruction) */
 _ENUM_ELEMENT(DAA)    /* Decimal Adjust AL after Addition */
 _ENUM_ELEMENT(AAA)    /* ASCII Adjust AL after Addition */
 _ENUM_ELEMENT(DAS)    /* Decimal Adjust AL after Subtraction */
 _ENUM_ELEMENT(AAS)    /* ASCII Adjust AL after Subtraction */
+_ENUM_ELEMENT(AAM)    /* ASCII Adjust AX after Multiply */
+_ENUM_ELEMENT(AAD)    /* ASCII Adjust AX before Division */
 _ENUM_ELEMENT(HLT)    /* Halt */
 _ENUM_ELEMENT(CMC)    /* Complement Carry Flag */
 _ENUM_ELEMENT(NOP)    /* No Operation */
@@ -49,7 +52,12 @@ _ENUM_ELEMENT(XCHG)   /* Exchange Register/Memory with Register */
 _ENUM_ELEMENT(CPUID)  /* CPU Identification */
 _ENUM_ELEMENT(UD2)    /* Undefined Instruction */
 _ENUM_ELEMENT(RET)    /* Return from Procedure */
+_ENUM_ELEMENT(ENTER)  /* Make Stack Frame for Procedure Parameters */
 _ENUM_ELEMENT(LEAVE)  /* High Level Procedure Exit */
+_ENUM_ELEMENT(_INT)   /* Call to Interrupt Procedure */
+_ENUM_ELEMENT(INTO)   /* Call to Interrupt Procedure */
+_ENUM_ELEMENT(IRET)   /* Interrupt Return */
+_ENUM_ELEMENT(IRETD)  /* Interrupt Return */
 _ENUM_ELEMENT(LEA)    /* Load Effective Address */
 _ENUM_ELEMENT(NOT)    /* One's Complement Negotiation */
 _ENUM_ELEMENT(NEG)    /* Two's Complement Negotiation */
@@ -59,8 +67,14 @@ _ENUM_ELEMENT(DIV)    /* Unsigned Divide */
 _ENUM_ELEMENT(IDIV)   /* Signed Divide */
 _ENUM_ELEMENT(PUSHA)  /* Push all General-Purpose Registers */
 _ENUM_ELEMENT(PUSHAD) /* Push all General-Purpose Registers */
+_ENUM_ELEMENT(PUSHF)  /* Push FLAHS Register onto Stack */
+_ENUM_ELEMENT(PUSHFD) /* Push EFLAHS Register onto Stack */
+_ENUM_ELEMENT(PUSHFQ) /* Push RFLAHS Register onto Stack */
 _ENUM_ELEMENT(POPA)   /* Pop all General-Purpose Registers */
 _ENUM_ELEMENT(POPAD)  /* Pop all General-Purpose Registers */
+_ENUM_ELEMENT(POPF)   /* Pop Stack into FLAGS Register */
+_ENUM_ELEMENT(POPFD)  /* Pop Stack into EFLAGS Register */
+_ENUM_ELEMENT(POPFQ)  /* Pop Stack into RFLAGS Register */
 _ENUM_ELEMENT(SAHF)   /* Store AL into Flags */
 _ENUM_ELEMENT(LAHF)   /* Load Flags into AL */
 _ENUM_ELEMENT(CBW)    /* Convert Byte to Word */
@@ -71,6 +85,32 @@ _ENUM_ELEMENT(CDQ)    /* Convert Double Word to Quad Word */
 _ENUM_ELEMENT(CQO)    /* Convert Double Word to Quad Word */
 _ENUM_ELEMENT(WAIT)   /* Wait */
 _ENUM_ELEMENT(FWAIT)  /* Wait */
+_ENUM_ELEMENT(XADD)   /* Exchange and Add */
+_ENUM_ELEMENT(CMPXCHG)/* Compare and Exchange */
+_ENUM_ELEMENT(SACL)   /* [Undocumented] Set AL on Carry */
+_ENUM_ELEMENT(XLAT)   /* Table Look-Up Translation */
+_ENUM_ELEMENT(XLATB)  /* Table Look-Up Translation */
+/* Port */
+_ENUM_ELEMENT(_IN)    /* Input from Port */
+_ENUM_ELEMENT(INS)    /* Input from Port to String */
+_ENUM_ELEMENT(INSB)   /* Input from Port to String */
+_ENUM_ELEMENT(INSW)   /* Input from Port to String */
+_ENUM_ELEMENT(INSD)   /* Input from Port to String */
+_ENUM_ELEMENT(_OUT)   /* Output to Port */
+_ENUM_ELEMENT(OUTS)   /* Output String to Port */
+_ENUM_ELEMENT(OUTSB)  /* Output String to Port */
+_ENUM_ELEMENT(OUTSW)  /* Output String to Port */
+_ENUM_ELEMENT(OUTSD)  /* Output String to Port */
+/* System Call */
+_ENUM_ELEMENT(SYSCALL)  /* Fast System Call */
+_ENUM_ELEMENT(SYSRET)   /* Fast Return from Fast System Call */
+_ENUM_ELEMENT(SYSENTER) /* Fast System Call */
+_ENUM_ELEMENT(SYSEXIT)  /* Fast Return from Fast System Call */
+_ENUM_ELEMENT(CLTS)     /* Clear Task-Switched Flag in CR0 */
+_ENUM_ELEMENT(WRMSR)    /* Write to Model-Specific Register */
+_ENUM_ELEMENT(RDMSR)    /* Read from Model-Specific Register */
+_ENUM_ELEMENT(RDTSC)    /* Read Time-Stamp Counter */
+_ENUM_ELEMENT(RDPMC)    /* Read Performance-Monitoring Counters */
 /* Loop */
 _ENUM_ELEMENT(LOOP)    /* Loop */
 _ENUM_ELEMENT(LOOPE)   /* Loop if Equal */
@@ -227,18 +267,18 @@ _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
 _ENUM_ELEMENT(GROUPP)
 /* prefixes */
-_ENUM_ELEMENT(LOCK)    /* Assert #LOCK Signal Prefix */
-_ENUM_ELEMENT(REPNE)   /* Repeat String Operation Prefix */
-_ENUM_ELEMENT(REPNZ)   /* Repeat String Operation Prefix (same as REPNE) */
-_ENUM_ELEMENT(REP)     /* Repeat String Operation Prefix */
-_ENUM_ELEMENT(REPE)    /* Repeat String Operation Prefix (same as REP) */
-_ENUM_ELEMENT(REPZ)    /* Repeat String Operation Prefix (same as REPZ) */
-_ENUM_ELEMENT(CS)      /* CS Segment Override Prefix */
-_ENUM_ELEMENT(SS)      /* SS Segment Override Prefix */
-_ENUM_ELEMENT(DS)      /* DS Segment Override Prefix */
-_ENUM_ELEMENT(ES)      /* ES Segment Override Prefix */
-_ENUM_ELEMENT(FS)      /* FS Segment Override Prefix */
-_ENUM_ELEMENT(GS)      /* GS Segment Override Prefix */
+_ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
+_ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */
+_ENUM_ELEMENT(REPNZ)       /* Repeat String Operation Prefix (same as REPNE) */
+_ENUM_ELEMENT(REP)         /* Repeat String Operation Prefix */
+_ENUM_ELEMENT(REPE)        /* Repeat String Operation Prefix (same as REP) */
+_ENUM_ELEMENT(REPZ)        /* Repeat String Operation Prefix (same as REPZ) */
+_ENUM_ELEMENT(PrefixCS)    /* CS Segment Override Prefix */
+_ENUM_ELEMENT(PrefixSS)    /* SS Segment Override Prefix */
+_ENUM_ELEMENT(PrefixDS)    /* DS Segment Override Prefix */
+_ENUM_ELEMENT(PrefixES)    /* ES Segment Override Prefix */
+_ENUM_ELEMENT(PrefixFS)    /* FS Segment Override Prefix */
+_ENUM_ELEMENT(PrefixGS)    /* GS Segment Override Prefix */
 _ENUM_ELEMENT(OperandSize)
 _ENUM_ELEMENT(AddressSize)
 _ENUM_STOP(Mnemonic)

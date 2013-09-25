@@ -16,10 +16,10 @@
 
 /* 
   0 1 2 3 4 5 6 7   8 9 A B C D E F
-0                 0       X         0
+0           X X X 0       X         0
 1                 1                 1
 2                 2                 2
-3                 3 X   X           3
+3 X X X X X X     3 X   X           3
 4 X X X X X X X X 4 X X X X X X X X 4
 5                 5                 5
 6                 6                 6
@@ -27,9 +27,9 @@
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X X X X X 8
 9 X X X X X X X X 9 X X X X X X X X 9
-A     X           A                 A
-B             X X B                 B
-C                 C                 C
+A X X X           A X X           X A
+B X X         X X B                 B
+C X X             C                 C
 D                 D                 D
 E                 E                 E
 F                 F                 F
@@ -39,7 +39,7 @@ F                 F                 F
 OpCodeMapElement OpCodeMapTwoByte0F[] =
 {
 	/* 0F00h - 0F07h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {SYSCALL}, {CLTS}, {SYSRET},
 	/* 0F08h - 0F0Fh */
 	{DB}, {DB}, {DB}, {UD2}, {DB}, {DB}, {DB}, {DB},
 	/* 0F10h - 0F17h */
@@ -51,7 +51,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F28h - 0F2Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F30h - 0F37h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{WRMSR}, {RDTSC}, {RDMSR}, {RDPMC}, {SYSENTER}, {SYSEXIT}, {DB}, {DB},
 	/* 0F38h - 0F3Fh */
 	{ESCAPE}, {DB}, {ESCAPE}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F40h - 0F47h */
@@ -79,15 +79,15 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F98h - 0F9Fh */
 	{SETS, OP1(Jz)}, {SETNS, OP1(Jz)}, {SETP, OP1(Jz)}, {SETNP, OP1(Jz)}, {SETL, OP1(Jz)}, {SETNL, OP1(Jz)}, {SETLE, OP1(Jz)}, {SETNLE, OP1(Jz)},
 	/* 0FA0h - 0FA7h */
-	{DB}, {DB}, {CPUID}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PUSH, OP1(Reg), FS}, {POP, OP1(Reg), FS}, {CPUID}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FA8h - 0FAFh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PUSH, OP1(Reg), GS}, {POP, OP1(Reg), GS}, {DB}, {DB}, {DB}, {DB}, {DB}, {IMUL, OP2(Gv, Ev)},
 	/* 0FB0h - 0FB7h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVZX, OP2(Gv, Eb)}, {MOVZX, OP2(Gv, Ew)},
+	{CMPXCHG, OP2(Eb, Gb)}, {CMPXCHG, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {MOVZX, OP2(Gv, Eb)}, {MOVZX, OP2(Gv, Ew)},
 	/* 0FB8h - 0FBFh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC0h - 0FC7h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC8h - 0FCFh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FD0h - 0FD7h */

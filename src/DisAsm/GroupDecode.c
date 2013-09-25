@@ -64,6 +64,24 @@ void Group3Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+void Group4Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	pInfo->nOperands = 1;
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pInfo->mnemonic = INC;  pInfo->operands[0].type = Eb; break;
+	case 1: pInfo->mnemonic = DEC;  pInfo->operands[0].type = Eb; break;
+	case 2: break;
+	case 3: break;
+	case 4: break;
+	case 5: break;
+	case 6: break;
+	case 7: break;
+	default: break;
+	}
+}
+
+
 void Group5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	pInfo->nOperands = 1;
@@ -106,6 +124,7 @@ void GroupDecode(HDISASM hDisAsm, InstructionInfo * pInfo)
 	case GROUP1 : Group1Decode (pContext, pInfo); break;
 	case GROUP2 : Group2Decode (pContext, pInfo); break;
 	case GROUP3 : Group3Decode (pContext, pInfo); break;
+	case GROUP4 : Group4Decode (pContext, pInfo); break;
 	case GROUP5 : Group5Decode (pContext, pInfo); break;
 	case GROUP11: Group11Decode(pContext, pInfo); break;
 	default: break;
