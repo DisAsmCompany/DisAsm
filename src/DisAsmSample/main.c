@@ -19,21 +19,20 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void DisAsmFunction(uint8_t * buffer)
+void DisAsmFunction(HREADER hReader, uint32_t address)
 {
 	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	while (1)
 	{
-		length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
+		length = DisAsmInstructionDecode(hDisAsm, hReader, &info);
 		if (0 == length)
 		{
 			break;
 		}
 		{
 			uint8_t i;
-			uint32_t address = (uint32_t) buffer;
 			for (i = 0; i < 4; ++i)
 			{
 				uint8_t value = (address >> (3 - i) * 8) & 0xFF;
@@ -41,19 +40,8 @@ void DisAsmFunction(uint8_t * buffer)
 			}
 			printf(" ");
 		}
-		{
-			uint8_t i;
-			for (i = 0; i < length; ++i)
-			{
-				printf("%X%X ", buffer[i] >> 4, buffer[i] & 0x0F);
-			}
-			for (i = length; i < 15; ++i)
-			{
-				printf("   ");
-			}
-		}
 		StrAsmPrintInstruction(&info);
-		buffer += length;
+		address += length;
 
 		if (RET == info.mnemonic)
 		{
@@ -65,30 +53,30 @@ void DisAsmFunction(uint8_t * buffer)
 
 int main(int argc, char * const argv[])
 {
-	/* let's dissasemble GetVersionEx() API from kernel32.dll */
-	
 	{
-		//HEXECUTABLE hExecutable = ExecutableCreateFromFile("C:\\Windows\\System32\\kernel32.dll");
-		HMODULE hModule = LoadLibraryA("gdi32.dll");
-		HEXECUTABLE hExecutable = ExecutableCreateFromMemory((uint8_t*)hModule);
-		uint8_t * ptr = NULL;
+		uint32_t base = 0;
+		HREADER hReader = FileReaderCreate("C:\\Windows\\System32\\kernel32.dll");
+		//uint32_t module = LoadLibraryA("kernel32.dll");
+		//HREADER hReader = MemoryReaderCreate(module, 0);
+		HEXECUTABLE hExecutable = ExecutableCreate(hReader, 0);
+		uint32_t address = 0;
 		if (!hExecutable)
 		{
 			return EXIT_FAILURE;
 		}
 		for (;;)
 		{
-			ptr = ExecutableGetNextFunction(hExecutable);
-			if (NULL == ptr)
+			address = ExecutableGetNextFunction(hExecutable);
+			if (0 == address)
 			{
 				break;
 			}
-			DisAsmFunction(ptr);
+			ReaderSeek(hReader, address);
+			DisAsmFunction(hReader, address + base);
 		}
 
 		ExecutableDestroy(hExecutable);
-		FreeLibrary(hModule);
+		ReaderDestroy(hReader);
 	}
-	
 	return EXIT_SUCCESS;
 }

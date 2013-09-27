@@ -15,9 +15,8 @@
 
 typedef void * HEXECUTABLE;
 
-HEXECUTABLE ExecutableCreateFromFile(const char * name);
-HEXECUTABLE ExecutableCreateFromMemory(uint8_t * buffer);
+HEXECUTABLE ExecutableCreate(HREADER hReader, int memory);
 void ExecutableDestroy(HEXECUTABLE hExecutable);
-uint8_t * ExecutableGetNextFunction(HEXECUTABLE hExecutable);
+uint32_t ExecutableGetNextFunction(HEXECUTABLE hExecutable);
 
 #endif /* __EXECUTABLE_H__ */

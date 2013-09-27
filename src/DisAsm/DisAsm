@@ -11,6 +11,9 @@
 
 #include "SupportInt.h"
 #include "SupportBool.h"
+#include "Reader.h"
+#include "MemoryReader.h"
+#include "FileReader.h"
 #include "OpCode.h"
 #include "StrEnum.h"
 #include "ModRM.h"

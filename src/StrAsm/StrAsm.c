@@ -103,6 +103,10 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	{
 		PrintValue(pInfo->imm);
 	}
+	if (HITYPE(pOperand->type) == Imm)
+	{
+		PrintValue(pInfo->imm);
+	}
 	if (HITYPE(pOperand->type) == I)
 	{
 		if (IsNegative(pInfo->imm, pInfo->sizeImm))
@@ -119,24 +123,35 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 
 void StrAsmPrintInstruction(InstructionInfo * pInfo)
 {
-	 char * mnemonic = MnemonicToString(pInfo->mnemonic);
-	 printf("%s", mnemonic);
+	char * mnemonic = NULL;
+	uint8_t i;
+	for (i = 0; i < pInfo->length; ++i)
+	{
+		PrintByte(pInfo->bytes[i]);
+		printf(" ");
+	}
+	for (i = pInfo->length; i < 15; ++i)
+	{
+		printf("   ");
+	}
+	mnemonic = MnemonicToString(pInfo->mnemonic);
+	printf("%s", mnemonic);
 
-	 if (pInfo->nOperands > 0)
-	 {
-		 printf(" ");
-		 PrintOperand(pInfo, &pInfo->operands[0]);
+	if (pInfo->nOperands > 0)
+	{
+		printf(" ");
+		PrintOperand(pInfo, &pInfo->operands[0]);
 		 
-		 if (pInfo->nOperands > 1)
-		 {
-			 printf(", ");
-			 PrintOperand(pInfo, &pInfo->operands[1]);
-			 if (pInfo->nOperands > 2)
-			 {
-				 printf(", ");
-				 PrintOperand(pInfo, &pInfo->operands[2]);
-			 }
-		 }
-	 }
-	 printf("\n");
+		if (pInfo->nOperands > 1)
+		{
+			printf(", ");
+			PrintOperand(pInfo, &pInfo->operands[1]);
+			if (pInfo->nOperands > 2)
+			{
+				printf(", ");
+				PrintOperand(pInfo, &pInfo->operands[2]);
+			}
+		} 
+	}
+	printf("\n");
 }

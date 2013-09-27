@@ -153,7 +153,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\FileReader.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\GroupDecode.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\MemoryReader.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\Reader.c"
 				>
 			</File>
 		</Filter>
@@ -193,11 +205,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\FileReader.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\GroupDecode.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\InstructionInfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\MemoryReader.h"
 				>
 			</File>
 			<File
@@ -282,6 +302,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\Prefix.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\Reader.h"
 				>
 			</File>
 			<File

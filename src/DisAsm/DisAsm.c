@@ -20,8 +20,7 @@
 HDISASM DisAsmCreate()
 {
 	DisAsmContext * pContext = malloc(sizeof(DisAsmContext));
-	pContext->buffer = NULL;
-	pContext->length = 0;
+	pContext->hReader = NULL;
 	pContext->size = 4;
 	return (HDISASM) pContext;
 }
@@ -31,41 +30,47 @@ void DisAsmDestroy(HDISASM hDisAsm)
 	free(hDisAsm);
 }
 
-uint8_t Fetch1(DisAsmContext * pContext)
+uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	uint8_t result = pContext->buffer[pContext->length];
-	++pContext->length;
+	uint8_t result = 0;
+	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 1);
+	result = pInfo->bytes[pInfo->length];
+	++pInfo->length;
 	return result;
 }
 
-uint16_t Fetch2(DisAsmContext * pContext)
+uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	uint16_t result = 
-		(pContext->buffer[pContext->length + 1] << 8) | 
-		(pContext->buffer[pContext->length]);
-	pContext->length += 2;
+	uint16_t result = 0;
+	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 2);
+	result = 
+		(pInfo->bytes[pInfo->length + 1] << 8) | 
+		(pInfo->bytes[pInfo->length]);
+	pInfo->length += 2;
 	return result;
 }
 
-uint32_t Fetch4(DisAsmContext * pContext)
+uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	uint32_t result = 
-		(pContext->buffer[pContext->length + 3] << 24) | 
-		(pContext->buffer[pContext->length + 2] << 16) | 
-		(pContext->buffer[pContext->length + 1] << 8) | 
-		(pContext->buffer[pContext->length]);
-	pContext->length += 4;
+	uint32_t result = 0;
+	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
+	result =
+		(pInfo->bytes[pInfo->length + 3] << 24) | 
+		(pInfo->bytes[pInfo->length + 2] << 16) | 
+		(pInfo->bytes[pInfo->length + 1] << 8) | 
+		(pInfo->bytes[pInfo->length]);
+	pInfo->length += 4;
 	return result;
 }
 
-uint32_t FetchN(DisAsmContext * pContext, uint8_t N)
+uint32_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 {
 	uint32_t result = 0;
 	switch (N)
 	{
-	case 1: result = Fetch1(pContext); break;
-	case 2: result = Fetch2(pContext); break;
-	case 4: result = Fetch4(pContext); break;
+	case 1: result = Fetch1(pContext, pInfo); break;
+	case 2: result = Fetch2(pContext, pInfo); break;
+	case 4: result = Fetch4(pContext, pInfo); break;
 	}
 	return result;
 }
@@ -74,16 +79,16 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 {
 	OpCodeMapElement * element = NULL;
 
-	OpCode opcode = Fetch1(pContext);
+	OpCode opcode = Fetch1(pContext, pInfo);
 
 	switch (opcode)
 	{
 	case 0x0F:
-		opcode = (opcode << 8) | Fetch1(pContext);
+		opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 		switch (opcode)
 		{
 		case 0x0F38:
-			opcode = (opcode << 8) | Fetch1(pContext);
+			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix 66h */
@@ -106,7 +111,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			}
 			break;
 		case 0x0F3A:
-			opcode = (opcode << 8) | Fetch1(pContext);
+			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix 66h */
@@ -315,14 +320,14 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	}
 }
 
-uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionInfo * pInfo)
+uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInfo * pInfo)
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	OpCodeMapElement * pElement = 0;
 	uint8_t i = 0;
 
-	pContext->buffer = buffer;
-	pContext->length = 0;
+	pInfo->length = 0;
+	pContext->hReader = hReader;
 	pContext->size = 4;
 
 	pInfo->nPrefixes = 0;
@@ -358,7 +363,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 
 	if (pInfo->hasModRM)
 	{
-		pInfo->ModRM.value = Fetch1(pContext);
+		pInfo->ModRM.value = Fetch1(pContext, pInfo);
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
 		GroupDecode(pContext, pInfo);
@@ -384,16 +389,16 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionIn
 
 		if (pInfo->hasSIB)
 		{
-			pInfo->SIB.value = Fetch1(pContext);
+			pInfo->SIB.value = Fetch1(pContext, pInfo);
 		}
 	}
 	for (i = 0; i < pInfo->nOperands; ++i)
 	{
 		OperandDecode(pContext, pInfo, &pInfo->operands[i]);
 	}
-	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo->sizeDisp) : 0;
-	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo->sizeImm)  : 0;
-	return pInfo->length = pContext->length;
+	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo, pInfo->sizeDisp) : 0;
+	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo, pInfo->sizeImm)  : 0;
+	return pInfo->length;
 }
 
 /* for tests */
@@ -403,8 +408,6 @@ OpCode _ChooseOpCode(uint8_t * buffer)
 	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
-	pContext->buffer = buffer;
-	pContext->length = 0;
 	ChooseOpCode(pContext, &info);
 	DisAsmDestroy(hDisAsm);
 	return info.opcode;

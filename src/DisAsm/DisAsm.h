@@ -18,7 +18,7 @@ typedef void * HDISASM;
 HDISASM DisAsmCreate();
 void DisAsmDestroy(HDISASM hDisAsm);
 
-uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, uint8_t * buffer, InstructionInfo * pInfo);
+uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReaders, InstructionInfo * pInfo);
 
 /* for tests */
 
