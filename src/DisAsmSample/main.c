@@ -19,14 +19,16 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void DisAsmFunction(HREADER hReader, uint32_t address)
+void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
 {
 	HDISASM hDisAsm = DisAsmCreate();
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	while (1)
 	{
+		BenchmarkSampleBegin(hBenchmark);
 		length = DisAsmInstructionDecode(hDisAsm, hReader, &info);
+		BenchmarkSampleEnd(hBenchmark);
 		if (0 == length)
 		{
 			break;
@@ -53,30 +55,30 @@ void DisAsmFunction(HREADER hReader, uint32_t address)
 
 int main(int argc, char * const argv[])
 {
+	uint32_t base = 0;
+	HBENCHMARK hBenchmark = BenchmarkCreate();
+	HREADER hReader = FileReaderCreate("C:\\Windows\\System32\\kernel32.dll");
+	//uint32_t module = LoadLibraryA("kernel32.dll");
+	//HREADER hReader = MemoryReaderCreate(module, 0);
+	HEXECUTABLE hExecutable = ExecutableCreate(hReader, 1);
+	uint32_t address = 0;
+	if (!hExecutable)
 	{
-		uint32_t base = 0;
-		HREADER hReader = FileReaderCreate("C:\\Windows\\System32\\kernel32.dll");
-		//uint32_t module = LoadLibraryA("kernel32.dll");
-		//HREADER hReader = MemoryReaderCreate(module, 0);
-		HEXECUTABLE hExecutable = ExecutableCreate(hReader, 0);
-		uint32_t address = 0;
-		if (!hExecutable)
-		{
-			return EXIT_FAILURE;
-		}
-		for (;;)
-		{
-			address = ExecutableGetNextFunction(hExecutable);
-			if (0 == address)
-			{
-				break;
-			}
-			ReaderSeek(hReader, address);
-			DisAsmFunction(hReader, address + base);
-		}
-
-		ExecutableDestroy(hExecutable);
-		ReaderDestroy(hReader);
+		return EXIT_FAILURE;
 	}
+	for (;;)
+	{
+		address = ExecutableGetNextFunction(hExecutable);
+		if (0 == address)
+		{
+			break;
+		}
+		ReaderSeek(hReader, address);
+		DisAsmFunction(hReader, hBenchmark, address + base);
+	}
+	ExecutableDestroy(hExecutable);
+	ReaderDestroy(hReader);
+	BenchmarkPrintData(hBenchmark);
+	BenchmarkDestroy(hBenchmark);
 	return EXIT_SUCCESS;
 }
