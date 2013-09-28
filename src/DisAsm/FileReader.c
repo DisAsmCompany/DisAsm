@@ -47,7 +47,13 @@ HREADER FileReaderCreate(const char * path)
 	FileReaderContext * pPrivate = NULL;
 	if (NULL == f)
 	{
-		return NULL;
+		char fullpath[32768];
+		sprintf(fullpath, "%s\\%s", "C:\\Windows\\System32\\", path);
+		f = fopen(fullpath, "rb");
+		if (NULL == f)
+		{
+			return NULL;
+		}
 	}
 	pContext = (ReaderContext*) malloc(sizeof(ReaderContext));
 	pPrivate = (FileReaderContext*) malloc(sizeof(FileReaderContext));

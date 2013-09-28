@@ -43,6 +43,7 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
 			printf(" ");
 		}
 		StrAsmPrintInstruction(&info);
+
 		address += length;
 
 		if (RET == info.mnemonic)
@@ -57,24 +58,39 @@ int main(int argc, char * const argv[])
 {
 	uint32_t base = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
-	HREADER hReader = FileReaderCreate("C:\\Windows\\System32\\kernel32.dll");
+	HREADER hReader = NULL;
 	//uint32_t module = LoadLibraryA("kernel32.dll");
 	//HREADER hReader = MemoryReaderCreate(module, 0);
-	HEXECUTABLE hExecutable = ExecutableCreate(hReader, 1);
-	uint32_t address = 0;
-	if (!hExecutable)
+	HEXECUTABLE hExecutable = NULL;
+	uint32_t count = 0;
+	uint32_t i = 0;
+
+	if (argc < 2)
 	{
+		fprintf(stderr, "[ERROR] usage : DisAsmSample <file>\n");
 		return EXIT_FAILURE;
 	}
-	for (;;)
+	hReader = FileReaderCreate(argv[1]);
+	if (NULL == hReader)
 	{
-		address = ExecutableGetNextFunction(hExecutable);
-		if (0 == address)
-		{
-			break;
-		}
+		fprintf(stderr, "[ERROR] cannot open input file \"%s\"\n", argv[1]);
+		return EXIT_FAILURE;
+	}
+	hExecutable = ExecutableCreate(hReader, 0);
+	if (NULL == hExecutable)
+	{
+		fprintf(stderr, "[ERROR] cannot open executable file \"%s\"\n", argv[1]);
+		return EXIT_FAILURE;
+	}
+	count = ExecutableGetExportFunctionCount(hExecutable);
+	for (i = 0; i < count; ++i)
+	{
+		char * name = ExecutableGetExportFunctionName(hExecutable, i);
+		uint32_t address = ExecutableGetExportFunctionAddress(hExecutable, i);
+		printf("%s\n", name);
 		ReaderSeek(hReader, address);
 		DisAsmFunction(hReader, hBenchmark, address + base);
+		printf("\n");
 	}
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);

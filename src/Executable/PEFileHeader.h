@@ -13,6 +13,10 @@
 #ifndef __PEFILEHEADER_H__
 #define __PEFILEHEADER_H__
 
+#ifndef PENTSignature
+#define PENTSignature 0x00004550 /* PE */
+#endif /* PENTSignature */
+
 typedef struct PEFileHeader_t
 {
 	uint16_t Machine;

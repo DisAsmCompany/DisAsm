@@ -183,10 +183,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\Executable\PENTHeaders.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Executable\PEOptionalHeader.h"
 				>
 			</File>

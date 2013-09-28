@@ -13,7 +13,6 @@
 #include "PEFileHeader.h"
 #include "PEDataDirectory.h"
 #include "PEOptionalHeader.h"
-#include "PENTHeaders.h"
 #include "PESectionHeader.h"
 #include "PEExportDirectory.h"
 #include "Executable.h"

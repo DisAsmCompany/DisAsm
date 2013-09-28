@@ -47,7 +47,6 @@ typedef struct PEOptionalHeader_t
 	uint32_t SizeOfHeapCommit;
 	uint32_t LoaderFlags;
 	uint32_t NumberOfRvaAndSizes;
-	PEDataDirectory DataDirectory[PEDataDirectoryCount];
 }
 PEOptionalHeader;
 
