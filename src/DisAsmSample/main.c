@@ -121,6 +121,10 @@ int main(int argc, char * const argv[])
 		char * name = ExecutableGetExportFunctionName(hExecutable, i);
 		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
 		uint32_t address = ExecutableGetExportFunctionAddress(hExecutable, i);
+		if (NULL == address)
+		{
+			continue;
+		}
 		if (NULL != forwarder)
 		{
 			printf("%s -> %s\n", name, forwarder);

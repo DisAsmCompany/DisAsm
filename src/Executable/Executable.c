@@ -108,6 +108,29 @@ char * CharacteristicsToString(uint16_t Characteristics)
 	return result;
 }
 
+char * DllCharacteristicsToString(uint16_t Characteristics)
+{
+	char * result = malloc(1024);
+	result[0] = 0;
+	if (Characteristics & 0x0001) strcat(result, "IMAGE_LIBRARY_PROCESS_INIT ");
+	if (Characteristics & 0x0002) strcat(result, "IMAGE_LIBRARY_PROCESS_TERM ");
+	if (Characteristics & 0x0004) strcat(result, "IMAGE_LIBRARY_THREAD_INIT ");
+	if (Characteristics & 0x0008) strcat(result, "IMAGE_LIBRARY_THREAD_TERM ");
+	if (Characteristics & 0x0010) strcat(result, "IMAGE_DLLCHARACTERISTICS_10h ");
+	if (Characteristics & 0x0020) strcat(result, "IMAGE_DLLCHARACTERISTICS_20h ");
+	if (Characteristics & 0x0040) strcat(result, "IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE ");
+	if (Characteristics & 0x0080) strcat(result, "IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY ");
+	if (Characteristics & 0x0100) strcat(result, "IMAGE_DLLCHARACTERISTICS_NX_COMPAT ");
+	if (Characteristics & 0x0200) strcat(result, "IMAGE_DLLCHARACTERISTICS_NO_ISOLATION ");
+	if (Characteristics & 0x0400) strcat(result, "IMAGE_DLLCHARACTERISTICS_NO_SEH ");
+	if (Characteristics & 0x0800) strcat(result, "IMAGE_DLLCHARACTERISTICS_NO_BIND ");
+	if (Characteristics & 0x1000) strcat(result, "IMAGE_DLLCHARACTERISTICS_1000h ");
+	if (Characteristics & 0x2000) strcat(result, "IMAGE_DLLCHARACTERISTICS_WDM_DRIVER ");
+	if (Characteristics & 0x4000) strcat(result, "IMAGE_DLLCHARACTERISTICS_4000h ");
+	if (Characteristics & 0x8000) strcat(result, "IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE ");
+	return result;
+}
+
 char * SectionCharacteristicsToString(uint32_t Characteristics)
 {
 	char * result = malloc(1024);
@@ -502,7 +525,7 @@ int ProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirectory * p
 	printf("CSD Version                      : %d\n", pContext->LoadConfigDirectory.CSDVersion);
 	printf("Reserved                         : %d\n", pContext->LoadConfigDirectory.Reserved);
 	printf("EditList                         : %d\n", pContext->LoadConfigDirectory.EditList);
-	printf("Security Cookie                  : %d\n", pContext->LoadConfigDirectory.SecurityCookie);
+	printf("Security Cookie                  : 0x%08X\n", pContext->LoadConfigDirectory.SecurityCookie);
 	printf("SEHandler Table                  : 0x%08X\n", pContext->LoadConfigDirectory.SEHandlerTable);
 	printf("SEHandler Count                  : %d\n", pContext->LoadConfigDirectory.SEHandlerCount);
 	return 1;
@@ -631,6 +654,7 @@ int ExecutableInit(ExecutableContext * pContext)
 	}
 	{
 		uint8_t i = 0;
+		char * Characteristics = DllCharacteristicsToString(pContext->OptionalHeader.DllCharacteristics);
 		printf("PE Optional Header : \n");
 		printf("Magic                          : 0x%04X (%s)\n", pContext->OptionalHeader.Magic, MagicToString(pContext->OptionalHeader.Magic));
 		printf("Major Linker Version           : %d\n", pContext->OptionalHeader.MajorLinkerVersion);
@@ -655,7 +679,7 @@ int ExecutableInit(ExecutableContext * pContext)
 		printf("Size Of Headers                : 0x%08X\n", pContext->OptionalHeader.SizeOfHeaders);
 		printf("Check Sum                      : 0x%08X\n", pContext->OptionalHeader.CheckSum);
 		printf("Subsystem                      : 0x%04X (%s)\n", pContext->OptionalHeader.Subsystem, SubsystemToString(pContext->OptionalHeader.Subsystem));
-		printf("Dll Characteristics            : 0x%04X\n", pContext->OptionalHeader.DllCharacteristics);
+		printf("Dll Characteristics            : 0x%04X (%s)\n", pContext->OptionalHeader.DllCharacteristics, Characteristics);
 		printf("Size Of Stack Reserve          : 0x%08X\n", pContext->OptionalHeader.SizeOfStackReserve);
 		printf("Size Of Stack Commit           : 0x%08X\n", pContext->OptionalHeader.SizeOfStackCommit);
 		printf("Size Of Heap Reserve           : 0x%08X\n", pContext->OptionalHeader.SizeOfHeapReserve);
@@ -663,19 +687,18 @@ int ExecutableInit(ExecutableContext * pContext)
 		printf("Loader Flags                   : 0x%08X\n", pContext->OptionalHeader.LoaderFlags);
 		printf("Number Of Rva And Sizes        : %d\n", pContext->OptionalHeader.NumberOfRvaAndSizes);
 		printf("\n");
+		free(Characteristics);
 	}
 	OffsetSectionHeaders = pContext->DOSHeader.AddressPE + sizeof(uint32_t) + sizeof(PEFileHeader) + pContext->FileHeader.SizeOfOptionalHeader;
 	pContext->DataDirectoriesCount = min(PEDataDirectoryCount, (pContext->FileHeader.SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
-	if (pContext->DataDirectoriesCount)
+	pContext->DataDirectoriesCount = min(pContext->OptionalHeader.NumberOfRvaAndSizes, pContext->DataDirectoriesCount);
+	if (pContext->DataDirectoriesCount > 0)
 	{
 		pContext->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * pContext->DataDirectoriesCount);
 		if (NULL == pContext->DataDirectories)
 		{
 			return 0;
 		}
-	}
-	if (pContext->DataDirectoriesCount > 0)
-	{
 		if (0 == ReaderRead(pContext->hReader, pContext->DataDirectories, sizeof(PEDataDirectory) * pContext->DataDirectoriesCount))
 		{
 			return 0;
@@ -744,9 +767,22 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	{
 		return NULL;
 	}
+	memset(&pContext->DOSHeader, 0, sizeof(PEDOSHeader));
+	memset(&pContext->FileHeader, 0, sizeof(PEFileHeader));
+	memset(&pContext->OptionalHeader, 0, sizeof(PEOptionalHeader));
+	memset(&pContext->ExportDirectory, 0, sizeof(PEExportDirectory));
+	memset(&pContext->DebugDirectory, 0, sizeof(PEDebugDirectory));
+	memset(&pContext->LoadConfigDirectory, 0, sizeof(PELoadConfigDirectory));
+	pContext->DataDirectoriesCount = 0;
+	pContext->DataDirectories = NULL;
+	pContext->SectionHeaders = NULL;
 	pContext->hReader = hReader;
 	pContext->memory = memory;
-	ExecutableInit(pContext);
+	if (0 == ExecutableInit(pContext))
+	{
+		free(pContext);
+		return 0;
+	}
 	return (HEXECUTABLE) pContext;
 }
 
