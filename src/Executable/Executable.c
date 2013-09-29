@@ -29,6 +29,7 @@ typedef struct ExecutableContext_t
 	PEDataDirectory * DataDirectories;
 	PESectionHeader * SectionHeaders;
 	PEExportDirectory ExportDirectory;
+	PEDebugDirectory DebugDirectory;
 	PELoadConfigDirectory LoadConfigDirectory;
 	uint32_t OffsetExport;
 	uint32_t SizeExport;
@@ -170,6 +171,7 @@ char * SubsystemToString(uint16_t Subsystem)
 	case 0x000C: return "IMAGE_SUBSYSTEM_EFI_RUNTIME_DRIVER";
 	case 0x000D: return "IMAGE_SUBSYSTEM_EFI_ROM";
 	case 0x000E: return "IMAGE_SUBSYSTEM_XBOX";
+	case 0x0010: return "IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION";
 	default: return "?";
 	}
 }
@@ -220,6 +222,26 @@ char * MagicToString(uint16_t Magic)
 	}
 }
 
+char * DebugTypeToString(uint32_t Type)
+{
+	switch (Type)
+	{
+	case 0x00000000UL: return "IMAGE_DEBUG_TYPE_UNKNOWN";
+	case 0x00000001UL: return "IMAGE_DEBUG_TYPE_COFF";
+	case 0x00000002UL: return "IMAGE_DEBUG_TYPE_CODEVIEW";
+	case 0x00000003UL: return "IMAGE_DEBUG_TYPE_FPO";
+	case 0x00000004UL: return "IMAGE_DEBUG_TYPE_MISC";
+	case 0x00000005UL: return "IMAGE_DEBUG_TYPE_EXCEPTION";
+	case 0x00000006UL: return "IMAGE_DEBUG_TYPE_FIXUP";
+	case 0x00000007UL: return "IMAGE_DEBUG_TYPE_OMAP_TO_SRC";
+	case 0x00000008UL: return "IMAGE_DEBUG_TYPE_OMAP_FROM_SRC";
+	case 0x00000009UL: return "IMAGE_DEBUG_TYPE_BORLAND";
+	case 0x0000000AUL: return "IMAGE_DEBUG_TYPE_RESERVED10";
+	case 0x0000000BUL: return "IMAGE_DEBUG_TYPE_CLSID";
+	default: return "?";
+	}
+}
+
 char * UTC(uint32_t TimeStamp)
 {
 	time_t time = TimeStamp;
@@ -258,6 +280,7 @@ char * FetchString(ExecutableContext * pContext, uint32_t address)
 int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	uint32_t i = 0;
+	char * name = "";
 	pContext->OffsetExport = RVAToOffset(pContext, pDirectory->VirtualAddress);
 	pContext->SizeExport = pDirectory->Size;
 	if (pDirectory->Size < sizeof(PEExportDirectory))
@@ -276,12 +299,20 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 	{
 		return 0;
 	}
+	if (0 != pContext->ExportDirectory.Name)
+	{
+		uint32_t ptr = RVAToOffset(pContext, pContext->ExportDirectory.Name);
+		if (0 != ptr)
+		{
+			name = FetchString(pContext, ptr);
+		}
+	}
 	printf("Export Directory :\n");
 	printf("Characteristics         : 0x%08X\n", pContext->ExportDirectory.Characteristics);
 	printf("Time Date Stamp         : 0x%08X (%s)\n", pContext->ExportDirectory.TimeDateStamp, UTC(pContext->ExportDirectory.TimeDateStamp));
 	printf("Major Version           : %d\n", pContext->ExportDirectory.MajorVersion);
 	printf("Minor Version           : %d\n", pContext->ExportDirectory.MinorVersion);
-	printf("Name                    : 0x%08X\n", pContext->ExportDirectory.Name);
+	printf("Name                    : 0x%08X (%s)\n", pContext->ExportDirectory.Name, name);
 	printf("Base                    : 0x%08X\n", pContext->ExportDirectory.Base);
 	printf("Number Of Functions     : %d\n", pContext->ExportDirectory.NumberOfFunctions);
 	printf("Number Of Names         : %d\n", pContext->ExportDirectory.NumberOfNames);
@@ -298,8 +329,6 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 		uint32_t address = 0;
 		uint32_t ptr = 0;
 		uint32_t j = 0;
-		char * name = NULL;
-
 		ReaderSeek(pContext->hReader, pContext->OffsetExportFunctions + i * 4);
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
 		address = RVAToOffset(pContext, ptr);
@@ -325,6 +354,103 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 		}
 		free(name);
 	}
+	return 1;
+}
+
+int ProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
+{
+	uint32_t offset = RVAToOffset(pContext, pDirectory->VirtualAddress);
+	uint32_t address = 0;
+	uint32_t pos = 0;
+	if (0 == offset)
+	{
+		return 0;
+	}
+	while (pos + sizeof(PEImportDescriptor) <= pDirectory->Size)
+	{
+		PEImportDescriptor ImportDescriptor;
+		char * name = NULL;
+		if (0 == ReaderSeek(pContext->hReader, offset + pos))
+		{
+			return 0;
+		}
+		if (0 == ReaderRead(pContext->hReader, &ImportDescriptor, sizeof(PEImportDescriptor)))
+		{
+			return 0;
+		}
+		if (0 == ImportDescriptor.OriginalFirstThunk)
+		{
+			break;
+		}
+		address = RVAToOffset(pContext, ImportDescriptor.Name);
+		name = FetchString(pContext, address);
+		printf("Import Descriptor :\n");
+		printf("Original First Thunk : 0x%08X\n", ImportDescriptor.OriginalFirstThunk);
+		printf("Time Date Stamp      : 0x%08X (%s)\n", ImportDescriptor.TimeDateStamp, UTC(ImportDescriptor.TimeDateStamp));
+		printf("Forwarder Chain      : 0x%08X\n", ImportDescriptor.ForwarderChain);
+		printf("Name                 : 0x%08X (%s)\n", ImportDescriptor.Name, name);
+		printf("First Thunk          : 0x%08X\n", ImportDescriptor.FirstThunk);
+		free(name);
+
+		address = RVAToOffset(pContext, ImportDescriptor.OriginalFirstThunk);
+		if (0 != address)
+		{
+			uint32_t i = 0;
+			for (i = 0; ; ++i)
+			{
+				uint32_t element = 0;
+				ReaderSeek(pContext->hReader, address + i * sizeof(uint32_t));
+				ReaderRead(pContext->hReader, &element, sizeof(uint32_t));
+				if (0 == element) break;
+				if (element & 0x80000000UL)
+				{
+					printf("ordinal 0x%08X\n", element & ~0x80000000UL);
+				}
+				else
+				{
+					uint16_t hint = 0;
+					uint32_t ptr = RVAToOffset(pContext, element);
+					ReaderSeek(pContext->hReader, ptr);
+					ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
+					name = FetchString(pContext, ptr + sizeof(uint16_t));
+					printf("0x%04X %s\n", hint, name);
+					free(name);
+				}
+			}
+		}
+		pos += sizeof(PEImportDescriptor);
+	}
+	return 1;
+}
+
+int ProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * pDirectory)
+{
+	uint32_t offset = RVAToOffset(pContext, pDirectory->VirtualAddress);
+	if (0 == offset)
+	{
+		return 0;
+	}
+	if (pDirectory->Size < sizeof(PEDebugDirectory))
+	{
+		return 0;
+	}
+	if (0 == ReaderSeek(pContext->hReader, offset))
+	{
+		return 0;
+	}
+	if (0 == ReaderRead(pContext->hReader, &pContext->DebugDirectory, sizeof(PEDebugDirectory)))
+	{
+		return 0;
+	}
+	printf("Debug Directory :\n");
+	printf("Characteristics     : %d\n", pContext->DebugDirectory.Characteristics);
+	printf("TimeDateStamp       : 0x%08X (%s)\n", pContext->DebugDirectory.TimeDateStamp, UTC(pContext->DebugDirectory.TimeDateStamp));
+	printf("Major Version       : %d\n", pContext->DebugDirectory.MajorVersion);
+	printf("Minor Version       : %d\n", pContext->DebugDirectory.MinorVersion);
+	printf("Type                : 0x%08X (%s)\n", pContext->DebugDirectory.Type, DebugTypeToString(pContext->DebugDirectory.Type));
+	printf("Size Of Data        : 0x%08X\n", pContext->DebugDirectory.SizeOfData);
+	printf("Address Of Raw Data : 0x%08X\n", pContext->DebugDirectory.AddressOfRawData);
+	printf("Pointer To Raw Data : 0x%08X\n", pContext->DebugDirectory.PointerToRawData);
 	return 1;
 }
 
@@ -406,7 +532,9 @@ void ProcessDirectory(ExecutableContext * pContext, uint32_t index)
 	{
 		switch (index)
 		{
-		case 0x00: ProcessDirectoryExport(pContext, &pContext->DataDirectories[index]); break;
+		case 0x00: ProcessDirectoryExport    (pContext, &pContext->DataDirectories[index]); break;
+		case 0x01: ProcessDirectoryImport    (pContext, &pContext->DataDirectories[index]); break;
+		case 0x06: ProcessDirectoryDebug     (pContext, &pContext->DataDirectories[index]); break;
 		case 0x0A: ProcessDirectoryLoadConfig(pContext, &pContext->DataDirectories[index]); break;
 		default: break;
 		}

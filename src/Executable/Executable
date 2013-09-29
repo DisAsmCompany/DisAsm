@@ -15,5 +15,7 @@
 #include "PEOptionalHeader.h"
 #include "PESectionHeader.h"
 #include "PEExportDirectory.h"
+#include "PEImportDescriptor.h"
+#include "PEDebugDirectory.h"
 #include "PELoadConfigDirectory.h"
 #include "Executable.h"

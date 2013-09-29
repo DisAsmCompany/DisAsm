@@ -89,8 +89,8 @@ int main(int argc, char * const argv[])
 	}
 	if (memory)
 	{
-		base = LoadLibraryA(argv[1]);
-		hReader = MemoryReaderCreate(base, 0);
+		base = (uint32_t) LoadLibraryA(argv[1]);
+		hReader = MemoryReaderCreate((void*)base, 0);
 	}
 	else
 	{
@@ -108,6 +108,7 @@ int main(int argc, char * const argv[])
 		return EXIT_FAILURE;
 	}
 	count = ExecutableGetExportFunctionCount(hExecutable);
+	count = 0;
 	for (i = 0; i < count; ++i)
 	{
 		char * name = ExecutableGetExportFunctionName(hExecutable, i);

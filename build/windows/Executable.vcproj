@@ -171,6 +171,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Executable\PEDebugDirectory.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Executable\PEDOSHeader.h"
 				>
 			</File>
@@ -180,6 +184,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Executable\PEFileHeader.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Executable\PEImportDescriptor.h"
 				>
 			</File>
 			<File
