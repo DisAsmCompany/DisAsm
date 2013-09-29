@@ -72,6 +72,7 @@ int main(int argc, char * const argv[])
 	HEXECUTABLE hExecutable = NULL;
 	uint32_t count = 0;
 	uint32_t i = 0;
+	uint32_t entry = 0;
 	uint8_t memory = 0;
 
 	if (argc < 2)
@@ -106,8 +107,15 @@ int main(int argc, char * const argv[])
 		fprintf(stderr, "[ERROR] cannot open executable file \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
+	entry = ExecutableGetEntryPoint(hExecutable);
+	if (0 != entry)
+	{
+		printf("Entry Point :\n");
+		ReaderSeek(hReader, entry);
+		DisAsmFunction(hReader, hBenchmark, entry + base);
+		printf("\n");
+	}
 	count = ExecutableGetExportFunctionCount(hExecutable);
-	count = 0;
 	for (i = 0; i < count; ++i)
 	{
 		char * name = ExecutableGetExportFunctionName(hExecutable, i);

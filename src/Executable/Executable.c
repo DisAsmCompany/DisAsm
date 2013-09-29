@@ -758,6 +758,18 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 	free(hExecutable);
 }
 
+uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	return RVAToOffset(pContext, pContext->OptionalHeader.AddressOfEntryPoint);
+}
+
+uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	return sizeof(PEDOSHeader);
+}
+
 uint32_t ExecutableGetExportFunctionCount(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;

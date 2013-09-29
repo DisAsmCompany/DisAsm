@@ -51,7 +51,6 @@ _ENUM_ELEMENT(CALL)   /* Call Procedure */
 _ENUM_ELEMENT(TEST)   /* Logical Compare */
 _ENUM_ELEMENT(XCHG)   /* Exchange Register/Memory with Register */
 _ENUM_ELEMENT(CPUID)  /* CPU Identification */
-_ENUM_ELEMENT(UD2)    /* Undefined Instruction */
 _ENUM_ELEMENT(RET)    /* Return from Procedure */
 _ENUM_ELEMENT(ENTER)  /* Make Stack Frame for Procedure Parameters */
 _ENUM_ELEMENT(LEAVE)  /* High Level Procedure Exit */
@@ -99,6 +98,16 @@ _ENUM_ELEMENT(LAR)    /* Load Access Right Byte */
 _ENUM_ELEMENT(LSL)    /* Load Segment Limit */
 _ENUM_ELEMENT(BSWAP)  /* Byte Swap */
 _ENUM_ELEMENT(RSM)    /* Resume From System Management Mode */
+/* Undefined Instruction */
+_ENUM_ELEMENT(UD0)    /* Undefined Instruction */
+_ENUM_ELEMENT(UD1)    /* Undefined Instruction */
+_ENUM_ELEMENT(UD2)    /* Undefined Instruction */
+/* Prefetch */
+_ENUM_ELEMENT(PREFETCHT0)  /* Prefetch Data Into Caches using T0 Hint */
+_ENUM_ELEMENT(PREFETCHT1)  /* Prefetch Data Into Caches using T1 Hint */
+_ENUM_ELEMENT(PREFETCHT2)  /* Prefetch Data Into Caches using T2 Hint */
+_ENUM_ELEMENT(PREFETCHNTA) /* Prefetch Data Into Caches using NTA Hint */
+_ENUM_ELEMENT(PREFETCHW)   /* Prefetch Data Into Caches in Anticipation of Write */
 /* Port */
 _ENUM_ELEMENT(_IN)    /* Input from Port */
 _ENUM_ELEMENT(INS)    /* Input from Port to String */
@@ -195,6 +204,9 @@ _ENUM_ELEMENT(JLE)    /* Jump if Less or Equal */
 _ENUM_ELEMENT(JNG)    /* Jump if not Greater (same as JLE) */
 _ENUM_ELEMENT(JNLE)   /* Jump if not Less or Equal */
 _ENUM_ELEMENT(JG)     /* Jump if Greater (same as JNLE) */
+_ENUM_ELEMENT(JCXZ)   /* Jump if CX is 0 */
+_ENUM_ELEMENT(JECXZ)  /* Jump if ECX is 0 */
+_ENUM_ELEMENT(JRCXZ)  /* Jump if RCX is 0 */
 /* SETcc - Set Byte On Condition */
 _ENUM_ELEMENT(SETO)     /* Set if Overflow */
 _ENUM_ELEMENT(SETNO)    /* Set if Not Overflow */
@@ -277,6 +289,7 @@ _ENUM_ELEMENT(GROUP15)
 _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
 _ENUM_ELEMENT(GROUPP)
+/* x87 FPU */
 /* 3DNow! */
 _ENUM_ELEMENT(FEMMS)
 /* prefixes */

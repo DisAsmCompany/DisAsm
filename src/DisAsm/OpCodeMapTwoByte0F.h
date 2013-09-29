@@ -16,8 +16,8 @@
 
 /* 
   0 1 2 3 4 5 6 7   8 9 A B C D E F
-0     X X   X X X 0 X X   X     X + 0
-1                 1   X X X X X X X 1
+0     X X   X X X 0 X X   X   X X + 0
+1                 1 X X X X X X X X 1
 2                 2                 2
 3 X X X X X X     3 +   +           3
 4 X X X X X X X X 4 X X X X X X X X 4
@@ -28,11 +28,11 @@
 8 X X X X X X X X 8 X X X X X X X X 8
 9 X X X X X X X X 9 X X X X X X X X 9
 A X X X   X X     A X X X   X X   X A
-B X X         X X B             X X B
+B X X         X X B   X         X X B
 C X X             C X X X X X X X X C
 D                 D                 D
 E                 E                 E
-F                 F                 F
+F                 F               X F
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
 
@@ -41,11 +41,11 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F00h - 0F07h */
 	{DB}, {DB}, {LAR, OP2(Gv, Ew)}, {LSL, OP2(Gv, Ew)}, {DB}, {SYSCALL}, {CLTS}, {SYSRET},
 	/* 0F08h - 0F0Fh */
-	{INVD}, {WBINVD}, {DB}, {UD2}, {DB}, {DB}, {FEMMS}, {ESCAPE3DNOW},
+	{INVD}, {WBINVD}, {DB}, {UD2}, {DB}, {GROUPP}, {FEMMS}, {ESCAPE3DNOW},
 	/* 0F10h - 0F17h */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F18h - 0F1Fh */
-	{DB}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)},
+	{GROUP16}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)},
 	/* 0F20h - 0F27h */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F28h - 0F2Fh */
@@ -85,7 +85,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0FB0h - 0FB7h */
 	{CMPXCHG, OP2(Eb, Gb)}, {CMPXCHG, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {MOVZX, OP2(Gv, Eb)}, {MOVZX, OP2(Gv, Ew)},
 	/* 0FB8h - 0FBFh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVSX, OP2(Gv, Eb)}, {MOVSX, OP2(Gv, Ev)},
+	{DB}, {GROUP10}, {DB}, {DB}, {DB}, {DB}, {MOVSX, OP2(Gv, Eb)}, {MOVSX, OP2(Gv, Ev)},
 	/* 0FC0h - 0FC7h */
 	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC8h - 0FCFh */
@@ -101,7 +101,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0FF0h - 0FF7h */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FF8h - 0FFFh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {UD0},
 };
 
 #endif /* __OPCODEMAPTWOBYTE0F_H__ */

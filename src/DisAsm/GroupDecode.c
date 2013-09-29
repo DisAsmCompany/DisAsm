@@ -28,6 +28,22 @@ void Group1Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+void Group1ADecode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pInfo->mnemonic = POP; break;
+	case 1: break;
+	case 2: break;
+	case 3: break;
+	case 4: break;
+	case 5: break;
+	case 6: break;
+	case 7: break;
+	default: break;
+	}
+}
+
 void Group2Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
@@ -99,6 +115,26 @@ void Group5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+/*
+according to AMD manual, all GROUP10 variants are defined as UD1, 
+according to Intel, it is just unnamed undefined instructions
+*/
+void Group10Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pInfo->mnemonic = UD1; break;
+	case 1: pInfo->mnemonic = UD1; break;
+	case 2: pInfo->mnemonic = UD1; break;
+	case 3: pInfo->mnemonic = UD1; break;
+	case 4: pInfo->mnemonic = UD1; break;
+	case 5: pInfo->mnemonic = UD1; break;
+	case 6: pInfo->mnemonic = UD1; break;
+	case 7: pInfo->mnemonic = UD1; break;
+	default: break;
+	}
+}
+
 void Group11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	switch (pInfo->ModRM.fields.Reg)
@@ -115,17 +151,66 @@ void Group11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+/*
+according to AMD manual, /4 - /7 forms are defines as valid instructions (NOPs)
+for compatibility with future PREFETCH instructions
+*/
+void Group16Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pInfo->mnemonic = PREFETCHT0; break;
+	case 1: pInfo->mnemonic = PREFETCHT1; break;
+	case 2: pInfo->mnemonic = PREFETCHT2; break;
+	case 3: pInfo->mnemonic = PREFETCHNTA; break;
+	case 4: pInfo->mnemonic = NOP; break;
+	case 5: pInfo->mnemonic = NOP; break;
+	case 6: pInfo->mnemonic = NOP; break;
+	case 7: pInfo->mnemonic = NOP; break;
+	default: break;
+	}
+}
+
+/*
+Intel defines just /0 for PREFETCHW
+AMD defines /0, /1 and /3, others are aliases to /0 for compatibility with future PREFETCH instructions
+*/
+void GroupPDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: pInfo->mnemonic = PREFETCHW; break;
+	case 1: pInfo->mnemonic = PREFETCHW; break;
+	case 2: pInfo->mnemonic = PREFETCHW; break;
+	case 3: pInfo->mnemonic = PREFETCHW; break;
+	case 4: pInfo->mnemonic = PREFETCHW; break;
+	case 5: pInfo->mnemonic = PREFETCHW; break;
+	case 6: pInfo->mnemonic = PREFETCHW; break;
+	case 7: pInfo->mnemonic = PREFETCHW; break;
+	default: break;
+	}
+}
+
+/*
+      1  1A 2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 P 
+GROUP XX XX XX XX XX XX             XX XX             XX    XX
+*/
+
 void GroupDecode(HDISASM hDisAsm, InstructionInfo * pInfo)
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	switch (pInfo->mnemonic)
 	{
 	case GROUP1 : Group1Decode (pContext, pInfo); break;
+	case GROUP1A: Group1ADecode(pContext, pInfo); break;
 	case GROUP2 : Group2Decode (pContext, pInfo); break;
 	case GROUP3 : Group3Decode (pContext, pInfo); break;
 	case GROUP4 : Group4Decode (pContext, pInfo); break;
 	case GROUP5 : Group5Decode (pContext, pInfo); break;
+	case GROUP10: Group10Decode(pContext, pInfo); break;
 	case GROUP11: Group11Decode(pContext, pInfo); break;
+	case GROUP16: Group16Decode(pContext, pInfo); break;
+	case GROUPP : GroupPDecode (pContext, pInfo); break;
 	default: break;
 	}
 }

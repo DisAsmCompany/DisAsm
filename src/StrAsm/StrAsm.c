@@ -137,21 +137,10 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	mnemonic = MnemonicToString(pInfo->mnemonic);
 	printf("%s", mnemonic);
 
-	if (pInfo->nOperands > 0)
+	for (i = 0; i < pInfo->nOperands; ++i)
 	{
-		printf(" ");
-		PrintOperand(pInfo, &pInfo->operands[0]);
-		 
-		if (pInfo->nOperands > 1)
-		{
-			printf(", ");
-			PrintOperand(pInfo, &pInfo->operands[1]);
-			if (pInfo->nOperands > 2)
-			{
-				printf(", ");
-				PrintOperand(pInfo, &pInfo->operands[2]);
-			}
-		} 
+		printf(i > 0 ? ", " : " ");
+		PrintOperand(pInfo, &pInfo->operands[i]);
 	}
 	printf("\n");
 }

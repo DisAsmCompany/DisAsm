@@ -25,13 +25,13 @@
 6 X X     P P P P 6 X X X X X X X X 6
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
-8 X X X X X X X X 8 X X X X   X     8
+8 X X X X X X X X 8 X X X X X X X X 8
 9 X X X X X X X X 9 X X   X X X X X 9
 A X X X X X X X X A X X X X X X X X A
 B X X X X X X X X B X X X X X X X X B
 C X X X X     X X C X X X X X X X X C
 D X X X X X X X X D + + + + + + + + D
-E X X X   X X X X E X X   X X X X X E
+E X X X X X X X X E X X   X X X X X E
 F P X P P X X X X F X X X X X X X X F
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
@@ -73,7 +73,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 80h - 87h */
 	{GROUP1, OP2(Eb, Ib)}, {GROUP1, OP2(Ev, Iz)}, {GROUP1, OP2(Eb, Ib)}, {GROUP1, OP2(Ev, Ib)}, {TEST, OP2(Eb, Gb)}, {TEST, OP2(Ev, Gv)}, {XCHG, OP2(Eb, Gb)}, {XCHG, OP2(Ev, Gv)},
 	/* 88h - 8Fh */
-	{MOV, OP2(Eb, Gb)}, {MOV, OP2(Ev, Gv)}, {MOV, OP2(Gb, Eb)}, {MOV, OP2(Gv, Ev)}, {DB}, {LEA, OP2(Gv, M)}, {DB}, {DB},
+	{MOV, OP2(Eb, Gb)}, {MOV, OP2(Ev, Gv)}, {MOV, OP2(Gb, Eb)}, {MOV, OP2(Gv, Ev)}, {MOV, OP2(Ev, Sw)}, {LEA, OP2(Gv, M)}, {MOV, OP2(Sw, Ev)}, {GROUP1A, OP1(Ev)},
 	/* 90h - 97h */
 	{NOP}, {XCHG, OP2(Reg, Reg), rCX, rAX}, {XCHG, OP2(Reg, Reg), rDX, rAX}, {XCHG, OP2(Reg, Reg), rBX, rAX}, {XCHG, OP2(Reg, Reg), rSP, rAX}, {XCHG, OP2(Reg, Reg), rBP, rAX}, {XCHG, OP2(Reg, Reg), rSI, rAX}, {XCHG, OP2(Reg, Reg), rDI, rAX},
 	/* 98h - 9Fh */
@@ -95,7 +95,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* D8h - DFh */
 	{ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87},
 	/* E0h - E7h */
-	{LOOPNE, OP1(Jb)}, {LOOPE, OP1(Jb)}, {LOOP, OP1(Jb)}, {DB}, {_IN, OP2(Reg, Ib), AL}, {_IN, OP2(Reg, Ib), eAX}, {_OUT, OP2(Ib, Reg), 0, AL}, {_OUT, OP2(Ib, Reg), eAX},
+	{LOOPNE, OP1(Jb)}, {LOOPE, OP1(Jb)}, {LOOP, OP1(Jb)}, {JCXZ, OP1(Jb)}, {_IN, OP2(Reg, Ib), AL}, {_IN, OP2(Reg, Ib), eAX}, {_OUT, OP2(Ib, Reg), 0, AL}, {_OUT, OP2(Ib, Reg), eAX},
 	/* E8h - EFh */
 	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {DB}, {JMP, OP1(Jb)}, {_IN, OP2(Reg, Reg), AL, DX}, {_IN, OP2(Reg, Reg), eAX, DX}, {_OUT, OP2(Reg, Reg), DL, AL}, {_OUT, OP2(Reg, Reg), DX, eAX},
 	/* F0h - F7h */
