@@ -27,8 +27,8 @@
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X X X X X 8
 9 X X X X X X X X 9 X X X X X X X X 9
-A X X X           A X X           X A
-B X X         X X B                 B
+A X X X   X X     A X X     X X   X A
+B X X         X X B             X X B
 C X X             C                 C
 D                 D                 D
 E                 E                 E
@@ -79,13 +79,13 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F98h - 0F9Fh */
 	{SETS, OP1(Jz)}, {SETNS, OP1(Jz)}, {SETP, OP1(Jz)}, {SETNP, OP1(Jz)}, {SETL, OP1(Jz)}, {SETNL, OP1(Jz)}, {SETLE, OP1(Jz)}, {SETNLE, OP1(Jz)},
 	/* 0FA0h - 0FA7h */
-	{PUSH, OP1(Reg), FS}, {POP, OP1(Reg), FS}, {CPUID}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PUSH, OP1(Reg), FS}, {POP, OP1(Reg), FS}, {CPUID}, {DB}, {SHLD, OP3(Ev, Gv, Ib)}, {SHLD, OP2(Ev, Gv, Reg), 0, 0, CL}, {DB}, {DB},
 	/* 0FA8h - 0FAFh */
-	{PUSH, OP1(Reg), GS}, {POP, OP1(Reg), GS}, {DB}, {DB}, {DB}, {DB}, {DB}, {IMUL, OP2(Gv, Ev)},
+	{PUSH, OP1(Reg), GS}, {POP, OP1(Reg), GS}, {DB}, {DB}, {SHRD, OP3(Ev, Gv, Ib)}, {SHRD, OP2(Ev, Gv, Reg), 0, 0, CL}, {DB}, {IMUL, OP2(Gv, Ev)},
 	/* 0FB0h - 0FB7h */
 	{CMPXCHG, OP2(Eb, Gb)}, {CMPXCHG, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {MOVZX, OP2(Gv, Eb)}, {MOVZX, OP2(Gv, Ew)},
 	/* 0FB8h - 0FBFh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVSX, OP2(Gv, Eb)}, {MOVSX, OP2(Gv, Ev)},
 	/* 0FC0h - 0FC7h */
 	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC8h - 0FCFh */

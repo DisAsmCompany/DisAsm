@@ -29,6 +29,9 @@ typedef struct ExecutableContext_t
 	PEDataDirectory * DataDirectories;
 	PESectionHeader * SectionHeaders;
 	PEExportDirectory ExportDirectory;
+	PELoadConfigDirectory LoadConfigDirectory;
+	uint32_t OffsetExport;
+	uint32_t SizeExport;
 	uint32_t OffsetExportFunctions;
 	uint32_t OffsetExportOrdinals;
 	uint32_t OffsetExportNames;
@@ -220,18 +223,52 @@ char * MagicToString(uint16_t Magic)
 char * UTC(uint32_t TimeStamp)
 {
 	time_t time = TimeStamp;
-	return ctime(&time);
+	char * c = ctime(&time);
+	c[strlen(c) - 1] = 0;
+	return c;
+}
+
+char * FetchString(ExecutableContext * pContext, uint32_t address)
+{
+	char * buffer = NULL; 
+	uint8_t i = 0;
+	if (0 == ReaderSeek(pContext->hReader, address))
+	{
+		return NULL;
+	}
+	if (NULL == (buffer = malloc(1024)))
+	{
+		return NULL;
+	}
+	for (i = 0; i < 1024; ++i)
+	{
+		if (0 == ReaderRead(pContext->hReader, &buffer[i], sizeof(uint8_t)))
+		{
+			break;
+		}
+		if (0 == buffer[i] || '\n' == buffer[i] || '\r' == buffer[i])
+		{
+			break;
+		}
+	}
+	buffer[i] = 0;
+	return buffer;
 }
 
 int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	uint32_t i = 0;
-	uint32_t offset = RVAToOffset(pContext, pDirectory->VirtualAddress);
-	if (0 == offset)
+	pContext->OffsetExport = RVAToOffset(pContext, pDirectory->VirtualAddress);
+	pContext->SizeExport = pDirectory->Size;
+	if (pDirectory->Size < sizeof(PEExportDirectory))
 	{
 		return 0;
 	}
-	if (0 == ReaderSeek(pContext->hReader, offset))
+	if (0 == pContext->OffsetExport)
+	{
+		return 0;
+	}
+	if (0 == ReaderSeek(pContext->hReader, pContext->OffsetExport))
 	{
 		return 0;
 	}
@@ -261,7 +298,7 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 		uint32_t address = 0;
 		uint32_t ptr = 0;
 		uint32_t j = 0;
-		char name[1024];
+		char * name = NULL;
 
 		ReaderSeek(pContext->hReader, pContext->OffsetExportFunctions + i * 4);
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
@@ -271,19 +308,72 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
 		ptr = RVAToOffset(pContext, ptr);
 
-		ReaderSeek(pContext->hReader, ptr);
-		for (j = 0; j < 1024; ++j)
-		{
-			ReaderRead(pContext->hReader, &name[j], sizeof(uint8_t));
-			if (0 == name[j])
-			{
-				break;
-			}
-		}
-		name[1023] = 0;
+		name = FetchString(pContext, ptr);
 
-		printf("0x%04X 0x%08X %s\n", i, address, name);
+		// Forwarder RVA (within Export Directory)
+		if (pContext->OffsetExport <= address && address <= pContext->OffsetExport + pContext->SizeExport)
+		{
+			char * forwarder = FetchString(pContext, address);
+
+			printf("0x%04X 0x%08X %s -> %s\n", i, address, name, forwarder);
+
+			free(forwarder);
+		}
+		else
+		{
+			printf("0x%04X 0x%08X %s\n", i, address, name);
+		}
+		free(name);
 	}
+	return 1;
+}
+
+int ProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirectory * pDirectory)
+{
+	uint32_t offset = RVAToOffset(pContext, pDirectory->VirtualAddress);
+
+	if (0 == offset)
+	{
+		return 0;
+	}
+	if (0 == ReaderSeek(pContext->hReader, offset))
+	{
+		return 0;
+	}
+	if (0 == ReaderRead(pContext->hReader, &pContext->LoadConfigDirectory.Size, sizeof(uint32_t)))
+	{
+		return 0;
+	}
+	if (pContext->LoadConfigDirectory.Size < sizeof(PELoadConfigDirectory))
+	{
+		return 0;
+	}
+	pContext->LoadConfigDirectory.Size = sizeof(PELoadConfigDirectory);
+	if (0 == ReaderRead(pContext->hReader, &pContext->LoadConfigDirectory.TimeDateStamp, pContext->LoadConfigDirectory.Size - sizeof(uint32_t)))
+	{
+		return 0;
+	}
+	printf("Load Config Directory :\n");
+	printf("Size                             : %d\n", pContext->LoadConfigDirectory.Size);
+	printf("Time Date Stamp                  : 0x%08X (%s)\n", pContext->LoadConfigDirectory.TimeDateStamp, UTC(pContext->LoadConfigDirectory.TimeDateStamp));
+	printf("Major Version                    : %d\n", pContext->LoadConfigDirectory.MajorVersion);
+	printf("Minor Version                    : %d\n", pContext->LoadConfigDirectory.MinorVersion);
+	printf("Global Flags Clear               : 0x%08X\n", pContext->LoadConfigDirectory.GlobalFlagsClear);
+	printf("Global Flags Set                 : 0x%08X\n", pContext->LoadConfigDirectory.GlobalFlagsSet);
+	printf("Critical Section Default Timeout : %d\n", pContext->LoadConfigDirectory.CriticalSectionDefaultTimeout);
+	printf("DeCommit Free Block Threshold    : %d\n", pContext->LoadConfigDirectory.DeCommitFreeBlockThreshold);
+	printf("DeCommit Total Free Threshold    : %d\n", pContext->LoadConfigDirectory.DeCommitTotalFreeThreshold);
+	printf("Lock Prefix Table                : 0x%08X\n", pContext->LoadConfigDirectory.LockPrefixTable);
+	printf("Maximum Allocation Size          : %d\n", pContext->LoadConfigDirectory.MaximumAllocationSize);
+	printf("Virtual Memory Threshold         : %d\n", pContext->LoadConfigDirectory.VirtualMemoryThreshold);
+	printf("Process Heap Flags               : 0x%08X\n", pContext->LoadConfigDirectory.ProcessHeapFlags);
+	printf("Process Affinity Mask            : 0x%08X\n", pContext->LoadConfigDirectory.ProcessAffinityMask);
+	printf("CSD Version                      : %d\n", pContext->LoadConfigDirectory.CSDVersion);
+	printf("Reserved                         : %d\n", pContext->LoadConfigDirectory.Reserved);
+	printf("EditList                         : %d\n", pContext->LoadConfigDirectory.EditList);
+	printf("Security Cookie                  : %d\n", pContext->LoadConfigDirectory.SecurityCookie);
+	printf("SEHandler Table                  : 0x%08X\n", pContext->LoadConfigDirectory.SEHandlerTable);
+	printf("SEHandler Count                  : %d\n", pContext->LoadConfigDirectory.SEHandlerCount);
 	return 1;
 }
 
@@ -317,6 +407,7 @@ void ProcessDirectory(ExecutableContext * pContext, uint32_t index)
 		switch (index)
 		{
 		case 0x00: ProcessDirectoryExport(pContext, &pContext->DataDirectories[index]); break;
+		case 0x0A: ProcessDirectoryLoadConfig(pContext, &pContext->DataDirectories[index]); break;
 		default: break;
 		}
 	}
@@ -552,24 +643,26 @@ uint32_t ExecutableGetExportFunctionAddress(HEXECUTABLE hExecutable, uint32_t in
 
 char * ExecutableGetExportFunctionName(HEXECUTABLE hExecutable, uint32_t index)
 {
-	char * name = malloc(1024);
-	uint32_t i = 0;
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	uint32_t address = 0;
 
 	ReaderSeek(pContext->hReader, pContext->OffsetExportNames + index * sizeof(uint32_t));
 	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
 	address = RVAToOffset(pContext, address);
+	return FetchString(pContext, address);
+}
 
-	ReaderSeek(pContext->hReader, address);
-	for (i = 0; i < 1024; ++i)
+char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	uint32_t address = 0;
+
+	ReaderSeek(pContext->hReader, pContext->OffsetExportFunctions + index * sizeof(uint32_t));
+	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
+	address = RVAToOffset(pContext, address);
+	if (pContext->OffsetExport <= address && address <= pContext->OffsetExport + pContext->SizeExport)
 	{
-		ReaderRead(pContext->hReader, &name[i], sizeof(uint8_t));
-		if (0 == name[i])
-		{
-			break;
-		}
+		return FetchString(pContext, address);
 	}
-	name[1023] = 0;
-	return name;
+	return NULL;
 }

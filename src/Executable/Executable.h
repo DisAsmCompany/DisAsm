@@ -20,5 +20,6 @@ void ExecutableDestroy(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetExportFunctionCount(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetExportFunctionAddress(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportFunctionName(HEXECUTABLE hExecutable, uint32_t index);
+char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index);
 
 #endif /* __EXECUTABLE_H__ */

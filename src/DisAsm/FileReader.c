@@ -48,7 +48,7 @@ HREADER FileReaderCreate(const char * path)
 	if (NULL == f)
 	{
 		char fullpath[32768];
-		sprintf(fullpath, "%s\\%s", "C:\\Windows\\System32\\", path);
+		sprintf(fullpath, "%s\\%s", "C:\\Windows\\System32", path);
 		f = fopen(fullpath, "rb");
 		if (NULL == f)
 		{

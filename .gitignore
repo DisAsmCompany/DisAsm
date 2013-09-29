@@ -4,6 +4,7 @@
 *.tmp
 *.obj
 *.o
+*.db
 bin/
 tmp/
 log/

@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Executable\PELoadConfigDirectory.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Executable\PEOptionalHeader.h"
 				>
 			</File>

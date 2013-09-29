@@ -31,6 +31,7 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
 		BenchmarkSampleEnd(hBenchmark);
 		if (0 == length)
 		{
+			printf("[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
 			break;
 		}
 		{
@@ -46,6 +47,16 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
 
 		address += length;
 
+		if (JO <= info.mnemonic && info.mnemonic <= JG)
+		{
+			// conditional jump
+			//break;
+		}
+		if (JMP == info.mnemonic)
+		{
+			// non-conditional jump
+			//break;
+		}
 		if (RET == info.mnemonic)
 		{
 			break;
@@ -59,24 +70,38 @@ int main(int argc, char * const argv[])
 	uint32_t base = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
 	HREADER hReader = NULL;
-	//uint32_t module = LoadLibraryA("kernel32.dll");
-	//HREADER hReader = MemoryReaderCreate(module, 0);
 	HEXECUTABLE hExecutable = NULL;
 	uint32_t count = 0;
 	uint32_t i = 0;
+	uint8_t memory = 0;
 
 	if (argc < 2)
 	{
 		fprintf(stderr, "[ERROR] usage : DisAsmSample <file>\n");
 		return EXIT_FAILURE;
 	}
-	hReader = FileReaderCreate(argv[1]);
+	if (argc >= 3)
+	{
+		if (0 == strcmp(argv[2], "memory"))
+		{
+			memory = 1;
+		}
+	}
+	if (memory)
+	{
+		base = LoadLibraryA(argv[1]);
+		hReader = MemoryReaderCreate(base, 0);
+	}
+	else
+	{
+		hReader = FileReaderCreate(argv[1]);
+	}
 	if (NULL == hReader)
 	{
 		fprintf(stderr, "[ERROR] cannot open input file \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
-	hExecutable = ExecutableCreate(hReader, 0);
+	hExecutable = ExecutableCreate(hReader, memory);
 	if (NULL == hExecutable)
 	{
 		fprintf(stderr, "[ERROR] cannot open executable file \"%s\"\n", argv[1]);
@@ -86,11 +111,21 @@ int main(int argc, char * const argv[])
 	for (i = 0; i < count; ++i)
 	{
 		char * name = ExecutableGetExportFunctionName(hExecutable, i);
+		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
 		uint32_t address = ExecutableGetExportFunctionAddress(hExecutable, i);
-		printf("%s\n", name);
-		ReaderSeek(hReader, address);
-		DisAsmFunction(hReader, hBenchmark, address + base);
+		if (NULL != forwarder)
+		{
+			printf("%s -> %s\n", name, forwarder);
+		}
+		else
+		{
+			printf("%s\n", name);
+			ReaderSeek(hReader, address);
+			DisAsmFunction(hReader, hBenchmark, address + base);
+		}
 		printf("\n");
+		free(name);
+		free(forwarder);
 	}
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);

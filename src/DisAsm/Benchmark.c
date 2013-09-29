@@ -64,9 +64,12 @@ void BenchmarkPrintData(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
 
-	printf("avg : %.4f\n", (float) pContext->total / (pContext->frequency * pContext->count));
-	printf("min : %.4f\n", (float) pContext->_min / pContext->frequency);
-	printf("max : %.4f\n", (float) pContext->_max / pContext->frequency);
+	if (pContext->count > 0)
+	{
+		printf("avg : %.4f\n", (float) pContext->total / (pContext->frequency * pContext->count));
+		printf("min : %.4f\n", (float) pContext->_min / pContext->frequency);
+		printf("max : %.4f\n", (float) pContext->_max / pContext->frequency);
+	}
 }
 
 void BenchmarkDestroy(HBENCHMARK hBenchmark)

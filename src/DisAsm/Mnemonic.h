@@ -90,6 +90,10 @@ _ENUM_ELEMENT(CMPXCHG)/* Compare and Exchange */
 _ENUM_ELEMENT(SACL)   /* [Undocumented] Set AL on Carry */
 _ENUM_ELEMENT(XLAT)   /* Table Look-Up Translation */
 _ENUM_ELEMENT(XLATB)  /* Table Look-Up Translation */
+_ENUM_ELEMENT(MOVSX)  /* Move with Sign Extension */
+_ENUM_ELEMENT(MOVSXD) /* Move with Sign Extension */
+_ENUM_ELEMENT(SHRD)   /* Double-Precision Shift Right */
+_ENUM_ELEMENT(SHLD)   /* Double-Precision Shift Left */
 /* Port */
 _ENUM_ELEMENT(_IN)    /* Input from Port */
 _ENUM_ELEMENT(INS)    /* Input from Port to String */

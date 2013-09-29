@@ -89,6 +89,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		{
 		case 0x0F38:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
+#if 0
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix 66h */
@@ -105,6 +106,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 				element = &OpCodeMapThreeByte0F38PrefixF3[opcode & 0xFF];
 			}
 			else
+#endif /* 0 */
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh) */
 				element = &OpCodeMapThreeByte0F38[opcode & 0xFF];
@@ -112,6 +114,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			break;
 		case 0x0F3A:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
+#if 0
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix 66h */
@@ -128,12 +131,14 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 				element = &OpCodeMapThreeByte0F3APrefixF3[opcode & 0xFF];
 			}
 			else
+#endif /* 0 */
 			{
 				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
 				element = &OpCodeMapThreeByte0F3A[opcode & 0xFF];
 			}
 			break;
 		default:
+#if 0
 			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
 			{
 				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix 66h */
@@ -150,6 +155,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 				element = &OpCodeMapTwoByte0FPrefixF3[opcode & 0xFF];
 			}
 			else
+#endif /* 0 */
 			{
 				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
 				element = &OpCodeMapTwoByte0F[opcode & 0xFF];
@@ -367,6 +373,11 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
 		GroupDecode(pContext, pInfo);
+		if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
+		{
+			pInfo->mnemonic = DB;
+			return 0;
+		}
 
 		switch (pInfo->ModRM.fields.Mod)
 		{
