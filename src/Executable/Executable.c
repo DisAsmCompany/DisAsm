@@ -58,6 +58,11 @@ uint32_t RVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 	return offset;
 }
 
+int IsAlphaNumeric(char c)
+{
+	return ('A' <= c && c <= 'Z') || ('a' <= c && c <= 'z') || ('0' <= c && c <= '9');
+}
+
 void PrintSignature(uint32_t Signature, uint8_t size)
 {
 	uint8_t i = 0;
@@ -67,7 +72,7 @@ void PrintSignature(uint32_t Signature, uint8_t size)
 	for (i = 0; i < size; ++i)
 	{
 		char byte = (Signature >> (i * 8)) & 0xFF;
-		if (('A' <= byte && byte <= 'Z') || ('a' <= byte && byte <= 'z') || ('0' <= byte && byte <= '9'))
+		if (IsAlphaNumeric(byte))
 		{
 			printf("%c", byte);
 		}
@@ -340,7 +345,7 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 		name = FetchString(pContext, ptr);
 
 		// Forwarder RVA (within Export Directory)
-		if (pContext->OffsetExport <= address && address <= pContext->OffsetExport + pContext->SizeExport)
+		if (pContext->OffsetExport <= address && address + sizeof(uint32_t) <= pContext->OffsetExport + pContext->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
 

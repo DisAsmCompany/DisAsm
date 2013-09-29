@@ -19,9 +19,9 @@
 #include "../DisAsm/DisAsm"
 #include "StrAsm"
 
-void PrintByte(uint8_t value)
+void PrintByte(uint32_t value)
 {
-	printf("%X%X", value >> 4, value & 0xF);
+	printf("%02X", value);
 }
 
 uint8_t IsNegative(uint32_t value, uint8_t size)

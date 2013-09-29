@@ -117,7 +117,6 @@ void Group11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 
 void GroupDecode(HDISASM hDisAsm, InstructionInfo * pInfo)
 {
-
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	switch (pInfo->mnemonic)
 	{

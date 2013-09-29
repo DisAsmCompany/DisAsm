@@ -15,6 +15,7 @@
 _ENUM_START(Mnemonic)
 _ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
 _ENUM_ELEMENT(ESCAPEX87) /* Escape to CoProcessor Instruction Set */
+_ENUM_ELEMENT(ESCAPE3DNOW) /* Escape to 3DNow! Instruction Set */
 _ENUM_ELEMENT(DB)     /* Data Binary (not decoded instruction) */
 _ENUM_ELEMENT(DAA)    /* Decimal Adjust AL after Addition */
 _ENUM_ELEMENT(AAA)    /* ASCII Adjust AL after Addition */
@@ -94,6 +95,10 @@ _ENUM_ELEMENT(MOVSX)  /* Move with Sign Extension */
 _ENUM_ELEMENT(MOVSXD) /* Move with Sign Extension */
 _ENUM_ELEMENT(SHRD)   /* Double-Precision Shift Right */
 _ENUM_ELEMENT(SHLD)   /* Double-Precision Shift Left */
+_ENUM_ELEMENT(LAR)    /* Load Access Right Byte */
+_ENUM_ELEMENT(LSL)    /* Load Segment Limit */
+_ENUM_ELEMENT(BSWAP)  /* Byte Swap */
+_ENUM_ELEMENT(RSM)    /* Resume From System Management Mode */
 /* Port */
 _ENUM_ELEMENT(_IN)    /* Input from Port */
 _ENUM_ELEMENT(INS)    /* Input from Port to String */
@@ -220,6 +225,8 @@ _ENUM_ELEMENT(SETLE)    /* Set if Less or Equal */
 _ENUM_ELEMENT(SETNG)    /* Set if not Greater (same as SETLE) */
 _ENUM_ELEMENT(SETNLE)   /* Set if not Less or Equal */
 _ENUM_ELEMENT(SETG)     /* Set if Greater (same as SETNLE) */
+_ENUM_ELEMENT(INVD)     /* Invalidate Internal Caches */
+_ENUM_ELEMENT(WBINVD)   /* Write Back and Invalidate Caches */
 /* CMOVcc - Conditional Move */
 _ENUM_ELEMENT(CMOVO)     /* Conditional Move if Overflow */
 _ENUM_ELEMENT(CMOVNO)    /* Conditional Move if Not Overflow */
@@ -270,6 +277,8 @@ _ENUM_ELEMENT(GROUP15)
 _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
 _ENUM_ELEMENT(GROUPP)
+/* 3DNow! */
+_ENUM_ELEMENT(FEMMS)
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */

@@ -38,8 +38,7 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
 			uint8_t i;
 			for (i = 0; i < 4; ++i)
 			{
-				uint8_t value = (address >> (3 - i) * 8) & 0xFF;
-				printf("%X%X", value >> 4, value & 0x0F);
+				printf("%02X", (address >> (3 - i) * 8) & 0xFF);
 			}
 			printf(" ");
 		}
