@@ -60,12 +60,12 @@
 		4F71477417F9434700233DB6 /* PEOptionalHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476A17F9434700233DB6 /* PEOptionalHeader.h */; };
 		4F71477517F9434700233DB6 /* PESectionHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476B17F9434700233DB6 /* PESectionHeader.h */; };
 		4F71477717F9435300233DB6 /* Executable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F71477617F9435300233DB6 /* Executable.c */; };
-		4F71478017F943B900233DB6 /* libDisAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7146EE17F9424F00233DB6 /* libDisAsm.a */; };
-		4F71478117F943B900233DB6 /* libExecutable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71475D17F9432800233DB6 /* libExecutable.a */; };
-		4F71478217F943B900233DB6 /* libStrAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71473C17F942BB00233DB6 /* libStrAsm.a */; };
 		4F71478317F943C700233DB6 /* libDisAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7146EE17F9424F00233DB6 /* libDisAsm.a */; };
 		4F71478417F943C700233DB6 /* libExecutable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71475D17F9432800233DB6 /* libExecutable.a */; };
 		4F71478517F943C700233DB6 /* libStrAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71473C17F942BB00233DB6 /* libStrAsm.a */; };
+		4FF1B11517F95A6800309E02 /* libDisAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7146EE17F9424F00233DB6 /* libDisAsm.a */; };
+		4FF1B11617F95A6800309E02 /* libExecutable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71475D17F9432800233DB6 /* libExecutable.a */; };
+		4FF1B11717F95A6800309E02 /* libStrAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71473C17F942BB00233DB6 /* libStrAsm.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,42 +73,42 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F7146ED17F9424F00233DB6 /* DisAsm */;
+			remoteGlobalIDString = 4F7146ED17F9424F00233DB6;
 			remoteInfo = DisAsm;
 		};
 		4F71478817F943CE00233DB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F71473B17F942BB00233DB6 /* StrAsm */;
+			remoteGlobalIDString = 4F71473B17F942BB00233DB6;
 			remoteInfo = StrAsm;
 		};
 		4F71478A17F943CE00233DB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F71475C17F9432800233DB6 /* Executable */;
+			remoteGlobalIDString = 4F71475C17F9432800233DB6;
 			remoteInfo = Executable;
 		};
 		4F71478C17F943D900233DB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F7146ED17F9424F00233DB6 /* DisAsm */;
+			remoteGlobalIDString = 4F7146ED17F9424F00233DB6;
 			remoteInfo = DisAsm;
 		};
 		4F71478E17F943D900233DB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F71473B17F942BB00233DB6 /* StrAsm */;
+			remoteGlobalIDString = 4F71473B17F942BB00233DB6;
 			remoteInfo = StrAsm;
 		};
 		4F71479017F943D900233DB6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4F71475C17F9432800233DB6 /* Executable */;
+			remoteGlobalIDString = 4F71475C17F9432800233DB6;
 			remoteInfo = Executable;
 		};
 /* End PBXContainerItemProxy section */
@@ -224,9 +224,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4F71478017F943B900233DB6 /* libDisAsm.a in Frameworks */,
-				4F71478117F943B900233DB6 /* libExecutable.a in Frameworks */,
-				4F71478217F943B900233DB6 /* libStrAsm.a in Frameworks */,
+				4FF1B11517F95A6800309E02 /* libDisAsm.a in Frameworks */,
+				4FF1B11617F95A6800309E02 /* libExecutable.a in Frameworks */,
+				4FF1B11717F95A6800309E02 /* libStrAsm.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,9 +636,11 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OBJROOT = ../../tmp/;
 				ONLY_ACTIVE_ARCH = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				SYMROOT = ../../bin/;
 			};
 			name = Debug;
 		};
@@ -649,8 +651,10 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				OBJROOT = ../../tmp/;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				SYMROOT = ../../bin/;
 			};
 			name = Release;
 		};
