@@ -11,9 +11,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#endif /* _WIN32 */
 
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
@@ -89,8 +93,10 @@ int main(int argc, char * const argv[])
 	}
 	if (memory)
 	{
+#ifdef _WIN32
 		base = (uint32_t) LoadLibraryA(argv[1]);
 		hReader = MemoryReaderCreate((void*)base, 0);
+#endif /* _WIN32 */
 	}
 	else
 	{
@@ -121,7 +127,7 @@ int main(int argc, char * const argv[])
 		char * name = ExecutableGetExportFunctionName(hExecutable, i);
 		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
 		uint32_t address = ExecutableGetExportFunctionAddress(hExecutable, i);
-		if (NULL == address)
+		if (0 == address)
 		{
 			continue;
 		}

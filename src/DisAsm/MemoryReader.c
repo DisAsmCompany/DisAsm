@@ -24,7 +24,7 @@ MemoryReaderContext;
 
 #define AccessPrivateData(x) ((MemoryReaderContext*)(x->pPrivate))
 
-int MemoryReaderRead(ReaderContext * pContext, uint8_t * buffer, uint32_t size)
+int MemoryReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
 	memcpy(buffer, AccessPrivateData(pContext)->buffer + AccessPrivateData(pContext)->offset, size);
 	AccessPrivateData(pContext)->offset += size;

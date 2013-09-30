@@ -5,6 +5,11 @@
 *.obj
 *.o
 *.db
+*.a
+*.so
+*.xcworkspacedata
+*.pbxuser
+*.perspectivev3
 bin/
 tmp/
 log/

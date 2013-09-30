@@ -11,9 +11,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#else /* _WIN32 */
+#include <sys/time.h>
+#endif /* _WIN32 */
 #include "DisAsm"
 
 typedef struct BenchmarkContext_t
@@ -30,9 +34,13 @@ BenchmarkContext;
 HBENCHMARK BenchmarkCreate()
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) malloc(sizeof(BenchmarkContext));
+#ifdef _WIN32
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
 	pContext->frequency = li.QuadPart;
+#else /* _WIN32 */
+	pContext->frequency = 1000;
+#endif /* _WIN32 */
 	pContext->count = 0;
 	pContext->total = 0;
 	pContext->_max = 0;
@@ -43,17 +51,29 @@ HBENCHMARK BenchmarkCreate()
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+#ifdef _WIN32
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	pContext->sample = li.QuadPart;
+#else /* _WIN32 */
+	struct timeval t;
+	gettimeofday(&t, NULL);
+	pContext->sample = 1000000 * t.tv_sec + t.tv_usec;
+#endif /* _WIN32 */
 }
 
 void BenchmarkSampleEnd(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+#ifdef _WIN32
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	pContext->sample = li.QuadPart - pContext->sample;
+#else /* _WIN32 */
+	struct timeval t;
+	gettimeofday(&t, NULL);
+	pContext->sample = (1000000 * t.tv_sec + t.tv_usec) - pContext->sample;
+#endif /* _WIN32 */
 	pContext->total += pContext->sample;
 	++pContext->count;
 	pContext->_max = (pContext->_max < pContext->sample) ? pContext->sample : pContext->_max;
@@ -75,4 +95,5 @@ void BenchmarkPrintData(HBENCHMARK hBenchmark)
 void BenchmarkDestroy(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+	free(pContext);
 }

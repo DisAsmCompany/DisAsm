@@ -31,7 +31,7 @@ int FileReaderSeek(ReaderContext * pContext, uint32_t pos)
 	return (0 == fseek(AccessPrivateData(pContext)->f, pos, SEEK_SET));
 }
 
-void FileReaderDestroy(HREADER hReader)
+void FileReaderDestroy(ReaderContext * hReader)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	FileReaderContext * pPrivate = (FileReaderContext*) pContext->pPrivate;

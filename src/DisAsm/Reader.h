@@ -15,9 +15,11 @@
 
 typedef void * HREADER;
 
-typedef int  (*pfnRead)(HREADER hReader, void * buffer, uint32_t size);
-typedef int  (*pfnSeek)(HREADER hReader, uint32_t pos);
-typedef void (*pfnDestroy)(HREADER hReader);
+struct ReaderContext_t;
+
+typedef int  (*pfnRead)(struct ReaderContext_t * hReader, void * buffer, uint32_t size);
+typedef int  (*pfnSeek)(struct ReaderContext_t * hReader, uint32_t pos);
+typedef void (*pfnDestroy)(struct ReaderContext_t * hReader);
 
 typedef struct ReaderContext_t
 {

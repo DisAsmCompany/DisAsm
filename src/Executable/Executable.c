@@ -16,6 +16,13 @@
 #include "../DisAsm/DisAsm"
 #include "Executable"
 
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif /* MIN */
+#ifndef MAX 
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif /* MAX */
+
 typedef struct ExecutableContext_t
 {
 	uint8_t memory;
@@ -281,7 +288,7 @@ char * UTC(uint32_t TimeStamp)
 char * FetchString(ExecutableContext * pContext, uint32_t address)
 {
 	char * buffer = NULL; 
-	uint8_t i = 0;
+	uint32_t i = 0;
 	if (0 == ReaderSeek(pContext->hReader, address))
 	{
 		return NULL;
@@ -356,7 +363,6 @@ int ProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDire
 	{
 		uint32_t address = 0;
 		uint32_t ptr = 0;
-		uint32_t j = 0;
 		ReaderSeek(pContext->hReader, pContext->OffsetExportFunctions + i * 4);
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
 		address = RVAToOffset(pContext, ptr);
@@ -432,7 +438,7 @@ int ProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory * pDire
 				if (0 == element) break;
 				if (element & 0x80000000UL)
 				{
-					printf("ordinal 0x%08X\n", element & ~0x80000000UL);
+					printf("ordinal 0x%08lX\n", element & ~0x80000000UL);
 				}
 				else
 				{
@@ -572,7 +578,6 @@ void ProcessDirectory(ExecutableContext * pContext, uint32_t index)
 
 int ExecutableInit(ExecutableContext * pContext)
 {
-	PEDataDirectory * ExportDataDirectory = NULL;
 	uint32_t size = 0;
 	uint32_t OffsetSectionHeaders = 0;
 
@@ -587,7 +592,6 @@ int ExecutableInit(ExecutableContext * pContext)
 		return 0;
 	}
 	{
-		uint8_t i = 0;
 		printf("MS DOS Header : \n");
 		printf("Signature          : "); PrintSignature(pContext->DOSHeader.Signature, 2);
 		printf("Bytes In Last Page : %d\n", pContext->DOSHeader.BytesInLastPage);
@@ -629,7 +633,6 @@ int ExecutableInit(ExecutableContext * pContext)
 		return 0;
 	}
 	{
-		uint8_t i = 0;
 		char * Characteristics = CharacteristicsToString(pContext->FileHeader.Characteristics);
 		printf("Signature : \n"); PrintSignature(pContext->Signature, 4);
 
@@ -653,7 +656,6 @@ int ExecutableInit(ExecutableContext * pContext)
 		return 0;
 	}
 	{
-		uint8_t i = 0;
 		char * Characteristics = DllCharacteristicsToString(pContext->OptionalHeader.DllCharacteristics);
 		printf("PE Optional Header : \n");
 		printf("Magic                          : 0x%04X (%s)\n", pContext->OptionalHeader.Magic, MagicToString(pContext->OptionalHeader.Magic));
@@ -690,8 +692,8 @@ int ExecutableInit(ExecutableContext * pContext)
 		free(Characteristics);
 	}
 	OffsetSectionHeaders = pContext->DOSHeader.AddressPE + sizeof(uint32_t) + sizeof(PEFileHeader) + pContext->FileHeader.SizeOfOptionalHeader;
-	pContext->DataDirectoriesCount = min(PEDataDirectoryCount, (pContext->FileHeader.SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
-	pContext->DataDirectoriesCount = min(pContext->OptionalHeader.NumberOfRvaAndSizes, pContext->DataDirectoriesCount);
+	pContext->DataDirectoriesCount = MIN(PEDataDirectoryCount, (pContext->FileHeader.SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
+	pContext->DataDirectoriesCount = MIN(pContext->OptionalHeader.NumberOfRvaAndSizes, pContext->DataDirectoriesCount);
 	if (pContext->DataDirectoriesCount > 0)
 	{
 		pContext->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * pContext->DataDirectoriesCount);
@@ -802,7 +804,6 @@ uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 
 uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
-	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	return sizeof(PEDOSHeader);
 }
 
