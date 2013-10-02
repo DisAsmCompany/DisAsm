@@ -9,15 +9,6 @@
 *
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#include <strsafe.h>
-#else /* _WIN32 */
-#include <sys/time.h>
-#endif /* _WIN32 */
 #include "DisAsm"
 
 typedef struct BenchmarkContext_t

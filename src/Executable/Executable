@@ -9,6 +9,7 @@
 *
 */
 
+/* PE - Portable Executable */
 #include "PEDOSHeader.h"
 #include "PEFileHeader.h"
 #include "PEDataDirectory.h"
@@ -18,4 +19,13 @@
 #include "PEImportDescriptor.h"
 #include "PEDebugDirectory.h"
 #include "PELoadConfigDirectory.h"
+#include "PEExecutable.h"
+/* Mach-O */
+#include "MachOHeader.h"
+#include "MachOFatHeader.h"
+#include "MachOLoadCommand.h"
+
+#include "ExecutableContext.h"
+#include "MachOLoadCommand.h"
+#include "MachOExecutable.h"
 #include "Executable.h"

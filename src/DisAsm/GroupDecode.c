@@ -151,6 +151,22 @@ void Group11Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+void Group15Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+		case 0: break;
+		case 1: break;
+		case 2: break;
+		case 3: break;
+		case 4: break;
+		case 5: break;
+		case 6: break;
+		case 7: break;
+		default: break;
+	}
+}
+
 /*
 according to AMD manual, /4 - /7 forms are defines as valid instructions (NOPs)
 for compatibility with future PREFETCH instructions
@@ -209,6 +225,7 @@ void GroupDecode(HDISASM hDisAsm, InstructionInfo * pInfo)
 	case GROUP5 : Group5Decode (pContext, pInfo); break;
 	case GROUP10: Group10Decode(pContext, pInfo); break;
 	case GROUP11: Group11Decode(pContext, pInfo); break;
+	case GROUP15: Group15Decode(pContext, pInfo); break;
 	case GROUP16: Group16Decode(pContext, pInfo); break;
 	case GROUPP : GroupPDecode (pContext, pInfo); break;
 	default: break;

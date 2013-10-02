@@ -9,10 +9,6 @@
 *
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include "../DisAsm/DisAsm"
 #include "Executable"
 
@@ -22,29 +18,6 @@
 #ifndef MAX 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif /* MAX */
-
-typedef struct ExecutableContext_t
-{
-	uint8_t memory;
-	HREADER hReader;
-	uint32_t index;
-	uint32_t Signature;
-	PEDOSHeader DOSHeader;
-	PEFileHeader FileHeader;
-	PEOptionalHeader OptionalHeader;
-	uint32_t DataDirectoriesCount;
-	PEDataDirectory * DataDirectories;
-	PESectionHeader * SectionHeaders;
-	PEExportDirectory ExportDirectory;
-	PEDebugDirectory DebugDirectory;
-	PELoadConfigDirectory LoadConfigDirectory;
-	uint32_t OffsetExport;
-	uint32_t SizeExport;
-	uint32_t OffsetExportFunctions;
-	uint32_t OffsetExportOrdinals;
-	uint32_t OffsetExportNames;
-}
-ExecutableContext;
 
 uint32_t RVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 {
@@ -576,12 +549,10 @@ void ProcessDirectory(ExecutableContext * pContext, uint32_t index)
 	printf("\n");
 }
 
-int ExecutableInit(ExecutableContext * pContext)
+int PEExecutableInit(ExecutableContext * pContext)
 {
 	uint32_t size = 0;
 	uint32_t OffsetSectionHeaders = 0;
-
-	pContext->index = 0;
 	
 	if (0 == ReaderRead(pContext->hReader, &pContext->DOSHeader, sizeof(PEDOSHeader)))
 	{
@@ -780,7 +751,7 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	pContext->SectionHeaders = NULL;
 	pContext->hReader = hReader;
 	pContext->memory = memory;
-	if (0 == ExecutableInit(pContext))
+	if (0 == PEExecutableInit(pContext) && 0 == MachOExecutableInit(pContext))
 	{
 		free(pContext);
 		return 0;

@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F58976317FC0DAE0075CF56 /* MachOHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58976217FC0DAE0075CF56 /* MachOHeader.h */; };
+		4F58976417FC0E060075CF56 /* Executable in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476117F9434700233DB6 /* Executable */; };
+		4F58977317FC0E240075CF56 /* StrAsm in Headers */ = {isa = PBXBuildFile; fileRef = 4F71474217F942DA00233DB6 /* StrAsm */; };
+		4F58978417FC0F7B0075CF56 /* MachOExecutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58978217FC0F7B0075CF56 /* MachOExecutable.h */; };
+		4F58978517FC0F7B0075CF56 /* MachOExecutable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F58978317FC0F7B0075CF56 /* MachOExecutable.c */; };
+		4F58978817FC0F9D0075CF56 /* PEExecutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58978617FC0F9D0075CF56 /* PEExecutable.h */; };
+		4F58978917FC0F9D0075CF56 /* PEExecutable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F58978717FC0F9D0075CF56 /* PEExecutable.c */; };
+		4F5897A417FC11070075CF56 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897A317FC11070075CF56 /* stdafx.h */; };
+		4F5897E117FC24BF0075CF56 /* MachOLoadCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */; };
+		4F5897ED17FC25F30075CF56 /* ExecutableContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897EC17FC25F30075CF56 /* ExecutableContext.h */; };
+		4F58981317FC27AA0075CF56 /* MachOFatHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58981217FC27AA0075CF56 /* MachOFatHeader.h */; };
 		4F7146F817F9427A00233DB6 /* Benchmark.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F217F9427A00233DB6 /* Benchmark.c */; };
 		4F7146F917F9427A00233DB6 /* DisAsm.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F317F9427A00233DB6 /* DisAsm.c */; };
 		4F7146FA17F9427A00233DB6 /* FileReader.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F417F9427A00233DB6 /* FileReader.c */; };
@@ -126,6 +137,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4F58976217FC0DAE0075CF56 /* MachOHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader.h; path = ../../src/Executable/MachOHeader.h; sourceTree = SOURCE_ROOT; };
+		4F58978217FC0F7B0075CF56 /* MachOExecutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOExecutable.h; path = ../../src/Executable/MachOExecutable.h; sourceTree = SOURCE_ROOT; };
+		4F58978317FC0F7B0075CF56 /* MachOExecutable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MachOExecutable.c; path = ../../src/Executable/MachOExecutable.c; sourceTree = SOURCE_ROOT; };
+		4F58978617FC0F9D0075CF56 /* PEExecutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEExecutable.h; path = ../../src/Executable/PEExecutable.h; sourceTree = SOURCE_ROOT; };
+		4F58978717FC0F9D0075CF56 /* PEExecutable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEExecutable.c; path = ../../src/Executable/PEExecutable.c; sourceTree = SOURCE_ROOT; };
+		4F5897A317FC11070075CF56 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../src/DisAsm/stdafx.h; sourceTree = SOURCE_ROOT; };
+		4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOLoadCommand.h; path = ../../src/Executable/MachOLoadCommand.h; sourceTree = SOURCE_ROOT; };
+		4F5897EC17FC25F30075CF56 /* ExecutableContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutableContext.h; path = ../../src/Executable/ExecutableContext.h; sourceTree = SOURCE_ROOT; };
+		4F58981217FC27AA0075CF56 /* MachOFatHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFatHeader.h; path = ../../src/Executable/MachOFatHeader.h; sourceTree = SOURCE_ROOT; };
 		4F7146EE17F9424F00233DB6 /* libDisAsm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDisAsm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F7146F217F9427A00233DB6 /* Benchmark.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Benchmark.c; path = ../../src/DisAsm/Benchmark.c; sourceTree = SOURCE_ROOT; };
 		4F7146F317F9427A00233DB6 /* DisAsm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DisAsm.c; path = ../../src/DisAsm/DisAsm.c; sourceTree = SOURCE_ROOT; };
@@ -239,6 +259,7 @@
 				4F71477617F9435300233DB6 /* Executable.c */,
 				4F71476117F9434700233DB6 /* Executable */,
 				4F71476217F9434700233DB6 /* Executable.h */,
+				4F5897A317FC11070075CF56 /* stdafx.h */,
 				4F71476317F9434700233DB6 /* PEDataDirectory.h */,
 				4F71476417F9434700233DB6 /* PEDebugDirectory.h */,
 				4F71476517F9434700233DB6 /* PEDOSHeader.h */,
@@ -257,6 +278,10 @@
 				4F71474317F942DA00233DB6 /* StrAsm.h */,
 				4F71473F17F942CB00233DB6 /* StrAsm.c */,
 				4F71473617F942AF00233DB6 /* main.c */,
+				4F58978217FC0F7B0075CF56 /* MachOExecutable.h */,
+				4F58978617FC0F9D0075CF56 /* PEExecutable.h */,
+				4F58978717FC0F9D0075CF56 /* PEExecutable.c */,
+				4F58978317FC0F7B0075CF56 /* MachOExecutable.c */,
 				4F7146FE17F9429600233DB6 /* MemoryReader.h */,
 				4F7146FF17F9429600233DB6 /* Mnemonic.h */,
 				4F71470017F9429600233DB6 /* ModRM.h */,
@@ -274,6 +299,9 @@
 				4F71470C17F9429600233DB6 /* OpCodeMapThreeByte0F38PrefixF3.h */,
 				4F71470D17F9429600233DB6 /* OpCodeMapTwoByte0F.h */,
 				4F71470E17F9429600233DB6 /* OpCodeMapTwoByte0FPrefix66.h */,
+				4F58981217FC27AA0075CF56 /* MachOFatHeader.h */,
+				4F5897EC17FC25F30075CF56 /* ExecutableContext.h */,
+				4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */,
 				4F71470F17F9429600233DB6 /* OpCodeMapTwoByte0FPrefixF2.h */,
 				4F71471017F9429600233DB6 /* OpCodeMapTwoByte0FPrefixF3.h */,
 				4F71471117F9429600233DB6 /* Operand.h */,
@@ -294,6 +322,7 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				4F58976217FC0DAE0075CF56 /* MachOHeader.h */,
 			);
 			name = DisAsm;
 			sourceTree = "<group>";
@@ -359,6 +388,7 @@
 				4F71473317F9429600233DB6 /* StrEnum.h in Headers */,
 				4F71473417F9429600233DB6 /* SupportBool.h in Headers */,
 				4F71473517F9429600233DB6 /* SupportInt.h in Headers */,
+				4F5897A417FC11070075CF56 /* stdafx.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,6 +396,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F58977317FC0E240075CF56 /* StrAsm in Headers */,
 				4F71474417F942DA00233DB6 /* StrAsm.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +414,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F58976417FC0E060075CF56 /* Executable in Headers */,
 				4F71476C17F9434700233DB6 /* Executable.h in Headers */,
 				4F71476D17F9434700233DB6 /* PEDataDirectory.h in Headers */,
 				4F71476E17F9434700233DB6 /* PEDebugDirectory.h in Headers */,
@@ -393,6 +425,12 @@
 				4F71477317F9434700233DB6 /* PELoadConfigDirectory.h in Headers */,
 				4F71477417F9434700233DB6 /* PEOptionalHeader.h in Headers */,
 				4F71477517F9434700233DB6 /* PESectionHeader.h in Headers */,
+				4F58976317FC0DAE0075CF56 /* MachOHeader.h in Headers */,
+				4F58978417FC0F7B0075CF56 /* MachOExecutable.h in Headers */,
+				4F58978817FC0F9D0075CF56 /* PEExecutable.h in Headers */,
+				4F5897E117FC24BF0075CF56 /* MachOLoadCommand.h in Headers */,
+				4F5897ED17FC25F30075CF56 /* ExecutableContext.h in Headers */,
+				4F58981317FC27AA0075CF56 /* MachOFatHeader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -556,6 +594,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F71477717F9435300233DB6 /* Executable.c in Sources */,
+				4F58978517FC0F7B0075CF56 /* MachOExecutable.c in Sources */,
+				4F58978917FC0F9D0075CF56 /* PEExecutable.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

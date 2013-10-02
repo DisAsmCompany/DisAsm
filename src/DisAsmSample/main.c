@@ -9,16 +9,6 @@
 *
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
-#include <strsafe.h>
-#endif /* _WIN32 */
-
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
