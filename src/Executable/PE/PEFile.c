@@ -379,6 +379,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	pContext->pPrivate                = pPEFileContext;
 	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
+	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;
 	pContext->pGetExportCount         = PEFileGetExportCount;
 	pContext->pGetExportAddress       = PEFileGetExportAddress;
 	pContext->pGetExportName          = PEFileGetExportName;

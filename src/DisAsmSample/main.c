@@ -13,9 +13,9 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address)
+void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t bitness)
 {
-	HDISASM hDisAsm = DisAsmCreate();
+	HDISASM hDisAsm = DisAsmCreate(bitness);
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	while (1)
@@ -108,7 +108,15 @@ int main(int argc, char * const argv[])
 	{
 		printf("Entry Point :\n");
 		ReaderSeek(hReader, entry);
-		DisAsmFunction(hReader, hBenchmark, entry + base);
+		DisAsmFunction(hReader, hBenchmark, entry + base, 32);
+		printf("\n");
+	}
+	entry = ExecutableGetStubEntryPoint(hExecutable);
+	if (0 != entry)
+	{
+		printf("Stub Entry Point :\n");
+		ReaderSeek(hReader, entry);
+		DisAsmFunction(hReader, hBenchmark, entry + base, 16);
 		printf("\n");
 	}
 	count = ExecutableGetExportCount(hExecutable);
@@ -129,7 +137,7 @@ int main(int argc, char * const argv[])
 		{
 			printf("%s\n", name);
 			ReaderSeek(hReader, address);
-			DisAsmFunction(hReader, hBenchmark, address + base);
+			DisAsmFunction(hReader, hBenchmark, address + base, 32);
 		}
 		printf("\n");
 		free(name);

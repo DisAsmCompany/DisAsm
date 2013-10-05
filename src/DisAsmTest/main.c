@@ -18,7 +18,7 @@
 
 void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 {
-	HDISASM hDisAsm = DisAsmCreate();
+	HDISASM hDisAsm = DisAsmCreate(32);
 	InstructionInfo info = {0};
 	uint8_t * buffer = (uint8_t*) &opcode;
 	uint8_t length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
@@ -30,7 +30,7 @@ void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 
 void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 {
-	HDISASM hDisAsm = DisAsmCreate();
+	HDISASM hDisAsm = DisAsmCreate(32);
 	uint8_t i = 0x00;
 	do
 	{

@@ -17,6 +17,7 @@ typedef struct DisAsmContext_t
 {
 	HREADER hReader;
 	uint8_t size;
+	uint8_t currentSize;
 }
 DisAsmContext;
 

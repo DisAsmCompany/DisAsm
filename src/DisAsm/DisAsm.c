@@ -14,11 +14,22 @@
 #include "DisAsmContext.h"
 #include "GroupDecode.h"
 
-HDISASM DisAsmCreate()
+HDISASM DisAsmCreate(uint32_t bitness)
 {
 	DisAsmContext * pContext = malloc(sizeof(DisAsmContext));
+	if (NULL == pContext)
+	{
+		return NULL;
+	}
 	pContext->hReader = NULL;
-	pContext->size = 4;
+	switch (bitness)
+	{
+	case 8 : pContext->size = 1; break;
+	case 16: pContext->size = 2; break;
+	case 32: pContext->size = 4; break;
+	case 64: pContext->size = 8; break;
+	default: break;
+	}
 	return (HDISASM) pContext;
 }
 
@@ -181,7 +192,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			{
 				if (OperandSize == element->mnemonic)
 				{
-					pContext->size = 2;
+					pContext->currentSize = 2;
 				}
 				pInfo->prefixes[pInfo->nPrefixes].opcode = opcode;
 				pInfo->prefixes[pInfo->nPrefixes].mnemonic = element->mnemonic;
@@ -303,15 +314,15 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		if (Ob == pOperand->type)
 		{
-			pInfo->sizeImm = 4;
+			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
 		}
 		if (LoType == v)
 		{
-			pInfo->sizeImm = (4 == pContext->size) ? 4 : 2;
+			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
 		}
 		if (LoType == z)
 		{
-			pInfo->sizeImm = (4 == pContext->size) ? 4 : 2;
+			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
 		}
 		if (LoType == w)
 		{
@@ -331,7 +342,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 
 	pInfo->length = 0;
 	pContext->hReader = hReader;
-	pContext->size = 4;
+	pContext->currentSize = pContext->size;
 
 	pInfo->nPrefixes = 0;
 
@@ -413,7 +424,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 
 OpCode _ChooseOpCode(uint8_t * buffer)
 {
-	HDISASM hDisAsm = DisAsmCreate();
+	HDISASM hDisAsm = DisAsmCreate(32);
 	InstructionInfo info = {0};
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	ChooseOpCode(pContext, &info);
