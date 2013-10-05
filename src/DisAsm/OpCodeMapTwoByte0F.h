@@ -75,9 +75,9 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F88h - 0F8Fh */
 	{JS, OP1(Jz)}, {JNS, OP1(Jz)}, {JP, OP1(Jz)}, {JNP, OP1(Jz)}, {JL, OP1(Jz)}, {JNL, OP1(Jz)}, {JLE, OP1(Jz)}, {JNLE, OP1(Jz)},
 	/* 0F90h - 0F97h */
-	{SETO, OP1(Jz)}, {SETNO, OP1(Jz)}, {SETB, OP1(Jz)}, {SETAE, OP1(Jz)}, {SETE, OP1(Jz)}, {SETNE, OP1(Jz)}, {SETBE, OP1(Jz)}, {SETA, OP1(Jz)},
+	{SETO, OP1(Eb)}, {SETNO, OP1(Eb)}, {SETB, OP1(Eb)}, {SETAE, OP1(Eb)}, {SETE, OP1(Eb)}, {SETNE, OP1(Eb)}, {SETBE, OP1(Eb)}, {SETA, OP1(Eb)},
 	/* 0F98h - 0F9Fh */
-	{SETS, OP1(Jz)}, {SETNS, OP1(Jz)}, {SETP, OP1(Jz)}, {SETNP, OP1(Jz)}, {SETL, OP1(Jz)}, {SETNL, OP1(Jz)}, {SETLE, OP1(Jz)}, {SETNLE, OP1(Jz)},
+	{SETS, OP1(Eb)}, {SETNS, OP1(Eb)}, {SETP, OP1(Eb)}, {SETNP, OP1(Eb)}, {SETL, OP1(Eb)}, {SETNL, OP1(Eb)}, {SETLE, OP1(Eb)}, {SETNLE, OP1(Eb)},
 	/* 0FA0h - 0FA7h */
 	{PUSH, OP1(Reg), FS}, {POP, OP1(Reg), FS}, {CPUID}, {DB}, {SHLD, OP3(Ev, Gv, Ib)}, {SHLD, OP3(Ev, Gv, Reg), 0, 0, CL}, {DB}, {DB},
 	/* 0FA8h - 0FAFh */
