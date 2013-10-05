@@ -264,6 +264,11 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->value.reg |= Reg32;
 			pOperand->base |= Reg32;
 		}
+		else if (LoType == q)
+		{
+			pOperand->value.reg |= Reg32;
+			pOperand->base |= Reg32;
+		}
 		else if (LoType == w)
 		{
 			pOperand->value.reg |= Reg16;
@@ -334,6 +339,34 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	}
 }
 
+void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	OpCodeMapElement * pElement = NULL;
+	uint32_t index = 0;
+	if (ESCAPEX87 == pInfo->mnemonic)
+	{
+		if (pInfo->ModRM.fields.Mod == 3)
+		{
+			index = pInfo->ModRM.fields.RM + pInfo->ModRM.fields.Reg * 8 + (pInfo->opcode - 0xD7) * 64;
+		}
+		else
+		{
+			index = pInfo->ModRM.fields.Reg + (pInfo->opcode - 0xD8) * 8;
+		}
+		pElement = &OpCodeMapX87[index];
+		pInfo->mnemonic = pElement->mnemonic;
+		pInfo->nOperands = OPCOUNT(pElement->type);
+		pInfo->operands[0].type = OP1GET(pElement->type);
+		pInfo->operands[1].type = OP2GET(pElement->type);
+		pInfo->operands[2].type = OP3GET(pElement->type);
+		pInfo->operands[3].type = OP4GET(pElement->type);
+		pInfo->operands[0].value.reg = pElement->reg1;
+		pInfo->operands[1].value.reg = pElement->reg2;
+		pInfo->operands[2].value.reg = pElement->reg3;
+		pInfo->operands[3].value.reg = pElement->reg4;
+	}
+}
+
 uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInfo * pInfo)
 {
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
@@ -354,6 +387,10 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 	}
 	pInfo->mnemonic = pElement->mnemonic;
 	pInfo->hasModRM = 0;
+	if (ESCAPEX87 == pInfo->mnemonic)
+	{
+		pInfo->hasModRM = 1;
+	}
 	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
 		pInfo->hasModRM = 1;
@@ -381,7 +418,8 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
 
 		GroupDecode(pContext, pInfo);
-		if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
+		x87Decode(pContext, pInfo);
+		if (ESCAPEX87 == pInfo->mnemonic || DB == pInfo->mnemonic || (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP))
 		{
 			pInfo->mnemonic = DB;
 			return 0;

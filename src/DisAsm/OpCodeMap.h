@@ -23,3 +23,4 @@
 #include "OpCodeMapThreeByte0F3APrefix66.h"
 #include "OpCodeMapThreeByte0F3APrefixF2.h"
 #include "OpCodeMapThreeByte0F3APrefixF3.h"
+#include "OpCodeMapX87.h"

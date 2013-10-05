@@ -290,6 +290,93 @@ _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
 _ENUM_ELEMENT(GROUPP)
 /* x87 FPU */
+_ENUM_ELEMENT(FADD)     /* Add */
+_ENUM_ELEMENT(FADDP)    /* Add */
+_ENUM_ELEMENT(FIADD)    /* Add */
+_ENUM_ELEMENT(FMUL)     /* Multiply */
+_ENUM_ELEMENT(FMULP)    /* Multiply */
+_ENUM_ELEMENT(FIMUL)    /* Multiply */
+_ENUM_ELEMENT(FCOM)     /* Compare Floating Point Values */
+_ENUM_ELEMENT(FICOM)    /* Compare Floating Point Values */
+_ENUM_ELEMENT(FCOMP)    /* Compare Floating Point Values */
+_ENUM_ELEMENT(FCOMPP)   /* Compare Floating Point Values */
+_ENUM_ELEMENT(FICOMP)   /* Compare Floating Point Values */
+_ENUM_ELEMENT(FCOMI)    /* Compare Floating Point Values and Set EFLAGS */
+_ENUM_ELEMENT(FCOMIP)   /* Compare Floating Point Values and Set EFLAGS */
+_ENUM_ELEMENT(FUCOM)    /* Unordered Compare Floating Point Values */
+_ENUM_ELEMENT(FUCOMP)   /* Unordered Compare Floating Point Values */
+_ENUM_ELEMENT(FUCOMI)   /* Unordered Compare Floating Point Values */
+_ENUM_ELEMENT(FUCOMPP)  /* Unordered Compare Floating Point Values */
+_ENUM_ELEMENT(FUCOMIP)  /* Unordered Compare and Set EFLAGS */
+_ENUM_ELEMENT(FSUB)     /* Subtract */
+_ENUM_ELEMENT(FSUBP)    /* Subtract */
+_ENUM_ELEMENT(FISUB)    /* Subtract */
+_ENUM_ELEMENT(FSUBR)    /* Reverse Subtract */
+_ENUM_ELEMENT(FSUBRP)   /* Reverse Subtract */
+_ENUM_ELEMENT(FISUBR)   /* Reverse Subtract */
+_ENUM_ELEMENT(FDIV)     /* Divide */
+_ENUM_ELEMENT(FDIVP)    /* Divide */
+_ENUM_ELEMENT(FIDIV)    /* Divide */
+_ENUM_ELEMENT(FDIVR)    /* Reverse Divide */
+_ENUM_ELEMENT(FDIVRP)   /* Reverse Divide */
+_ENUM_ELEMENT(FIDIVR)   /* Reverse Divide */
+_ENUM_ELEMENT(FLD)      /* Load Floating Point Value */
+_ENUM_ELEMENT(FLDENV)   /* Load x87 FPU Environment */
+_ENUM_ELEMENT(FLDCW)    /* Load x87 FPU Control Word */
+_ENUM_ELEMENT(FILD)     /* Load Integer */
+_ENUM_ELEMENT(FST)      /* Store Floating Point Value */
+_ENUM_ELEMENT(FSTP)     /* Store Floating Point Value */
+_ENUM_ELEMENT(FSTENV)   /* Store x87 FPU Environment */
+_ENUM_ELEMENT(FSTCW)    /* Store x87 FPU Control Word */
+_ENUM_ELEMENT(FSTSW)    /* Store x87 FPU Status Word */
+_ENUM_ELEMENT(FNSTSW)   /* Store x87 FPU Status Word */
+_ENUM_ELEMENT(FISTTP)   /* Store Integer with Truncation */
+_ENUM_ELEMENT(FIST)     /* Store Integer */
+_ENUM_ELEMENT(FISTP)    /* Store Integer */
+_ENUM_ELEMENT(FCMOVB)   /* Move if Below */
+_ENUM_ELEMENT(FCMOVE)   /* Move if Equal */
+_ENUM_ELEMENT(FCMOVBE)  /* Move if Below or Equal */
+_ENUM_ELEMENT(FCMOVU)   /* Move if Unordered */
+_ENUM_ELEMENT(FCMOVNB)  /* Move if Not Below */
+_ENUM_ELEMENT(FCMOVNE)  /* Move if Not Equal */
+_ENUM_ELEMENT(FCMOVNBE) /* Move if Not Below or Equal */
+_ENUM_ELEMENT(FCMOVNU)  /* Move if Not Unordered */
+_ENUM_ELEMENT(FXCH)     /* Exchange Register Contents */
+_ENUM_ELEMENT(FLD1)     /* Load Constant (1.0) */
+_ENUM_ELEMENT(FLDL2T)   /* Load Constant (log2 10) */
+_ENUM_ELEMENT(FLDL2E)   /* Load Constant (log2 e) */
+_ENUM_ELEMENT(FLDPI)    /* Load Constant (PI) */
+_ENUM_ELEMENT(FLDLG2)   /* Load Constant (log10 2) */
+_ENUM_ELEMENT(FLDLN2)   /* Load Constant (ln 2) */
+_ENUM_ELEMENT(FLDZ)     /* Load Constant (0.0) */
+_ENUM_ELEMENT(FNOP)     /* No Operation */
+_ENUM_ELEMENT(FFREE)    /* Free Floating Point Register */
+_ENUM_ELEMENT(FNCLEX)   /* Clear Exceptions */
+_ENUM_ELEMENT(FNINIT)   /* Initialize Floating-Point Unit */
+_ENUM_ELEMENT(FCHS)     /* Change Sign */
+_ENUM_ELEMENT(FABS)     /* Absolute Value */
+_ENUM_ELEMENT(FTST)     /* Test */
+_ENUM_ELEMENT(FXAM)     /* Examine ModR/M */
+_ENUM_ELEMENT(F2XM1)    /* Compute 2^X - 1 */
+_ENUM_ELEMENT(FYL2X)    /* Compute Y * log2 X */
+_ENUM_ELEMENT(FPTAN)    /* Partial Tangent */
+_ENUM_ELEMENT(FPATAN)   /* Partial Arctangent */
+_ENUM_ELEMENT(FXTRACT)  /* Extract Exponent and Significant */
+_ENUM_ELEMENT(FPREM)    /* Partial Remainder */
+_ENUM_ELEMENT(FPREM1)   /* Partial Remainder */
+_ENUM_ELEMENT(FDECSTP)  /* Decrement Stack-Top Pointer */
+_ENUM_ELEMENT(FINCSTP)  /* Increment Stack-Top Pointer */
+_ENUM_ELEMENT(FYL2XP1)  /* Compute Y * log2 (X + 1) */
+_ENUM_ELEMENT(FSQRT)    /* Square Root */
+_ENUM_ELEMENT(FSINCOS)  /* Sine and Cosine */
+_ENUM_ELEMENT(FSIN)     /* Sine */
+_ENUM_ELEMENT(FCOS)     /* Cosine */
+_ENUM_ELEMENT(FRNDINT)  /* Round to Integer */
+_ENUM_ELEMENT(FSCALE)   /* Scale */
+_ENUM_ELEMENT(FBLD)     /* Load Binary Coded Decimal */
+_ENUM_ELEMENT(FBSTP)    /* Store Binary Coded Decimal and Pop */
+_ENUM_ELEMENT(FRSTOR)   /* Restore x87 FPU State */
+_ENUM_ELEMENT(FNSAVE)   /* Store x87 FPU State */
 /* 3DNow! */
 _ENUM_ELEMENT(FEMMS)
 /* prefixes */

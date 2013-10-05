@@ -301,6 +301,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapX87.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\Operand.h"
 				>
 			</File>

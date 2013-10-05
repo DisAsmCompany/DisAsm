@@ -44,66 +44,26 @@ typedef enum OperandType_t
 	z = 0x03, /* word for 16-bit operand size, double-word for 32-bit or 64-bit operand-size */
 	p = 0x04, /* 32-bit, 48-bit, 80-bit pointer depending on operand-size attribute */
 	w = 0x05, /* word, regardless of operand size attribute*/ 
+	q = 0x06, /* quad-word, regardless of operand size attribute*/ 
 
-	Eb = E | b,
-	Ev = E | v,
-	Ez = E | z,
-	Ep = E | p,
-	Ew = E | w,
+#define DEFINE_TYPE(T) \
+	T##b = T | b, \
+	T##v = T | v, \
+	T##z = T | z, \
+	T##p = T | p, \
+	T##w = T | w, \
+	T##q = T | q, \
 
-	Gb = G | b,
-	Gv = G | v,
-	Gz = G | z,
-	Gp = G | p,
-	Gw = G | w,
-
-	Ib = I | b,
-	Iv = I | v,
-	Iz = I | z,
-	Ip = I | p,
-	Iw = I | w,
-
-	Jb = J | b,
-	Jv = J | v,
-	Jz = J | z,
-	Jp = J | p,
-	Jw = J | w,
-
-	Mb = M | b,
-	Mv = M | v,
-	Mz = M | z,
-	Mp = M | p,
-	Mw = M | w,
-
-	Ob = O | b,
-	Ov = O | v,
-	Oz = O | z,
-	Op = O | p,
-	Ow = O | w,
-
-	Xb = X | b,
-	Xv = X | v,
-	Xz = X | z,
-	Xp = X | p,
-	Xw = X | w,
-
-	Yb = Y | b,
-	Yv = Y | v,
-	Yz = Y | z,
-	Yp = Y | p,
-	Yw = Y | w,
-
-	Sb = S | b,
-	Sv = S | v,
-	Sz = S | z,
-	Sp = S | p,
-	Sw = S | w,
-
-	Fb = F | b,
-	Fv = F | v,
-	Fz = F | z,
-	Fp = F | p,
-	Fw = F | w,
+	DEFINE_TYPE(E)
+	DEFINE_TYPE(G)
+	DEFINE_TYPE(I)
+	DEFINE_TYPE(J)
+	DEFINE_TYPE(M)
+	DEFINE_TYPE(O)
+	DEFINE_TYPE(X)
+	DEFINE_TYPE(Y)
+	DEFINE_TYPE(S)
+	DEFINE_TYPE(F)
 
 	ShiftOperand0 = 0,
 	ShiftOperand1 = 8,
