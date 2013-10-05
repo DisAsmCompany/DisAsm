@@ -97,7 +97,6 @@ void Group4Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
-
 void Group5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	pInfo->nOperands = 1;

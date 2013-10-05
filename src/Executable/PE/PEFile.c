@@ -108,7 +108,7 @@ uint32_t PERVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	uint32_t i = 0;
-	char * name = "";
+	char * name = NULL;
 	THIS->OffsetExport = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	THIS->SizeExport = pDirectory->Size;
 	if (pDirectory->Size < sizeof(PEExportDirectory))
@@ -160,6 +160,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 			printf("0x%04X 0x%08X %s\n", i, address, name);
 		}
 		free(name);
+		name = NULL;
 	}
 	return 1;
 }
@@ -169,6 +170,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 	uint32_t offset = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	uint32_t address = 0;
 	uint32_t pos = 0;
+	char * name = NULL;
 	if (0 == offset)
 	{
 		return 0;
@@ -190,6 +192,9 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 			break;
 		}
 		address = PERVAToOffset(pContext, ImportDescriptor.Name);
+		name = FetchString(pContext, address);
+		printf("Import %s\n", name ? name : "");
+		free(name);
 		PEPrintImportDescriptor(&ImportDescriptor);
 		address = PERVAToOffset(pContext, ImportDescriptor.OriginalFirstThunk);
 		if (0 != address)
@@ -216,6 +221,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 					free(name);
 				}
 			}
+			printf("\n");
 		}
 		pos += sizeof(PEImportDescriptor);
 	}
