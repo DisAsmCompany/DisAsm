@@ -1,5 +1,5 @@
 /*
- * Filename: MachOExecutable.c
+ * Filename: MachOFile.c
  * Author:   DisAsmCompany
  * Date:     02/10/2013
  *
@@ -9,9 +9,8 @@
  *
  */
 
-#include "../DisAsm/DisAsm"
-#include "mach-o/loader.h"
-#include "Executable"
+#include "../../DisAsm/DisAsm"
+#include "../Executable"
 
 uint32_t LEtoBE(uint32_t value)
 {
@@ -27,7 +26,7 @@ int MachOExecutableProcess(ExecutableContext * pContext)
 	return 0;
 }
 
-int MachOExecutableInit(ExecutableContext * pContext)
+int MachOFileCreate(ExecutableContext * pContext)
 {
 	uint32_t magic = 0;
 	uint32_t count = 0;

@@ -9,23 +9,21 @@
 *
 */
 
-/* PE - Portable Executable */
-#include "PEDOSHeader.h"
-#include "PEFileHeader.h"
-#include "PEDataDirectory.h"
-#include "PEOptionalHeader.h"
-#include "PESectionHeader.h"
-#include "PEExportDirectory.h"
-#include "PEImportDescriptor.h"
-#include "PEDebugDirectory.h"
-#include "PELoadConfigDirectory.h"
-#include "PEExecutable.h"
-/* Mach-O */
-#include "MachOHeader.h"
-#include "MachOFatHeader.h"
-#include "MachOLoadCommand.h"
-
-#include "ExecutableContext.h"
-#include "MachOLoadCommand.h"
-#include "MachOExecutable.h"
 #include "Executable.h"
+
+/* PE - Portable Executable */
+#include "PE/PEDOSHeader.h"
+#include "PE/PEFileHeader.h"
+#include "PE/PEDataDirectory.h"
+#include "PE/PEOptionalHeader.h"
+#include "PE/PESectionHeader.h"
+#include "PE/PEExportDirectory.h"
+#include "PE/PEImportDescriptor.h"
+#include "PE/PEDebugDirectory.h"
+#include "PE/PELoadConfigDirectory.h"
+#include "PE/PEFile.h"
+/* Mach-O */
+#include "MachO/MachOHeader.h"
+#include "MachO/MachOFatHeader.h"
+#include "MachO/MachOLoadCommand.h"
+#include "MachO/MachOFile.h"

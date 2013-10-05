@@ -17,6 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
+#include <assert.h>
 #ifdef _WIN32
 #include <windows.h>
 #include <tchar.h>
@@ -24,5 +26,12 @@
 #else /* _WIN32 */
 #include <sys/time.h>
 #endif /* _WIN32 */
+
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif /* MIN */
+#ifndef MAX 
+#define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif /* MAX */
 
 #endif /* __STDAFX_H__ */

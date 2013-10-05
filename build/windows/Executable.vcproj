@@ -152,6 +152,18 @@
 				RelativePath="..\..\src\Executable\Executable.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\Executable\MachO\MachOFile.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Executable\PE\PEFile.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Executable\PE\PEString.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -166,42 +178,74 @@
 				RelativePath="..\..\src\Executable\Executable.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEDataDirectory.h"
+			<Filter
+				Name="PE"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEDebugDirectory.h"
+				<File
+					RelativePath="..\..\src\Executable\PE\PEDataDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEDebugDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEDOSHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEExportDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEFileHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEImportDescriptor.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PELoadConfigDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEOptionalHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PESectionHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEString.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="MachO"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEDOSHeader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEExportDirectory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEFileHeader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEImportDescriptor.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PELoadConfigDirectory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PEOptionalHeader.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Executable\PESectionHeader.h"
-				>
-			</File>
+				<File
+					RelativePath="..\..\src\Executable\MachO\MachOFatHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\MachO\MachOFile.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\MachO\MachOHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\MachO\MachOLoadCommand.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

@@ -9,6 +9,10 @@
 *
 */
 
+#include "../DisAsm/DisAsm"
+#include "../StrAsm/StrAsm"
+#include "../Executable/Executable"
+
 #include "TestAssert.h"
 
 void TestAssert(int expression)

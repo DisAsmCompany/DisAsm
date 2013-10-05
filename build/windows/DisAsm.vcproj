@@ -325,6 +325,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\stdafx.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\StrEnum.h"
 				>
 			</File>

@@ -111,12 +111,12 @@ int main(int argc, char * const argv[])
 		DisAsmFunction(hReader, hBenchmark, entry + base);
 		printf("\n");
 	}
-	count = ExecutableGetExportFunctionCount(hExecutable);
+	count = ExecutableGetExportCount(hExecutable);
 	for (i = 0; i < count; ++i)
 	{
-		char * name = ExecutableGetExportFunctionName(hExecutable, i);
+		char * name = ExecutableGetExportName(hExecutable, i);
 		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
-		uint32_t address = ExecutableGetExportFunctionAddress(hExecutable, i);
+		uint32_t address = ExecutableGetExportAddress(hExecutable, i);
 		if (0 == address)
 		{
 			continue;
