@@ -134,6 +134,7 @@ DF
 
 */
 
+#pragma once
 #ifndef __OPCODEMAPX87_H__
 #define __OPCODEMAPX87_H__
 

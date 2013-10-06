@@ -12,7 +12,6 @@
 #include "DisAsm"
 #include "OpCodeMap.h"
 #include "DisAsmContext.h"
-#include "GroupDecode.h"
 
 HDISASM DisAsmCreate(uint32_t bitness)
 {
@@ -360,6 +359,41 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	}
 }
 
+void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
+{
+	pInfo->mnemonic = pElement->mnemonic;
+	pInfo->nOperands = OPCOUNT(pElement->type);
+	pInfo->operands[0].type = OP1GET(pElement->type);
+	pInfo->operands[1].type = OP2GET(pElement->type);
+	pInfo->operands[2].type = OP3GET(pElement->type);
+	pInfo->operands[3].type = OP4GET(pElement->type);
+	pInfo->operands[0].value.reg = pElement->reg1;
+	pInfo->operands[1].value.reg = pElement->reg2;
+	pInfo->operands[2].value.reg = pElement->reg3;
+	pInfo->operands[3].value.reg = pElement->reg4;
+}
+
+void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
+	{
+		uint32_t index = (pInfo->mnemonic - GROUP1) * 8 + pInfo->ModRM.fields.Reg;
+		OpCodeMapElement * pElement = &OpCodeMapGroup[index];
+		pInfo->mnemonic = pElement->mnemonic;
+		/* GROUP3 TEST (/0 and /1) is tricky one */
+		if (GROUP3 == pInfo->mnemonic && TEST == pElement->mnemonic)
+		{
+			pInfo->mnemonic = TEST;
+			pInfo->nOperands = 2;
+			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
+		}
+		else if (pElement->type)
+		{
+			CopyElementInfo(pInfo, pElement);
+		}
+	}
+}
+
 void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	OpCodeMapElement * pElement = NULL;
@@ -375,16 +409,7 @@ void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 			index = pInfo->ModRM.fields.Reg + (pInfo->opcode - 0xD8) * 8;
 		}
 		pElement = &OpCodeMapX87[index];
-		pInfo->mnemonic = pElement->mnemonic;
-		pInfo->nOperands = OPCOUNT(pElement->type);
-		pInfo->operands[0].type = OP1GET(pElement->type);
-		pInfo->operands[1].type = OP2GET(pElement->type);
-		pInfo->operands[2].type = OP3GET(pElement->type);
-		pInfo->operands[3].type = OP4GET(pElement->type);
-		pInfo->operands[0].value.reg = pElement->reg1;
-		pInfo->operands[1].value.reg = pElement->reg2;
-		pInfo->operands[2].value.reg = pElement->reg3;
-		pInfo->operands[3].value.reg = pElement->reg4;
+		CopyElementInfo(pInfo, pElement);
 	}
 }
 
@@ -406,30 +431,21 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 		//__asm int 3;
 		return 0;
 	}
-	pInfo->mnemonic = pElement->mnemonic;
 	pInfo->hasModRM = 0;
 	pInfo->set = GP;
-	if (ESCAPEX87 == pInfo->mnemonic)
+	if (ESCAPEX87 == pElement->mnemonic)
 	{
 		pInfo->hasModRM = 1;
 		pInfo->set = x87;
 	}
-	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
+	if (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP)
 	{
 		pInfo->hasModRM = 1;
 	}
 	pInfo->hasDisp = 0;
 	pInfo->hasImm  = 0;
 
-	pInfo->nOperands = OPCOUNT(pElement->type);
-	pInfo->operands[0].type = OP1GET(pElement->type);
-	pInfo->operands[1].type = OP2GET(pElement->type);
-	pInfo->operands[2].type = OP3GET(pElement->type);
-	pInfo->operands[3].type = OP4GET(pElement->type);
-	pInfo->operands[0].value.reg = pElement->reg1;
-	pInfo->operands[1].value.reg = pElement->reg2;
-	pInfo->operands[2].value.reg = pElement->reg3;
-	pInfo->operands[3].value.reg = pElement->reg4;
+	CopyElementInfo(pInfo, pElement);
 	pInfo->hasModRM |= HASMODRM(pInfo->operands[0].type);
 	pInfo->hasModRM |= HASMODRM(pInfo->operands[1].type);
 	pInfo->hasModRM |= HASMODRM(pInfo->operands[2].type);

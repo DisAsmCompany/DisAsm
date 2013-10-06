@@ -161,10 +161,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\GroupDecode.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\DisAsm\MemoryReader.c"
 				>
 			</File>
@@ -217,10 +213,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\DisAsm\GroupDecode.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\DisAsm\InstructionInfo.h"
 				>
 			</File>
@@ -250,6 +242,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\OpCodeMapElement.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\OpCodeMapGroup.h"
 				>
 			</File>
 			<File

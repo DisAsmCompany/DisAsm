@@ -381,6 +381,8 @@ _ENUM_ELEMENT(FBLD)     /* Load Binary Coded Decimal */
 _ENUM_ELEMENT(FBSTP)    /* Store Binary Coded Decimal and Pop */
 _ENUM_ELEMENT(FRSTOR)   /* Restore x87 FPU State */
 _ENUM_ELEMENT(FNSAVE)   /* Store x87 FPU State */
+/* MMX */
+_ENUM_ELEMENT(EMMS)     /* Empty MMX Technology State */
 /* 3DNow! */
 _ENUM_ELEMENT(FEMMS)
 /* prefixes */
