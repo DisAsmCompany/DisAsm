@@ -234,6 +234,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pOperand->value.reg = pInfo->ModRM.fields.Reg | RegSeg;
 		break;
 	case M:
+	case R:
 	case E:
 		pOperand->type = Reg;
 		pOperand->memory = pInfo->ModRM.fields.Mod != 3;
@@ -284,6 +285,24 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->value.reg |= Reg32;
 			pOperand->base |= Reg32;
+		}
+		break;
+	case C:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg;
+		if (LoType == d)
+		{
+			pOperand->value.reg |= RegControl;
+		}
+		break;
+	case D:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg;
+		if (LoType == d)
+		{
+			pOperand->value.reg |= RegDebug;
 		}
 		break;
 	case G:

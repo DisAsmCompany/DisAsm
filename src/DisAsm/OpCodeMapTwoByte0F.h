@@ -18,7 +18,7 @@
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 0     X X   X X X 0 X X   X   X X + 0
 1                 1 X X X X X X X X 1
-2                 2                 2
+2 X X X X         2                 2
 3 X X X X X X     3 +   +           3
 4 X X X X X X X X 4 X X X X X X X X 4
 5                 5                 5
@@ -47,7 +47,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	/* 0F18h - 0F1Fh */
 	{GROUP16}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)}, {NOP, OP1(Ev)},
 	/* 0F20h - 0F27h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{MOV, OP2(Rd, Cd)}, {MOV, OP2(Rd, Dd)}, {MOV, OP2(Cd, Rd)}, {MOV, OP2(Dd, Rd)}, {DB}, {DB}, {DB}, {DB},
 	/* 0F28h - 0F2Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F30h - 0F37h */

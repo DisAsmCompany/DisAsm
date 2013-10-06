@@ -100,7 +100,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	{
 		PrintValue(pInfo->imm);
 	}
-	if (HITYPE(pOperand->type) == Imm)
+	if (pOperand->type == Imm)
 	{
 		PrintValue(pInfo->imm);
 	}
