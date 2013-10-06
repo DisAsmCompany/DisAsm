@@ -16,9 +16,13 @@
 for each group we have 8 registers : 0 1 2 3 4 5 6 7
 that could be represented by 3 bits
 so each groups should be shifted by 3
+
+another trick is that registers should begin with value 0200h
+in order to allow coding of Operand Type / Register in single word field
+(see also OperandType.h for details on coding)
 */
 
-#define SHIFT3(x) (8 * x)
+#define SHIFT3(x) (0x0200UL + (x) * 8)
 
 _ENUM_START(Register)
 

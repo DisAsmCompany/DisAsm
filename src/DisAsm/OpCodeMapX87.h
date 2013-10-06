@@ -137,8 +137,8 @@ DF
 #ifndef __OPCODEMAPX87_H__
 #define __OPCODEMAPX87_H__
 
-#define X87ELEMENT1(X, Y) {X, OP1(Reg), Y}
-#define X87ELEMENT2(X, Y, Z) {X, OP2(Reg, Reg), Y, Z}
+#define X87ELEMENT1(X, Y) {X, OP1(Y)}
+#define X87ELEMENT2(X, Y, Z) {X, OP2(Y, Z)}
 
 #define X87LINE1(X) \
 	X87ELEMENT1(X, ST0), \
@@ -258,7 +258,7 @@ OpCodeMapElement OpCodeMapX87[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{FNSTSW, OP1(Reg), AX}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{FNSTSW, OP1(AX)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	X87LINE2(FCOMIP)
 	X87LINE2(FUCOMIP)
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
