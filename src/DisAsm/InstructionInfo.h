@@ -33,6 +33,7 @@ typedef struct InstructionInfo_t
 	uint8_t nPrefixes;
 	Prefix prefixes[MAX_PREFIXES];
 	uint8_t bytes[16];
+	InstructionSet set;
 }
 InstructionInfo;
 

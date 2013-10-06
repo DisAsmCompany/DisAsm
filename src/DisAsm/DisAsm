@@ -25,5 +25,6 @@
 #include "Mnemonic.h"
 #include "Operand.h"
 #include "Prefix.h"
+#include "InstructionSet.h"
 #include "InstructionInfo.h"
 #include "DisAsm.h"

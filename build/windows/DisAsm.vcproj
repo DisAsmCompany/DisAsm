@@ -225,6 +225,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\DisAsm\InstructionSet.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\MemoryReader.h"
 				>
 			</File>

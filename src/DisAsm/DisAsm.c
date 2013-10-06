@@ -409,9 +409,11 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 	}
 	pInfo->mnemonic = pElement->mnemonic;
 	pInfo->hasModRM = 0;
+	pInfo->set = GP;
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
 		pInfo->hasModRM = 1;
+		pInfo->set = x87;
 	}
 	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
