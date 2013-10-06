@@ -218,13 +218,13 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	if (Reg == pOperand->type)
 	{
 		pOperand->memory = 0;
-		if (pOperand->value.reg & rRegister)
+		if (rRegister <= pOperand->value.reg && pOperand->value.reg <= rRegister + 7)
 		{
-			pOperand->value.reg = (pOperand->value.reg & ~rRegister) | Reg32;
+			pOperand->value.reg = (pOperand->value.reg - rRegister) | Reg32;
 		}
-		if (pOperand->value.reg & eRegister)
+		if (eRegister <= pOperand->value.reg && pOperand->value.reg <= eRegister + 7)
 		{
-			pOperand->value.reg = (pOperand->value.reg & ~eRegister) | Reg32;
+			pOperand->value.reg = (pOperand->value.reg - eRegister) | Reg32;
 		}
 	}
 	switch (HiType)
