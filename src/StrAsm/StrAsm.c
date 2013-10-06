@@ -116,6 +116,14 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 			PrintValue(pInfo->imm);
 		}
 	}
+	if (HITYPE(pOperand->type) == X)
+	{
+		printf("DS:[ESI]");
+	}
+	if (HITYPE(pOperand->type) == Y)
+	{
+		printf("ES:[EDI]");
+	}
 }
 
 void StrAsmPrintInstruction(InstructionInfo * pInfo)
