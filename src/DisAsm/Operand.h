@@ -16,6 +16,7 @@
 typedef union uOperand_t
 {
 	Register reg;
+	uint8_t imm;
 }
 uOperand;
 

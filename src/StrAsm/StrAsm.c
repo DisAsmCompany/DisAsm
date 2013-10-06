@@ -102,7 +102,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	}
 	if (pOperand->type == Imm)
 	{
-		PrintValue(pInfo->imm);
+		PrintValue(pOperand->value.imm);
 	}
 	if (HITYPE(pOperand->type) == I)
 	{
@@ -132,6 +132,7 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 		printf("   ");
 	}
 	mnemonic = MnemonicToString(pInfo->mnemonic);
+	if (mnemonic[0] == '_') ++mnemonic;
 	printf("%s", mnemonic);
 
 	for (i = 0; i < pInfo->nOperands; ++i)
