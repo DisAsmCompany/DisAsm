@@ -98,6 +98,10 @@ _ENUM_ELEMENT(LAR)    /* Load Access Right Byte */
 _ENUM_ELEMENT(LSL)    /* Load Segment Limit */
 _ENUM_ELEMENT(BSWAP)  /* Byte Swap */
 _ENUM_ELEMENT(RSM)    /* Resume From System Management Mode */
+_ENUM_ELEMENT(BT)     /* Bit Test */
+_ENUM_ELEMENT(BTS)    /* Bit Test and Set */
+_ENUM_ELEMENT(BTR)    /* Bit Test and Reset */
+_ENUM_ELEMENT(BTC)    /* Bit Test and Complement */
 /* Undefined Instruction */
 _ENUM_ELEMENT(UD0)    /* Undefined Instruction */
 _ENUM_ELEMENT(UD1)    /* Undefined Instruction */

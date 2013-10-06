@@ -114,6 +114,22 @@ void Group5Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
+void Group8Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+{
+	switch (pInfo->ModRM.fields.Reg)
+	{
+	case 0: break;
+	case 1: break;
+	case 2: break;
+	case 3: break;
+	case 4: pInfo->mnemonic = BT;  break;
+	case 5: pInfo->mnemonic = BTS; break;
+	case 6: pInfo->mnemonic = BTR; break;
+	case 7: pInfo->mnemonic = BTC; break;
+	default: break;
+	}
+}
+
 /*
 according to AMD manual, all GROUP10 variants are defined as UD1, 
 according to Intel, it is just unnamed undefined instructions
@@ -222,6 +238,7 @@ void GroupDecode(HDISASM hDisAsm, InstructionInfo * pInfo)
 	case GROUP3 : Group3Decode (pContext, pInfo); break;
 	case GROUP4 : Group4Decode (pContext, pInfo); break;
 	case GROUP5 : Group5Decode (pContext, pInfo); break;
+	case GROUP8 : Group8Decode (pContext, pInfo); break;
 	case GROUP10: Group10Decode(pContext, pInfo); break;
 	case GROUP11: Group11Decode(pContext, pInfo); break;
 	case GROUP15: Group15Decode(pContext, pInfo); break;

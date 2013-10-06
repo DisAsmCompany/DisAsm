@@ -42,8 +42,23 @@ void MemoryReaderDestroy(ReaderContext * pContext)
 
 HREADER MemoryReaderCreate(void * buffer, uint32_t size)
 {
-	ReaderContext * pContext = (ReaderContext*) malloc(sizeof(ReaderContext));
-	MemoryReaderContext * pPrivate = (MemoryReaderContext*) malloc(sizeof(MemoryReaderContext));
+	ReaderContext * pContext = NULL;
+	MemoryReaderContext * pPrivate = NULL;
+	if (NULL == buffer)
+	{
+		return NULL;
+	}
+	pContext = (ReaderContext*) malloc(sizeof(ReaderContext));
+	if (NULL == pContext)
+	{
+		return NULL;
+	}
+	pPrivate = (MemoryReaderContext*) malloc(sizeof(MemoryReaderContext));
+	if (NULL == pPrivate)
+	{
+		free(pContext);
+		return NULL;
+	}
 	pPrivate->buffer = buffer;
 	pPrivate->size = size;
 	pPrivate->offset = 0;

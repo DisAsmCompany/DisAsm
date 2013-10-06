@@ -171,16 +171,16 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\src\Executable\Executable"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Executable\Executable.h"
 				>
 			</File>
 			<Filter
 				Name="PE"
 				>
+				<File
+					RelativePath="..\..\src\Executable\Executable"
+					>
+				</File>
 				<File
 					RelativePath="..\..\src\Executable\PE\PEDataDirectory.h"
 					>
