@@ -60,7 +60,7 @@ OpCodeMapElement OpCodeMapGroup[] =
 	according to AMD manual, /4 - /7 forms are defines as valid instructions (NOPs)
 	for compatibility with future PREFETCH instructions
 	*/
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PREFETCHT0}, {PREFETCHT1}, {PREFETCHT2}, {PREFETCHNTA}, {NOP}, {NOP}, {NOP}, {NOP},
 	/* GROUP17 */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUPP */
