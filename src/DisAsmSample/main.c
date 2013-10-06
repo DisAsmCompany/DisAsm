@@ -18,6 +18,7 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 	HDISASM hDisAsm = DisAsmCreate(bitness);
 	InstructionInfo info = {0};
 	uint8_t length = 0;
+	uint8_t ret = 0;
 	while (1)
 	{
 		BenchmarkSampleBegin(hBenchmark);
@@ -53,6 +54,16 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 		if (RET == info.mnemonic)
 		{
 			break;
+		}
+		/* detect sequence MOV EAX, 4C01h; INT 21h */
+		if (ret && 2 == info.length && 0xCD == info.bytes[0] && 0x21 == info.bytes[1])
+		{
+			break;
+		}
+		ret = 0;
+		if (3 == info.length && 0xB8 == info.bytes[0] && 0x01 == info.bytes[1] && 0x4C == info.bytes[2])
+		{
+			ret = 1;
 		}
 	}
 	DisAsmDestroy(hDisAsm);
