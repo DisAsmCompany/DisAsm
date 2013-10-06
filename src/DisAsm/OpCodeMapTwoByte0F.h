@@ -39,7 +39,7 @@ F                 F               X F
 OpCodeMapElement OpCodeMapTwoByte0F[] =
 {
 	/* 0F00h - 0F07h */
-	{DB}, {DB}, {LAR, OP2(Gv, Ew)}, {LSL, OP2(Gv, Ew)}, {DB}, {SYSCALL}, {CLTS}, {SYSRET},
+	{DB}, {DB}, {LAR, OP2(Gv, Ew)}, {LSL, OP2(Gv, Ew)}, {LOADALL}, {SYSCALL}, {CLTS}, {SYSRET},
 	/* 0F08h - 0F0Fh */
 	{INVD}, {WBINVD}, {DB}, {UD2}, {DB}, {GROUPP}, {FEMMS}, {ESCAPE3DNOW},
 	/* 0F10h - 0F17h */

@@ -22,7 +22,7 @@
 3 X X X X X X P X 3 X X X X X X P X 3
 4 X X X X X X X X 4 X X X X X X X X 4
 5 X X X X X X X X 5 X X X X X X X X 5
-6 X X     P P P P 6 X X X X X X X X 6
+6 X X   X P P P P 6 X X X X X X X X 6
 7 X X X X X X X X 7 X X X X X X X X 7
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 8 X X X X X X X X 8 X X X X X X X X 8
@@ -63,7 +63,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 57h - 5Fh */
 	{POP , OP1(rAX)}, {POP , OP1(rCX)}, {POP , OP1(rBX)}, {POP , OP1(rDX)}, {POP , OP1(rSP)}, {POP , OP1(rBP)}, {POP , OP1(rSI)}, {POP , OP1(rDI)},
 	/* 60h - 67h */
-	{PUSHA}, {POPA}, {DB}, {DB}, {PrefixFS}, {PrefixGS}, {OperandSize}, {AddressSize},
+	{PUSHA}, {POPA}, {DB}, {ARPL, OP2(Ew, Gw)}, {PrefixFS}, {PrefixGS}, {OperandSize}, {AddressSize},
 	/* 68h - 6Fh */
 	{PUSH, OP1(Iz)}, {IMUL, OP3(Gv, Ev, Iz)}, {PUSH, OP1(Ib)}, {IMUL, OP3(Gv, Ev, Ib)}, {INS, OP2(Yb, DX)}, {INS, OP2(Yz, DX)}, {OUTS, OP2(DX, Xb)}, {OUTS, OP2(DX, Xz)},
 	/* 70h - 77h */

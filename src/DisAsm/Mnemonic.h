@@ -102,6 +102,8 @@ _ENUM_ELEMENT(BT)     /* Bit Test */
 _ENUM_ELEMENT(BTS)    /* Bit Test and Set */
 _ENUM_ELEMENT(BTR)    /* Bit Test and Reset */
 _ENUM_ELEMENT(BTC)    /* Bit Test and Complement */
+_ENUM_ELEMENT(ARPL)   /* Adjust RPL Field of Segment Selector */
+_ENUM_ELEMENT(LOADALL)/* [Undocummented] Load All */
 /* Undefined Instruction */
 _ENUM_ELEMENT(UD0)    /* Undefined Instruction */
 _ENUM_ELEMENT(UD1)    /* Undefined Instruction */
