@@ -338,6 +338,11 @@ uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
 
+	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	{
+		return 0;
+	}
+
 	ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + index * sizeof(uint32_t));
 	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
 	return PERVAToOffset(pContext, address);
@@ -346,6 +351,11 @@ uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
+
+	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	{
+		return 0;
+	}
 
 	ReaderSeek(pContext->hReader, THIS->OffsetExportNames + index * sizeof(uint32_t));
 	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
@@ -356,6 +366,11 @@ char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
+
+	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	{
+		return 0;
+	}
 
 	ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + index * sizeof(uint32_t));
 	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
@@ -383,6 +398,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		return 0;
 	}
+	memset(pPEFileContext, 0, sizeof(PEFileContext));
 	pContext->pPrivate                = pPEFileContext;
 	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
 	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;

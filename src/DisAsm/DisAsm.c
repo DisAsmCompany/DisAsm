@@ -201,7 +201,6 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			}
 			else
 			{
-				__asm int 3;
 				return NULL;
 			}
 		}

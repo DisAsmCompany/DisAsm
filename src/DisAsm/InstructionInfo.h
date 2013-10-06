@@ -18,11 +18,11 @@ typedef struct InstructionInfo_t
 	uint8_t length;
 	OpCode opcode;
 	Mnemonic mnemonic;
-	uint8_t hasModRM;
-	uint8_t hasSIB;
-	uint8_t hasDisp;
+	uint8_t hasModRM : 1;
+	uint8_t hasSIB   : 1;
+	uint8_t hasDisp  : 1;
+	uint8_t hasImm   : 1;
 	uint8_t sizeDisp;
-	uint8_t hasImm;
 	uint8_t sizeImm;
 	ModRMu ModRM;
 	SIBu SIB;

@@ -58,13 +58,33 @@ void PrintValue(uint32_t value)
 	printf("h");
 }
 
+void PrintSegment(InstructionInfo * pInfo)
+{
+	uint8_t i;
+	for (i = 0; i < pInfo->nPrefixes; ++i)
+	{
+		switch (pInfo->prefixes[i].mnemonic)
+		{
+		case PrefixCS: printf("CS:"); break;
+		case PrefixSS: printf("SS:"); break;
+		case PrefixDS: printf("DS:"); break;
+		case PrefixES: printf("ES:"); break;
+		case PrefixFS: printf("FS:"); break;
+		case PrefixGS: printf("GS:"); break;
+		default:break;
+		}
+	}
+}
+
 void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 {
+	
 	if (pOperand->type == Reg)
 	{
 		char * reg = RegisterToString(pOperand->value.reg);
 		if (pOperand->memory)
 		{
+			PrintSegment(pInfo);
 			printf("[");
 
 			if (pOperand->scale > 1)
@@ -104,6 +124,13 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	{
 		PrintValue(pOperand->value.imm);
 	}
+	if (HITYPE(pOperand->type) == O)
+	{
+		PrintSegment(pInfo);
+		printf("[");
+		PrintValue(pInfo->imm);
+		printf("]");
+	}
 	if (HITYPE(pOperand->type) == I)
 	{
 		if (IsNegative(pInfo->imm, pInfo->sizeImm))
@@ -138,6 +165,23 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	for (i = pInfo->length; i < 15; ++i)
 	{
 		printf("   ");
+	}
+	for (i = 0; i < pInfo->nPrefixes; ++i)
+	{
+		switch (pInfo->prefixes[i].mnemonic)
+		{
+		case LOCK:
+		case REPNE:
+		case REPNZ:
+		case REP:
+		case REPE:
+		case REPZ:
+			mnemonic = MnemonicToString(pInfo->prefixes[i].mnemonic);
+			printf("%s ", mnemonic);
+			break;
+		default:
+			break;
+		}
 	}
 	mnemonic = MnemonicToString(pInfo->mnemonic);
 	if (mnemonic[0] == '_') ++mnemonic;

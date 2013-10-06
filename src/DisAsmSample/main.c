@@ -26,7 +26,7 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 		BenchmarkSampleEnd(hBenchmark);
 		if (0 == length)
 		{
-			printf("[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
+			fprintf(stderr, "[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
 			break;
 		}
 		{
