@@ -215,9 +215,8 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 {
 	OperandType HiType = HITYPE(pOperand->type);
 	OperandType LoType = LOTYPE(pOperand->type);
-	switch (HiType)
+	if (Reg == pOperand->type)
 	{
-	case Reg:
 		pOperand->memory = 0;
 		if (pOperand->value.reg & rRegister)
 		{
@@ -227,7 +226,9 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->value.reg = (pOperand->value.reg & ~eRegister) | Reg32;
 		}
-		break;
+	}
+	switch (HiType)
+	{
 	case S:
 		pOperand->type = Reg;
 		pOperand->memory = 0;
