@@ -192,5 +192,4 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 		printf(i > 0 ? ", " : " ");
 		PrintOperand(pInfo, &pInfo->operands[i]);
 	}
-	printf("\n");
 }

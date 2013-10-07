@@ -13,7 +13,63 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t bitness)
+typedef struct List_t
+{
+	uint32_t used;
+	uint32_t size;
+	uint32_t * memory;
+}
+List;
+
+List * ListCreate()
+{
+	List * list = (List*) malloc(sizeof(List));
+	list->used = 0;
+	list->size = 16;
+	list->memory = (uint32_t *) malloc(list->size * sizeof(uint32_t));
+	return list;
+}
+
+void ListDestroy(List * list)
+{
+	free(list->memory);
+	free(list);
+}
+
+uint32_t ListSize(List * list)
+{
+	return list->used;
+}
+
+void ListAdd(List * list, uint32_t value)
+{
+	uint32_t i = 0;
+	for (i = 0; i < list->used; ++i)
+	{
+		if (list->memory[i] == value)
+		{
+			return;
+		}
+	}
+	list->memory[list->used] = value;
+	if (++list->used == list->size)
+	{
+		list->size *= 2;
+		list->memory = realloc(list->memory, list->size * sizeof(uint32_t));
+	}
+}
+
+uint32_t ListGet(List * list, uint32_t index)
+{
+	return list->memory[index];
+}
+
+void PrintAddress(uint32_t address)
+{
+	printf("%08X", address);
+}
+
+void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, uint32_t bitness, List * list)
 {
 	HDISASM hDisAsm = DisAsmCreate(bitness);
 	InstructionInfo info = {0};
@@ -30,16 +86,21 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 			break;
 		}
 		{
-			uint8_t i;
-			for (i = 0; i < 4; ++i)
-			{
-				printf("%02X", (address >> (3 - i) * 8) & 0xFF);
-			}
+			PrintAddress(address);
 			printf(" ");
 		}
 		StrAsmPrintInstruction(&info);
 
 		address += length;
+
+		if (CALL == info.mnemonic && Jz == info.operands[0].type)
+		{
+			uint32_t offset = address + length + info.imm;
+			printf("; ");
+			PrintAddress(offset);
+			ListAdd(list, offset);
+		}
+		printf("\n");
 
 		if (JO <= info.mnemonic && info.mnemonic <= JG)
 		{
@@ -73,6 +134,7 @@ int main(int argc, char * const argv[])
 {
 	uint32_t base = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
+	List * list = ListCreate();
 	HREADER hReader = NULL;
 	HEXECUTABLE hExecutable = NULL;
 	uint32_t count = 0;
@@ -119,7 +181,7 @@ int main(int argc, char * const argv[])
 	{
 		printf("Entry Point :\n");
 		ReaderSeek(hReader, entry);
-		DisAsmFunction(hReader, hBenchmark, entry + base, 32);
+		DisAsmFunction(hReader, hBenchmark, entry, base, 32, list);
 		printf("\n");
 	}
 	entry = ExecutableGetStubEntryPoint(hExecutable);
@@ -127,7 +189,7 @@ int main(int argc, char * const argv[])
 	{
 		printf("Stub Entry Point :\n");
 		ReaderSeek(hReader, entry);
-		DisAsmFunction(hReader, hBenchmark, entry + base, 16);
+		DisAsmFunction(hReader, hBenchmark, entry, base, 16, list);
 		printf("\n");
 	}
 	count = ExecutableGetExportCount(hExecutable);
@@ -148,12 +210,21 @@ int main(int argc, char * const argv[])
 		{
 			printf("%s\n", name);
 			ReaderSeek(hReader, address);
-			DisAsmFunction(hReader, hBenchmark, address + base, 32);
+			DisAsmFunction(hReader, hBenchmark, address, base, 32, list);
 		}
 		printf("\n");
 		free(name);
 		free(forwarder);
 	}
+	for (i = 0; i < ListSize(list); ++i)
+	{
+		uint32_t element = ListGet(list, i);
+		ReaderSeek(hReader, element);
+		printf("function %d %08X :\n", i, element);
+		DisAsmFunction(hReader, hBenchmark, element, base, 32, list);
+		printf("\n");
+	}
+	ListDestroy(list);
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);
 	BenchmarkPrintData(hBenchmark);
