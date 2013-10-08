@@ -7,21 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4F58976317FC0DAE0075CF56 /* MachOHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58976217FC0DAE0075CF56 /* MachOHeader.h */; };
+		4F1ABEEC1803BA48007D245D /* MachOFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEEB1803BA48007D245D /* MachOFile.c */; };
+		4F1ABEEF1803BA56007D245D /* PEFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEED1803BA56007D245D /* PEFile.c */; };
+		4F1ABEF01803BA56007D245D /* PEString.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEEE1803BA56007D245D /* PEString.c */; };
+		4F1ABF1A1803BD87007D245D /* MachOFatHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF161803BD87007D245D /* MachOFatHeader.h */; };
+		4F1ABF1B1803BD87007D245D /* MachOFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF171803BD87007D245D /* MachOFile.h */; };
+		4F1ABF1C1803BD87007D245D /* MachOHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF181803BD87007D245D /* MachOHeader.h */; };
+		4F1ABF1D1803BD87007D245D /* MachOLoadCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF191803BD87007D245D /* MachOLoadCommand.h */; };
+		4F1ABF291803BD98007D245D /* PEDataDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF1E1803BD98007D245D /* PEDataDirectory.h */; };
+		4F1ABF2A1803BD98007D245D /* PEDebugDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF1F1803BD98007D245D /* PEDebugDirectory.h */; };
+		4F1ABF2B1803BD98007D245D /* PEDOSHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF201803BD98007D245D /* PEDOSHeader.h */; };
+		4F1ABF2C1803BD98007D245D /* PEExportDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF211803BD98007D245D /* PEExportDirectory.h */; };
+		4F1ABF2D1803BD98007D245D /* PEFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF221803BD98007D245D /* PEFile.h */; };
+		4F1ABF2E1803BD98007D245D /* PEFileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF231803BD98007D245D /* PEFileHeader.h */; };
+		4F1ABF2F1803BD98007D245D /* PEImportDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF241803BD98007D245D /* PEImportDescriptor.h */; };
+		4F1ABF301803BD98007D245D /* PELoadConfigDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */; };
+		4F1ABF311803BD98007D245D /* PEOptionalHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF261803BD98007D245D /* PEOptionalHeader.h */; };
+		4F1ABF321803BD98007D245D /* PESectionHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF271803BD98007D245D /* PESectionHeader.h */; };
+		4F1ABF331803BD98007D245D /* PEString.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF281803BD98007D245D /* PEString.h */; };
+		4F1ABF3A1803BDBA007D245D /* Benchmark.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF341803BDBA007D245D /* Benchmark.h */; };
+		4F1ABF3B1803BDBA007D245D /* DisAsm.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF351803BDBA007D245D /* DisAsm.h */; };
+		4F1ABF3C1803BDBA007D245D /* InstructionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF361803BDBA007D245D /* InstructionInfo.h */; };
+		4F1ABF3D1803BDBA007D245D /* InstructionSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF371803BDBA007D245D /* InstructionSet.h */; };
+		4F1ABF3E1803BDBA007D245D /* OpCodeMapGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */; };
+		4F1ABF3F1803BDBA007D245D /* OpCodeMapX87.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */; };
 		4F58976417FC0E060075CF56 /* Executable in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476117F9434700233DB6 /* Executable */; };
 		4F58977317FC0E240075CF56 /* StrAsm in Headers */ = {isa = PBXBuildFile; fileRef = 4F71474217F942DA00233DB6 /* StrAsm */; };
-		4F58978417FC0F7B0075CF56 /* MachOExecutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58978217FC0F7B0075CF56 /* MachOExecutable.h */; };
-		4F58978517FC0F7B0075CF56 /* MachOExecutable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F58978317FC0F7B0075CF56 /* MachOExecutable.c */; };
-		4F58978817FC0F9D0075CF56 /* PEExecutable.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58978617FC0F9D0075CF56 /* PEExecutable.h */; };
-		4F58978917FC0F9D0075CF56 /* PEExecutable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F58978717FC0F9D0075CF56 /* PEExecutable.c */; };
 		4F5897A417FC11070075CF56 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897A317FC11070075CF56 /* stdafx.h */; };
-		4F5897E117FC24BF0075CF56 /* MachOLoadCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */; };
 		4F5897ED17FC25F30075CF56 /* ExecutableContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897EC17FC25F30075CF56 /* ExecutableContext.h */; };
-		4F58981317FC27AA0075CF56 /* MachOFatHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F58981217FC27AA0075CF56 /* MachOFatHeader.h */; };
 		4F7146F817F9427A00233DB6 /* Benchmark.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F217F9427A00233DB6 /* Benchmark.c */; };
 		4F7146F917F9427A00233DB6 /* DisAsm.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F317F9427A00233DB6 /* DisAsm.c */; };
 		4F7146FA17F9427A00233DB6 /* FileReader.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F417F9427A00233DB6 /* FileReader.c */; };
-		4F7146FB17F9427A00233DB6 /* GroupDecode.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F517F9427A00233DB6 /* GroupDecode.c */; };
 		4F7146FC17F9427A00233DB6 /* MemoryReader.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F617F9427A00233DB6 /* MemoryReader.c */; };
 		4F7146FD17F9427A00233DB6 /* Reader.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F7146F717F9427A00233DB6 /* Reader.c */; };
 		4F71471A17F9429600233DB6 /* MemoryReader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F7146FE17F9429600233DB6 /* MemoryReader.h */; };
@@ -61,15 +77,6 @@
 		4F71475617F9431C00233DB6 /* TestAssert.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71475417F9431C00233DB6 /* TestAssert.h */; };
 		4F71475717F9431C00233DB6 /* TestChooseOpCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71475517F9431C00233DB6 /* TestChooseOpCode.h */; };
 		4F71476C17F9434700233DB6 /* Executable.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476217F9434700233DB6 /* Executable.h */; };
-		4F71476D17F9434700233DB6 /* PEDataDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476317F9434700233DB6 /* PEDataDirectory.h */; };
-		4F71476E17F9434700233DB6 /* PEDebugDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476417F9434700233DB6 /* PEDebugDirectory.h */; };
-		4F71476F17F9434700233DB6 /* PEDOSHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476517F9434700233DB6 /* PEDOSHeader.h */; };
-		4F71477017F9434700233DB6 /* PEExportDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476617F9434700233DB6 /* PEExportDirectory.h */; };
-		4F71477117F9434700233DB6 /* PEFileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476717F9434700233DB6 /* PEFileHeader.h */; };
-		4F71477217F9434700233DB6 /* PEImportDescriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476817F9434700233DB6 /* PEImportDescriptor.h */; };
-		4F71477317F9434700233DB6 /* PELoadConfigDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476917F9434700233DB6 /* PELoadConfigDirectory.h */; };
-		4F71477417F9434700233DB6 /* PEOptionalHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476A17F9434700233DB6 /* PEOptionalHeader.h */; };
-		4F71477517F9434700233DB6 /* PESectionHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476B17F9434700233DB6 /* PESectionHeader.h */; };
 		4F71477717F9435300233DB6 /* Executable.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F71477617F9435300233DB6 /* Executable.c */; };
 		4F71478317F943C700233DB6 /* libDisAsm.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7146EE17F9424F00233DB6 /* libDisAsm.a */; };
 		4F71478417F943C700233DB6 /* libExecutable.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F71475D17F9432800233DB6 /* libExecutable.a */; };
@@ -137,20 +144,36 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4F58976217FC0DAE0075CF56 /* MachOHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader.h; path = ../../src/Executable/MachOHeader.h; sourceTree = SOURCE_ROOT; };
-		4F58978217FC0F7B0075CF56 /* MachOExecutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOExecutable.h; path = ../../src/Executable/MachOExecutable.h; sourceTree = SOURCE_ROOT; };
-		4F58978317FC0F7B0075CF56 /* MachOExecutable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MachOExecutable.c; path = ../../src/Executable/MachOExecutable.c; sourceTree = SOURCE_ROOT; };
-		4F58978617FC0F9D0075CF56 /* PEExecutable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEExecutable.h; path = ../../src/Executable/PEExecutable.h; sourceTree = SOURCE_ROOT; };
-		4F58978717FC0F9D0075CF56 /* PEExecutable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEExecutable.c; path = ../../src/Executable/PEExecutable.c; sourceTree = SOURCE_ROOT; };
+		4F1ABEEB1803BA48007D245D /* MachOFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MachOFile.c; path = ../../src/Executable/MachO/MachOFile.c; sourceTree = SOURCE_ROOT; };
+		4F1ABEED1803BA56007D245D /* PEFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEFile.c; path = ../../src/Executable/PE/PEFile.c; sourceTree = SOURCE_ROOT; };
+		4F1ABEEE1803BA56007D245D /* PEString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEString.c; path = ../../src/Executable/PE/PEString.c; sourceTree = SOURCE_ROOT; };
+		4F1ABF161803BD87007D245D /* MachOFatHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFatHeader.h; path = ../../src/Executable/MachO/MachOFatHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF171803BD87007D245D /* MachOFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFile.h; path = ../../src/Executable/MachO/MachOFile.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF181803BD87007D245D /* MachOHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader.h; path = ../../src/Executable/MachO/MachOHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF191803BD87007D245D /* MachOLoadCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOLoadCommand.h; path = ../../src/Executable/MachO/MachOLoadCommand.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF1E1803BD98007D245D /* PEDataDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDataDirectory.h; path = ../../src/Executable/PE/PEDataDirectory.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF1F1803BD98007D245D /* PEDebugDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDebugDirectory.h; path = ../../src/Executable/PE/PEDebugDirectory.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF201803BD98007D245D /* PEDOSHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDOSHeader.h; path = ../../src/Executable/PE/PEDOSHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF211803BD98007D245D /* PEExportDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEExportDirectory.h; path = ../../src/Executable/PE/PEExportDirectory.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF221803BD98007D245D /* PEFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEFile.h; path = ../../src/Executable/PE/PEFile.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF231803BD98007D245D /* PEFileHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEFileHeader.h; path = ../../src/Executable/PE/PEFileHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF241803BD98007D245D /* PEImportDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEImportDescriptor.h; path = ../../src/Executable/PE/PEImportDescriptor.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PELoadConfigDirectory.h; path = ../../src/Executable/PE/PELoadConfigDirectory.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF261803BD98007D245D /* PEOptionalHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEOptionalHeader.h; path = ../../src/Executable/PE/PEOptionalHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF271803BD98007D245D /* PESectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PESectionHeader.h; path = ../../src/Executable/PE/PESectionHeader.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF281803BD98007D245D /* PEString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEString.h; path = ../../src/Executable/PE/PEString.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF341803BDBA007D245D /* Benchmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Benchmark.h; path = ../../src/DisAsm/Benchmark.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF351803BDBA007D245D /* DisAsm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DisAsm.h; path = ../../src/DisAsm/DisAsm.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF361803BDBA007D245D /* InstructionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstructionInfo.h; path = ../../src/DisAsm/InstructionInfo.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF371803BDBA007D245D /* InstructionSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstructionSet.h; path = ../../src/DisAsm/InstructionSet.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapGroup.h; path = ../../src/DisAsm/OpCodeMapGroup.h; sourceTree = SOURCE_ROOT; };
+		4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapX87.h; path = ../../src/DisAsm/OpCodeMapX87.h; sourceTree = SOURCE_ROOT; };
 		4F5897A317FC11070075CF56 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../src/DisAsm/stdafx.h; sourceTree = SOURCE_ROOT; };
-		4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOLoadCommand.h; path = ../../src/Executable/MachOLoadCommand.h; sourceTree = SOURCE_ROOT; };
 		4F5897EC17FC25F30075CF56 /* ExecutableContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutableContext.h; path = ../../src/Executable/ExecutableContext.h; sourceTree = SOURCE_ROOT; };
-		4F58981217FC27AA0075CF56 /* MachOFatHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFatHeader.h; path = ../../src/Executable/MachOFatHeader.h; sourceTree = SOURCE_ROOT; };
 		4F7146EE17F9424F00233DB6 /* libDisAsm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDisAsm.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F7146F217F9427A00233DB6 /* Benchmark.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Benchmark.c; path = ../../src/DisAsm/Benchmark.c; sourceTree = SOURCE_ROOT; };
 		4F7146F317F9427A00233DB6 /* DisAsm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = DisAsm.c; path = ../../src/DisAsm/DisAsm.c; sourceTree = SOURCE_ROOT; };
 		4F7146F417F9427A00233DB6 /* FileReader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = FileReader.c; path = ../../src/DisAsm/FileReader.c; sourceTree = SOURCE_ROOT; };
-		4F7146F517F9427A00233DB6 /* GroupDecode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = GroupDecode.c; path = ../../src/DisAsm/GroupDecode.c; sourceTree = SOURCE_ROOT; };
 		4F7146F617F9427A00233DB6 /* MemoryReader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MemoryReader.c; path = ../../src/DisAsm/MemoryReader.c; sourceTree = SOURCE_ROOT; };
 		4F7146F717F9427A00233DB6 /* Reader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Reader.c; path = ../../src/DisAsm/Reader.c; sourceTree = SOURCE_ROOT; };
 		4F7146FE17F9429600233DB6 /* MemoryReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemoryReader.h; path = ../../src/DisAsm/MemoryReader.h; sourceTree = SOURCE_ROOT; };
@@ -195,15 +218,6 @@
 		4F71475D17F9432800233DB6 /* libExecutable.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libExecutable.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F71476117F9434700233DB6 /* Executable */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Executable; path = ../../src/Executable/Executable; sourceTree = SOURCE_ROOT; };
 		4F71476217F9434700233DB6 /* Executable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Executable.h; path = ../../src/Executable/Executable.h; sourceTree = SOURCE_ROOT; };
-		4F71476317F9434700233DB6 /* PEDataDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDataDirectory.h; path = ../../src/Executable/PEDataDirectory.h; sourceTree = SOURCE_ROOT; };
-		4F71476417F9434700233DB6 /* PEDebugDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDebugDirectory.h; path = ../../src/Executable/PEDebugDirectory.h; sourceTree = SOURCE_ROOT; };
-		4F71476517F9434700233DB6 /* PEDOSHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEDOSHeader.h; path = ../../src/Executable/PEDOSHeader.h; sourceTree = SOURCE_ROOT; };
-		4F71476617F9434700233DB6 /* PEExportDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEExportDirectory.h; path = ../../src/Executable/PEExportDirectory.h; sourceTree = SOURCE_ROOT; };
-		4F71476717F9434700233DB6 /* PEFileHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEFileHeader.h; path = ../../src/Executable/PEFileHeader.h; sourceTree = SOURCE_ROOT; };
-		4F71476817F9434700233DB6 /* PEImportDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEImportDescriptor.h; path = ../../src/Executable/PEImportDescriptor.h; sourceTree = SOURCE_ROOT; };
-		4F71476917F9434700233DB6 /* PELoadConfigDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PELoadConfigDirectory.h; path = ../../src/Executable/PELoadConfigDirectory.h; sourceTree = SOURCE_ROOT; };
-		4F71476A17F9434700233DB6 /* PEOptionalHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEOptionalHeader.h; path = ../../src/Executable/PEOptionalHeader.h; sourceTree = SOURCE_ROOT; };
-		4F71476B17F9434700233DB6 /* PESectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PESectionHeader.h; path = ../../src/Executable/PESectionHeader.h; sourceTree = SOURCE_ROOT; };
 		4F71477617F9435300233DB6 /* Executable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = Executable.c; path = ../../src/Executable/Executable.c; sourceTree = SOURCE_ROOT; };
 		8DD76FB20486AB0100D96B5E /* DisAsm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DisAsm; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -256,19 +270,34 @@
 		08FB7794FE84155DC02AAC07 /* DisAsm */ = {
 			isa = PBXGroup;
 			children = (
+				4F1ABF341803BDBA007D245D /* Benchmark.h */,
+				4F1ABF351803BDBA007D245D /* DisAsm.h */,
+				4F1ABF361803BDBA007D245D /* InstructionInfo.h */,
+				4F1ABF371803BDBA007D245D /* InstructionSet.h */,
+				4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */,
+				4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */,
+				4F1ABF1E1803BD98007D245D /* PEDataDirectory.h */,
+				4F1ABF1F1803BD98007D245D /* PEDebugDirectory.h */,
+				4F1ABF201803BD98007D245D /* PEDOSHeader.h */,
+				4F1ABF211803BD98007D245D /* PEExportDirectory.h */,
+				4F1ABF221803BD98007D245D /* PEFile.h */,
+				4F1ABF231803BD98007D245D /* PEFileHeader.h */,
+				4F1ABF241803BD98007D245D /* PEImportDescriptor.h */,
+				4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */,
+				4F1ABF261803BD98007D245D /* PEOptionalHeader.h */,
+				4F1ABF271803BD98007D245D /* PESectionHeader.h */,
+				4F1ABF281803BD98007D245D /* PEString.h */,
+				4F1ABF161803BD87007D245D /* MachOFatHeader.h */,
+				4F1ABF171803BD87007D245D /* MachOFile.h */,
+				4F1ABF181803BD87007D245D /* MachOHeader.h */,
+				4F1ABF191803BD87007D245D /* MachOLoadCommand.h */,
+				4F1ABEED1803BA56007D245D /* PEFile.c */,
+				4F1ABEEE1803BA56007D245D /* PEString.c */,
+				4F1ABEEB1803BA48007D245D /* MachOFile.c */,
 				4F71477617F9435300233DB6 /* Executable.c */,
 				4F71476117F9434700233DB6 /* Executable */,
 				4F71476217F9434700233DB6 /* Executable.h */,
 				4F5897A317FC11070075CF56 /* stdafx.h */,
-				4F71476317F9434700233DB6 /* PEDataDirectory.h */,
-				4F71476417F9434700233DB6 /* PEDebugDirectory.h */,
-				4F71476517F9434700233DB6 /* PEDOSHeader.h */,
-				4F71476617F9434700233DB6 /* PEExportDirectory.h */,
-				4F71476717F9434700233DB6 /* PEFileHeader.h */,
-				4F71476817F9434700233DB6 /* PEImportDescriptor.h */,
-				4F71476917F9434700233DB6 /* PELoadConfigDirectory.h */,
-				4F71476A17F9434700233DB6 /* PEOptionalHeader.h */,
-				4F71476B17F9434700233DB6 /* PESectionHeader.h */,
 				4F71475417F9431C00233DB6 /* TestAssert.h */,
 				4F71475517F9431C00233DB6 /* TestChooseOpCode.h */,
 				4F71474C17F942FA00233DB6 /* main.c */,
@@ -278,10 +307,6 @@
 				4F71474317F942DA00233DB6 /* StrAsm.h */,
 				4F71473F17F942CB00233DB6 /* StrAsm.c */,
 				4F71473617F942AF00233DB6 /* main.c */,
-				4F58978217FC0F7B0075CF56 /* MachOExecutable.h */,
-				4F58978617FC0F9D0075CF56 /* PEExecutable.h */,
-				4F58978717FC0F9D0075CF56 /* PEExecutable.c */,
-				4F58978317FC0F7B0075CF56 /* MachOExecutable.c */,
 				4F7146FE17F9429600233DB6 /* MemoryReader.h */,
 				4F7146FF17F9429600233DB6 /* Mnemonic.h */,
 				4F71470017F9429600233DB6 /* ModRM.h */,
@@ -299,9 +324,7 @@
 				4F71470C17F9429600233DB6 /* OpCodeMapThreeByte0F38PrefixF3.h */,
 				4F71470D17F9429600233DB6 /* OpCodeMapTwoByte0F.h */,
 				4F71470E17F9429600233DB6 /* OpCodeMapTwoByte0FPrefix66.h */,
-				4F58981217FC27AA0075CF56 /* MachOFatHeader.h */,
 				4F5897EC17FC25F30075CF56 /* ExecutableContext.h */,
-				4F5897E017FC24BF0075CF56 /* MachOLoadCommand.h */,
 				4F71470F17F9429600233DB6 /* OpCodeMapTwoByte0FPrefixF2.h */,
 				4F71471017F9429600233DB6 /* OpCodeMapTwoByte0FPrefixF3.h */,
 				4F71471117F9429600233DB6 /* Operand.h */,
@@ -316,13 +339,11 @@
 				4F7146F217F9427A00233DB6 /* Benchmark.c */,
 				4F7146F317F9427A00233DB6 /* DisAsm.c */,
 				4F7146F417F9427A00233DB6 /* FileReader.c */,
-				4F7146F517F9427A00233DB6 /* GroupDecode.c */,
 				4F7146F617F9427A00233DB6 /* MemoryReader.c */,
 				4F7146F717F9427A00233DB6 /* Reader.c */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
-				4F58976217FC0DAE0075CF56 /* MachOHeader.h */,
 			);
 			name = DisAsm;
 			sourceTree = "<group>";
@@ -389,6 +410,12 @@
 				4F71473417F9429600233DB6 /* SupportBool.h in Headers */,
 				4F71473517F9429600233DB6 /* SupportInt.h in Headers */,
 				4F5897A417FC11070075CF56 /* stdafx.h in Headers */,
+				4F1ABF3A1803BDBA007D245D /* Benchmark.h in Headers */,
+				4F1ABF3B1803BDBA007D245D /* DisAsm.h in Headers */,
+				4F1ABF3C1803BDBA007D245D /* InstructionInfo.h in Headers */,
+				4F1ABF3D1803BDBA007D245D /* InstructionSet.h in Headers */,
+				4F1ABF3E1803BDBA007D245D /* OpCodeMapGroup.h in Headers */,
+				4F1ABF3F1803BDBA007D245D /* OpCodeMapX87.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,21 +443,22 @@
 			files = (
 				4F58976417FC0E060075CF56 /* Executable in Headers */,
 				4F71476C17F9434700233DB6 /* Executable.h in Headers */,
-				4F71476D17F9434700233DB6 /* PEDataDirectory.h in Headers */,
-				4F71476E17F9434700233DB6 /* PEDebugDirectory.h in Headers */,
-				4F71476F17F9434700233DB6 /* PEDOSHeader.h in Headers */,
-				4F71477017F9434700233DB6 /* PEExportDirectory.h in Headers */,
-				4F71477117F9434700233DB6 /* PEFileHeader.h in Headers */,
-				4F71477217F9434700233DB6 /* PEImportDescriptor.h in Headers */,
-				4F71477317F9434700233DB6 /* PELoadConfigDirectory.h in Headers */,
-				4F71477417F9434700233DB6 /* PEOptionalHeader.h in Headers */,
-				4F71477517F9434700233DB6 /* PESectionHeader.h in Headers */,
-				4F58976317FC0DAE0075CF56 /* MachOHeader.h in Headers */,
-				4F58978417FC0F7B0075CF56 /* MachOExecutable.h in Headers */,
-				4F58978817FC0F9D0075CF56 /* PEExecutable.h in Headers */,
-				4F5897E117FC24BF0075CF56 /* MachOLoadCommand.h in Headers */,
 				4F5897ED17FC25F30075CF56 /* ExecutableContext.h in Headers */,
-				4F58981317FC27AA0075CF56 /* MachOFatHeader.h in Headers */,
+				4F1ABF1A1803BD87007D245D /* MachOFatHeader.h in Headers */,
+				4F1ABF1B1803BD87007D245D /* MachOFile.h in Headers */,
+				4F1ABF1C1803BD87007D245D /* MachOHeader.h in Headers */,
+				4F1ABF1D1803BD87007D245D /* MachOLoadCommand.h in Headers */,
+				4F1ABF291803BD98007D245D /* PEDataDirectory.h in Headers */,
+				4F1ABF2A1803BD98007D245D /* PEDebugDirectory.h in Headers */,
+				4F1ABF2B1803BD98007D245D /* PEDOSHeader.h in Headers */,
+				4F1ABF2C1803BD98007D245D /* PEExportDirectory.h in Headers */,
+				4F1ABF2D1803BD98007D245D /* PEFile.h in Headers */,
+				4F1ABF2E1803BD98007D245D /* PEFileHeader.h in Headers */,
+				4F1ABF2F1803BD98007D245D /* PEImportDescriptor.h in Headers */,
+				4F1ABF301803BD98007D245D /* PELoadConfigDirectory.h in Headers */,
+				4F1ABF311803BD98007D245D /* PEOptionalHeader.h in Headers */,
+				4F1ABF321803BD98007D245D /* PESectionHeader.h in Headers */,
+				4F1ABF331803BD98007D245D /* PEString.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,7 +593,6 @@
 				4F7146F817F9427A00233DB6 /* Benchmark.c in Sources */,
 				4F7146F917F9427A00233DB6 /* DisAsm.c in Sources */,
 				4F7146FA17F9427A00233DB6 /* FileReader.c in Sources */,
-				4F7146FB17F9427A00233DB6 /* GroupDecode.c in Sources */,
 				4F7146FC17F9427A00233DB6 /* MemoryReader.c in Sources */,
 				4F7146FD17F9427A00233DB6 /* Reader.c in Sources */,
 			);
@@ -594,8 +621,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F71477717F9435300233DB6 /* Executable.c in Sources */,
-				4F58978517FC0F7B0075CF56 /* MachOExecutable.c in Sources */,
-				4F58978917FC0F9D0075CF56 /* PEExecutable.c in Sources */,
+				4F1ABEEC1803BA48007D245D /* MachOFile.c in Sources */,
+				4F1ABEEF1803BA56007D245D /* PEFile.c in Sources */,
+				4F1ABEF01803BA56007D245D /* PEString.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

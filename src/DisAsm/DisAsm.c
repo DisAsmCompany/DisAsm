@@ -40,7 +40,7 @@ void DisAsmDestroy(HDISASM hDisAsm)
 uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint8_t result = 0;
-	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 1);
+	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 1);
 	result = pInfo->bytes[pInfo->length];
 	++pInfo->length;
 	return result;
@@ -49,7 +49,7 @@ uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint16_t result = 0;
-	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 2);
+	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 2);
 	result = 
 		(pInfo->bytes[pInfo->length + 1] << 8) | 
 		(pInfo->bytes[pInfo->length]);
@@ -60,7 +60,7 @@ uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint32_t result = 0;
-	ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
+	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
 	result =
 		(pInfo->bytes[pInfo->length + 3] << 24) | 
 		(pInfo->bytes[pInfo->length + 2] << 16) | 
@@ -397,9 +397,9 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	OpCodeMapElement * pElement = NULL;
-	uint32_t index = 0;
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
+		uint32_t index = 0;
 		if (pInfo->ModRM.fields.Mod == 3)
 		{
 			index = pInfo->ModRM.fields.RM + pInfo->ModRM.fields.Reg * 8 + (pInfo->opcode - 0xD7) * 64;
@@ -420,13 +420,14 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 	uint8_t i = 0;
 
 	pInfo->length = 0;
+	pContext->error = 0;
 	pContext->hReader = hReader;
 	pContext->currentSize = pContext->size;
 
 	pInfo->nPrefixes = 0;
 
 	pElement = ChooseOpCode(pContext, pInfo);
-	if (NULL == pElement || DB == pElement->mnemonic)
+	if (NULL == pElement || DB == pElement->mnemonic || 1 == pContext->error)
 	{
 		//__asm int 3;
 		return 0;
