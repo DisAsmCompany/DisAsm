@@ -239,11 +239,13 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pOperand->memory = pInfo->ModRM.fields.Mod != 3;
 		pOperand->scale = 0;
 		pOperand->hasBase = 0;
+		pOperand->hasIndex = 0;
 		if (pInfo->hasSIB)
 		{
 			pOperand->hasBase = 1;
+			pOperand->hasIndex = 1;
 			pOperand->scale = 1 << pInfo->SIB.fields.Scale;
-			pOperand->value.reg = pInfo->SIB.fields.Index;
+			pOperand->index = pInfo->SIB.fields.Index;
 			if (5 == (pOperand->base = pInfo->SIB.fields.Base))
 			{
 				switch (pInfo->ModRM.fields.Mod)
@@ -258,32 +260,44 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		else
 		{
+			pOperand->hasBase = 1;
+			pOperand->hasIndex = 0;
+			pOperand->base = pInfo->ModRM.fields.RM;
 			pOperand->value.reg = pInfo->ModRM.fields.RM;
+			if (5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod)
+			{
+				pOperand->hasBase = 0;
+			}
 		}
 		if (LoType == v)
 		{
 			pOperand->value.reg |= Reg32;
 			pOperand->base |= Reg32;
+			pOperand->index |= Reg32;
 		}
 		else if (LoType == q)
 		{
 			pOperand->value.reg |= Reg32;
 			pOperand->base |= Reg32;
+			pOperand->index |= Reg32;
 		}
 		else if (LoType == w)
 		{
 			pOperand->value.reg |= Reg16;
 			pOperand->base |= Reg16;
+			pOperand->index |= Reg16;
 		}
 		else if (LoType == b)
 		{
 			pOperand->value.reg |= Reg8;
 			pOperand->base |= Reg8;
+			pOperand->index |= Reg8;
 		}
 		else
 		{
 			pOperand->value.reg |= Reg32;
 			pOperand->base |= Reg32;
+			pOperand->index |= Reg32;
 		}
 		break;
 	case C:

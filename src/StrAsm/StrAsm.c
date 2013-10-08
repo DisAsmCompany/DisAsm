@@ -87,34 +87,55 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 			PrintSegment(pInfo);
 			printf("[");
 
-			if (pOperand->scale > 1)
-			{
-				printf("%d * ", pOperand->scale);
-			}
-		}
-		printf("%s", reg);
-		if (pOperand->memory)
-		{
 			if (pOperand->hasBase)
 			{
 				char * base = RegisterToString(pOperand->base);
-				printf(" + %s", base);
+				printf("%s", base);
+			}
+			if (pOperand->hasIndex)
+			{
+				if (pOperand->hasBase)
+				{
+					printf(" + ");
+				}
+				if (pOperand->scale > 1)
+				{
+					printf("%d * ", pOperand->scale);
+				}
+				char * index = RegisterToString(pOperand->index);
+				printf("%s", index);
 			}
 			if (pInfo->hasDisp)
 			{
 				if (IsNegative(pInfo->disp, pInfo->sizeDisp))
 				{
-					printf(" - ");
+					if (pOperand->hasBase || pOperand->hasIndex)
+					{
+						printf(" - ");
+					}
+					else 
+					{
+						printf("-");
+					}
+
 					PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
 				}
 				else
 				{
-					printf(" + ");
+					if (pOperand->hasBase || pOperand->hasIndex)
+					{
+						printf(" + ");
+					}
 					PrintValue(pInfo->disp);
 				}
 			}
 			printf("]");
 		}
+		else 
+		{
+			printf("%s", reg);
+		}
+
 	}
 	if (HITYPE(pOperand->type) == J)
 	{
