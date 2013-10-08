@@ -13,7 +13,7 @@
 #ifndef __INSTRUCTIONSET_H__
 #define __INSTRUCTIONSET_H__
 
-_ENUM_START(InstructionSet)
+_ENUM_START(InstructionSet, 0)
 _ENUM_ELEMENT(GP)         /* General-Purpose */
 _ENUM_ELEMENT(x87)        /* x87 FPU */
 _ENUM_ELEMENT(MMX)        /* Multi-Media eXtension, Multiple-Math eXtension, Matrix-Math eXtension */
@@ -37,6 +37,6 @@ _ENUM_ELEMENT(FMA3)       /* Fused Multiply-Add 3 */
 _ENUM_ELEMENT(FMA4)       /* Fused Multiply-Add 4 */
 _ENUM_ELEMENT(SHA)        /* Secure Hash Algorithm */
 _ENUM_ELEMENT(MPX)        /* Memory-Protection eXtensions */
-_ENUM_STOP(InstructionSet)
+_ENUM_STOP(InstructionSet, 0)
 
 #endif /* __INSTRUCTIONSET_H__ */

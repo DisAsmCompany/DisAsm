@@ -21,6 +21,28 @@ char * UTC(uint32_t TimeStamp)
 	return c;
 }
 
+void PrintSignature(uint32_t Signature, uint8_t size)
+{
+	uint8_t i = 0;
+	if (size == 2) printf("0x%04X ", Signature);
+	if (size == 4) printf("0x%08X ", Signature);
+	printf("'");
+	for (i = 0; i < size; ++i)
+	{
+		char byte = (Signature >> (i * 8)) & 0xFF;
+		if (isalnum(byte))
+		{
+			printf("%c", byte);
+		}
+		else
+		{
+			printf("[%02X]", byte);
+		}
+	}
+	printf("'");
+	printf("\n");
+}
+
 char * PECharacteristicsToString(uint16_t Characteristics)
 {
 	char * result = malloc(1024);

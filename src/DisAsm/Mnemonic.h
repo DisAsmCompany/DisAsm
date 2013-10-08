@@ -12,7 +12,7 @@
 #ifndef __MNEMONIC_H__
 #define __MNEMONIC_H__
 
-_ENUM_START(Mnemonic)
+_ENUM_START(Mnemonic, 0)
 _ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
 _ENUM_ELEMENT(ESCAPEX87) /* Escape to CoProcessor Instruction Set */
 _ENUM_ELEMENT(ESCAPE3DNOW) /* Escape to 3DNow! Instruction Set */
@@ -402,6 +402,6 @@ _ENUM_ELEMENT(PrefixFS)    /* FS Segment Override Prefix */
 _ENUM_ELEMENT(PrefixGS)    /* GS Segment Override Prefix */
 _ENUM_ELEMENT(OperandSize)
 _ENUM_ELEMENT(AddressSize)
-_ENUM_STOP(Mnemonic)
+_ENUM_STOP(Mnemonic, 0)
 
 #endif /* __MNEMONIC_H__ */

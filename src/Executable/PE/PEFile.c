@@ -36,28 +36,6 @@ PEFileContext;
 #undef THIS
 #define THIS ((PEFileContext*)(pContext->pPrivate))
 
-void PrintSignature(uint32_t Signature, uint8_t size)
-{
-	uint8_t i = 0;
-	if (size == 2) printf("0x%04X ", Signature);
-	if (size == 4) printf("0x%08X ", Signature);
-	printf("'");
-	for (i = 0; i < size; ++i)
-	{
-		char byte = (Signature >> (i * 8)) & 0xFF;
-		if (isalnum(byte))
-		{
-			printf("%c", byte);
-		}
-		else
-		{
-			printf("[%02X]", byte);
-		}
-	}
-	printf("'");
-	printf("\n");
-}
-
 char * FetchString(ExecutableContext * pContext, uint32_t address)
 {
 	char * buffer = NULL; 
@@ -170,7 +148,6 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 	uint32_t offset = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	uint32_t address = 0;
 	uint32_t pos = 0;
-	char * name = NULL;
 	if (0 == offset)
 	{
 		return 0;
