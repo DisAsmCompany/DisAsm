@@ -15,17 +15,18 @@
 
 typedef struct PEFileContext_t
 {
-	uint32_t Signature;
 	HSDF hDOSHeader;
 	HSDF hPEFileHeader;
-	PEOptionalHeader OptionalHeader;
+	HSDF hOptionalHeader;
 	uint32_t DataDirectoriesCount;
 	PEDataDirectory * DataDirectories;
 	PESectionHeader * SectionHeaders;
-	PEExportDirectory ExportDirectory;
+	HSDF hExportDirectory;
 	HSDF hDebugDirectory;
-	PELoadConfigDirectory LoadConfigDirectory;
+	HSDF hLoadConfigDirectory;
 	uint32_t NumberOfSections;
+	uint32_t NumberOfFunctions;
+	uint32_t AddressOfEntryPoint;
 	uint32_t OffsetExport;
 	uint32_t SizeExport;
 	uint32_t OffsetExportFunctions;
@@ -90,7 +91,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	char * name = NULL;
 	THIS->OffsetExport = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	THIS->SizeExport = pDirectory->Size;
-	if (pDirectory->Size < sizeof(PEExportDirectory))
+	if (pDirectory->Size < SDFSizeInBytes(PEExportDirectory, PEExportDirectorySize))
 	{
 		return 0;
 	}
@@ -102,16 +103,14 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->ExportDirectory, sizeof(PEExportDirectory)))
-	{
-		return 0;
-	}
-	PEPrintExportDirectory(&THIS->ExportDirectory);
-	THIS->OffsetExportFunctions = PERVAToOffset(pContext, THIS->ExportDirectory.AddressOfFunctions);
-	THIS->OffsetExportOrdinals = PERVAToOffset(pContext, THIS->ExportDirectory.AddressOfNameOrdinals);
-	THIS->OffsetExportNames = PERVAToOffset(pContext, THIS->ExportDirectory.AddressOfNames);
+	THIS->hExportDirectory = SDFCreate(PEExportDirectory, PEExportDirectorySize, pContext->hReader);
+	SDFPrint(THIS->hExportDirectory);
+	THIS->NumberOfFunctions = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
+	THIS->OffsetExportFunctions = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
+	THIS->OffsetExportOrdinals  = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNameOrdinals));
+	THIS->OffsetExportNames     = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNames));
 
-	for (i = 0; i < THIS->ExportDirectory.NumberOfFunctions; ++i)
+	for (i = 0; i < THIS->NumberOfFunctions; ++i)
 	{
 		uint32_t address = 0;
 		uint32_t ptr = 0;
@@ -228,6 +227,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 
 int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
+	uint32_t size = 0;
 	uint32_t offset = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 
 	if (0 == offset)
@@ -238,20 +238,16 @@ int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirecto
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->LoadConfigDirectory.Size, sizeof(uint32_t)))
+	if (0 == ReaderRead(pContext->hReader, &size, sizeof(uint32_t)))
 	{
 		return 0;
 	}
-	if (THIS->LoadConfigDirectory.Size < sizeof(PELoadConfigDirectory))
+	if (size < SDFSizeInBytes(PELoadConfigDirectory, PELoadConfigDirectorySize))
 	{
 		return 0;
 	}
-	THIS->LoadConfigDirectory.Size = sizeof(PELoadConfigDirectory);
-	if (0 == ReaderRead(pContext->hReader, &THIS->LoadConfigDirectory.TimeDateStamp, THIS->LoadConfigDirectory.Size - sizeof(uint32_t)))
-	{
-		return 0;
-	}
-	PEPrintLoadConfigDirectory(&THIS->LoadConfigDirectory);
+	THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, PELoadConfigDirectorySize, pContext->hReader);
+	SDFPrint(THIS->hLoadConfigDirectory);
 	return 1;
 }
 
@@ -296,7 +292,7 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 
 uint32_t PEFileGetEntryPoint(ExecutableContext * pContext)
 {
-	return PERVAToOffset(pContext, THIS->OptionalHeader.AddressOfEntryPoint);
+	return PERVAToOffset(pContext, THIS->AddressOfEntryPoint);
 }
 
 uint32_t PEFileGetStubEntryPoint(ExecutableContext * pContext)
@@ -306,14 +302,14 @@ uint32_t PEFileGetStubEntryPoint(ExecutableContext * pContext)
 
 uint32_t PEFileGetExportCount(ExecutableContext * pContext)
 {
-	return THIS->ExportDirectory.NumberOfFunctions;
+	return THIS->NumberOfFunctions;
 }
 
 uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
 
-	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	if (index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
@@ -327,7 +323,7 @@ char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
 
-	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	if (index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
@@ -342,7 +338,7 @@ char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index
 {
 	uint32_t address = 0;
 
-	if (index >= THIS->ExportDirectory.NumberOfFunctions)
+	if (index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
@@ -361,7 +357,10 @@ void PEFileDestroy(ExecutableContext * pContext)
 {
 	SDFDestroy(THIS->hDOSHeader);
 	SDFDestroy(THIS->hPEFileHeader);
+	SDFDestroy(THIS->hOptionalHeader);
+	SDFDestroy(THIS->hExportDirectory);
 	SDFDestroy(THIS->hDebugDirectory);
+	SDFDestroy(THIS->hLoadConfigDirectory);
 
 	free(THIS->SectionHeaders);
 	free(THIS->DataDirectories);
@@ -370,6 +369,8 @@ void PEFileDestroy(ExecutableContext * pContext)
 int PEFileCreate(ExecutableContext * pContext)
 {
 	uint32_t size = 0;
+	uint32_t Signature = 0;
+	uint16_t Magic = 0;
 	uint32_t OffsetSectionHeaders = 0;
 	uint32_t SizeOfOptionalHeader = 0;
 
@@ -388,10 +389,6 @@ int PEFileCreate(ExecutableContext * pContext)
 	pContext->pGetExportForwarderName = PEFileGetExportForwarderName;
 	pContext->pDestroy                = PEFileDestroy;
 
-	THIS->hDOSHeader = NULL;
-	THIS->hPEFileHeader = NULL;
-	THIS->hDebugDirectory = NULL;
-
 	THIS->hDOSHeader = SDFCreate(PEDOSHeader, PEDOSHeaderSize, pContext->hReader);
 	SDFPrint(THIS->hDOSHeader);
 
@@ -403,30 +400,33 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->Signature, sizeof(uint32_t)))
+	if (0 == ReaderRead(pContext->hReader, &Signature, sizeof(uint32_t)))
 	{
 		return 0;
 	}
-	if (THIS->Signature != PENTSignature)
+	if (PENTSignature != Signature)
 	{
 		return 0;
 	}
-	printf("Signature : \n"); PrintSignature(THIS->Signature, 4);
+	printf("Signature : \n"); PrintSignature(Signature, 4);
 	THIS->hPEFileHeader = SDFCreate(PEFileHeader, PEFileHeaderSize, pContext->hReader);
 	SDFPrint(THIS->hPEFileHeader);
 	SizeOfOptionalHeader = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderSizeOfOptionalHeader);
-	if (SizeOfOptionalHeader < sizeof(PEOptionalHeader))
+	if (SizeOfOptionalHeader < SDFSizeInBytes(PEOptionalHeader, PEOptionalHeaderSize))
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->OptionalHeader, sizeof(PEOptionalHeader)))
+	THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, PEOptionalHeaderSize, pContext->hReader);
+	Magic = SDFReadUInt16(THIS->hOptionalHeader, PEOptionalHeaderMagic);
+	if (PE32Magic != Magic && PE64Magic != Magic)
 	{
 		return 0;
 	}
-	PEPrintOptionalHeader(&THIS->OptionalHeader);
+	SDFPrint(THIS->hOptionalHeader);
+	THIS->AddressOfEntryPoint = SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint);
 	OffsetSectionHeaders = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE) + sizeof(uint32_t) + SDFSizeInBytes(PEFileHeader, PEFileHeaderSize) + SizeOfOptionalHeader;
-	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
-	THIS->DataDirectoriesCount = MIN(THIS->OptionalHeader.NumberOfRvaAndSizes, THIS->DataDirectoriesCount);
+	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (SizeOfOptionalHeader - SDFSizeInBytes(PEOptionalHeader, PEOptionalHeaderSize)) / sizeof(PEDataDirectory));
+	THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
 	if (THIS->DataDirectoriesCount > 0)
 	{
 		THIS->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * THIS->DataDirectoriesCount);

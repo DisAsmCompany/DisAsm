@@ -72,7 +72,8 @@ void SDFPrint(HSDF hSDF)
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint32_t i = 0, j = 0;
 	uint32_t offset = 0;
-	for (i = 0; i < pContext->size; ++i)
+	printf("%s\n", pContext->definition[0].name);
+	for (i = 1; i <= pContext->size; ++i)
 	{
 		for (j = 0; j < pContext->definition[i].count; ++j)
 		{
@@ -82,6 +83,11 @@ void SDFPrint(HSDF hSDF)
 				if (pContext->definition[i].count > 1)
 				{
 					printf("[%d]", j);
+				}
+				if (1 == pContext->definition[i].size)
+				{
+					uint8_t * value = (uint8_t*) (pContext->data + offset);
+					printf(" : 0x%02X", *value);
 				}
 				if (2 == pContext->definition[i].size)
 				{
@@ -110,7 +116,7 @@ uint16_t SDFReadUInt16(HSDF hSDF, uint32_t id)
 	uint16_t value = 0;
 	uint32_t i = 0;
 	uint32_t offset = 0;
-	for (i = 0; i < pContext->size; ++i)
+	for (i = 1; i <= pContext->size; ++i)
 	{
 		if (pContext->definition[i].id == id)
 		{
@@ -128,7 +134,7 @@ uint32_t SDFReadUInt32(HSDF hSDF, uint32_t id)
 	uint32_t value = 0;
 	uint32_t i = 0;
 	uint32_t offset = 0;
-	for (i = 0; i < pContext->size; ++i)
+	for (i = 1; i <= pContext->size; ++i)
 	{
 		if (pContext->definition[i].id == id)
 		{

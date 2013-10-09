@@ -15,6 +15,7 @@
 
 static const SDFElement PEDebugDirectory[] =
 {
+	{"PE Debug Directory"},
 	{"Characteristics ", 0, kUnsigned, 4, 1},
 	{"TimeDateStamp   ", 0, kUTC, 4, 1},
 	{"MajorVersion    ", 0, kUnsigned, 2, 1},

@@ -22,6 +22,7 @@
 
 static const SDFElement PEDOSHeader[] =
 {
+	{"PE DOS Header"},
 	/* DOS signature, either 'MZ' or 'ZM' */
 	{"Signature        ", PEDOSHeaderSignature, kUnsigned, 2, 1},
 	{"BytesInLastPage  ", 0, kUnsigned, 2, 1},

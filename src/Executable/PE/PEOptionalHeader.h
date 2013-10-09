@@ -13,41 +13,50 @@
 #ifndef __PEOPTIONALHEADER_H__
 #define __PEOPTIONALHEADER_H__
 
-typedef struct PEOptionalHeader_t
+#define PE32Magic  0x010B
+#define PE64Magic  0x020B
+#define PEROMMagic 0x0107
+
+#define PEOptionalHeaderMagic               1
+#define PEOptionalHeaderAddressOfEntryPoint 2
+#define PEOptionalHeaderNumberOfRvaAndSizes 3
+
+static const SDFElement PEOptionalHeader[] =
 {
+	{"PE Optional Header"},
 	/* Standard fields */
-	uint16_t Magic;
-	uint8_t  MajorLinkerVersion;
-	uint8_t  MinorLinkerVersion;
-	uint32_t SizeOfCode;
-	uint32_t SizeOfInitializedData;
-	uint32_t SizeOfUninitializedData;
-	uint32_t AddressOfEntryPoint;
-	uint32_t BaseOfCode;
-	uint32_t BaseOfData;
+	{"Magic                      ", PEOptionalHeaderMagic, kUnsigned, 2, 1},
+	{"MajorLinkerVersion         ", 0, kUnsigned, 1, 1},
+	{"MinorLinkerVersion         ", 0, kUnsigned, 1, 1},
+	{"SizeOfCode                 ", 0, kUnsigned, 4, 1},
+	{"SizeOfInitializedData      ", 0, kUnsigned, 4, 1},
+	{"SizeOfUninitializedData    ", 0, kUnsigned, 4, 1},
+	{"AddressOfEntryPoint        ", PEOptionalHeaderAddressOfEntryPoint, kUnsigned, 4, 1},
+	{"BaseOfCode                 ", 0, kUnsigned, 4, 1},
+	{"BaseOfData                 ", 0, kUnsigned, 4, 1},
 	/* NT additional fields */
-	uint32_t ImageBase;
-	uint32_t SectionAlignment;
-	uint32_t FileAlignment;
-	uint16_t MajorOperatingSystemVersion;
-	uint16_t MinorOperatingSystemVersion;
-	uint16_t MajorImageVersion;
-	uint16_t MinorImageVersion;
-	uint16_t MajorSubsystemVersion;
-	uint16_t MinorSubsystemVersion;
-	uint32_t Win32VersionValue;
-	uint32_t SizeOfImage;
-	uint32_t SizeOfHeaders;
-	uint32_t CheckSum;
-	uint16_t Subsystem;
-	uint16_t DllCharacteristics;
-	uint32_t SizeOfStackReserve;
-	uint32_t SizeOfStackCommit;
-	uint32_t SizeOfHeapReserve;
-	uint32_t SizeOfHeapCommit;
-	uint32_t LoaderFlags;
-	uint32_t NumberOfRvaAndSizes;
-}
-PEOptionalHeader;
+	{"ImageBase                  ", 0, kUnsigned, 4, 1},
+	{"SectionAlignment           ", 0, kUnsigned, 4, 1},
+	{"FileAlignment              ", 0, kUnsigned, 4, 1},
+	{"MajorOperatingSystemVersion", 0, kUnsigned, 2, 1},
+	{"MinorOperatingSystemVersion", 0, kUnsigned, 2, 1},
+	{"MajorImageVersion          ", 0, kUnsigned, 2, 1},
+	{"MinorImageVersion          ", 0, kUnsigned, 2, 1},
+	{"MajorSubsystemVersion      ", 0, kUnsigned, 2, 1},
+	{"MinorSubsystemVersion      ", 0, kUnsigned, 2, 1},
+	{"Win32VersionValue          ", 0, kUnsigned, 4, 1},
+	{"SizeOfImage                ", 0, kUnsigned, 4, 1},
+	{"SizeOfHeaders              ", 0, kUnsigned, 4, 1},
+	{"CheckSum                   ", 0, kUnsigned, 4, 1},
+	{"Subsystem                  ", 0, kUnsigned, 2, 1},
+	{"DllCharacteristics         ", 0, kUnsigned, 2, 1},
+	{"SizeOfStackReserve         ", 0, kUnsigned, 4, 1},
+	{"SizeOfStackCommit          ", 0, kUnsigned, 4, 1},
+	{"MajorSubsystemVersion      ", 0, kUnsigned, 4, 1},
+	{"MinorSubsystemVersion      ", 0, kUnsigned, 4, 1},
+	{"LoaderFlags                ", 0, kUnsigned, 4, 1},
+	{"NumberOfRvaAndSizes        ", PEOptionalHeaderNumberOfRvaAndSizes, kUnsigned, 4, 1},
+};
+static const uint32_t PEOptionalHeaderSize = sizeof(PEOptionalHeader) / sizeof(PEOptionalHeader[0]);
 
 #endif /* __PEOPTIONALHEADER_H__ */

@@ -228,49 +228,6 @@ char * PEDebugTypeToString(uint32_t Type)
 	}
 }
 
-void PEPrintLoadConfigDirectory(PELoadConfigDirectory * pLoadConfigDirectory)
-{
-	printf("Load Config Directory :\n");
-	printf("Size                             : %d\n",          pLoadConfigDirectory->Size);
-	printf("Time Date Stamp                  : 0x%08X (%s)\n", pLoadConfigDirectory->TimeDateStamp, UTC(pLoadConfigDirectory->TimeDateStamp));
-	printf("Major Version                    : %d\n",          pLoadConfigDirectory->MajorVersion);
-	printf("Minor Version                    : %d\n",          pLoadConfigDirectory->MinorVersion);
-	printf("Global Flags Clear               : 0x%08X\n",      pLoadConfigDirectory->GlobalFlagsClear);
-	printf("Global Flags Set                 : 0x%08X\n",      pLoadConfigDirectory->GlobalFlagsSet);
-	printf("Critical Section Default Timeout : %d\n",          pLoadConfigDirectory->CriticalSectionDefaultTimeout);
-	printf("DeCommit Free Block Threshold    : %d\n",          pLoadConfigDirectory->DeCommitFreeBlockThreshold);
-	printf("DeCommit Total Free Threshold    : %d\n",          pLoadConfigDirectory->DeCommitTotalFreeThreshold);
-	printf("Lock Prefix Table                : 0x%08X\n",      pLoadConfigDirectory->LockPrefixTable);
-	printf("Maximum Allocation Size          : %d\n",          pLoadConfigDirectory->MaximumAllocationSize);
-	printf("Virtual Memory Threshold         : %d\n",          pLoadConfigDirectory->VirtualMemoryThreshold);
-	printf("Process Heap Flags               : 0x%08X\n",      pLoadConfigDirectory->ProcessHeapFlags);
-	printf("Process Affinity Mask            : 0x%08X\n",      pLoadConfigDirectory->ProcessAffinityMask);
-	printf("CSD Version                      : %d\n",          pLoadConfigDirectory->CSDVersion);
-	printf("Reserved                         : %d\n",          pLoadConfigDirectory->Reserved);
-	printf("EditList                         : %d\n",          pLoadConfigDirectory->EditList);
-	printf("Security Cookie                  : 0x%08X\n",      pLoadConfigDirectory->SecurityCookie);
-	printf("SEHandler Table                  : 0x%08X\n",      pLoadConfigDirectory->SEHandlerTable);
-	printf("SEHandler Count                  : %d\n",          pLoadConfigDirectory->SEHandlerCount);
-	printf("\n");
-}
-
-void PEPrintExportDirectory(PEExportDirectory * pExportDirectory)
-{
-	printf("Export Directory :\n");
-	printf("Characteristics         : 0x%08X\n",      pExportDirectory->Characteristics);
-	printf("Time Date Stamp         : 0x%08X (%s)\n", pExportDirectory->TimeDateStamp, UTC(pExportDirectory->TimeDateStamp));
-	printf("Major Version           : %d\n",          pExportDirectory->MajorVersion);
-	printf("Minor Version           : %d\n",          pExportDirectory->MinorVersion);
-	printf("Name                    : 0x%08X\n",      pExportDirectory->Name);
-	printf("Base                    : 0x%08X\n",      pExportDirectory->Base);
-	printf("Number Of Functions     : %d\n",          pExportDirectory->NumberOfFunctions);
-	printf("Number Of Names         : %d\n",          pExportDirectory->NumberOfNames);
-	printf("Address Of Functions    : 0x%08X\n",      pExportDirectory->AddressOfFunctions);
-	printf("Address Of Names        : 0x%08X\n",      pExportDirectory->AddressOfNames);
-	printf("Address Of NameOrdinals : 0x%08X\n",      pExportDirectory->AddressOfNameOrdinals);
-	printf("\n");
-}
-
 void PEPrintSectionHeader(PESectionHeader * pSectionHeader)
 {
 	char * Characteristics = PESectionCharacteristicsToString(pSectionHeader->Characteristics);
@@ -287,44 +244,6 @@ void PEPrintSectionHeader(PESectionHeader * pSectionHeader)
 	printf("Number Of Relocations   : %d\n",          pSectionHeader->NumberOfRelocations);
 	printf("Number Of Line Numbers  : %d\n",          pSectionHeader->NumberOfLinenumbers);
 	printf("Characteristics         : 0x%08X (%s)\n", pSectionHeader->Characteristics, Characteristics);
-	printf("\n");
-	free(Characteristics);
-}
-
-void PEPrintOptionalHeader(PEOptionalHeader * pOptionalHeader)
-{
-	char * Characteristics = PEDllCharacteristicsToString(pOptionalHeader->DllCharacteristics);
-	printf("PE Optional Header : \n");
-	printf("Magic                          : 0x%04X (%s)\n", pOptionalHeader->Magic, PEMagicToString(pOptionalHeader->Magic));
-	printf("Major Linker Version           : %d\n",          pOptionalHeader->MajorLinkerVersion);
-	printf("Minor Linker Version           : %d\n",          pOptionalHeader->MinorLinkerVersion);
-	printf("Size Of Code                   : 0x%08X\n",      pOptionalHeader->SizeOfCode);
-	printf("Size Of Initialized Data       : 0x%08X\n",      pOptionalHeader->SizeOfInitializedData);
-	printf("Size Of Uninitialized Data     : 0x%08X\n",      pOptionalHeader->SizeOfUninitializedData);
-	printf("Address Of Entry Point         : 0x%08X\n",      pOptionalHeader->AddressOfEntryPoint);
-	printf("Base Of Code                   : 0x%08X\n",      pOptionalHeader->BaseOfCode);
-	printf("Base Of Data                   : 0x%08X\n",      pOptionalHeader->BaseOfData);
-	printf("Image Base                     : 0x%08X\n",      pOptionalHeader->ImageBase);
-	printf("Section Alignment              : 0x%08X\n",      pOptionalHeader->SectionAlignment);
-	printf("File Alignment                 : 0x%08X\n",      pOptionalHeader->FileAlignment);
-	printf("Major Operating System Version : %d\n",          pOptionalHeader->MajorOperatingSystemVersion);
-	printf("Minor Operating System Version : %d\n",          pOptionalHeader->MinorOperatingSystemVersion);
-	printf("Major Image Version            : %d\n",          pOptionalHeader->MajorImageVersion);
-	printf("Minor Image Version            : %d\n",          pOptionalHeader->MinorImageVersion);
-	printf("Major Subsystem Version        : %d\n",          pOptionalHeader->MajorSubsystemVersion);
-	printf("Minor Subsystem Version        : %d\n",          pOptionalHeader->MinorSubsystemVersion);
-	printf("Win32 Version Value            : %d\n",          pOptionalHeader->Win32VersionValue);
-	printf("Size Of Image                  : 0x%08X\n",      pOptionalHeader->SizeOfImage);
-	printf("Size Of Headers                : 0x%08X\n",      pOptionalHeader->SizeOfHeaders);
-	printf("Check Sum                      : 0x%08X\n",      pOptionalHeader->CheckSum);
-	printf("Subsystem                      : 0x%04X (%s)\n", pOptionalHeader->Subsystem, PESubsystemToString(pOptionalHeader->Subsystem));
-	printf("Dll Characteristics            : 0x%04X (%s)\n", pOptionalHeader->DllCharacteristics, Characteristics);
-	printf("Size Of Stack Reserve          : 0x%08X\n",      pOptionalHeader->SizeOfStackReserve);
-	printf("Size Of Stack Commit           : 0x%08X\n",      pOptionalHeader->SizeOfStackCommit);
-	printf("Size Of Heap Reserve           : 0x%08X\n",      pOptionalHeader->SizeOfHeapReserve);
-	printf("Size Of Heap Commit            : 0x%08X\n",      pOptionalHeader->SizeOfHeapCommit);
-	printf("Loader Flags                   : 0x%08X\n",      pOptionalHeader->LoaderFlags);
-	printf("Number Of Rva And Sizes        : %d\n",          pOptionalHeader->NumberOfRvaAndSizes);
 	printf("\n");
 	free(Characteristics);
 }

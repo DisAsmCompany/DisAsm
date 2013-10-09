@@ -22,6 +22,7 @@
 
 static const SDFElement PEFileHeader[] =
 {
+	{"PE File Header"},
 	{"Machine             ", 0, kUnsigned, 2, 1},
 	{"NumberOfSections    ", PEFileHeaderNumberOfSections, kUnsigned, 2, 1},
 	{"TimeDateStamp       ", 0, kUTC, 4, 1},

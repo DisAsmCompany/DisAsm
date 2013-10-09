@@ -21,11 +21,6 @@ uint32_t LEtoBE(uint32_t value)
 	((value & 0xFF000000) >> 24);
 }
 
-
-
-
-
-
 #define MachOFatHeader_CpuType    0
 #define MachOFatHeader_CpuSubType 1
 #define MachOFatHeader_Offset     2
@@ -34,13 +29,13 @@ uint32_t LEtoBE(uint32_t value)
 
 SDFElement _MachOFatHeader[] =
 {
+	{"Mach-O Fat Header"},
 	{"CpuType   ", MachOFatHeader_CpuType},
 	{"CpuSubType", MachOFatHeader_CpuSubType},
 	{"Offset    ", MachOFatHeader_Offset},
 	{"Size      ", MachOFatHeader_Size},
 	{"Align     ", MachOFatHeader_Align},
 };
-
 
 uint32_t MachOFatHeaderSize = sizeof(_MachOFatHeader) / sizeof(_MachOFatHeader[0]);
 
