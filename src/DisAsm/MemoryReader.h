@@ -15,4 +15,4 @@
 
 HREADER MemoryReaderCreate(void * buffer, uint32_t size);
 
-#endif // __MEMORYREADER_H__
+#endif /* __MEMORYREADER_H__ */

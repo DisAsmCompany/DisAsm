@@ -21,4 +21,4 @@ void BenchmarkSampleEnd(HBENCHMARK hBenchmark);
 void BenchmarkPrintData(HBENCHMARK hBenchmark);
 void BenchmarkDestroy(HBENCHMARK hBenchmark);
 
-#endif // __BENCHMARK_H__
+#endif /* __BENCHMARK_H__ */

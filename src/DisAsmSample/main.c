@@ -96,20 +96,32 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 		if (CALL == info.mnemonic && Jz == info.operands[0].type)
 		{
 			uint32_t offset = address + length + info.imm;
-			printf("; ");
+			printf("; call to ");
 			PrintAddress(offset);
 			ListAdd(list, offset);
+		}
+		if (JMP == info.mnemonic)
+		{
+			if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
+			{
+				address = info.disp;
+				printf("; jump to ");
+				PrintAddress(address);
+				break;
+			}
+			if (Jz == info.operands[0].type)
+			{
+				address += info.imm;
+				printf("; jump to ");
+				PrintAddress(address);
+				ReaderSeek(hReader, address);
+			}
 		}
 		printf("\n");
 
 		if (JO <= info.mnemonic && info.mnemonic <= JG)
 		{
-			// conditional jump
-			//break;
-		}
-		if (JMP == info.mnemonic)
-		{
-			// non-conditional jump
+			/* conditional jump */
 			//break;
 		}
 		if (RET == info.mnemonic)

@@ -15,4 +15,4 @@
 
 HREADER FileReaderCreate(const char * path);
 
-#endif // __FILEREADER_H__
+#endif /* __FILEREADER_H__ */

@@ -164,6 +164,10 @@
 				RelativePath="..\..\src\Executable\PE\PEString.c"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\Executable\SDF.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -176,6 +180,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\Executable\Executable.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Executable\SDF.h"
 				>
 			</File>
 			<Filter

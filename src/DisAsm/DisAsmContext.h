@@ -22,4 +22,4 @@ typedef struct DisAsmContext_t
 }
 DisAsmContext;
 
-#endif // __DISASMCONTEXT_H__
+#endif /* __DISASMCONTEXT_H__ */

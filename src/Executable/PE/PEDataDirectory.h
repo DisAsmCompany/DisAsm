@@ -17,21 +17,21 @@
 #define PEDataDirectoryCount 0x10
 #endif /* PEDataDirectoryCount */
 
-#define PEDataDirectoryExport          0   // Export Directory
-#define PEDataDirectoryImport          1   // Import Directory
-#define PEDataDirectoryResource        2   // Resource Directory
-#define PEDataDirectoryException       3   // Exception Directory
-#define PEDataDirectorySecurity        4   // Security Directory
-#define PEDataDirectoryFixup           5   // Base Relocation Table
-#define PEDataDirectoryDebug           6   // Debug Directory
-#define PEDataDirectoryArchitecture    7   // Architecture Specific Data
-#define PEDataDirectoryGlobalPtr       8   // RVA of GP
-#define PEDataDirectoryTLS             9   // TLS Directory
-#define PEDataDirectoryLoadConfig     10   // Load Configuration Directory
-#define PEDataDirectoryBoundImport    11   // Bound Import Directory in headers
-#define PEDataDirectoryIAT            12   // Import Address Table
-#define PEDataDirectoryDelayImport    13   // Delay Load Import Descriptors
-#define PEDataDirectoryCOM            14   // COM Runtime descriptor
+#define PEDataDirectoryExport          0   /* Export Directory                  */
+#define PEDataDirectoryImport          1   /* Import Directory                  */
+#define PEDataDirectoryResource        2   /* Resource Directory                */
+#define PEDataDirectoryException       3   /* Exception Directory               */
+#define PEDataDirectorySecurity        4   /* Security Directory                */
+#define PEDataDirectoryFixup           5   /* Base Relocation Table             */
+#define PEDataDirectoryDebug           6   /* Debug Directory                   */
+#define PEDataDirectoryArchitecture    7   /* Architecture Specific Data        */
+#define PEDataDirectoryGlobalPtr       8   /* RVA of GP                         */
+#define PEDataDirectoryTLS             9   /* TLS Directory                     */
+#define PEDataDirectoryLoadConfig     10   /* Load Configuration Directory      */
+#define PEDataDirectoryBoundImport    11   /* Bound Import Directory in headers */
+#define PEDataDirectoryIAT            12   /* Import Address Table              */
+#define PEDataDirectoryDelayImport    13   /* Delay Load Import Descriptors     */
+#define PEDataDirectoryCOM            14   /* COM Runtime descriptor            */
 
 typedef struct PEDataDirectory_t
 {

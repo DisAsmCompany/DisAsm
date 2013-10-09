@@ -16,15 +16,16 @@
 typedef struct PEFileContext_t
 {
 	uint32_t Signature;
-	PEDOSHeader DOSHeader;
-	PEFileHeader FileHeader;
+	HSDF hDOSHeader;
+	HSDF hPEFileHeader;
 	PEOptionalHeader OptionalHeader;
 	uint32_t DataDirectoriesCount;
 	PEDataDirectory * DataDirectories;
 	PESectionHeader * SectionHeaders;
 	PEExportDirectory ExportDirectory;
-	PEDebugDirectory DebugDirectory;
+	HSDF hDebugDirectory;
 	PELoadConfigDirectory LoadConfigDirectory;
+	uint32_t NumberOfSections;
 	uint32_t OffsetExport;
 	uint32_t SizeExport;
 	uint32_t OffsetExportFunctions;
@@ -71,7 +72,7 @@ uint32_t PERVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 	{
 		return RVA;
 	}
-	for (i = 0; i < THIS->FileHeader.NumberOfSections; ++i)
+	for (i = 0; i < THIS->NumberOfSections; ++i)
 	{
 		if (THIS->SectionHeaders[i].VirtualAddress <= RVA && 
 			RVA <= THIS->SectionHeaders[i].VirtualAddress + THIS->SectionHeaders[i].SizeOfRawData)
@@ -124,7 +125,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 
 		name = FetchString(pContext, ptr);
 
-		// Forwarder RVA (within Export Directory)
+		/* Forwarder RVA (within Export Directory) */
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
@@ -212,7 +213,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	{
 		return 0;
 	}
-	if (pDirectory->Size < sizeof(PEDebugDirectory))
+	if (pDirectory->Size < SDFSizeInBytes(PEDebugDirectory, PEDebugDirectorySize))
 	{
 		return 0;
 	}
@@ -220,11 +221,8 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->DebugDirectory, sizeof(PEDebugDirectory)))
-	{
-		return 0;
-	}
-	PEPrintDebugDirectory(&THIS->DebugDirectory);
+	THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, PEDebugDirectorySize, pContext->hReader);
+	SDFPrint(THIS->hDebugDirectory);
 	return 1;
 }
 
@@ -303,7 +301,7 @@ uint32_t PEFileGetEntryPoint(ExecutableContext * pContext)
 
 uint32_t PEFileGetStubEntryPoint(ExecutableContext * pContext)
 {
-	return sizeof(PEDOSHeader);
+	return SDFSizeInBytes(PEDOSHeader, PEDOSHeaderSize);
 }
 
 uint32_t PEFileGetExportCount(ExecutableContext * pContext)
@@ -361,6 +359,10 @@ char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index
 
 void PEFileDestroy(ExecutableContext * pContext)
 {
+	SDFDestroy(THIS->hDOSHeader);
+	SDFDestroy(THIS->hPEFileHeader);
+	SDFDestroy(THIS->hDebugDirectory);
+
 	free(THIS->SectionHeaders);
 	free(THIS->DataDirectories);
 }
@@ -369,6 +371,7 @@ int PEFileCreate(ExecutableContext * pContext)
 {
 	uint32_t size = 0;
 	uint32_t OffsetSectionHeaders = 0;
+	uint32_t SizeOfOptionalHeader = 0;
 
 	PEFileContext * pPEFileContext = (PEFileContext*) malloc(sizeof(PEFileContext));
 	if (NULL == pPEFileContext)
@@ -385,16 +388,18 @@ int PEFileCreate(ExecutableContext * pContext)
 	pContext->pGetExportForwarderName = PEFileGetExportForwarderName;
 	pContext->pDestroy                = PEFileDestroy;
 
-	if (0 == ReaderRead(pContext->hReader, &THIS->DOSHeader, sizeof(PEDOSHeader)))
+	THIS->hDOSHeader = NULL;
+	THIS->hPEFileHeader = NULL;
+	THIS->hDebugDirectory = NULL;
+
+	THIS->hDOSHeader = SDFCreate(PEDOSHeader, PEDOSHeaderSize, pContext->hReader);
+	SDFPrint(THIS->hDOSHeader);
+
+	if (SDFReadUInt16(THIS->hDOSHeader, PEDOSHeaderSignature) != PEDOSSignature)
 	{
 		return 0;
 	}
-	if (THIS->DOSHeader.Signature != PEDOSSignature)
-	{
-		return 0;
-	}
-	PEPrintDOSHeader(&THIS->DOSHeader);
-	if (0 == ReaderSeek(pContext->hReader, THIS->DOSHeader.AddressPE))
+	if (0 == ReaderSeek(pContext->hReader, SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE)))
 	{
 		return 0;
 	}
@@ -406,13 +411,11 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &THIS->FileHeader, sizeof(PEFileHeader)))
-	{
-		return 0;
-	}
 	printf("Signature : \n"); PrintSignature(THIS->Signature, 4);
-	PEPrintFileHeader(&THIS->FileHeader);
-	if (THIS->FileHeader.SizeOfOptionalHeader < sizeof(PEOptionalHeader))
+	THIS->hPEFileHeader = SDFCreate(PEFileHeader, PEFileHeaderSize, pContext->hReader);
+	SDFPrint(THIS->hPEFileHeader);
+	SizeOfOptionalHeader = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderSizeOfOptionalHeader);
+	if (SizeOfOptionalHeader < sizeof(PEOptionalHeader))
 	{
 		return 0;
 	}
@@ -421,8 +424,8 @@ int PEFileCreate(ExecutableContext * pContext)
 		return 0;
 	}
 	PEPrintOptionalHeader(&THIS->OptionalHeader);
-	OffsetSectionHeaders = THIS->DOSHeader.AddressPE + sizeof(uint32_t) + sizeof(PEFileHeader) + THIS->FileHeader.SizeOfOptionalHeader;
-	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (THIS->FileHeader.SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
+	OffsetSectionHeaders = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE) + sizeof(uint32_t) + SDFSizeInBytes(PEFileHeader, PEFileHeaderSize) + SizeOfOptionalHeader;
+	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (SizeOfOptionalHeader - sizeof(PEOptionalHeader)) / sizeof(PEDataDirectory));
 	THIS->DataDirectoriesCount = MIN(THIS->OptionalHeader.NumberOfRvaAndSizes, THIS->DataDirectoriesCount);
 	if (THIS->DataDirectoriesCount > 0)
 	{
@@ -436,11 +439,12 @@ int PEFileCreate(ExecutableContext * pContext)
 			return 0;
 		}
 	}
-	if (THIS->FileHeader.NumberOfSections == 0)
+	THIS->NumberOfSections = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderNumberOfSections);
+	if (0 == THIS->NumberOfSections)
 	{
 		return 0;
 	}
-	size = sizeof(PESectionHeader) * THIS->FileHeader.NumberOfSections;
+	size = sizeof(PESectionHeader) * THIS->NumberOfSections;
 	THIS->SectionHeaders = (PESectionHeader*) malloc(size);
 	if (NULL == THIS->SectionHeaders)
 	{
@@ -456,7 +460,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	{
 		uint8_t i = 0;
-		for (i = 0; i < THIS->FileHeader.NumberOfSections; ++i)
+		for (i = 0; i < THIS->NumberOfSections; ++i)
 		{
 			PEPrintSectionHeader(&THIS->SectionHeaders[i]);
 		}

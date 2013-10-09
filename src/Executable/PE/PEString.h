@@ -23,14 +23,10 @@ char * PEMachineToString(uint16_t Machine);
 char * PEMagicToString(uint16_t Magic);
 char * PEDebugTypeToString(uint32_t Type);
 
-void PEPrintDebugDirectory(PEDebugDirectory * pDebugDirectory);
 void PEPrintLoadConfigDirectory(PELoadConfigDirectory * pLoadConfigDirectory);
 void PEPrintExportDirectory(PEExportDirectory * pExportDirectory);
-void PEPrintDOSHeader(PEDOSHeader * pDOSHeader);
 void PEPrintSectionHeader(PESectionHeader * pSectionHeader);
 void PEPrintOptionalHeader(PEOptionalHeader * pOptionalHeader);
-void PEPrintFileHeader(PEFileHeader * pFileHeader);
 void PEPrintImportDescriptor(PEImportDescriptor * pImportDescriptor);
-
 
 #endif /* __PESTRING_H__ */

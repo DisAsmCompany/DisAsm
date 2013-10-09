@@ -228,19 +228,6 @@ char * PEDebugTypeToString(uint32_t Type)
 	}
 }
 
-void PEPrintDebugDirectory(PEDebugDirectory * pDebugDirectory)
-{
-	printf("Debug Directory :\n");
-	printf("Characteristics     : %d\n",          pDebugDirectory->Characteristics);
-	printf("TimeDateStamp       : 0x%08X (%s)\n", pDebugDirectory->TimeDateStamp, UTC(pDebugDirectory->TimeDateStamp));
-	printf("Major Version       : %d\n",          pDebugDirectory->MajorVersion);
-	printf("Minor Version       : %d\n",          pDebugDirectory->MinorVersion);
-	printf("Type                : 0x%08X (%s)\n", pDebugDirectory->Type, PEDebugTypeToString(pDebugDirectory->Type));
-	printf("Size Of Data        : 0x%08X\n",      pDebugDirectory->SizeOfData);
-	printf("Address Of Raw Data : 0x%08X\n",      pDebugDirectory->AddressOfRawData);
-	printf("Pointer To Raw Data : 0x%08X\n",      pDebugDirectory->PointerToRawData);
-}
-
 void PEPrintLoadConfigDirectory(PELoadConfigDirectory * pLoadConfigDirectory)
 {
 	printf("Load Config Directory :\n");
@@ -281,29 +268,6 @@ void PEPrintExportDirectory(PEExportDirectory * pExportDirectory)
 	printf("Address Of Functions    : 0x%08X\n",      pExportDirectory->AddressOfFunctions);
 	printf("Address Of Names        : 0x%08X\n",      pExportDirectory->AddressOfNames);
 	printf("Address Of NameOrdinals : 0x%08X\n",      pExportDirectory->AddressOfNameOrdinals);
-	printf("\n");
-}
-
-void PEPrintDOSHeader(PEDOSHeader * pDOSHeader)
-{
-	printf("MS DOS Header : \n");
-	printf("Signature          : ");        PrintSignature(pDOSHeader->Signature, 2);
-	printf("Bytes In Last Page : %d\n",     pDOSHeader->BytesInLastPage);
-	printf("Pages              : %d\n",     pDOSHeader->Pages);
-	printf("Relocations        : %d\n",     pDOSHeader->Relocations);
-	printf("Paragraphs         : %d\n",     pDOSHeader->Paragraphs);
-	printf("ParagraphsMin      : %d\n",     pDOSHeader->ParagraphsMin);
-	printf("ParagraphsMax      : %d\n",     pDOSHeader->ParagraphsMax);
-	printf("Initial SS         : 0x%04X\n", pDOSHeader->InitialSS);
-	printf("Initial SP         : 0x%04X\n", pDOSHeader->InitialSP);
-	printf("Check Sum          : 0x%04X\n", pDOSHeader->CheckSum);
-	printf("Initial IP         : 0x%04X\n", pDOSHeader->InitialIP);
-	printf("Initial CS         : 0x%04X\n", pDOSHeader->InitialCS);
-	printf("Address Relocation : 0x%04X\n", pDOSHeader->AddressRelocation);
-	printf("Overlay Number     : %d\n",     pDOSHeader->OverlayNumber);
-	printf("OEM ID             : %d\n",     pDOSHeader->OEMID);
-	printf("OEM Info           : %d\n",     pDOSHeader->OEMInfo);
-	printf("Address PE         : 0x%08X\n", pDOSHeader->AddressPE);
 	printf("\n");
 }
 
@@ -361,21 +325,6 @@ void PEPrintOptionalHeader(PEOptionalHeader * pOptionalHeader)
 	printf("Size Of Heap Commit            : 0x%08X\n",      pOptionalHeader->SizeOfHeapCommit);
 	printf("Loader Flags                   : 0x%08X\n",      pOptionalHeader->LoaderFlags);
 	printf("Number Of Rva And Sizes        : %d\n",          pOptionalHeader->NumberOfRvaAndSizes);
-	printf("\n");
-	free(Characteristics);
-}
-
-void PEPrintFileHeader(PEFileHeader * pFileHeader)
-{
-	char * Characteristics = PECharacteristicsToString(pFileHeader->Characteristics);
-	printf("PE File Header : \n");
-	printf("Machine                 : 0x%04X (%s)\n", pFileHeader->Machine, PEMachineToString(pFileHeader->Machine));
-	printf("Number Of Sections      : %d\n",          pFileHeader->NumberOfSections);
-	printf("Time Date Stamp         : 0x%08X (%s)\n", pFileHeader->TimeDateStamp, UTC(pFileHeader->TimeDateStamp));
-	printf("Pointer To Symbol Table : %d\n",          pFileHeader->PointerToSymbolTable);
-	printf("Number Of Symbols       : %d\n",          pFileHeader->NumberOfSymbols);
-	printf("Size Of Optional Header : 0x%04X\n",      pFileHeader->SizeOfOptionalHeader);
-	printf("Characteristics         : 0x%04X (%s)\n", pFileHeader->Characteristics, Characteristics);
 	printf("\n");
 	free(Characteristics);
 }

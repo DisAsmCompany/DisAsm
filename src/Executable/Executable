@@ -11,6 +11,7 @@
 
 #include "Executable.h"
 
+#include "SDF.h"
 /* PE - Portable Executable */
 #include "PE/PEDOSHeader.h"
 #include "PE/PEFileHeader.h"

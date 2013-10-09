@@ -17,16 +17,19 @@
 #define PENTSignature 0x00004550 /* PE */
 #endif /* PENTSignature */
 
-typedef struct PEFileHeader_t
+#define PEFileHeaderNumberOfSections 1
+#define PEFileHeaderSizeOfOptionalHeader 2
+
+static const SDFElement PEFileHeader[] =
 {
-	uint16_t Machine;
-	uint16_t NumberOfSections;
-	uint32_t TimeDateStamp;
-	uint32_t PointerToSymbolTable;
-	uint32_t NumberOfSymbols;
-	uint16_t SizeOfOptionalHeader;
-	uint16_t Characteristics;
-}
-PEFileHeader;
+	{"Machine             ", 0, kUnsigned, 2, 1},
+	{"NumberOfSections    ", PEFileHeaderNumberOfSections, kUnsigned, 2, 1},
+	{"TimeDateStamp       ", 0, kUTC, 4, 1},
+	{"PointerToSymbolTable", 0, kUnsigned, 4, 1},
+	{"NumberOfSymbols     ", 0, kUnsigned, 4, 1},
+	{"SizeOfOptionalHeader", PEFileHeaderSizeOfOptionalHeader, kUnsigned, 2, 1},
+	{"Characteristics     ", 0, kUnsigned, 2, 1},
+};
+static const uint32_t PEFileHeaderSize = sizeof(PEFileHeader) / sizeof(PEFileHeader[0]);
 
 #endif /* __PEFILEHEADER_H__ */

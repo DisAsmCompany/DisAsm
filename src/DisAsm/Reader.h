@@ -34,4 +34,4 @@ int ReaderRead(HREADER hReader, void * buffer, uint32_t size);
 int ReaderSeek(HREADER hReader, uint32_t pos);
 void ReaderDestroy(HREADER hReader);
 
-#endif // __READER_H__
+#endif /* __READER_H__ */

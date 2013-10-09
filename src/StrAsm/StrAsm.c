@@ -102,8 +102,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 				{
 					printf("%d * ", pOperand->scale);
 				}
-				char * index = RegisterToString(pOperand->index);
-				printf("%s", index);
+				printf("%s", RegisterToString(pOperand->index));
 			}
 			if (pInfo->hasDisp)
 			{
