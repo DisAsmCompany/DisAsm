@@ -70,7 +70,7 @@ char * GetUTC(uint32_t TimeStamp)
 void SDFPrint(HSDF hSDF)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;
-	uint32_t i = 0, j = 0;
+	uint32_t i = 0, j = 0, k = 0;
 	uint32_t offset = 0;
 	printf("%s\n", pContext->definition[0].name);
 	for (i = 1; i <= pContext->size; ++i)
@@ -84,24 +84,35 @@ void SDFPrint(HSDF hSDF)
 				{
 					printf("[%d]", j);
 				}
-				if (1 == pContext->definition[i].size)
+				if (kStringASCII == pContext->definition[i].type)
+				{
+					char * value = (char*) (pContext->data + offset);
+					printf(" : ");
+					for (k = 0; k < pContext->definition[i].size; ++k)
+					{
+						if (value[k] == 0) break;
+						printf("%c", value[k]);
+					}
+				}
+				if (1 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
 					uint8_t * value = (uint8_t*) (pContext->data + offset);
 					printf(" : 0x%02X", *value);
 				}
-				if (2 == pContext->definition[i].size)
+				if (2 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
 					uint16_t * value = (uint16_t*) (pContext->data + offset);
 					printf(" : 0x%04X", *value);
 				}
-				if (4 == pContext->definition[i].size)
+				if (4 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
 					uint32_t * value = (uint32_t*) (pContext->data + offset);
 					printf(" : 0x%08X", *value);
-					if (kUTC == pContext->definition[i].type)
-					{
-						printf(" (%s)", GetUTC(*value));
-					}
+				}
+				if (4 == pContext->definition[i].size && kUTC == pContext->definition[i].type)
+				{
+					uint32_t * value = (uint32_t*) (pContext->data + offset);
+					printf(" : 0x%08X (%s)", *value, GetUTC(*value));
 				}
 				printf("\n");
 			}

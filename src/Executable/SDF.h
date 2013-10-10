@@ -15,9 +15,10 @@
 
 typedef enum SDFType_t
 {
-	kUnsigned = 0,
-	kUTC = 1,
-	kReserved = 2,
+	kUnsigned,
+	kUTC,
+	kStringASCII,
+	kReserved,
 }
 SDFType;
 

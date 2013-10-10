@@ -227,34 +227,3 @@ char * PEDebugTypeToString(uint32_t Type)
 	default: return "?";
 	}
 }
-
-void PEPrintSectionHeader(PESectionHeader * pSectionHeader)
-{
-	char * Characteristics = PESectionCharacteristicsToString(pSectionHeader->Characteristics);
-	char name[9] = {0};
-	memcpy(name, pSectionHeader->Name, 8);
-	printf("Section Header :\n");
-	printf("Name                    : %s\n",          name);
-	printf("Physical Address        : 0x%08X\n",      pSectionHeader->PhysicalAddress);
-	printf("Virtual Address         : 0x%08X\n",      pSectionHeader->VirtualAddress);
-	printf("Size Of Raw Data        : 0x%08X\n",      pSectionHeader->SizeOfRawData);
-	printf("Pointer To Raw Data     : 0x%08X\n",      pSectionHeader->PointerToRawData);
-	printf("Pointer To Relocations  : 0x%08X\n",      pSectionHeader->PointerToRelocations);
-	printf("Pointer To Line Numbers : 0x%08X\n",      pSectionHeader->PointerToLinenumbers);
-	printf("Number Of Relocations   : %d\n",          pSectionHeader->NumberOfRelocations);
-	printf("Number Of Line Numbers  : %d\n",          pSectionHeader->NumberOfLinenumbers);
-	printf("Characteristics         : 0x%08X (%s)\n", pSectionHeader->Characteristics, Characteristics);
-	printf("\n");
-	free(Characteristics);
-}
-
-void PEPrintImportDescriptor(PEImportDescriptor * pImportDescriptor)
-{
-	printf("Import Descriptor :\n");
-	printf("Original First Thunk : 0x%08X\n",      pImportDescriptor->OriginalFirstThunk);
-	printf("Time Date Stamp      : 0x%08X (%s)\n", pImportDescriptor->TimeDateStamp, UTC(pImportDescriptor->TimeDateStamp));
-	printf("Forwarder Chain      : 0x%08X\n",      pImportDescriptor->ForwarderChain);
-	printf("Name                 : 0x%08X\n",      pImportDescriptor->Name);
-	printf("First Thunk          : 0x%08X\n",      pImportDescriptor->FirstThunk);
-	printf("\n");
-}
