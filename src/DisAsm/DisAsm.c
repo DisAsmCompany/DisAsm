@@ -393,10 +393,10 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	{
 		uint32_t index = (pInfo->mnemonic - GROUP1) * 8 + pInfo->ModRM.fields.Reg;
 		OpCodeMapElement * pElement = &OpCodeMapGroup[index];
-		pInfo->mnemonic = pElement->mnemonic;
 		/* GROUP3 TEST (/0 and /1) is tricky one */
 		if (GROUP3 == pInfo->mnemonic && TEST == pElement->mnemonic)
 		{
+			pInfo->mnemonic = pElement->mnemonic;
 			pInfo->mnemonic = TEST;
 			pInfo->nOperands = 2;
 			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
@@ -405,6 +405,7 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 		{
 			CopyElementInfo(pInfo, pElement);
 		}
+		pInfo->mnemonic = pElement->mnemonic;
 	}
 }
 
