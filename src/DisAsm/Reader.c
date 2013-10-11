@@ -23,6 +23,12 @@ int ReaderSeek(HREADER hReader, uint32_t pos)
 	return pContext->pSeek(hReader, pos);
 }
 
+int ReaderSkip(HREADER hReader, uint32_t count)
+{
+	ReaderContext * pContext = (ReaderContext*) hReader;
+	return pContext->pSkip(hReader, count);
+}
+
 void ReaderDestroy(HREADER hReader)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;

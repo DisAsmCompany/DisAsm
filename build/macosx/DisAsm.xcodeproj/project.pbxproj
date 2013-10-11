@@ -31,6 +31,9 @@
 		4F1ABF3D1803BDBA007D245D /* InstructionSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF371803BDBA007D245D /* InstructionSet.h */; };
 		4F1ABF3E1803BDBA007D245D /* OpCodeMapGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */; };
 		4F1ABF3F1803BDBA007D245D /* OpCodeMapX87.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */; };
+		4F5069A61807B3400052ECB3 /* SDF.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F5069A51807B3400052ECB3 /* SDF.c */; };
+		4F5069A81807B34D0052ECB3 /* SDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5069A71807B34D0052ECB3 /* SDF.h */; };
+		4F506AAC1807D33D0052ECB3 /* MachOHeader64.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F506AAB1807D33D0052ECB3 /* MachOHeader64.h */; };
 		4F58976417FC0E060075CF56 /* Executable in Headers */ = {isa = PBXBuildFile; fileRef = 4F71476117F9434700233DB6 /* Executable */; };
 		4F58977317FC0E240075CF56 /* StrAsm in Headers */ = {isa = PBXBuildFile; fileRef = 4F71474217F942DA00233DB6 /* StrAsm */; };
 		4F5897A417FC11070075CF56 /* stdafx.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5897A317FC11070075CF56 /* stdafx.h */; };
@@ -168,6 +171,9 @@
 		4F1ABF371803BDBA007D245D /* InstructionSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstructionSet.h; path = ../../src/DisAsm/InstructionSet.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapGroup.h; path = ../../src/DisAsm/OpCodeMapGroup.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapX87.h; path = ../../src/DisAsm/OpCodeMapX87.h; sourceTree = SOURCE_ROOT; };
+		4F5069A51807B3400052ECB3 /* SDF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDF.c; path = ../../src/Executable/SDF.c; sourceTree = SOURCE_ROOT; };
+		4F5069A71807B34D0052ECB3 /* SDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDF.h; path = ../../src/Executable/SDF.h; sourceTree = SOURCE_ROOT; };
+		4F506AAB1807D33D0052ECB3 /* MachOHeader64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader64.h; path = ../../src/Executable/MachO/MachOHeader64.h; sourceTree = SOURCE_ROOT; };
 		4F5897A317FC11070075CF56 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../src/DisAsm/stdafx.h; sourceTree = SOURCE_ROOT; };
 		4F5897EC17FC25F30075CF56 /* ExecutableContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutableContext.h; path = ../../src/Executable/ExecutableContext.h; sourceTree = SOURCE_ROOT; };
 		4F7146EE17F9424F00233DB6 /* libDisAsm.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libDisAsm.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -270,6 +276,8 @@
 		08FB7794FE84155DC02AAC07 /* DisAsm */ = {
 			isa = PBXGroup;
 			children = (
+				4F5069A71807B34D0052ECB3 /* SDF.h */,
+				4F5069A51807B3400052ECB3 /* SDF.c */,
 				4F1ABF341803BDBA007D245D /* Benchmark.h */,
 				4F1ABF351803BDBA007D245D /* DisAsm.h */,
 				4F1ABF361803BDBA007D245D /* InstructionInfo.h */,
@@ -344,6 +352,7 @@
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6A0FF2B0290797F04C91782 /* Documentation */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
+				4F506AAB1807D33D0052ECB3 /* MachOHeader64.h */,
 			);
 			name = DisAsm;
 			sourceTree = "<group>";
@@ -459,6 +468,8 @@
 				4F1ABF311803BD98007D245D /* PEOptionalHeader.h in Headers */,
 				4F1ABF321803BD98007D245D /* PESectionHeader.h in Headers */,
 				4F1ABF331803BD98007D245D /* PEString.h in Headers */,
+				4F5069A81807B34D0052ECB3 /* SDF.h in Headers */,
+				4F506AAC1807D33D0052ECB3 /* MachOHeader64.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -624,6 +635,7 @@
 				4F1ABEEC1803BA48007D245D /* MachOFile.c in Sources */,
 				4F1ABEEF1803BA56007D245D /* PEFile.c in Sources */,
 				4F1ABEF01803BA56007D245D /* PEString.c in Sources */,
+				4F5069A61807B3400052ECB3 /* SDF.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

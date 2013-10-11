@@ -21,23 +21,17 @@ uint32_t LEtoBE(uint32_t value)
 	((value & 0xFF000000) >> 24);
 }
 
-#define MachOFatHeader_CpuType    0
-#define MachOFatHeader_CpuSubType 1
-#define MachOFatHeader_Offset     2
-#define MachOFatHeader_Size       3
-#define MachOFatHeader_Align      4
-
-SDFElement _MachOFatHeader[] =
+typedef struct MachOFileContext_t
 {
-	{"Mach-O Fat Header"},
-	{"CpuType   ", MachOFatHeader_CpuType},
-	{"CpuSubType", MachOFatHeader_CpuSubType},
-	{"Offset    ", MachOFatHeader_Offset},
-	{"Size      ", MachOFatHeader_Size},
-	{"Align     ", MachOFatHeader_Align},
-};
+	uint32_t nFatHeaders;
+	HSDF * phFatHeaders;
+	HSDF * phMachHeaders;
+	uint32_t nCommands;
+}
+MachOFileContext;
 
-uint32_t MachOFatHeaderSize = sizeof(_MachOFatHeader) / sizeof(_MachOFatHeader[0]);
+#undef THIS
+#define THIS ((MachOFileContext*)(pContext->pPrivate))
 
 int MachOExecutableProcess(ExecutableContext * pContext)
 {
@@ -47,8 +41,16 @@ int MachOExecutableProcess(ExecutableContext * pContext)
 int MachOFileCreate(ExecutableContext * pContext)
 {
 	uint32_t magic = 0;
-	uint32_t count = 0;
-	uint32_t i = 0;
+	uint32_t i = 0, j = 0;
+	
+	MachOFileContext * pMachOFileContext = (MachOFileContext*) malloc(sizeof(MachOFileContext));
+	if (NULL == pMachOFileContext)
+	{
+		return 0;
+	}
+	memset(pMachOFileContext, 0, sizeof(MachOFileContext));
+	pContext->pPrivate = pMachOFileContext;
+	
 	if (0 == ReaderSeek(pContext->hReader, 0))
 	{
 		return 0;
@@ -57,28 +59,65 @@ int MachOFileCreate(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	magic = LEtoBE(magic);
-	if (0xCAFEBABEUL == magic)
+	if (0xCAFEBABEUL == LEtoBE(magic))
 	{
-		if (0 == ReaderRead(pContext->hReader, &count, sizeof(uint32_t)))
+		if (0 == ReaderRead(pContext->hReader, &THIS->nFatHeaders, sizeof(uint32_t)))
 		{
 			return 0;
 		}
-		count = LEtoBE(count);
-		if (count > 0)
+		THIS->nFatHeaders = LEtoBE(THIS->nFatHeaders);
+		if (0 == THIS->nFatHeaders)
 		{
-			for (i = 0; i < count; ++i)
+			return 0;
+		}
+		THIS->phFatHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders);
+		THIS->phMachHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders);
+		for (i = 0; i < THIS->nFatHeaders; ++i)
+		{
+			THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, MachOFatHeaderSize, pContext->hReader);
+			SDFPrint(THIS->phFatHeaders[i]);
+		}
+		for (i = 0; i < THIS->nFatHeaders; ++i)
+		{
+			uint32_t offset = LEtoBE(SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset));
+			uint32_t CpuType = LEtoBE(SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType));
+			
+			if (0 == ReaderSeek(pContext->hReader, offset))
 			{
-				HSDF header = SDFCreate(_MachOFatHeader, MachOFatHeaderSize, pContext->hReader);
-				printf("header %d :\n", i);
-				SDFPrint(header);
-				
-				SDFDestroy(header);
+				return 0;
 			}
-		}
-		else
-		{
-			return 0;
+			if (CpuType == 0x07)
+			{
+				THIS->phMachHeaders[i] = SDFCreate(MachOHeader, MachOHeaderSize, pContext->hReader);
+			}
+			else 
+			{
+				THIS->phMachHeaders[i] = SDFCreate(MachOHeader64, MachOHeader64Size, pContext->hReader);
+			}
+
+			SDFPrint(THIS->phMachHeaders[i]);
+			
+			THIS->nCommands = SDFReadUInt32(THIS->phMachHeaders[i], MachOHeaderCountCommands);
+			for (j = 0; j < THIS->nCommands; ++j)
+			{
+				uint32_t count, type;
+				HSDF hCommand = SDFCreate(MachOLoadCommand, MachOLoadCommandSize, pContext->hReader);
+				type = SDFReadUInt32(hCommand, MachOLoadCommandCommand);
+				count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand, MachOLoadCommandSize);
+				
+				switch (type)
+				{
+					case 0x00000001UL: printf("Segment32\n"); break;
+					case 0x00000019UL: printf("Segment64\n"); break;
+					case 0x0000000CUL: printf("LoadDylib\n"); break;
+					default : break;
+				}
+				
+				SDFPrint(hCommand);
+				ReaderSkip(pContext->hReader, count);
+				
+				SDFDestroy(hCommand);
+			}
 		}
 	}
 	return 0;

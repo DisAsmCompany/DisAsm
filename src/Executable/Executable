@@ -25,6 +25,7 @@
 #include "PE/PEFile.h"
 /* Mach-O */
 #include "MachO/MachOHeader.h"
+#include "MachO/MachOHeader64.h"
 #include "MachO/MachOFatHeader.h"
 #include "MachO/MachOLoadCommand.h"
 #include "MachO/MachOFile.h"

@@ -1,21 +1,21 @@
 /*
- * Filename: MachOHeader.h
+ * Filename: MachOHeader64.h
  * Author:   DisAsmCompany
- * Date:     02/10/2013
+ * Date:     11/10/2013
  *
- * Description: Mach-O header
+ * Description: Mach-O header 64
  *
  *
  *
  */
 
 #pragma once
-#ifndef __MACHOHEADER_H__
-#define __MACHOHEADER_H__
+#ifndef __MACHOHEADER64_H__
+#define __MACHOHEADER64_H__
 
-#define MachOHeaderCountCommands 1
+#define MachOHeader64CountCommands 1
 
-static const SDFElement MachOHeader[] =
+static const SDFElement MachOHeader64[] =
 {
 	{"Mach-O Header"},
 	{"Magic        ", 0, kUnsigned, 4, 1},
@@ -25,7 +25,8 @@ static const SDFElement MachOHeader[] =
 	{"CountCommands", MachOHeaderCountCommands, kUnsigned, 4, 1},
 	{"SizeCommands ", 0, kUnsigned, 4, 1},
 	{"Flags        ", 0, kUnsigned, 4, 1},
+	{"Reserved     ", 0, kReserved, 4, 1},
 };
-static const uint32_t MachOHeaderSize = sizeof(MachOHeader) / sizeof(MachOHeader[0]);
+static const uint32_t MachOHeader64Size = sizeof(MachOHeader64) / sizeof(MachOHeader64[0]);
 
-#endif /* __MACHOHEADER_H__ */
+#endif /* __MACHOHEADER64_H__ */

@@ -14,7 +14,7 @@
 
 typedef struct SDFContext_t
 {
-	SDFElement * definition;
+	const SDFElement * definition;
 	uint32_t size;
 	uint8_t * data;
 }
@@ -35,8 +35,6 @@ HSDF SDFCreate(const SDFElement * definition, uint32_t size, HREADER hReader)
 {
 	SDFContext * pContext = NULL;
 	uint32_t bytes = SDFSizeInBytes(definition, size);
-	uint32_t i = 0;
-	uint32_t value = 0;
 	pContext = (SDFContext*) malloc(sizeof(SDFContext));
 	if (NULL == pContext)
 	{

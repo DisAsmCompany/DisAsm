@@ -374,7 +374,6 @@ void PEFileDestroy(ExecutableContext * pContext)
 
 int PEFileCreate(ExecutableContext * pContext)
 {
-	uint32_t size = 0;
 	uint32_t Signature = 0;
 	uint16_t Magic = 0;
 	uint32_t OffsetSectionHeaders = 0;
@@ -396,12 +395,12 @@ int PEFileCreate(ExecutableContext * pContext)
 	pContext->pDestroy                = PEFileDestroy;
 
 	THIS->hDOSHeader = SDFCreate(PEDOSHeader, PEDOSHeaderSize, pContext->hReader);
-	SDFPrint(THIS->hDOSHeader);
 
 	if (SDFReadUInt16(THIS->hDOSHeader, PEDOSHeaderSignature) != PEDOSSignature)
 	{
 		return 0;
 	}
+	SDFPrint(THIS->hDOSHeader);
 	if (0 == ReaderSeek(pContext->hReader, SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE)))
 	{
 		return 0;

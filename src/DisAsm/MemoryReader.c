@@ -34,6 +34,12 @@ int MemoryReaderSeek(ReaderContext * pContext, uint32_t pos)
 	return 1;
 }
 
+int MemoryReaderSkip(ReaderContext * pContext, uint32_t count)
+{
+	AccessPrivateData(pContext)->offset += count;
+	return 1;
+}
+
 void MemoryReaderDestroy(ReaderContext * pContext)
 {
 	free(pContext->pPrivate);
@@ -64,6 +70,7 @@ HREADER MemoryReaderCreate(void * buffer, uint32_t size)
 	pPrivate->offset = 0;
 	pContext->pRead    = MemoryReaderRead;
 	pContext->pSeek    = MemoryReaderSeek;
+	pContext->pSkip    = MemoryReaderSkip;
 	pContext->pDestroy = MemoryReaderDestroy;
 	pContext->pPrivate = pPrivate;
 	return (HREADER) pContext;

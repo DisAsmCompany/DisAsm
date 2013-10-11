@@ -29,6 +29,11 @@ int FileReaderSeek(ReaderContext * pContext, uint32_t pos)
 	return (0 == fseek(AccessPrivateData(pContext)->f, pos, SEEK_SET));
 }
 
+int FileReaderSkip(ReaderContext * pContext, uint32_t count)
+{
+	return (0 == fseek(AccessPrivateData(pContext)->f, count, SEEK_CUR));
+}
+
 void FileReaderDestroy(ReaderContext * hReader)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
@@ -58,6 +63,7 @@ HREADER FileReaderCreate(const char * path)
 	pPrivate->f = f;
 	pContext->pRead    = FileReaderRead;
 	pContext->pSeek    = FileReaderSeek;
+	pContext->pSkip    = FileReaderSkip;
 	pContext->pDestroy = FileReaderDestroy;
 	pContext->pPrivate = pPrivate;
 	return (HREADER) pContext;
