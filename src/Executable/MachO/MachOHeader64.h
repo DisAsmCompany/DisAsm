@@ -17,7 +17,7 @@
 
 static const SDFElement MachOHeader64[] =
 {
-	{"Mach-O Header"},
+	{"Mach-O Header 64"},
 	{"Magic        ", 0, kUnsigned, 4, 1},
 	{"CpuType      ", 0, kUnsigned, 4, 1},
 	{"CpuSubType   ", 0, kUnsigned, 4, 1},

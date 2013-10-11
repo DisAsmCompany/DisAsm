@@ -41,7 +41,7 @@ int MachOExecutableProcess(ExecutableContext * pContext)
 int MachOFileCreate(ExecutableContext * pContext)
 {
 	uint32_t magic = 0;
-	uint32_t i = 0, j = 0;
+	uint32_t i = 0, j = 0, k = 0;
 	
 	MachOFileContext * pMachOFileContext = (MachOFileContext*) malloc(sizeof(MachOFileContext));
 	if (NULL == pMachOFileContext)
@@ -114,6 +114,39 @@ int MachOFileCreate(ExecutableContext * pContext)
 				}
 				
 				SDFPrint(hCommand);
+				
+				if (0x00000001UL == type)
+				{
+					HSDF hSegment = SDFCreate(MachOSegment, MachOSegmentSize, pContext->hReader);
+					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegmentNumberOfSections);
+					SDFPrint(hSegment);
+					SDFDestroy(hSegment);
+					count -= SDFSizeInBytes(MachOSegment, MachOSegmentSize);
+					
+					for (k = 0; k < NumberOfSections; ++k)
+					{
+						HSDF hSection = SDFCreate(MachOSection, MachOSectionSize, pContext->hReader);
+						SDFPrint(hSection);
+						SDFDestroy(hSection);
+						count -= SDFSizeInBytes(MachOSection, MachOSectionSize);
+					}
+				}
+				if (0x00000019UL == type)
+				{
+					HSDF hSegment = SDFCreate(MachOSegment64, MachOSegment64Size, pContext->hReader);
+					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegment64NumberOfSections);
+					SDFPrint(hSegment);
+					SDFDestroy(hSegment);
+					count -= SDFSizeInBytes(MachOSegment64, MachOSegment64Size);
+					
+					for (k = 0; k < NumberOfSections; ++k)
+					{
+						HSDF hSection = SDFCreate(MachOSection64, MachOSection64Size, pContext->hReader);
+						SDFPrint(hSection);
+						SDFDestroy(hSection);
+						count -= SDFSizeInBytes(MachOSection64, MachOSection64Size);
+					}
+				}
 				ReaderSkip(pContext->hReader, count);
 				
 				SDFDestroy(hCommand);

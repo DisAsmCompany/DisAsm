@@ -107,6 +107,11 @@ void SDFPrint(HSDF hSDF)
 					uint32_t * value = (uint32_t*) (pContext->data + offset);
 					printf(" : 0x%08X", *value);
 				}
+				if (8 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
+				{
+					uint64_t * value = (uint64_t*) (pContext->data + offset);
+					printf(" : 0x%016LX", *value);
+				}
 				if (4 == pContext->definition[i].size && kUTC == pContext->definition[i].type)
 				{
 					uint32_t * value = (uint32_t*) (pContext->data + offset);

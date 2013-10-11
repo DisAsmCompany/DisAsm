@@ -28,4 +28,8 @@
 #include "MachO/MachOHeader64.h"
 #include "MachO/MachOFatHeader.h"
 #include "MachO/MachOLoadCommand.h"
+#include "MachO/MachOSegment.h"
+#include "MachO/MachOSegment64.h"
+#include "MachO/MachOSection.h"
+#include "MachO/MachOSection64.h"
 #include "MachO/MachOFile.h"
