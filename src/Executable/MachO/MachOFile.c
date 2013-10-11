@@ -12,6 +12,15 @@
 #include "../../DisAsm/DisAsm"
 #include "../Executable"
 
+#include "MachOHeader.h"
+#include "MachOHeader64.h"
+#include "MachOFatHeader.h"
+#include "MachOLoadCommand.h"
+#include "MachOSegment.h"
+#include "MachOSegment64.h"
+#include "MachOSection.h"
+#include "MachOSection64.h"
+
 uint32_t LEtoBE(uint32_t value)
 {
 	return 

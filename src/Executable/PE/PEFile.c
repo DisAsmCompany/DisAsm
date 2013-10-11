@@ -13,6 +13,16 @@
 #include "../Executable"
 #include "PEString.h"
 
+#include "PEDOSHeader.h"
+#include "PEFileHeader.h"
+#include "PEDataDirectory.h"
+#include "PEOptionalHeader.h"
+#include "PESectionHeader.h"
+#include "PEExportDirectory.h"
+#include "PEImportDescriptor.h"
+#include "PEDebugDirectory.h"
+#include "PELoadConfigDirectory.h"
+
 typedef struct PEFileContext_t
 {
 	HSDF hDOSHeader;
