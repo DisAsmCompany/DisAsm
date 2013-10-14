@@ -16,8 +16,25 @@ typedef struct SDFContext_t
 {
 	const SDFElement * definition;
 	uint8_t * data;
+	uint8_t endian;
 }
 SDFContext;
+
+uint32_t LE2BE32(uint32_t value)
+{
+	return 
+	((value & 0x000000FFUL) << 24) |
+	((value & 0x0000FF00UL) << 8)  |
+	((value & 0x00FF0000UL) >> 8)  |
+	((value & 0xFF000000UL) >> 24);
+}
+
+uint16_t LE2BE16(uint16_t value)
+{
+	return 
+	((value & 0x00FF) << 8)  |
+	((value & 0xFF00) >> 8);
+}
 
 uint32_t SDFSizeInBytes(const SDFElement * definition)
 {
@@ -45,6 +62,7 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 	}
 	pContext->definition = definition;
 	pContext->data = malloc(bytes);
+	pContext->endian = 0;
 	if (NULL == pContext->data)
 	{
 		free(pContext);
@@ -100,18 +118,20 @@ void SDFPrint(HSDF hSDF)
 				}
 				if (1 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
-					uint8_t * value = (uint8_t*) (pContext->data + offset);
-					printf(" : 0x%02X", *value);
+					uint8_t value = *(uint8_t*) (pContext->data + offset);
+					printf(" : 0x%02X", value);
 				}
 				if (2 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
-					uint16_t * value = (uint16_t*) (pContext->data + offset);
-					printf(" : 0x%04X", *value);
+					uint16_t value = *(uint16_t*) (pContext->data + offset);
+					value = pContext->endian ? LE2BE16(value) : value;
+					printf(" : 0x%04X", value);
 				}
 				if (4 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
-					uint32_t * value = (uint32_t*) (pContext->data + offset);
-					printf(" : 0x%08X", *value);
+					uint32_t value = *(uint32_t*) (pContext->data + offset);
+					value = pContext->endian ? LE2BE32(value) : value;
+					printf(" : 0x%08X", value);
 					
 					if (NULL != pContext->definition[i].enumeration)
 					{
@@ -121,7 +141,7 @@ void SDFPrint(HSDF hSDF)
 							{
 								break;
 							}
-							if (*value == pContext->definition[i].enumeration[k].value)
+							if (value == pContext->definition[i].enumeration[k].value)
 							{
 								printf(" (%s)", pContext->definition[i].enumeration[k].name);
 							}
@@ -135,8 +155,15 @@ void SDFPrint(HSDF hSDF)
 				}
 				if (4 == pContext->definition[i].size && kUTC == pContext->definition[i].type)
 				{
-					uint32_t * value = (uint32_t*) (pContext->data + offset);
-					printf(" : 0x%08X (%s)", *value, GetUTC(*value));
+					uint32_t value = *(uint32_t*) (pContext->data + offset);
+					value = pContext->endian ? LE2BE32(value) : value;
+					printf(" : 0x%08X (%s)", value, GetUTC(value));
+				}
+				if (4 == pContext->definition[i].size && kVersion == pContext->definition[i].type)
+				{
+					uint32_t value = *(uint32_t*) (pContext->data + offset);
+					value = pContext->endian ? LE2BE32(value) : value;
+					printf(" : 0x%08X (%d.%d.%d)", value, (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
 				}
 				printf("\n");
 			}
@@ -150,6 +177,7 @@ uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset)
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint16_t value = 0;
 	value = * (uint16_t*) (pContext->data + offset);
+	value = pContext->endian ? LE2BE16(value) : value;
 	return value;
 }
 
@@ -158,7 +186,14 @@ uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset)
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint32_t value = 0;
 	value = * (uint32_t*) (pContext->data + offset);
+	value = pContext->endian ? LE2BE32(value) : value;
 	return value;
+}
+
+void SDFSetEndian(HSDF hSDF, uint8_t endian)
+{
+	SDFContext * pContext = (SDFContext*) hSDF;
+	pContext->endian = endian;
 }
 
 void SDFDestroy(HSDF hSDF)

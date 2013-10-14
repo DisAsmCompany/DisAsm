@@ -32,6 +32,10 @@
 		4F1ABF3E1803BDBA007D245D /* OpCodeMapGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */; };
 		4F1ABF3F1803BDBA007D245D /* OpCodeMapX87.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */; };
 		4F43FCB1180BAD5C0066A021 /* MachOCPUType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FCB0180BAD5C0066A021 /* MachOCPUType.h */; };
+		4F43FD78180BE4060066A021 /* MachOMagic.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FD77180BE4060066A021 /* MachOMagic.h */; };
+		4F43FDB9180BE88C0066A021 /* MachOLoadCommandType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FDB8180BE88C0066A021 /* MachOLoadCommandType.h */; };
+		4F43FDDF180BF6560066A021 /* MachODylib.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FDDE180BF6560066A021 /* MachODylib.h */; };
+		4F43FE52180BFC9A0066A021 /* MachOSymTab.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FE51180BFC9A0066A021 /* MachOSymTab.h */; };
 		4F5069A61807B3400052ECB3 /* SDF.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F5069A51807B3400052ECB3 /* SDF.c */; };
 		4F5069A81807B34D0052ECB3 /* SDF.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F5069A71807B34D0052ECB3 /* SDF.h */; };
 		4F506AAC1807D33D0052ECB3 /* MachOHeader64.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F506AAB1807D33D0052ECB3 /* MachOHeader64.h */; };
@@ -177,6 +181,10 @@
 		4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapGroup.h; path = ../../src/DisAsm/OpCodeMapGroup.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapX87.h; path = ../../src/DisAsm/OpCodeMapX87.h; sourceTree = SOURCE_ROOT; };
 		4F43FCB0180BAD5C0066A021 /* MachOCPUType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOCPUType.h; path = ../../src/Executable/MachO/MachOCPUType.h; sourceTree = SOURCE_ROOT; };
+		4F43FD77180BE4060066A021 /* MachOMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOMagic.h; path = ../../src/Executable/MachO/MachOMagic.h; sourceTree = SOURCE_ROOT; };
+		4F43FDB8180BE88C0066A021 /* MachOLoadCommandType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOLoadCommandType.h; path = ../../src/Executable/MachO/MachOLoadCommandType.h; sourceTree = SOURCE_ROOT; };
+		4F43FDDE180BF6560066A021 /* MachODylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachODylib.h; path = ../../src/Executable/MachO/MachODylib.h; sourceTree = SOURCE_ROOT; };
+		4F43FE51180BFC9A0066A021 /* MachOSymTab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOSymTab.h; path = ../../src/Executable/MachO/MachOSymTab.h; sourceTree = SOURCE_ROOT; };
 		4F5069A51807B3400052ECB3 /* SDF.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = SDF.c; path = ../../src/Executable/SDF.c; sourceTree = SOURCE_ROOT; };
 		4F5069A71807B34D0052ECB3 /* SDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDF.h; path = ../../src/Executable/SDF.h; sourceTree = SOURCE_ROOT; };
 		4F506AAB1807D33D0052ECB3 /* MachOHeader64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader64.h; path = ../../src/Executable/MachO/MachOHeader64.h; sourceTree = SOURCE_ROOT; };
@@ -291,6 +299,10 @@
 				4F1ABF341803BDBA007D245D /* Benchmark.h */,
 				4F1ABF351803BDBA007D245D /* DisAsm.h */,
 				4F1ABF361803BDBA007D245D /* InstructionInfo.h */,
+				4F43FE51180BFC9A0066A021 /* MachOSymTab.h */,
+				4F43FDDE180BF6560066A021 /* MachODylib.h */,
+				4F43FDB8180BE88C0066A021 /* MachOLoadCommandType.h */,
+				4F43FD77180BE4060066A021 /* MachOMagic.h */,
 				4F43FCB0180BAD5C0066A021 /* MachOCPUType.h */,
 				4F1ABF371803BDBA007D245D /* InstructionSet.h */,
 				4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */,
@@ -490,6 +502,10 @@
 				4FB286D21807FC2000817C91 /* MachOSection.h in Headers */,
 				4FB286D41807FCDF00817C91 /* MachOSection64.h in Headers */,
 				4F43FCB1180BAD5C0066A021 /* MachOCPUType.h in Headers */,
+				4F43FD78180BE4060066A021 /* MachOMagic.h in Headers */,
+				4F43FDB9180BE88C0066A021 /* MachOLoadCommandType.h in Headers */,
+				4F43FDDF180BF6560066A021 /* MachODylib.h in Headers */,
+				4F43FE52180BFC9A0066A021 /* MachOSymTab.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

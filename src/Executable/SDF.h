@@ -17,6 +17,7 @@ typedef enum SDFType_t
 {
 	kUnsigned,
 	kUTC,
+	kVersion,
 	kStringASCII,
 	kReserved,
 }
@@ -45,8 +46,9 @@ uint32_t SDFSizeInBytes(const SDFElement * definition);
 HSDF SDFCreate(const SDFElement * definition, HREADER hReader);
 void SDFPrint(HSDF hSDF);
 
-uint16_t SDFReadUInt16(HSDF hSDF, uint32_t id);
-uint32_t SDFReadUInt32(HSDF hSDF, uint32_t id);
+uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset);
+uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset);
+void SDFSetEndian(HSDF hSDF, uint8_t endian);
 
 void SDFDestroy(HSDF hSDF);
 

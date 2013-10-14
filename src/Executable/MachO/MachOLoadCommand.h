@@ -19,7 +19,7 @@
 static const SDFElement MachOLoadCommand[] =
 {
 	{"Mach-O Load Command"},
-	{"Command    ", kUnsigned, 4, 1},
+	{"Command    ", kUnsigned, 4, 1, _MachOLoadCommandType},
 	{"CommandSize", kUnsigned, 4, 1},
 	{NULL}
 };

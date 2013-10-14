@@ -27,6 +27,7 @@ static const SDFElement MachOSection64[] =
 	{"Flags           ", kUnsigned, 4, 1},
 	{"Reserved        ", kReserved, 4, 1},
 	{"Reserved        ", kReserved, 4, 1},
+	{"Reserved        ", kReserved, 4, 1},
 	{NULL}
 };
 
