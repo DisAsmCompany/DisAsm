@@ -71,7 +71,7 @@ void SDFPrint(HSDF hSDF)
 	uint32_t i = 0, j = 0, k = 0;
 	uint32_t offset = 0;
 	printf("%s\n", pContext->definition[0].name);
-	for (i = 1; i <= pContext->size; ++i)
+	for (i = 1; i < pContext->size; ++i)
 	{
 		for (j = 0; j < pContext->definition[i].count; ++j)
 		{
