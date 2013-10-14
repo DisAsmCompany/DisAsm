@@ -13,6 +13,10 @@
 #include "../Executable"
 #include "PEString.h"
 
+#include "PEMachine.h"
+#include "PESubsystem.h"
+#include "PEMagic.h"
+#include "PEDebugType.h"
 #include "PEDOSHeader.h"
 #include "PEFileHeader.h"
 #include "PEDataDirectory.h"
@@ -433,7 +437,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, pContext->hReader);
 	Magic = SDFReadUInt16(THIS->hOptionalHeader, PEOptionalHeaderMagic);
-	if (PE32Magic != Magic && PE64Magic != Magic)
+	if (kPEMagic32 != Magic && kPEMagic64 != Magic)
 	{
 		return 0;
 	}

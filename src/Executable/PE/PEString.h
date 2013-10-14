@@ -18,9 +18,5 @@ void PrintSignature(uint32_t Signature, uint8_t size);
 char * PECharacteristicsToString(uint16_t Characteristics);
 char * PEDllCharacteristicsToString(uint16_t Characteristics);
 char * PESectionCharacteristicsToString(uint32_t Characteristics);
-char * PESubsystemToString(uint16_t Subsystem);
-char * PEMachineToString(uint16_t Machine);
-char * PEMagicToString(uint16_t Magic);
-char * PEDebugTypeToString(uint32_t Type);
 
 #endif /* __PESTRING_H__ */

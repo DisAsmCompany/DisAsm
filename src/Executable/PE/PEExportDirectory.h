@@ -13,10 +13,10 @@
 #ifndef __PEEXPORTDIRECTORY_H__
 #define __PEEXPORTDIRECTORY_H__
 
-#define PEExportDirectoryNumberOfFunctions 1
-#define PEExportDirectoryAddressOfFunctions 2
-#define PEExportDirectoryAddressOfNames 3
-#define PEExportDirectoryAddressOfNameOrdinals 4
+#define PEExportDirectoryNumberOfFunctions 20
+#define PEExportDirectoryAddressOfFunctions 28
+#define PEExportDirectoryAddressOfNames 32
+#define PEExportDirectoryAddressOfNameOrdinals 36
 
 static const SDFElement PEExportDirectory[] =
 {

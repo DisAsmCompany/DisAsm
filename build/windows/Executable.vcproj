@@ -198,6 +198,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\Executable\PE\PEDebugType.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\Executable\PE\PEDOSHeader.h"
 					>
 				</File>
@@ -222,6 +226,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\Executable\PE\PEMachine.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEMagic.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\Executable\PE\PEOptionalHeader.h"
 					>
 				</File>
@@ -231,6 +243,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\Executable\PE\PEString.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PESubsystem.h"
 					>
 				</File>
 			</Filter>

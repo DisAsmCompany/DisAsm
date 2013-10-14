@@ -20,7 +20,7 @@ static const SDFElement PEDebugDirectory[] =
 	{"TimeDateStamp   ", kUTC, 4, 1},
 	{"MajorVersion    ", kUnsigned, 2, 1},
 	{"MinorVersion    ", kUnsigned, 2, 1},
-	{"Type            ", kUnsigned, 4, 1},
+	{"Type            ", kUnsigned, 4, 1, PEDebugType},
 	{"SizeOfData      ", kUnsigned, 4, 1},
 	{"AddressOfRawData", kUnsigned, 4, 1},
 	{"PointerToRawData", kUnsigned, 4, 1},

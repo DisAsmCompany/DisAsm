@@ -13,19 +13,15 @@
 #ifndef __PEOPTIONALHEADER_H__
 #define __PEOPTIONALHEADER_H__
 
-#define PE32Magic  0x010B
-#define PE64Magic  0x020B
-#define PEROMMagic 0x0107
-
 #define PEOptionalHeaderMagic               0
-#define PEOptionalHeaderAddressOfEntryPoint 2
-#define PEOptionalHeaderNumberOfRvaAndSizes 3
+#define PEOptionalHeaderAddressOfEntryPoint 16
+#define PEOptionalHeaderNumberOfRvaAndSizes 220
 
 static const SDFElement PEOptionalHeader[] =
 {
 	{"PE Optional Header"},
 	/* Standard fields */
-	{"Magic                      ", kUnsigned, 2, 1},
+	{"Magic                      ", kUnsigned, 2, 1, _PEMagic},
 	{"MajorLinkerVersion         ", kUnsigned, 1, 1},
 	{"MinorLinkerVersion         ", kUnsigned, 1, 1},
 	{"SizeOfCode                 ", kUnsigned, 4, 1},
@@ -48,7 +44,7 @@ static const SDFElement PEOptionalHeader[] =
 	{"SizeOfImage                ", kUnsigned, 4, 1},
 	{"SizeOfHeaders              ", kUnsigned, 4, 1},
 	{"CheckSum                   ", kUnsigned, 4, 1},
-	{"Subsystem                  ", kUnsigned, 2, 1},
+	{"Subsystem                  ", kUnsigned, 2, 1, PESubsystem},
 	{"DllCharacteristics         ", kUnsigned, 2, 1},
 	{"SizeOfStackReserve         ", kUnsigned, 4, 1},
 	{"SizeOfStackCommit          ", kUnsigned, 4, 1},

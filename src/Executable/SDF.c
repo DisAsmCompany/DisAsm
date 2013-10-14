@@ -85,6 +85,22 @@ char * GetUTC(uint32_t TimeStamp)
 	return c;
 }
 
+void SDFPrintEnum(const SDFEnum * enumeration, uint32_t value)
+{
+	uint8_t i = 0;
+	if (NULL != enumeration)
+	{
+		while (NULL != enumeration->name)
+		{
+			if (value == enumeration->value)
+			{
+				printf(" (%s)", enumeration->name);
+			}
+			++enumeration;
+		}
+	}
+}
+
 void SDFPrint(HSDF hSDF)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;
@@ -126,27 +142,14 @@ void SDFPrint(HSDF hSDF)
 					uint16_t value = *(uint16_t*) (pContext->data + offset);
 					value = pContext->endian ? LE2BE16(value) : value;
 					printf(" : 0x%04X", value);
+					SDFPrintEnum(pContext->definition[i].enumeration, value);
 				}
 				if (4 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
 					uint32_t value = *(uint32_t*) (pContext->data + offset);
 					value = pContext->endian ? LE2BE32(value) : value;
 					printf(" : 0x%08X", value);
-					
-					if (NULL != pContext->definition[i].enumeration)
-					{
-						for (k = 0; ; ++k)
-						{
-							if (NULL == pContext->definition[i].enumeration[k].name)
-							{
-								break;
-							}
-							if (value == pContext->definition[i].enumeration[k].value)
-							{
-								printf(" (%s)", pContext->definition[i].enumeration[k].name);
-							}
-						}
-					}
+					SDFPrintEnum(pContext->definition[i].enumeration, value);
 				}
 				if (8 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
