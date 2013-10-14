@@ -13,15 +13,15 @@
 #ifndef __MACHOLOADCOMMAND_H__
 #define __MACHOLOADCOMMAND_H__
 
-#define MachOLoadCommandCommand     2
-#define MachOLoadCommandCommandSize 1
+#define MachOLoadCommandCommand     0
+#define MachOLoadCommandCommandSize 4
 
 static const SDFElement MachOLoadCommand[] =
 {
 	{"Mach-O Load Command"},
-	{"Command    ", MachOLoadCommandCommand, kUnsigned, 4, 1},
-	{"CommandSize", MachOLoadCommandCommandSize, kUnsigned, 4, 1},
+	{"Command    ", kUnsigned, 4, 1},
+	{"CommandSize", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t MachOLoadCommandSize = sizeof(MachOLoadCommand) / sizeof(MachOLoadCommand[0]);
 
 #endif /* __MACHOLOADCOMMAND_H__ */

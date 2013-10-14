@@ -17,37 +17,37 @@
 #define PEDOSSignature 0x5A4D /* MZ */
 #endif /* PEDOSSignature */
 
-#define PEDOSHeaderSignature 1
-#define PEDOSHeaderAddressPE 2
+#define PEDOSHeaderSignature 0
+#define PEDOSHeaderAddressPE 0x3C
 
 static const SDFElement PEDOSHeader[] =
 {
 	{"PE DOS Header"},
 	/* DOS signature, either 'MZ' or 'ZM' */
-	{"Signature        ", PEDOSHeaderSignature, kUnsigned, 2, 1},
-	{"BytesInLastPage  ", 0, kUnsigned, 2, 1},
-	{"Pages            ", 0, kUnsigned, 2, 1},
-	{"Relocations      ", 0, kUnsigned, 2, 1},
-	{"Paragraphs       ", 0, kUnsigned, 2, 1},
-	{"ParagraphsMin    ", 0, kUnsigned, 2, 1},
-	{"ParagraphsMax    ", 0, kUnsigned, 2, 1},
+	{"Signature        ", kUnsigned, 2, 1},
+	{"BytesInLastPage  ", kUnsigned, 2, 1},
+	{"Pages            ", kUnsigned, 2, 1},
+	{"Relocations      ", kUnsigned, 2, 1},
+	{"Paragraphs       ", kUnsigned, 2, 1},
+	{"ParagraphsMin    ", kUnsigned, 2, 1},
+	{"ParagraphsMax    ", kUnsigned, 2, 1},
 	/* initial value of SS register */
-	{"InitialSS        ", 0, kUnsigned, 2, 1},
+	{"InitialSS        ", kUnsigned, 2, 1},
 	/* initial value of SP register */
-	{"InitialSP        ", 0, kUnsigned, 2, 1},
-	{"CheckSum         ", 0, kUnsigned, 2, 1},
+	{"InitialSP        ", kUnsigned, 2, 1},
+	{"CheckSum         ", kUnsigned, 2, 1},
 	/* initial value of IP register */
-	{"InitialIP        ", 0, kUnsigned, 2, 1},
+	{"InitialIP        ", kUnsigned, 2, 1},
 	/* initial value of CS register */
-	{"InitialCS        ", 0, kUnsigned, 2, 1},
-	{"AddressRelocation", 0, kUnsigned, 2, 1},
-	{"OverlayNumber    ", 0, kUnsigned, 2, 1},
-	{"Reserved         ", 0, kReserved, 2, 4},
-	{"OEMID            ", 0, kUnsigned, 2, 1},
-	{"OEMInfo          ", 0, kUnsigned, 2, 1},
-	{"Reserved         ", 0, kReserved, 2, 10},
-	{"AddressPE        ", PEDOSHeaderAddressPE, kUnsigned, 4, 1},
+	{"InitialCS        ", kUnsigned, 2, 1},
+	{"AddressRelocation", kUnsigned, 2, 1},
+	{"OverlayNumber    ", kUnsigned, 2, 1},
+	{"Reserved         ", kReserved, 2, 4},
+	{"OEMID            ", kUnsigned, 2, 1},
+	{"OEMInfo          ", kUnsigned, 2, 1},
+	{"Reserved         ", kReserved, 2, 10},
+	{"AddressPE        ", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t PEDOSHeaderSize = sizeof(PEDOSHeader) / sizeof(PEDOSHeader[0]);
 
 #endif /* __PEDOSHEADER_H__ */

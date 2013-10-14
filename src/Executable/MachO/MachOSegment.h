@@ -13,21 +13,21 @@
 #ifndef __MACHOSEGMENT_H__
 #define __MACHOSEGMENT_H__
 
-#define MachOSegmentNumberOfSections 1
+#define MachOSegmentNumberOfSections 40
 
 static const SDFElement MachOSegment[] =
 {
 	{"Mach-O Segment"},
-	{"Name            ", 0, kStringASCII, 16, 1},
-	{"VirtualAddress  ", 0, kUnsigned, 4, 1},
-	{"VirtualSize     ", 0, kUnsigned, 4, 1},
-	{"FileOffset      ", 0, kUnsigned, 4, 1},
-	{"FileSize        ", 0, kUnsigned, 4, 1},
-	{"ProtectionMax   ", 0, kUnsigned, 4, 1},
-	{"ProtectionInit  ", 0, kUnsigned, 4, 1},
-	{"NumberOfSections", MachOSegmentNumberOfSections, kUnsigned, 4, 1},
-	{"Flags           ", 0, kUnsigned, 4, 1},
+	{"Name            ", kStringASCII, 16, 1},
+	{"VirtualAddress  ", kUnsigned, 4, 1},
+	{"VirtualSize     ", kUnsigned, 4, 1},
+	{"FileOffset      ", kUnsigned, 4, 1},
+	{"FileSize        ", kUnsigned, 4, 1},
+	{"ProtectionMax   ", kUnsigned, 4, 1},
+	{"ProtectionInit  ", kUnsigned, 4, 1},
+	{"NumberOfSections", kUnsigned, 4, 1},
+	{"Flags           ", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t MachOSegmentSize = sizeof(MachOSegment) / sizeof(MachOSegment[0]);
 
 #endif /* __MACHOSEGMENT_H__ */

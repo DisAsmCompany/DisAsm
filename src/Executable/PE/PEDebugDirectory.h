@@ -16,15 +16,15 @@
 static const SDFElement PEDebugDirectory[] =
 {
 	{"PE Debug Directory"},
-	{"Characteristics ", 0, kUnsigned, 4, 1},
-	{"TimeDateStamp   ", 0, kUTC, 4, 1},
-	{"MajorVersion    ", 0, kUnsigned, 2, 1},
-	{"MinorVersion    ", 0, kUnsigned, 2, 1},
-	{"Type            ", 0, kUnsigned, 4, 1},
-	{"SizeOfData      ", 0, kUnsigned, 4, 1},
-	{"AddressOfRawData", 0, kUnsigned, 4, 1},
-	{"PointerToRawData", 0, kUnsigned, 4, 1},
+	{"Characteristics ", kUnsigned, 4, 1},
+	{"TimeDateStamp   ", kUTC, 4, 1},
+	{"MajorVersion    ", kUnsigned, 2, 1},
+	{"MinorVersion    ", kUnsigned, 2, 1},
+	{"Type            ", kUnsigned, 4, 1},
+	{"SizeOfData      ", kUnsigned, 4, 1},
+	{"AddressOfRawData", kUnsigned, 4, 1},
+	{"PointerToRawData", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t PEDebugDirectorySize = sizeof(PEDebugDirectory) / sizeof(PEDebugDirectory[0]);
 
 #endif /* __PEDEBUGDIRECTORY_H__ */

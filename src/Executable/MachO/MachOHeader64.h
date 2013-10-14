@@ -13,20 +13,20 @@
 #ifndef __MACHOHEADER64_H__
 #define __MACHOHEADER64_H__
 
-#define MachOHeader64CountCommands 1
+#define MachOHeader64CountCommands 16
 
 static const SDFElement MachOHeader64[] =
 {
 	{"Mach-O Header 64"},
-	{"Magic        ", 0, kUnsigned, 4, 1},
-	{"CpuType      ", 0, kUnsigned, 4, 1},
-	{"CpuSubType   ", 0, kUnsigned, 4, 1},
-	{"FileType     ", 0, kUnsigned, 4, 1},
-	{"CountCommands", MachOHeaderCountCommands, kUnsigned, 4, 1},
-	{"SizeCommands ", 0, kUnsigned, 4, 1},
-	{"Flags        ", 0, kUnsigned, 4, 1},
-	{"Reserved     ", 0, kReserved, 4, 1},
+	{"Magic        ", kUnsigned, 4, 1},
+	{"CpuType      ", kUnsigned, 4, 1, MachOCPUType},
+	{"CpuSubType   ", kUnsigned, 4, 1},
+	{"FileType     ", kUnsigned, 4, 1},
+	{"CountCommands", kUnsigned, 4, 1},
+	{"SizeCommands ", kUnsigned, 4, 1},
+	{"Flags        ", kUnsigned, 4, 1},
+	{"Reserved     ", kReserved, 4, 1},
+	{NULL}
 };
-static const uint32_t MachOHeader64Size = sizeof(MachOHeader64) / sizeof(MachOHeader64[0]);
 
 #endif /* __MACHOHEADER64_H__ */

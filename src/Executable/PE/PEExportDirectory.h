@@ -21,18 +21,18 @@
 static const SDFElement PEExportDirectory[] =
 {
 	{"PE Export Directory"},
-	{"Characteristics      ", 0, kUnsigned, 4, 1},
-	{"TimeDateStamp        ", 0, kUTC, 4, 1},
-	{"MajorVersion         ", 0, kUnsigned, 2, 1},
-	{"MinorVersion         ", 0, kUnsigned, 2, 1},
-	{"Name                 ", 0, kUnsigned, 4, 1},
-	{"Base                 ", 0, kUnsigned, 4, 1},
-	{"NumberOfFunctions    ", PEExportDirectoryNumberOfFunctions, kUnsigned, 4, 1},
-	{"NumberOfNames        ", 0, kUnsigned, 4, 1},
-	{"AddressOfFunctions   ", PEExportDirectoryAddressOfFunctions, kUnsigned, 4, 1},
-	{"AddressOfNames       ", PEExportDirectoryAddressOfNames, kUnsigned, 4, 1},
-	{"AddressOfNameOrdinals", PEExportDirectoryAddressOfNameOrdinals, kUnsigned, 4, 1},
+	{"Characteristics      ", kUnsigned, 4, 1},
+	{"TimeDateStamp        ", kUTC, 4, 1},
+	{"MajorVersion         ", kUnsigned, 2, 1},
+	{"MinorVersion         ", kUnsigned, 2, 1},
+	{"Name                 ", kUnsigned, 4, 1},
+	{"Base                 ", kUnsigned, 4, 1},
+	{"NumberOfFunctions    ", kUnsigned, 4, 1},
+	{"NumberOfNames        ", kUnsigned, 4, 1},
+	{"AddressOfFunctions   ", kUnsigned, 4, 1},
+	{"AddressOfNames       ", kUnsigned, 4, 1},
+	{"AddressOfNameOrdinals", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t PEExportDirectorySize = sizeof(PEExportDirectory) / sizeof(PEExportDirectory[0]);
 
 #endif /* __PEEXPORTDIRECTORY_H__ */

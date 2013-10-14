@@ -103,7 +103,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	char * name = NULL;
 	THIS->OffsetExport = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	THIS->SizeExport = pDirectory->Size;
-	if (pDirectory->Size < SDFSizeInBytes(PEExportDirectory, PEExportDirectorySize))
+	if (pDirectory->Size < SDFSizeInBytes(PEExportDirectory))
 	{
 		return 0;
 	}
@@ -115,7 +115,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	{
 		return 0;
 	}
-	THIS->hExportDirectory = SDFCreate(PEExportDirectory, PEExportDirectorySize, pContext->hReader);
+	THIS->hExportDirectory = SDFCreate(PEExportDirectory, pContext->hReader);
 	SDFPrint(THIS->hExportDirectory);
 	THIS->NumberOfFunctions = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
 	THIS->OffsetExportFunctions = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
@@ -164,7 +164,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 	{
 		return 0;
 	}
-	while (pos + SDFSizeInBytes(PEImportDescriptor, PEImportDescriptorSize) <= pDirectory->Size)
+	while (pos + SDFSizeInBytes(PEImportDescriptor) <= pDirectory->Size)
 	{
 		HSDF hImportDescriptor;
 		char * name = NULL;
@@ -173,7 +173,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 		{
 			return 0;
 		}
-		hImportDescriptor = SDFCreate(PEImportDescriptor, PEImportDescriptorSize, pContext->hReader);
+		hImportDescriptor = SDFCreate(PEImportDescriptor, pContext->hReader);
 		SDFPrint(hImportDescriptor);
 		OriginalFirstThunk = SDFReadUInt32(hImportDescriptor, PEImportDescriptorOriginalFirstThunk);
 		if (0 == OriginalFirstThunk)
@@ -212,7 +212,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 			printf("\n");
 		}
 		SDFDestroy(hImportDescriptor);
-		pos += SDFSizeInBytes(PEImportDescriptor, PEImportDescriptorSize);
+		pos += SDFSizeInBytes(PEImportDescriptor);
 	}
 	return 1;
 }
@@ -224,7 +224,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	{
 		return 0;
 	}
-	if (pDirectory->Size < SDFSizeInBytes(PEDebugDirectory, PEDebugDirectorySize))
+	if (pDirectory->Size < SDFSizeInBytes(PEDebugDirectory))
 	{
 		return 0;
 	}
@@ -232,7 +232,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	{
 		return 0;
 	}
-	THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, PEDebugDirectorySize, pContext->hReader);
+	THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, pContext->hReader);
 	SDFPrint(THIS->hDebugDirectory);
 	return 1;
 }
@@ -254,11 +254,11 @@ int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirecto
 	{
 		return 0;
 	}
-	if (size < SDFSizeInBytes(PELoadConfigDirectory, PELoadConfigDirectorySize))
+	if (size < SDFSizeInBytes(PELoadConfigDirectory))
 	{
 		return 0;
 	}
-	THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, PELoadConfigDirectorySize, pContext->hReader);
+	THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, pContext->hReader);
 	SDFPrint(THIS->hLoadConfigDirectory);
 	return 1;
 }
@@ -309,7 +309,7 @@ uint32_t PEFileGetEntryPoint(ExecutableContext * pContext)
 
 uint32_t PEFileGetStubEntryPoint(ExecutableContext * pContext)
 {
-	return SDFSizeInBytes(PEDOSHeader, PEDOSHeaderSize);
+	return SDFSizeInBytes(PEDOSHeader);
 }
 
 uint32_t PEFileGetExportCount(ExecutableContext * pContext)
@@ -404,7 +404,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	pContext->pGetExportForwarderName = PEFileGetExportForwarderName;
 	pContext->pDestroy                = PEFileDestroy;
 
-	THIS->hDOSHeader = SDFCreate(PEDOSHeader, PEDOSHeaderSize, pContext->hReader);
+	THIS->hDOSHeader = SDFCreate(PEDOSHeader, pContext->hReader);
 
 	if (SDFReadUInt16(THIS->hDOSHeader, PEDOSHeaderSignature) != PEDOSSignature)
 	{
@@ -424,14 +424,14 @@ int PEFileCreate(ExecutableContext * pContext)
 		return 0;
 	}
 	printf("Signature : \n"); PrintSignature(Signature, 4);
-	THIS->hPEFileHeader = SDFCreate(PEFileHeader, PEFileHeaderSize, pContext->hReader);
+	THIS->hPEFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
 	SDFPrint(THIS->hPEFileHeader);
 	SizeOfOptionalHeader = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderSizeOfOptionalHeader);
-	if (SizeOfOptionalHeader < SDFSizeInBytes(PEOptionalHeader, PEOptionalHeaderSize))
+	if (SizeOfOptionalHeader < SDFSizeInBytes(PEOptionalHeader))
 	{
 		return 0;
 	}
-	THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, PEOptionalHeaderSize, pContext->hReader);
+	THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, pContext->hReader);
 	Magic = SDFReadUInt16(THIS->hOptionalHeader, PEOptionalHeaderMagic);
 	if (PE32Magic != Magic && PE64Magic != Magic)
 	{
@@ -439,8 +439,8 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	SDFPrint(THIS->hOptionalHeader);
 	THIS->AddressOfEntryPoint = SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint);
-	OffsetSectionHeaders = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE) + sizeof(uint32_t) + SDFSizeInBytes(PEFileHeader, PEFileHeaderSize) + SizeOfOptionalHeader;
-	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (SizeOfOptionalHeader - SDFSizeInBytes(PEOptionalHeader, PEOptionalHeaderSize)) / sizeof(PEDataDirectory));
+	OffsetSectionHeaders = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE) + sizeof(uint32_t) + SDFSizeInBytes(PEFileHeader) + SizeOfOptionalHeader;
+	THIS->DataDirectoriesCount = MIN(PEDataDirectoryCount, (SizeOfOptionalHeader - SDFSizeInBytes(PEOptionalHeader)) / sizeof(PEDataDirectory));
 	THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
 	if (THIS->DataDirectoriesCount > 0)
 	{
@@ -472,7 +472,7 @@ int PEFileCreate(ExecutableContext * pContext)
 		uint32_t i = 0;
 		for (i = 0; i < THIS->NumberOfSections; ++i)
 		{
-			THIS->phSectionHeaders[i] = SDFCreate(PESectionHeader, PESectionHeaderSize, pContext->hReader);
+			THIS->phSectionHeaders[i] = SDFCreate(PESectionHeader, pContext->hReader);
 			SDFPrint(THIS->phSectionHeaders[i]);
 		}
 	}

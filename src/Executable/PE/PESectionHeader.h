@@ -14,24 +14,24 @@
 #define __PESECTIONHEADER_H__
 
 
-#define PESectionHeaderVirtualAddress   1
-#define PESectionHeaderSizeOfRawData    2
-#define PESectionHeaderPointerToRawData 3
+#define PESectionHeaderVirtualAddress   12
+#define PESectionHeaderSizeOfRawData    16
+#define PESectionHeaderPointerToRawData 20
 
 static const SDFElement PESectionHeader[] =
 {
 	{"PE Section Header"},
-	{"Name                ", 0, kStringASCII, 8, 1},
-	{"PhysicalAddress     ", 0, kUnsigned, 4, 1},
-	{"VirtualAddress      ", PESectionHeaderVirtualAddress, kUnsigned, 4, 1},
-	{"SizeOfRawData       ", PESectionHeaderSizeOfRawData, kUnsigned, 4, 1},
-	{"PointerToRawData    ", PESectionHeaderPointerToRawData, kUnsigned, 4, 1},
-	{"PointerToRelocations", 0, kUnsigned, 4, 1},
-	{"PointerToLinenumbers", 0, kUnsigned, 4, 1},
-	{"NumberOfRelocations ", 0, kUnsigned, 2, 1},
-	{"NumberOfLinenumbers ", 0, kUnsigned, 2, 1},
-	{"Characteristics     ", 0, kUnsigned, 4, 1},
+	{"Name                ", kStringASCII, 8, 1},
+	{"PhysicalAddress     ", kUnsigned, 4, 1},
+	{"VirtualAddress      ", kUnsigned, 4, 1},
+	{"SizeOfRawData       ", kUnsigned, 4, 1},
+	{"PointerToRawData    ", kUnsigned, 4, 1},
+	{"PointerToRelocations", kUnsigned, 4, 1},
+	{"PointerToLinenumbers", kUnsigned, 4, 1},
+	{"NumberOfRelocations ", kUnsigned, 2, 1},
+	{"NumberOfLinenumbers ", kUnsigned, 2, 1},
+	{"Characteristics     ", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t PESectionHeaderSize = sizeof(PESectionHeader) / sizeof(PESectionHeader[0]);
 
 #endif /* __PESECTIONHEADER_H__ */

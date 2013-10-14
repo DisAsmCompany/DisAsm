@@ -15,33 +15,35 @@
 typedef struct SDFContext_t
 {
 	const SDFElement * definition;
-	uint32_t size;
 	uint8_t * data;
 }
 SDFContext;
 
-uint32_t SDFSizeInBytes(const SDFElement * definition, uint32_t size)
+uint32_t SDFSizeInBytes(const SDFElement * definition)
 {
 	uint32_t bytes = 0;
 	uint32_t i = 0;
-	for (i = 0; i < size; ++i)
+	for (i = 0; ; ++i)
 	{
+		if (NULL == definition[i].name)
+		{
+			break;
+		}
 		bytes += definition[i].count * definition[i].size;
 	}
 	return bytes;
 }
 
-HSDF SDFCreate(const SDFElement * definition, uint32_t size, HREADER hReader)
+HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 {
 	SDFContext * pContext = NULL;
-	uint32_t bytes = SDFSizeInBytes(definition, size);
+	uint32_t bytes = SDFSizeInBytes(definition);
 	pContext = (SDFContext*) malloc(sizeof(SDFContext));
 	if (NULL == pContext)
 	{
 		return NULL;
 	}
 	pContext->definition = definition;
-	pContext->size = size;
 	pContext->data = malloc(bytes);
 	if (NULL == pContext->data)
 	{
@@ -71,8 +73,12 @@ void SDFPrint(HSDF hSDF)
 	uint32_t i = 0, j = 0, k = 0;
 	uint32_t offset = 0;
 	printf("%s\n", pContext->definition[0].name);
-	for (i = 1; i < pContext->size; ++i)
+	for (i = 1; ; ++i)
 	{
+		if (NULL == pContext->definition[i].name)
+		{
+			break;
+		}
 		for (j = 0; j < pContext->definition[i].count; ++j)
 		{
 			if (kReserved != pContext->definition[i].type)
@@ -106,6 +112,21 @@ void SDFPrint(HSDF hSDF)
 				{
 					uint32_t * value = (uint32_t*) (pContext->data + offset);
 					printf(" : 0x%08X", *value);
+					
+					if (NULL != pContext->definition[i].enumeration)
+					{
+						for (k = 0; ; ++k)
+						{
+							if (NULL == pContext->definition[i].enumeration[k].name)
+							{
+								break;
+							}
+							if (*value == pContext->definition[i].enumeration[k].value)
+							{
+								printf(" (%s)", pContext->definition[i].enumeration[k].name);
+							}
+						}
+					}
 				}
 				if (8 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
 				{
@@ -124,39 +145,19 @@ void SDFPrint(HSDF hSDF)
 	}
 }
 
-uint16_t SDFReadUInt16(HSDF hSDF, uint32_t id)
+uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint16_t value = 0;
-	uint32_t i = 0;
-	uint32_t offset = 0;
-	for (i = 1; i <= pContext->size; ++i)
-	{
-		if (pContext->definition[i].id == id)
-		{
-			value = * (uint16_t*) (pContext->data + offset);
-			break;
-		}
-		offset += pContext->definition[i].count * pContext->definition[i].size;
-	}
+	value = * (uint16_t*) (pContext->data + offset);
 	return value;
 }
 
-uint32_t SDFReadUInt32(HSDF hSDF, uint32_t id)
+uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint32_t value = 0;
-	uint32_t i = 0;
-	uint32_t offset = 0;
-	for (i = 1; i <= pContext->size; ++i)
-	{
-		if (pContext->definition[i].id == id)
-		{
-			value = * (uint32_t*) (pContext->data + offset);
-			break;
-		}
-		offset += pContext->definition[i].count * pContext->definition[i].size;
-	}
+	value = * (uint32_t*) (pContext->data + offset);
 	return value;
 }
 

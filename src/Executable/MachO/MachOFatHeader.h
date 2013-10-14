@@ -13,18 +13,18 @@
 #ifndef __MACHOFATHEADER_H__
 #define __MACHOFATHEADER_H__
 
-#define MachOFatHeaderCpuType    1
-#define MachOFatHeaderOffset     2
+#define MachOFatHeaderCpuType    0
+#define MachOFatHeaderOffset     8
 
 static const SDFElement MachOFatHeader[] =
 {
 	{"Mach-O Fat Header"},
-	{"CpuType   ", MachOFatHeaderCpuType, kUnsigned, 4, 1},
-	{"CpuSubType", 0, kUnsigned, 4, 1},
-	{"Offset    ", MachOFatHeaderOffset, kUnsigned, 4, 1},
-	{"Size      ", 0, kUnsigned, 4, 1},
-	{"Align     ", 0, kUnsigned, 4, 1},
+	{"CpuType   ", kUnsigned, 4, 1},
+	{"CpuSubType", kUnsigned, 4, 1},
+	{"Offset    ", kUnsigned, 4, 1},
+	{"Size      ", kUnsigned, 4, 1},
+	{"Align     ", kUnsigned, 4, 1},
+	{NULL}
 };
-static const uint32_t MachOFatHeaderSize = sizeof(MachOFatHeader) / sizeof(MachOFatHeader[0]);
 
 #endif /* __MACHOFATHEADER_H__ */

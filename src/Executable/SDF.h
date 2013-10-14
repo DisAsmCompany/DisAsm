@@ -22,20 +22,27 @@ typedef enum SDFType_t
 }
 SDFType;
 
+typedef struct SDFEnum_t
+{
+	char * name;
+	uint32_t value;
+}
+SDFEnum;
+
 typedef struct SDFElement_t
 {
 	char * name;
-	uint32_t id;
 	SDFType type;
 	uint32_t size;
 	uint32_t count;
+	const SDFEnum * enumeration;
 }
 SDFElement;
 
 typedef void * HSDF;
 
-uint32_t SDFSizeInBytes(const SDFElement * definition, uint32_t size);
-HSDF SDFCreate(const SDFElement * definition, uint32_t size, HREADER hReader);
+uint32_t SDFSizeInBytes(const SDFElement * definition);
+HSDF SDFCreate(const SDFElement * definition, HREADER hReader);
 void SDFPrint(HSDF hSDF);
 
 uint16_t SDFReadUInt16(HSDF hSDF, uint32_t id);

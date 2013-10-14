@@ -17,20 +17,20 @@
 #define PENTSignature 0x00004550 /* PE */
 #endif /* PENTSignature */
 
-#define PEFileHeaderNumberOfSections 1
-#define PEFileHeaderSizeOfOptionalHeader 2
+#define PEFileHeaderNumberOfSections 2
+#define PEFileHeaderSizeOfOptionalHeader 16
 
 static const SDFElement PEFileHeader[] =
 {
 	{"PE File Header"},
-	{"Machine             ", 0, kUnsigned, 2, 1},
-	{"NumberOfSections    ", PEFileHeaderNumberOfSections, kUnsigned, 2, 1},
-	{"TimeDateStamp       ", 0, kUTC, 4, 1},
-	{"PointerToSymbolTable", 0, kUnsigned, 4, 1},
-	{"NumberOfSymbols     ", 0, kUnsigned, 4, 1},
-	{"SizeOfOptionalHeader", PEFileHeaderSizeOfOptionalHeader, kUnsigned, 2, 1},
-	{"Characteristics     ", 0, kUnsigned, 2, 1},
+	{"Machine             ", kUnsigned, 2, 1},
+	{"NumberOfSections    ", kUnsigned, 2, 1},
+	{"TimeDateStamp       ", kUTC, 4, 1},
+	{"PointerToSymbolTable", kUnsigned, 4, 1},
+	{"NumberOfSymbols     ", kUnsigned, 4, 1},
+	{"SizeOfOptionalHeader", kUnsigned, 2, 1},
+	{"Characteristics     ", kUnsigned, 2, 1},
+	{NULL}
 };
-static const uint32_t PEFileHeaderSize = sizeof(PEFileHeader) / sizeof(PEFileHeader[0]);
 
 #endif /* __PEFILEHEADER_H__ */

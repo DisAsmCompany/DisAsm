@@ -12,6 +12,7 @@
 #include "../../DisAsm/DisAsm"
 #include "../Executable"
 
+#include "MachOCPUType.h"
 #include "MachOHeader.h"
 #include "MachOHeader64.h"
 #include "MachOFatHeader.h"
@@ -83,7 +84,7 @@ int MachOFileCreate(ExecutableContext * pContext)
 		THIS->phMachHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders);
 		for (i = 0; i < THIS->nFatHeaders; ++i)
 		{
-			THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, MachOFatHeaderSize, pContext->hReader);
+			THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader);
 			SDFPrint(THIS->phFatHeaders[i]);
 		}
 		for (i = 0; i < THIS->nFatHeaders; ++i)
@@ -97,11 +98,11 @@ int MachOFileCreate(ExecutableContext * pContext)
 			}
 			if (CpuType == 0x07)
 			{
-				THIS->phMachHeaders[i] = SDFCreate(MachOHeader, MachOHeaderSize, pContext->hReader);
+				THIS->phMachHeaders[i] = SDFCreate(MachOHeader, pContext->hReader);
 			}
 			else 
 			{
-				THIS->phMachHeaders[i] = SDFCreate(MachOHeader64, MachOHeader64Size, pContext->hReader);
+				THIS->phMachHeaders[i] = SDFCreate(MachOHeader64, pContext->hReader);
 			}
 
 			SDFPrint(THIS->phMachHeaders[i]);
@@ -110,9 +111,9 @@ int MachOFileCreate(ExecutableContext * pContext)
 			for (j = 0; j < THIS->nCommands; ++j)
 			{
 				uint32_t count, type;
-				HSDF hCommand = SDFCreate(MachOLoadCommand, MachOLoadCommandSize, pContext->hReader);
+				HSDF hCommand = SDFCreate(MachOLoadCommand, pContext->hReader);
 				type = SDFReadUInt32(hCommand, MachOLoadCommandCommand);
-				count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand, MachOLoadCommandSize);
+				count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand);
 				
 				switch (type)
 				{
@@ -126,34 +127,34 @@ int MachOFileCreate(ExecutableContext * pContext)
 				
 				if (0x00000001UL == type)
 				{
-					HSDF hSegment = SDFCreate(MachOSegment, MachOSegmentSize, pContext->hReader);
+					HSDF hSegment = SDFCreate(MachOSegment, pContext->hReader);
 					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegmentNumberOfSections);
 					SDFPrint(hSegment);
 					SDFDestroy(hSegment);
-					count -= SDFSizeInBytes(MachOSegment, MachOSegmentSize);
+					count -= SDFSizeInBytes(MachOSegment);
 					
 					for (k = 0; k < NumberOfSections; ++k)
 					{
-						HSDF hSection = SDFCreate(MachOSection, MachOSectionSize, pContext->hReader);
+						HSDF hSection = SDFCreate(MachOSection, pContext->hReader);
 						SDFPrint(hSection);
 						SDFDestroy(hSection);
-						count -= SDFSizeInBytes(MachOSection, MachOSectionSize);
+						count -= SDFSizeInBytes(MachOSection);
 					}
 				}
 				if (0x00000019UL == type)
 				{
-					HSDF hSegment = SDFCreate(MachOSegment64, MachOSegment64Size, pContext->hReader);
+					HSDF hSegment = SDFCreate(MachOSegment64, pContext->hReader);
 					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegment64NumberOfSections);
 					SDFPrint(hSegment);
 					SDFDestroy(hSegment);
-					count -= SDFSizeInBytes(MachOSegment64, MachOSegment64Size);
+					count -= SDFSizeInBytes(MachOSegment64);
 					
 					for (k = 0; k < NumberOfSections; ++k)
 					{
-						HSDF hSection = SDFCreate(MachOSection64, MachOSection64Size, pContext->hReader);
+						HSDF hSection = SDFCreate(MachOSection64, pContext->hReader);
 						SDFPrint(hSection);
 						SDFDestroy(hSection);
-						count -= SDFSizeInBytes(MachOSection64, MachOSection64Size);
+						count -= SDFSizeInBytes(MachOSection64);
 					}
 				}
 				ReaderSkip(pContext->hReader, count);
