@@ -87,7 +87,6 @@ char * GetUTC(uint32_t TimeStamp)
 
 void SDFPrintEnum(const SDFEnum * enumeration, uint32_t value)
 {
-	uint8_t i = 0;
 	if (NULL != enumeration)
 	{
 		while (NULL != enumeration->name)
