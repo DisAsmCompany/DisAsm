@@ -201,6 +201,9 @@ void SDFSetEndian(HSDF hSDF, uint8_t endian)
 void SDFDestroy(HSDF hSDF)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;
-	free(pContext->data);
+	if (NULL != pContext)
+	{
+		free(pContext->data);
+	}
 	free(pContext);
 }

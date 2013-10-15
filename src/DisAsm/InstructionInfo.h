@@ -22,10 +22,12 @@ typedef struct InstructionInfo_t
 	uint8_t hasSIB   : 1;
 	uint8_t hasDisp  : 1;
 	uint8_t hasImm   : 1;
+	uint8_t hasREX   : 1;
 	uint8_t sizeDisp;
 	uint8_t sizeImm;
 	ModRMu ModRM;
 	SIBu SIB;
+	REXu REX;
 	uint8_t nOperands;
 	Operand operands[4];
 	uint32_t disp;

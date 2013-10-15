@@ -86,7 +86,20 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 {
 	OpCodeMapElement * element = NULL;
 
-	OpCode opcode = Fetch1(pContext, pInfo);
+	uint8_t byte = Fetch1(pContext, pInfo);
+	OpCode opcode = 0;
+
+	if (8 == pContext->size && 0x40 <= byte && byte <= 0x4F)
+	{
+		if (pInfo->hasREX)
+		{
+			return NULL;
+		}
+		pInfo->hasREX = 0;
+		pInfo->REX.value = byte;
+		return ChooseOpCode(pContext, pInfo);
+	}
+	opcode = byte;
 
 	switch (opcode)
 	{
@@ -245,7 +258,10 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->hasBase = 1;
 			pOperand->hasIndex = 1;
 			pOperand->scale = 1 << pInfo->SIB.fields.Scale;
-			pOperand->index = pInfo->SIB.fields.Index;
+			if (4 == (pOperand->index = pInfo->SIB.fields.Index))
+			{
+				pOperand->hasIndex = 0;
+			}
 			if (5 == (pOperand->base = pInfo->SIB.fields.Base))
 			{
 				switch (pInfo->ModRM.fields.Mod)
@@ -440,6 +456,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 	pContext->currentSize = pContext->size;
 
 	pInfo->nPrefixes = 0;
+	pInfo->hasREX = 0;
 
 	pElement = ChooseOpCode(pContext, pInfo);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == pContext->error)

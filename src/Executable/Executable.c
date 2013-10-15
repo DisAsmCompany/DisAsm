@@ -27,12 +27,6 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	}
 	pContext->hReader = hReader;
 	pContext->memory = memory;
-	pContext->pGetEntryPoint          = NULL;
-	pContext->pGetStubEntryPoint      = NULL;
-	pContext->pGetExportCount         = NULL;
-	pContext->pGetExportAddress       = NULL;
-	pContext->pGetExportName          = NULL;
-	pContext->pGetExportForwarderName = NULL;
 	if (0 == PEFileCreate(pContext) && 0 == MachOFileCreate(pContext))
 	{
 		free(pContext);
@@ -46,6 +40,12 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	pContext->pDestroy(hExecutable);
 	free(hExecutable);
+}
+
+Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	return pContext->pGetArchitecture(pContext);
 }
 
 uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)

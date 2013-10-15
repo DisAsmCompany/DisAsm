@@ -69,9 +69,8 @@ void PrintAddress(uint32_t address)
 	printf("%08X", address);
 }
 
-void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, uint32_t bitness, List * list)
+void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, List * list)
 {
-	HDISASM hDisAsm = DisAsmCreate(bitness);
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	uint8_t ret = 0;
@@ -140,7 +139,6 @@ void DisAsmFunction(HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, ui
 			ret = 1;
 		}
 	}
-	DisAsmDestroy(hDisAsm);
 }
 
 int main(int argc, char * const argv[])
@@ -150,6 +148,8 @@ int main(int argc, char * const argv[])
 	List * list = ListCreate();
 	HREADER hReader = NULL;
 	HEXECUTABLE hExecutable = NULL;
+	HDISASM hDisAsm = NULL;
+	Architecture architecture = 0;
 	uint32_t count = 0;
 	uint32_t i = 0;
 	uint32_t entry = 0;
@@ -189,21 +189,42 @@ int main(int argc, char * const argv[])
 		fprintf(stderr, "[ERROR] cannot open executable file \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
+	architecture = ExecutableGetArchitecture(hExecutable);
+	if (0 == architecture)
+	{
+		fprintf(stderr, "[ERROR] cannot open executable file (unknown architecture) \"%s\"\n", argv[1]);
+		return EXIT_FAILURE;
+	}
+	if (x86 == architecture)
+	{
+		hDisAsm = DisAsmCreate(32);
+	}
+	if (x64 == architecture)
+	{
+		hDisAsm = DisAsmCreate(64);
+	}
+	if (NULL == hDisAsm)
+	{
+		fprintf(stderr, "[ERROR] cannot create disassembler\n");
+		return EXIT_FAILURE;
+	}
 	entry = ExecutableGetEntryPoint(hExecutable);
 	if (0 != entry)
 	{
 		printf("Entry Point :\n");
 		ReaderSeek(hReader, entry);
-		DisAsmFunction(hReader, hBenchmark, entry, base, 32, list);
+		DisAsmFunction(hDisAsm, hReader, hBenchmark, entry, base, list);
 		printf("\n");
 	}
 	entry = ExecutableGetStubEntryPoint(hExecutable);
 	if (0 != entry)
 	{
+		HDISASM hDisAsmDOS = DisAsmCreate(16);
 		printf("Stub Entry Point :\n");
 		ReaderSeek(hReader, entry);
-		DisAsmFunction(hReader, hBenchmark, entry, base, 16, list);
+		DisAsmFunction(hDisAsmDOS, hReader, hBenchmark, entry, base, list);
 		printf("\n");
+		DisAsmDestroy(hDisAsmDOS);
 	}
 	count = ExecutableGetExportCount(hExecutable);
 	for (i = 0; i < count; ++i)
@@ -223,7 +244,7 @@ int main(int argc, char * const argv[])
 		{
 			printf("%s\n", name);
 			ReaderSeek(hReader, address);
-			DisAsmFunction(hReader, hBenchmark, address, base, 32, list);
+			DisAsmFunction(hDisAsm, hReader, hBenchmark, address, base, list);
 		}
 		printf("\n");
 		free(name);
@@ -234,10 +255,11 @@ int main(int argc, char * const argv[])
 		uint32_t element = ListGet(list, i);
 		ReaderSeek(hReader, element);
 		printf("function %d %08X :\n", i, element);
-		DisAsmFunction(hReader, hBenchmark, element, base, 32, list);
+		DisAsmFunction(hDisAsm, hReader, hBenchmark, element, base, list);
 		printf("\n");
 	}
 	ListDestroy(list);
+	DisAsmDestroy(hDisAsm);
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);
 	BenchmarkPrintData(hBenchmark);

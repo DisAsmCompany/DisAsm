@@ -30,7 +30,7 @@
 typedef struct PEFileContext_t
 {
 	HSDF hDOSHeader;
-	HSDF hPEFileHeader;
+	HSDF hFileHeader;
 	HSDF hOptionalHeader;
 	uint32_t DataDirectoriesCount;
 	PEDataDirectory * DataDirectories;
@@ -369,6 +369,20 @@ char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index
 	return NULL;
 }
 
+Architecture PEFileGetArchitecture(ExecutableContext * pContext)
+{
+	Architecture architecture = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
+	if (0x014C == architecture)
+	{
+		return x86;
+	}
+	if (0x8664 == architecture)
+	{
+		return x64;
+	}
+	return 0;
+}
+
 void PEFileDestroy(ExecutableContext * pContext)
 {
 	uint32_t i = 0;
@@ -378,7 +392,7 @@ void PEFileDestroy(ExecutableContext * pContext)
 	}
 	free(THIS->phSectionHeaders);
 	SDFDestroy(THIS->hDOSHeader);
-	SDFDestroy(THIS->hPEFileHeader);
+	SDFDestroy(THIS->hFileHeader);
 	SDFDestroy(THIS->hOptionalHeader);
 	SDFDestroy(THIS->hExportDirectory);
 	SDFDestroy(THIS->hDebugDirectory);
@@ -400,6 +414,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	memset(pPEFileContext, 0, sizeof(PEFileContext));
 	pContext->pPrivate                = pPEFileContext;
+	pContext->pGetArchitecture        = PEFileGetArchitecture;
 	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
 	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;
 	pContext->pGetExportCount         = PEFileGetExportCount;
@@ -428,9 +443,9 @@ int PEFileCreate(ExecutableContext * pContext)
 		return 0;
 	}
 	printf("Signature : \n"); PrintSignature(Signature, 4);
-	THIS->hPEFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
-	SDFPrint(THIS->hPEFileHeader);
-	SizeOfOptionalHeader = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderSizeOfOptionalHeader);
+	THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
+	SDFPrint(THIS->hFileHeader);
+	SizeOfOptionalHeader = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderSizeOfOptionalHeader);
 	if (SizeOfOptionalHeader < SDFSizeInBytes(PEOptionalHeader))
 	{
 		return 0;
@@ -458,7 +473,7 @@ int PEFileCreate(ExecutableContext * pContext)
 			return 0;
 		}
 	}
-	THIS->NumberOfSections = SDFReadUInt16(THIS->hPEFileHeader, PEFileHeaderNumberOfSections);
+	THIS->NumberOfSections = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderNumberOfSections);
 	if (0 == THIS->NumberOfSections)
 	{
 		return 0;

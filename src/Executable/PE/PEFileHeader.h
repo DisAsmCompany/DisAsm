@@ -17,6 +17,7 @@
 #define PENTSignature 0x00004550 /* PE */
 #endif /* PENTSignature */
 
+#define PEFileHeaderMachine 0
 #define PEFileHeaderNumberOfSections 2
 #define PEFileHeaderSizeOfOptionalHeader 16
 

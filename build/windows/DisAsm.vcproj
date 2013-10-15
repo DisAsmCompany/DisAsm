@@ -175,6 +175,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\src\DisAsm\Architecture.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\DisAsm\Benchmark.h"
 				>
 			</File>
@@ -322,6 +326,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\DisAsm\Register.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\DisAsm\REX.h"
 				>
 			</File>
 			<File
