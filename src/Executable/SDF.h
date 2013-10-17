@@ -18,6 +18,7 @@ typedef enum SDFType_t
 	kUnsigned,
 	kUTC,
 	kVersion,
+	kSignature,
 	kStringASCII,
 	kReserved,
 }
@@ -27,6 +28,7 @@ typedef struct SDFEnum_t
 {
 	char * name;
 	uint32_t value;
+	uint32_t mask;
 }
 SDFEnum;
 

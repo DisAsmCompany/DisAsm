@@ -13,24 +13,24 @@
 #ifndef __PEFILEHEADER_H__
 #define __PEFILEHEADER_H__
 
-#ifndef PENTSignature
-#define PENTSignature 0x00004550 /* PE */
-#endif /* PENTSignature */
+static const uint32_t kPENTSignature = 0x00004550; /* PE */
 
-#define PEFileHeaderMachine 0
-#define PEFileHeaderNumberOfSections 2
-#define PEFileHeaderSizeOfOptionalHeader 16
+static const uint32_t PEFileHeaderSignature = 0;
+static const uint32_t PEFileHeaderMachine = 4;
+static const uint32_t PEFileHeaderNumberOfSections = 6;
+static const uint32_t PEFileHeaderSizeOfOptionalHeader = 20;
 
 static const SDFElement PEFileHeader[] =
 {
 	{"PE File Header"},
+	{"Signature           ", kSignature, 4, 1},
 	{"Machine             ", kUnsigned, 2, 1, PEMachine},
 	{"NumberOfSections    ", kUnsigned, 2, 1},
 	{"TimeDateStamp       ", kUTC, 4, 1},
 	{"PointerToSymbolTable", kUnsigned, 4, 1},
 	{"NumberOfSymbols     ", kUnsigned, 4, 1},
 	{"SizeOfOptionalHeader", kUnsigned, 2, 1},
-	{"Characteristics     ", kUnsigned, 2, 1},
+	{"Characteristics     ", kUnsigned, 2, 1, PECharacteristics},
 	{NULL}
 };
 

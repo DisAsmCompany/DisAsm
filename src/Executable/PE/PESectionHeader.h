@@ -14,9 +14,9 @@
 #define __PESECTIONHEADER_H__
 
 
-#define PESectionHeaderVirtualAddress   12
-#define PESectionHeaderSizeOfRawData    16
-#define PESectionHeaderPointerToRawData 20
+static const uint32_t PESectionHeaderVirtualAddress   = 12;
+static const uint32_t PESectionHeaderSizeOfRawData    = 16;
+static const uint32_t PESectionHeaderPointerToRawData = 20;
 
 static const SDFElement PESectionHeader[] =
 {
@@ -30,7 +30,7 @@ static const SDFElement PESectionHeader[] =
 	{"PointerToLinenumbers", kUnsigned, 4, 1},
 	{"NumberOfRelocations ", kUnsigned, 2, 1},
 	{"NumberOfLinenumbers ", kUnsigned, 2, 1},
-	{"Characteristics     ", kUnsigned, 4, 1},
+	{"Characteristics     ", kUnsigned, 4, 1, PESectionCharacteristics},
 	{NULL}
 };
 

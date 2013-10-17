@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="8,00"
 	Name="Executable"
 	ProjectGUID="{085554E1-679E-492C-9A12-58D04145058F}"
 	RootNamespace="Executable"
@@ -161,10 +161,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\Executable\PE\PEString.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Executable\SDF.c"
 				>
 			</File>
@@ -190,6 +186,10 @@
 				Name="PE"
 				>
 				<File
+					RelativePath="..\..\src\Executable\PE\PECharacteristics.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\Executable\PE\PEDataDirectory.h"
 					>
 				</File>
@@ -199,6 +199,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\Executable\PE\PEDebugType.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PEDllCharacteristics.h"
 					>
 				</File>
 				<File
@@ -235,6 +239,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\Executable\PE\PEOptionalHeader.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\Executable\PE\PESectionCharacteristics.h"
 					>
 				</File>
 				<File

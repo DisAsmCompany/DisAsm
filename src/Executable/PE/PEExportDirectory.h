@@ -13,10 +13,10 @@
 #ifndef __PEEXPORTDIRECTORY_H__
 #define __PEEXPORTDIRECTORY_H__
 
-#define PEExportDirectoryNumberOfFunctions 20
-#define PEExportDirectoryAddressOfFunctions 28
-#define PEExportDirectoryAddressOfNames 32
-#define PEExportDirectoryAddressOfNameOrdinals 36
+static const uint32_t PEExportDirectoryNumberOfFunctions     = 20;
+static const uint32_t PEExportDirectoryAddressOfFunctions    = 28;
+static const uint32_t PEExportDirectoryAddressOfNames        = 32;
+static const uint32_t PEExportDirectoryAddressOfNameOrdinals = 36;
 
 static const SDFElement PEExportDirectory[] =
 {

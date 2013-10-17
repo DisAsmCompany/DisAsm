@@ -13,8 +13,8 @@
 #ifndef __MACHOFATHEADER_H__
 #define __MACHOFATHEADER_H__
 
-#define MachOFatHeaderCpuType    0
-#define MachOFatHeaderOffset     8
+static const uint32_t MachOFatHeaderCpuType = 0;
+static const uint32_t MachOFatHeaderOffset = 8;
 
 static const SDFElement MachOFatHeader[] =
 {

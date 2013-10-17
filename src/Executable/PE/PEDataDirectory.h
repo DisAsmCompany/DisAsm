@@ -13,25 +13,25 @@
 #ifndef __PEDATADIRECTORY_H__
 #define __PEDATADIRECTORY_H__
 
-#ifndef PEDataDirectoryCount
-#define PEDataDirectoryCount 0x10
+#ifndef kPEDataDirectoryCount
+static const uint32_t kPEDataDirectoryCount = 0x10;
 #endif /* PEDataDirectoryCount */
 
-#define PEDataDirectoryExport          0   /* Export Directory                  */
-#define PEDataDirectoryImport          1   /* Import Directory                  */
-#define PEDataDirectoryResource        2   /* Resource Directory                */
-#define PEDataDirectoryException       3   /* Exception Directory               */
-#define PEDataDirectorySecurity        4   /* Security Directory                */
-#define PEDataDirectoryFixup           5   /* Base Relocation Table             */
-#define PEDataDirectoryDebug           6   /* Debug Directory                   */
-#define PEDataDirectoryArchitecture    7   /* Architecture Specific Data        */
-#define PEDataDirectoryGlobalPtr       8   /* RVA of GP                         */
-#define PEDataDirectoryTLS             9   /* TLS Directory                     */
-#define PEDataDirectoryLoadConfig     10   /* Load Configuration Directory      */
-#define PEDataDirectoryBoundImport    11   /* Bound Import Directory in headers */
-#define PEDataDirectoryIAT            12   /* Import Address Table              */
-#define PEDataDirectoryDelayImport    13   /* Delay Load Import Descriptors     */
-#define PEDataDirectoryCOM            14   /* COM Runtime descriptor            */
+static const uint32_t kPEDataDirectoryExport         =  0; /* Export Directory                  */
+static const uint32_t kPEDataDirectoryImport         =  1; /* Import Directory                  */
+static const uint32_t kPEDataDirectoryResource       =  2; /* Resource Directory                */
+static const uint32_t kPEDataDirectoryException      =  3; /* Exception Directory               */
+static const uint32_t kPEDataDirectorySecurity       =  4; /* Security Directory                */
+static const uint32_t kPEDataDirectoryFixup          =  5; /* Base Relocation Table             */
+static const uint32_t kPEDataDirectoryDebug          =  6; /* Debug Directory                   */
+static const uint32_t kPEDataDirectoryArchitecture   =  7; /* Architecture Specific Data        */
+static const uint32_t kPEDataDirectoryGlobalPtr      =  8; /* RVA of GP                         */
+static const uint32_t kPEDataDirectoryTLS            =  9; /* TLS Directory                     */
+static const uint32_t kPEDataDirectoryLoadConfig     = 10; /* Load Configuration Directory      */
+static const uint32_t kPEDataDirectoryBoundImport    = 11; /* Bound Import Directory in headers */
+static const uint32_t kPEDataDirectoryIAT            = 12; /* Import Address Table              */
+static const uint32_t kPEDataDirectoryDelayImport    = 13; /* Delay Load Import Descriptors     */
+static const uint32_t kPEDataDirectoryCOM            = 14; /* COM Runtime descriptor            */
 
 typedef struct PEDataDirectory_t
 {

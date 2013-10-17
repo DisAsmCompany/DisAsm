@@ -13,18 +13,16 @@
 #ifndef __PEDOSHEADER_H__
 #define __PEDOSHEADER_H__
 
-#ifndef PEDOSSignature
-#define PEDOSSignature 0x5A4D /* MZ */
-#endif /* PEDOSSignature */
+static const uint32_t kPEDOSSignature = 0x5A4D; /* MZ */
 
-#define PEDOSHeaderSignature 0
-#define PEDOSHeaderAddressPE 0x3C
+static const uint32_t PEDOSHeaderSignature = 0;
+static const uint32_t PEDOSHeaderAddressPE = 0x3C;
 
 static const SDFElement PEDOSHeader[] =
 {
 	{"PE DOS Header"},
 	/* DOS signature, either 'MZ' or 'ZM' */
-	{"Signature        ", kUnsigned, 2, 1},
+	{"Signature        ", kSignature, 2, 1},
 	{"BytesInLastPage  ", kUnsigned, 2, 1},
 	{"Pages            ", kUnsigned, 2, 1},
 	{"Relocations      ", kUnsigned, 2, 1},

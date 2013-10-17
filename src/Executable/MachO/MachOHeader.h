@@ -13,7 +13,7 @@
 #ifndef __MACHOHEADER_H__
 #define __MACHOHEADER_H__
 
-#define MachOHeaderCountCommands 16
+static const uint32_t MachOHeaderCountCommands = 16;
 
 static const SDFElement MachOHeader[] =
 {

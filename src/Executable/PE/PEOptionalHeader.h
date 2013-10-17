@@ -13,9 +13,9 @@
 #ifndef __PEOPTIONALHEADER_H__
 #define __PEOPTIONALHEADER_H__
 
-#define PEOptionalHeaderMagic               0
-#define PEOptionalHeaderAddressOfEntryPoint 16
-#define PEOptionalHeaderNumberOfRvaAndSizes 220
+static const uint32_t PEOptionalHeaderMagic               = 0;
+static const uint32_t PEOptionalHeaderAddressOfEntryPoint = 16;
+static const uint32_t PEOptionalHeaderNumberOfRvaAndSizes = 220;
 
 static const SDFElement PEOptionalHeader[] =
 {
@@ -45,7 +45,7 @@ static const SDFElement PEOptionalHeader[] =
 	{"SizeOfHeaders              ", kUnsigned, 4, 1},
 	{"CheckSum                   ", kUnsigned, 4, 1},
 	{"Subsystem                  ", kUnsigned, 2, 1, PESubsystem},
-	{"DllCharacteristics         ", kUnsigned, 2, 1},
+	{"DllCharacteristics         ", kUnsigned, 2, 1, PEDllCharacteristics},
 	{"SizeOfStackReserve         ", kUnsigned, 4, 1},
 	{"SizeOfStackCommit          ", kUnsigned, 4, 1},
 	{"MajorSubsystemVersion      ", kUnsigned, 4, 1},

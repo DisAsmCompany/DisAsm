@@ -13,8 +13,8 @@
 #ifndef __MACHOLOADCOMMAND_H__
 #define __MACHOLOADCOMMAND_H__
 
-#define MachOLoadCommandCommand     0
-#define MachOLoadCommandCommandSize 4
+static const uint32_t MachOLoadCommandCommand = 0;
+static const uint32_t MachOLoadCommandCommandSize = 4;
 
 static const SDFElement MachOLoadCommand[] =
 {

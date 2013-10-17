@@ -20,6 +20,19 @@ typedef struct SDFContext_t
 }
 SDFContext;
 
+uint64_t LE2BE64(uint64_t value)
+{
+    return 
+        ((value & 0x00000000000000FFULL) << 56) |
+        ((value & 0x000000000000FF00ULL) << 40) |
+        ((value & 0x0000000000FF0000ULL) >> 24) |
+        ((value & 0x00000000FF000000ULL) >> 8)  |
+        ((value & 0x000000FF00000000ULL) << 8)  |
+        ((value & 0x0000FF0000000000ULL) << 24) |
+        ((value & 0x00FF000000000000ULL) >> 40) |
+        ((value & 0xFF00000000000000ULL) >> 56);
+}
+
 uint32_t LE2BE32(uint32_t value)
 {
 	return 
@@ -77,7 +90,7 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 	return (HSDF)pContext;
 }
 
-char * GetUTC(uint32_t TimeStamp)
+char * UTC(uint64_t TimeStamp)
 {
 	time_t time = TimeStamp;
 	char * c = ctime(&time);
@@ -85,18 +98,44 @@ char * GetUTC(uint32_t TimeStamp)
 	return c;
 }
 
-void SDFPrintEnum(const SDFEnum * enumeration, uint32_t value)
+void SDFPrintSignature(uint64_t Signature, uint32_t size)
 {
+    uint32_t i = 0;
+    printf(" ('");
+    for (i = 0; i < size; ++i)
+    {
+        char byte = (Signature >> (i * 8)) & 0xFF;
+        if (isalnum(byte))
+        {
+            printf("%c", byte);
+        }
+        else
+        {
+            printf("[%02X]", byte);
+        }
+    }
+    printf("')");
+}
+
+
+void SDFPrintEnum(const SDFEnum * enumeration, uint64_t value)
+{
+    uint8_t first = 1;
 	if (NULL != enumeration)
 	{
+        printf(" (");
 		while (NULL != enumeration->name)
 		{
-			if (value == enumeration->value)
+            uint32_t mask = enumeration->mask;
+            if (0 == mask) mask = 0xFFFFFFFFUL;
+			if (enumeration->value == (value & mask))
 			{
-				printf(" (%s)", enumeration->name);
+                printf(first ? "%s" : " | %s", enumeration->name);
+                first = 0;
 			}
 			++enumeration;
 		}
+        printf(")");
 	}
 }
 
@@ -131,42 +170,50 @@ void SDFPrint(HSDF hSDF)
 						printf("%c", value[k]);
 					}
 				}
-				if (1 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
-				{
-					uint8_t value = *(uint8_t*) (pContext->data + offset);
-					printf(" : 0x%02X", value);
-				}
-				if (2 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
-				{
-					uint16_t value = *(uint16_t*) (pContext->data + offset);
-					value = pContext->endian ? LE2BE16(value) : value;
-					printf(" : 0x%04X", value);
-					SDFPrintEnum(pContext->definition[i].enumeration, value);
-				}
-				if (4 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
-				{
-					uint32_t value = *(uint32_t*) (pContext->data + offset);
-					value = pContext->endian ? LE2BE32(value) : value;
-					printf(" : 0x%08X", value);
-					SDFPrintEnum(pContext->definition[i].enumeration, value);
-				}
-				if (8 == pContext->definition[i].size && kUnsigned == pContext->definition[i].type)
-				{
-					uint64_t * value = (uint64_t*) (pContext->data + offset);
-					printf(" : 0x%016LX", *value);
-				}
-				if (4 == pContext->definition[i].size && kUTC == pContext->definition[i].type)
-				{
-					uint32_t value = *(uint32_t*) (pContext->data + offset);
-					value = pContext->endian ? LE2BE32(value) : value;
-					printf(" : 0x%08X (%s)", value, GetUTC(value));
-				}
-				if (4 == pContext->definition[i].size && kVersion == pContext->definition[i].type)
-				{
-					uint32_t value = *(uint32_t*) (pContext->data + offset);
-					value = pContext->endian ? LE2BE32(value) : value;
-					printf(" : 0x%08X (%d.%d.%d)", value, (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
-				}
+                else
+                {
+                    uint64_t value;
+                    if (1 == pContext->definition[i].size)
+                    {
+                        uint8_t value8 = *(uint8_t*) (pContext->data + offset);
+                        printf(" : 0x%02X", value8);
+                        value = value8;
+                    }
+                    if (2 == pContext->definition[i].size)
+                    {
+                        uint16_t value16 = *(uint16_t*) (pContext->data + offset);
+                        value16 = pContext->endian ? LE2BE16(value16) : value16;
+                        printf(" : 0x%04X", value16);
+                        value = value16;
+                    }
+                    if (4 == pContext->definition[i].size)
+                    {
+                        uint32_t value32 = *(uint32_t*) (pContext->data + offset);
+                        value32 = pContext->endian ? LE2BE32(value32) : value32;
+                        printf(" : 0x%08X", value32);
+                        value = value32;
+                    }
+                    if (8 == pContext->definition[i].size)
+                    {
+                        uint64_t value64 = *(uint64_t*) (pContext->data + offset);
+                        value = pContext->endian ? LE2BE64(value64) : value64;
+                        printf(" : 0x%016LX", value64);
+                        value = value64;
+                    }
+                    if (kUTC == pContext->definition[i].type)
+                    {
+                        printf(" (%s)", UTC(value));
+                    }
+                    if (kVersion == pContext->definition[i].type)
+                    {
+                        printf(" (%d.%d.%d)", (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+                    }
+                    if (kSignature == pContext->definition[i].type)
+                    {
+                        SDFPrintSignature(value, pContext->definition[i].size);
+                    }
+                    SDFPrintEnum(pContext->definition[i].enumeration, value);
+                }
 				printf("\n");
 			}
 			offset += pContext->definition[i].size;
