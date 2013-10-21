@@ -206,7 +206,7 @@ void SDFPrint(HSDF hSDF)
                     }
                     if (kVersion == pContext->definition[i].type)
                     {
-                        printf(" (%d.%d.%d)", (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+                        printf(" (%Ld.%Ld.%Ld)", (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
                     }
                     if (kSignature == pContext->definition[i].type)
                     {

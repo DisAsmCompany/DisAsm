@@ -15,12 +15,17 @@
 #include "MachOMagic.h"
 #include "MachOCPUType.h"
 #include "MachOLoadCommandType.h"
+#include "MachOHeaderFlags.h"
+#include "MachOFileType.h"
 #include "MachOHeader.h"
 #include "MachOHeader64.h"
 #include "MachOFatHeader.h"
 #include "MachOLoadCommand.h"
+#include "MachOMemoryProtection.h"
+#include "MachOSegmentAttributes.h"
 #include "MachOSegment.h"
 #include "MachOSegment64.h"
+#include "MachOSectionAttributes.h"
 #include "MachOSection.h"
 #include "MachOSection64.h"
 #include "MachODylib.h"
@@ -46,11 +51,6 @@ MachOFileContext;
 
 #undef THIS
 #define THIS ((MachOFileContext*)(pContext->pPrivate))
-
-int MachOExecutableProcess(ExecutableContext * pContext)
-{
-	return 0;
-}
 
 int MachOFileCreate(ExecutableContext * pContext)
 {
@@ -125,7 +125,7 @@ int MachOFileCreate(ExecutableContext * pContext)
 				if (kMachOLoadCommandSegment32 == type)
 				{
 					HSDF hSegment = SDFCreate(MachOSegment, pContext->hReader);
-					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegmentNumberOfSections);
+					uint32_t NumberOfSections = SDFReadUInt32(hSegment, kMachOSegmentNumberOfSections);
 					SDFPrint(hSegment);
 					SDFDestroy(hSegment);
 					count -= SDFSizeInBytes(MachOSegment);
@@ -172,6 +172,15 @@ int MachOFileCreate(ExecutableContext * pContext)
 					}
 					count -= k + 1;
 					printf("\n");
+				}
+				if (kMachOLoadCommandUUID == type)
+				{
+					unsigned char uuid[16];
+					ReaderRead(pContext->hReader, uuid, 16);
+					printf("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
+						   uuid[0], uuid[1], uuid[2], uuid[3], uuid[4], uuid[5], uuid[6], uuid[7], uuid[8], uuid[9], uuid[10], uuid[11], uuid[12], uuid[13], uuid[14], uuid[15]
+						   );
+					count -= 16;
 				}
 				if (kMachOLoadCommandSymTab == type)
 				{

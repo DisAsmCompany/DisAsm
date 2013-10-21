@@ -4,7 +4,7 @@
  * Date:     11/10/2013
  *
  * Description: Mach-O Section
- *)
+ *
  *              
  *
  */
@@ -24,7 +24,7 @@ static const SDFElement MachOSection[] =
 	{"Align           ", kUnsigned, 4, 1},
 	{"RelocationOffset", kUnsigned, 4, 1},
 	{"RelocationCount ", kUnsigned, 4, 1},
-	{"Flags           ", kUnsigned, 4, 1},
+	{"Flags           ", kUnsigned, 4, 1, MachOSectionAttributes},
 	{"Reserved        ", kReserved, 4, 1},
 	{"Reserved        ", kReserved, 4, 1},
 	{NULL}

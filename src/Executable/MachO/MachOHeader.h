@@ -21,10 +21,10 @@ static const SDFElement MachOHeader[] =
 	{"Magic        ", kUnsigned, 4, 1},
 	{"CpuType      ", kUnsigned, 4, 1, MachOCPUType},
 	{"CpuSubType   ", kUnsigned, 4, 1},
-	{"FileType     ", kUnsigned, 4, 1},
+	{"FileType     ", kUnsigned, 4, 1, MachOFileType},
 	{"CountCommands", kUnsigned, 4, 1},
 	{"SizeCommands ", kUnsigned, 4, 1},
-	{"Flags        ", kUnsigned, 4, 1},
+	{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
 	{NULL}
 };
 

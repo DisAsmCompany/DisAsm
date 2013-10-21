@@ -4,7 +4,7 @@
  * Date:     14/10/2013
  *
  * Description: Mach-O Magic Numbers
- *)             (Signatures)
+ *             (Signatures)
  *              
  *
  */

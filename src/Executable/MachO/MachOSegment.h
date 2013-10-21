@@ -4,7 +4,7 @@
  * Date:     11/10/2013
  *
  * Description: Mach-O Segment (Load Command)
- *)
+ *
  *              
  *
  */
@@ -13,7 +13,7 @@
 #ifndef __MACHOSEGMENT_H__
 #define __MACHOSEGMENT_H__
 
-#define MachOSegmentNumberOfSections 40
+static const uint32_t kMachOSegmentNumberOfSections = 40;
 
 static const SDFElement MachOSegment[] =
 {
@@ -23,10 +23,10 @@ static const SDFElement MachOSegment[] =
 	{"VirtualSize     ", kUnsigned, 4, 1},
 	{"FileOffset      ", kUnsigned, 4, 1},
 	{"FileSize        ", kUnsigned, 4, 1},
-	{"ProtectionMax   ", kUnsigned, 4, 1},
-	{"ProtectionInit  ", kUnsigned, 4, 1},
+	{"ProtectionMax   ", kUnsigned, 4, 1, MachOMemoryProtection},
+	{"ProtectionInit  ", kUnsigned, 4, 1, MachOMemoryProtection},
 	{"NumberOfSections", kUnsigned, 4, 1},
-	{"Flags           ", kUnsigned, 4, 1},
+	{"Flags           ", kUnsigned, 4, 1, MachOSegmentAttributes},
 	{NULL}
 };
 

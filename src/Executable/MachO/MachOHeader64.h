@@ -13,18 +13,16 @@
 #ifndef __MACHOHEADER64_H__
 #define __MACHOHEADER64_H__
 
-#define MachOHeader64CountCommands 16
-
 static const SDFElement MachOHeader64[] =
 {
 	{"Mach-O Header 64"},
 	{"Magic        ", kUnsigned, 4, 1},
 	{"CpuType      ", kUnsigned, 4, 1, MachOCPUType},
 	{"CpuSubType   ", kUnsigned, 4, 1},
-	{"FileType     ", kUnsigned, 4, 1},
+	{"FileType     ", kUnsigned, 4, 1, MachOFileType},
 	{"CountCommands", kUnsigned, 4, 1},
 	{"SizeCommands ", kUnsigned, 4, 1},
-	{"Flags        ", kUnsigned, 4, 1},
+	{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
 	{"Reserved     ", kReserved, 4, 1},
 	{NULL}
 };

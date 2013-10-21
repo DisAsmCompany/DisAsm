@@ -4,7 +4,7 @@
  * Date:     14/10/2013
  *
  * Description: Mach-O Load Command types
- *)             (Segment, Dyld, etc)
+ *             (Segment, Dyld, etc)
  *              
  *
  */
@@ -21,6 +21,7 @@ typedef enum MachOLoadCommandType_t
 	kMachOLoadCommandLoadDylib     = 0x0000000CUL,
 	kMachOLoadCommandIdDylib       = 0x0000000DUL,
 	kMachOLoadCommandReexportDylib = 0x8000001FUL,
+	kMachOLoadCommandUUID          = 0x0000001BUL,
 }
 MachOLoadCommandType;
 
@@ -32,6 +33,7 @@ static const SDFEnum _MachOLoadCommandType[] =
 	{"LC_LOAD_DYLIB",     kMachOLoadCommandLoadDylib},
 	{"LC_ID_DYLIB",       kMachOLoadCommandIdDylib},
 	{"LC_REEXPORT_DYLIB", kMachOLoadCommandReexportDylib},
+	{"LC_UUID",           kMachOLoadCommandUUID},
 	{NULL}
 };
 

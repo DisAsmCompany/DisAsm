@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4F1ABEEC1803BA48007D245D /* MachOFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEEB1803BA48007D245D /* MachOFile.c */; };
 		4F1ABEEF1803BA56007D245D /* PEFile.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEED1803BA56007D245D /* PEFile.c */; };
-		4F1ABEF01803BA56007D245D /* PEString.c in Sources */ = {isa = PBXBuildFile; fileRef = 4F1ABEEE1803BA56007D245D /* PEString.c */; };
 		4F1ABF1A1803BD87007D245D /* MachOFatHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF161803BD87007D245D /* MachOFatHeader.h */; };
 		4F1ABF1B1803BD87007D245D /* MachOFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF171803BD87007D245D /* MachOFile.h */; };
 		4F1ABF1C1803BD87007D245D /* MachOHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF181803BD87007D245D /* MachOHeader.h */; };
@@ -24,13 +23,17 @@
 		4F1ABF301803BD98007D245D /* PELoadConfigDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */; };
 		4F1ABF311803BD98007D245D /* PEOptionalHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF261803BD98007D245D /* PEOptionalHeader.h */; };
 		4F1ABF321803BD98007D245D /* PESectionHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF271803BD98007D245D /* PESectionHeader.h */; };
-		4F1ABF331803BD98007D245D /* PEString.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF281803BD98007D245D /* PEString.h */; };
 		4F1ABF3A1803BDBA007D245D /* Benchmark.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF341803BDBA007D245D /* Benchmark.h */; };
 		4F1ABF3B1803BDBA007D245D /* DisAsm.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF351803BDBA007D245D /* DisAsm.h */; };
 		4F1ABF3C1803BDBA007D245D /* InstructionInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF361803BDBA007D245D /* InstructionInfo.h */; };
 		4F1ABF3D1803BDBA007D245D /* InstructionSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF371803BDBA007D245D /* InstructionSet.h */; };
 		4F1ABF3E1803BDBA007D245D /* OpCodeMapGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */; };
 		4F1ABF3F1803BDBA007D245D /* OpCodeMapX87.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */; };
+		4F23B7E718150009005355AF /* MachOHeaderFlags.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F23B7E618150009005355AF /* MachOHeaderFlags.h */; };
+		4F23B82D18150559005355AF /* MachOFileType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F23B82C18150559005355AF /* MachOFileType.h */; };
+		4F23B85F181508DD005355AF /* MachOSectionAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F23B85E181508DD005355AF /* MachOSectionAttributes.h */; };
+		4F23B8D118151239005355AF /* MachOMemoryProtection.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F23B8D018151239005355AF /* MachOMemoryProtection.h */; };
+		4F23B8EC181514E2005355AF /* MachOSegmentAttributes.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F23B8EB181514E2005355AF /* MachOSegmentAttributes.h */; };
 		4F43FCB1180BAD5C0066A021 /* MachOCPUType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FCB0180BAD5C0066A021 /* MachOCPUType.h */; };
 		4F43FD78180BE4060066A021 /* MachOMagic.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FD77180BE4060066A021 /* MachOMagic.h */; };
 		4F43FDB9180BE88C0066A021 /* MachOLoadCommandType.h in Headers */ = {isa = PBXBuildFile; fileRef = 4F43FDB8180BE88C0066A021 /* MachOLoadCommandType.h */; };
@@ -158,7 +161,6 @@
 /* Begin PBXFileReference section */
 		4F1ABEEB1803BA48007D245D /* MachOFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = MachOFile.c; path = ../../src/Executable/MachO/MachOFile.c; sourceTree = SOURCE_ROOT; };
 		4F1ABEED1803BA56007D245D /* PEFile.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEFile.c; path = ../../src/Executable/PE/PEFile.c; sourceTree = SOURCE_ROOT; };
-		4F1ABEEE1803BA56007D245D /* PEString.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = PEString.c; path = ../../src/Executable/PE/PEString.c; sourceTree = SOURCE_ROOT; };
 		4F1ABF161803BD87007D245D /* MachOFatHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFatHeader.h; path = ../../src/Executable/MachO/MachOFatHeader.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF171803BD87007D245D /* MachOFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFile.h; path = ../../src/Executable/MachO/MachOFile.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF181803BD87007D245D /* MachOHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeader.h; path = ../../src/Executable/MachO/MachOHeader.h; sourceTree = SOURCE_ROOT; };
@@ -173,13 +175,17 @@
 		4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PELoadConfigDirectory.h; path = ../../src/Executable/PE/PELoadConfigDirectory.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF261803BD98007D245D /* PEOptionalHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEOptionalHeader.h; path = ../../src/Executable/PE/PEOptionalHeader.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF271803BD98007D245D /* PESectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PESectionHeader.h; path = ../../src/Executable/PE/PESectionHeader.h; sourceTree = SOURCE_ROOT; };
-		4F1ABF281803BD98007D245D /* PEString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PEString.h; path = ../../src/Executable/PE/PEString.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF341803BDBA007D245D /* Benchmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Benchmark.h; path = ../../src/DisAsm/Benchmark.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF351803BDBA007D245D /* DisAsm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DisAsm.h; path = ../../src/DisAsm/DisAsm.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF361803BDBA007D245D /* InstructionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstructionInfo.h; path = ../../src/DisAsm/InstructionInfo.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF371803BDBA007D245D /* InstructionSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstructionSet.h; path = ../../src/DisAsm/InstructionSet.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF381803BDBA007D245D /* OpCodeMapGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapGroup.h; path = ../../src/DisAsm/OpCodeMapGroup.h; sourceTree = SOURCE_ROOT; };
 		4F1ABF391803BDBA007D245D /* OpCodeMapX87.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OpCodeMapX87.h; path = ../../src/DisAsm/OpCodeMapX87.h; sourceTree = SOURCE_ROOT; };
+		4F23B7E618150009005355AF /* MachOHeaderFlags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOHeaderFlags.h; path = ../../src/Executable/MachO/MachOHeaderFlags.h; sourceTree = SOURCE_ROOT; };
+		4F23B82C18150559005355AF /* MachOFileType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOFileType.h; path = ../../src/Executable/MachO/MachOFileType.h; sourceTree = SOURCE_ROOT; };
+		4F23B85E181508DD005355AF /* MachOSectionAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOSectionAttributes.h; path = ../../src/Executable/MachO/MachOSectionAttributes.h; sourceTree = SOURCE_ROOT; };
+		4F23B8D018151239005355AF /* MachOMemoryProtection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOMemoryProtection.h; path = ../../src/Executable/MachO/MachOMemoryProtection.h; sourceTree = SOURCE_ROOT; };
+		4F23B8EB181514E2005355AF /* MachOSegmentAttributes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOSegmentAttributes.h; path = ../../src/Executable/MachO/MachOSegmentAttributes.h; sourceTree = SOURCE_ROOT; };
 		4F43FCB0180BAD5C0066A021 /* MachOCPUType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOCPUType.h; path = ../../src/Executable/MachO/MachOCPUType.h; sourceTree = SOURCE_ROOT; };
 		4F43FD77180BE4060066A021 /* MachOMagic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOMagic.h; path = ../../src/Executable/MachO/MachOMagic.h; sourceTree = SOURCE_ROOT; };
 		4F43FDB8180BE88C0066A021 /* MachOLoadCommandType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MachOLoadCommandType.h; path = ../../src/Executable/MachO/MachOLoadCommandType.h; sourceTree = SOURCE_ROOT; };
@@ -317,13 +323,11 @@
 				4F1ABF251803BD98007D245D /* PELoadConfigDirectory.h */,
 				4F1ABF261803BD98007D245D /* PEOptionalHeader.h */,
 				4F1ABF271803BD98007D245D /* PESectionHeader.h */,
-				4F1ABF281803BD98007D245D /* PEString.h */,
 				4F1ABF161803BD87007D245D /* MachOFatHeader.h */,
 				4F1ABF171803BD87007D245D /* MachOFile.h */,
 				4F1ABF181803BD87007D245D /* MachOHeader.h */,
 				4F1ABF191803BD87007D245D /* MachOLoadCommand.h */,
 				4F1ABEED1803BA56007D245D /* PEFile.c */,
-				4F1ABEEE1803BA56007D245D /* PEString.c */,
 				4F1ABEEB1803BA48007D245D /* MachOFile.c */,
 				4F71477617F9435300233DB6 /* Executable.c */,
 				4F71476117F9434700233DB6 /* Executable */,
@@ -380,6 +384,11 @@
 				4FB286A91807F98A00817C91 /* MachOSegment64.h */,
 				4FB286D11807FC2000817C91 /* MachOSection.h */,
 				4FB286D31807FCDF00817C91 /* MachOSection64.h */,
+				4F23B7E618150009005355AF /* MachOHeaderFlags.h */,
+				4F23B82C18150559005355AF /* MachOFileType.h */,
+				4F23B85E181508DD005355AF /* MachOSectionAttributes.h */,
+				4F23B8D018151239005355AF /* MachOMemoryProtection.h */,
+				4F23B8EB181514E2005355AF /* MachOSegmentAttributes.h */,
 			);
 			name = DisAsm;
 			sourceTree = "<group>";
@@ -494,7 +503,6 @@
 				4F1ABF301803BD98007D245D /* PELoadConfigDirectory.h in Headers */,
 				4F1ABF311803BD98007D245D /* PEOptionalHeader.h in Headers */,
 				4F1ABF321803BD98007D245D /* PESectionHeader.h in Headers */,
-				4F1ABF331803BD98007D245D /* PEString.h in Headers */,
 				4F5069A81807B34D0052ECB3 /* SDF.h in Headers */,
 				4F506AAC1807D33D0052ECB3 /* MachOHeader64.h in Headers */,
 				4FB2868B1807F73400817C91 /* MachOSegment.h in Headers */,
@@ -506,6 +514,11 @@
 				4F43FDB9180BE88C0066A021 /* MachOLoadCommandType.h in Headers */,
 				4F43FDDF180BF6560066A021 /* MachODylib.h in Headers */,
 				4F43FE52180BFC9A0066A021 /* MachOSymTab.h in Headers */,
+				4F23B7E718150009005355AF /* MachOHeaderFlags.h in Headers */,
+				4F23B82D18150559005355AF /* MachOFileType.h in Headers */,
+				4F23B85F181508DD005355AF /* MachOSectionAttributes.h in Headers */,
+				4F23B8D118151239005355AF /* MachOMemoryProtection.h in Headers */,
+				4F23B8EC181514E2005355AF /* MachOSegmentAttributes.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,7 +683,6 @@
 				4F71477717F9435300233DB6 /* Executable.c in Sources */,
 				4F1ABEEC1803BA48007D245D /* MachOFile.c in Sources */,
 				4F1ABEEF1803BA56007D245D /* PEFile.c in Sources */,
-				4F1ABEF01803BA56007D245D /* PEString.c in Sources */,
 				4F5069A61807B3400052ECB3 /* SDF.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -750,6 +762,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OBJROOT = ../../tmp/;
@@ -765,6 +778,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				OBJROOT = ../../tmp/;

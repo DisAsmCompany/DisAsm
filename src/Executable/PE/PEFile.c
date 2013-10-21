@@ -414,14 +414,6 @@ int PEFileCreate(ExecutableContext * pContext)
 	}
 	memset(pPEFileContext, 0, sizeof(PEFileContext));
 	pContext->pPrivate                = pPEFileContext;
-	pContext->pGetArchitecture        = PEFileGetArchitecture;
-	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
-	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;
-	pContext->pGetExportCount         = PEFileGetExportCount;
-	pContext->pGetExportAddress       = PEFileGetExportAddress;
-	pContext->pGetExportName          = PEFileGetExportName;
-	pContext->pGetExportForwarderName = PEFileGetExportForwarderName;
-	pContext->pDestroy                = PEFileDestroy;
 
 	THIS->hDOSHeader = SDFCreate(PEDOSHeader, pContext->hReader);
 
@@ -488,5 +480,14 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		PEFileProcessDirectory(pContext, i);
 	}
+	pContext->pGetArchitecture        = PEFileGetArchitecture;
+	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
+	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;
+	pContext->pGetExportCount         = PEFileGetExportCount;
+	pContext->pGetExportAddress       = PEFileGetExportAddress;
+	pContext->pGetExportName          = PEFileGetExportName;
+	pContext->pGetExportForwarderName = PEFileGetExportForwarderName;
+	pContext->pDestroy                = PEFileDestroy;
+	
 	return 1;
 }
