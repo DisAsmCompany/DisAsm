@@ -27,7 +27,7 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	}
 	pContext->hReader = hReader;
 	pContext->memory = memory;
-	if (0 == PEFileCreate(pContext) && 0 == MachOFileCreate(pContext))
+	if (0 == PEFileCreate(pContext) && 0 == MachOFileCreate(pContext) && 0 == ELFFileCreate(pContext))
 	{
 		free(pContext);
 		return 0;
