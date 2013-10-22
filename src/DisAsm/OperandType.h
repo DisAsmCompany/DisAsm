@@ -77,11 +77,6 @@ typedef enum OperandType_t
 	ShiftOperand1 = 8,
 	ShiftOperand2 = 16,
 	ShiftOperand3 = 24,
-
-	MaskOperand1 = 0x000000FFUL,
-	MaskOperand2 = 0x0000FF00UL,
-	MaskOperand3 = 0x00FF0000UL,
-	MaskOperand4 = 0xFF000000UL
 }
 OperandType;
 
@@ -123,10 +118,10 @@ calculate operands count : how many non-zero bytes are in packed type definition
 #define OP1(x)       OP4(x, 0, 0, 0)
 #define OP0          OP4(0, 0, 0, 0)
 
-#define _OP1GET(x) (((x) & MaskOperand1) >> ShiftOperand0)
-#define _OP2GET(x) (((x) & MaskOperand2) >> ShiftOperand1)
-#define _OP3GET(x) (((x) & MaskOperand3) >> ShiftOperand2)
-#define _OP4GET(x) (((x) & MaskOperand4) >> ShiftOperand3)
+#define _OP1GET(x) (0xFF & ((x) >> ShiftOperand0))
+#define _OP2GET(x) (0xFF & ((x) >> ShiftOperand1))
+#define _OP3GET(x) (0xFF & ((x) >> ShiftOperand2))
+#define _OP4GET(x) (0xFF & ((x) >> ShiftOperand3))
 
 #define OP1GET(x) (0x0100 | _OP1GET(x))
 #define OP2GET(x) (0x0100 | _OP2GET(x))

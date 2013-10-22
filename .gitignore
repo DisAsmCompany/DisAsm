@@ -15,6 +15,7 @@ tmp/
 log/
 map/
 asm/
-windows/
+windows32/
+windows64/
 macosx/
 unix/

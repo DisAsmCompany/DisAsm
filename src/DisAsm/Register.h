@@ -32,20 +32,22 @@ in order to allow coding of Operand Type / Register in single word field
 #define Reg16      SHIFT3(0x03UL)
 /* 32-bit general purpose register (EAX/ECX/EDX/EBX/ESP/EBP/ESI/EDI) */
 #define Reg32      SHIFT3(0x04UL)
+/* 64-bit general purpose register (RAX/RCX/RDX/RBX/RSP/RBP/RSI/RDI) */
+#define Reg64      SHIFT3(0x05UL)
 /* MMX register (MM0/MM1/MM2/MM3/MM4/MM5/MM6/MM7) */
-#define RegMMX     SHIFT3(0x05UL)
+#define RegMMX     SHIFT3(0x06UL)
 /* SSE register (XMM0/XMM1/XMM2/XMM3/XMM4/XMM5/XMM6/XMM7) */
-#define RegSSE     SHIFT3(0x06UL)
+#define RegSSE     SHIFT3(0x07UL)
 /* AVX register (YMM0/YMM1/YMM2/YMM3/YMM4/YMM5/YMM6/YMM7) */
-#define RegAVX     SHIFT3(0x07UL)
+#define RegAVX     SHIFT3(0x08UL)
 /* 16-bit segment register (ES/CS/SS/DS/FS/GS/--/--) */
-#define RegSeg     SHIFT3(0x08UL)
+#define RegSeg     SHIFT3(0x09UL)
 /* x87 FPU register (ST0/ST1/ST2/ST3/ST4/ST5/ST6/ST7) */
-#define Regx87     SHIFT3(0x09UL)
+#define Regx87     SHIFT3(0x0AUL)
 /* control register (CR0/CR1/CR2/CR3/CR4/CR5/CR6/CR7) */
-#define RegControl SHIFT3(0x0AUL)
+#define RegControl SHIFT3(0x0BUL)
 /* debug register (DR0/DR1/DR2/DR3/DR4/DR5/DR6/DR7) */
-#define RegDebug   SHIFT3(0x0BUL)
+#define RegDebug   SHIFT3(0x0CUL)
 
 #define r0 0
 #define r1 1
@@ -102,6 +104,15 @@ _ENUM_ELEMENT_VALUE(ESP, Reg32   | r4)
 _ENUM_ELEMENT_VALUE(EBP, Reg32   | r5)
 _ENUM_ELEMENT_VALUE(ESI, Reg32   | r6)
 _ENUM_ELEMENT_VALUE(EDI, Reg32   | r7)
+
+_ENUM_ELEMENT_VALUE(RAX, Reg64   | r0)
+_ENUM_ELEMENT_VALUE(RCX, Reg64   | r1)
+_ENUM_ELEMENT_VALUE(RDX, Reg64   | r2)
+_ENUM_ELEMENT_VALUE(RBX, Reg64   | r3)
+_ENUM_ELEMENT_VALUE(RSP, Reg64   | r4)
+_ENUM_ELEMENT_VALUE(RBP, Reg64   | r5)
+_ENUM_ELEMENT_VALUE(RSI, Reg64   | r6)
+_ENUM_ELEMENT_VALUE(RDI, Reg64   | r7)
 
 _ENUM_ELEMENT_VALUE(MM0, RegMMX  | r0)
 _ENUM_ELEMENT_VALUE(MM1, RegMMX  | r1)

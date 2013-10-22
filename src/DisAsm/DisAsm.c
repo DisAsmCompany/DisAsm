@@ -233,11 +233,25 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pOperand->memory = 0;
 		if (rRegister <= pOperand->value.reg && pOperand->value.reg <= rRegister + 7)
 		{
-			pOperand->value.reg = (pOperand->value.reg - rRegister) | Reg32;
+			pOperand->value.reg = (pOperand->value.reg - rRegister);
+            switch (pContext->currentSize)
+            {
+            case 2: pOperand->value.reg += Reg16;
+            case 4: pOperand->value.reg += Reg32;
+            case 8: pOperand->value.reg += Reg64;
+            default: break;
+            }
 		}
 		if (eRegister <= pOperand->value.reg && pOperand->value.reg <= eRegister + 7)
 		{
-			pOperand->value.reg = (pOperand->value.reg - eRegister) | Reg32;
+			pOperand->value.reg = (pOperand->value.reg - eRegister);
+            switch (pContext->currentSize)
+            {
+            case 2: pOperand->value.reg += Reg16;
+            case 4: pOperand->value.reg += Reg32;
+            case 8: pOperand->value.reg += Reg32;
+            default: break;
+            }
 		}
 	}
 	switch (HiType)
