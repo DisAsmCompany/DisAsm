@@ -20,7 +20,7 @@ typedef enum SDFType_t
 	kVersion,
 	kSignature,
 	kStringASCII,
-	kReserved,
+	kReserved
 }
 SDFType;
 

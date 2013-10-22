@@ -22,5 +22,5 @@
 #define _ENUM_START(name, base) typedef enum name##_t {
 #define _ENUM_ELEMENT(name) name,
 #define _ENUM_ELEMENT_VALUE(name, value) name = (value),
-#define _ENUM_STOP(name, base) } name;
+#define _ENUM_STOP(name, base) name##dummy} name;
 #endif /* _STR_ENUM */

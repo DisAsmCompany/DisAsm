@@ -104,17 +104,14 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 		{
 			if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
 			{
-				//address = info.disp;
 				printf("; jump to ");
 				PrintAddress(address);
 				break;
 			}
 			if (Jz == info.operands[0].type)
 			{
-				//address += info.imm;
 				printf("; jump to ");
 				PrintAddress(address);
-				//ReaderSeek(hReader, address);
 			}
 		}
 		printf("\n");
@@ -122,7 +119,6 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 		if (JO <= info.mnemonic && info.mnemonic <= JG)
 		{
 			/* conditional jump */
-			//break;
 		}
 		if (RET == info.mnemonic)
 		{

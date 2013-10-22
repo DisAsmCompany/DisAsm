@@ -215,6 +215,8 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			{
 				return NULL;
 			}
+		default:
+			break;
 		}
 		break;
 	}

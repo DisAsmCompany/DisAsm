@@ -81,7 +81,7 @@ typedef enum OperandType_t
 	MaskOperand1 = 0x000000FFUL,
 	MaskOperand2 = 0x0000FF00UL,
 	MaskOperand3 = 0x00FF0000UL,
-	MaskOperand4 = 0xFF000000UL,
+	MaskOperand4 = 0xFF000000UL
 }
 OperandType;
 

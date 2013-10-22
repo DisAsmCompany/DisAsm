@@ -16,3 +16,5 @@ log/
 map/
 asm/
 windows/
+macosx/
+unix/

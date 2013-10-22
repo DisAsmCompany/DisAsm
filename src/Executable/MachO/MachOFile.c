@@ -101,15 +101,7 @@ int MachOFileCreate(ExecutableContext * pContext)
 			{
 				return 0;
 			}
-			if (CpuType & 0x01000000UL)
-			{
-				THIS->phMachHeaders[i] = SDFCreate(MachOHeader64, pContext->hReader);
-			}
-			else 
-			{
-				THIS->phMachHeaders[i] = SDFCreate(MachOHeader, pContext->hReader);
-			}
-
+			THIS->phMachHeaders[i] = SDFCreate(CpuType & 0x01000000UL ? MachOHeader64 : MachOHeader, pContext->hReader);
 			SDFPrint(THIS->phMachHeaders[i]);
 			
 			THIS->nCommands = SDFReadUInt32(THIS->phMachHeaders[i], MachOHeaderCountCommands);
