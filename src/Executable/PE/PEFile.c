@@ -23,6 +23,8 @@
 #include "PEFileHeader.h"
 #include "PEDataDirectory.h"
 #include "PEOptionalHeader.h"
+#include "PEOptionalHeaderExtra.h"
+#include "PEOptionalHeaderExtra64.h"
 #include "PESectionHeader.h"
 #include "PEExportDirectory.h"
 #include "PEImportDescriptor.h"
@@ -34,6 +36,7 @@ typedef struct PEFileContext_t
 	HSDF hDOSHeader;
 	HSDF hFileHeader;
 	HSDF hOptionalHeader;
+    HSDF hOptionalHeaderExtra;
 	uint32_t DataDirectoriesCount;
 	PEDataDirectory * DataDirectories;
 	HSDF * phSectionHeaders;
@@ -48,6 +51,7 @@ typedef struct PEFileContext_t
 	uint32_t OffsetExportFunctions;
 	uint32_t OffsetExportOrdinals;
 	uint32_t OffsetExportNames;
+    uint32_t PE64;
 }
 PEFileContext;
 
@@ -394,6 +398,7 @@ void PEFileDestroy(ExecutableContext * pContext)
 	SDFDestroy(THIS->hDOSHeader);
 	SDFDestroy(THIS->hFileHeader);
 	SDFDestroy(THIS->hOptionalHeader);
+    SDFDestroy(THIS->hOptionalHeaderExtra);
 	SDFDestroy(THIS->hExportDirectory);
 	SDFDestroy(THIS->hDebugDirectory);
 	SDFDestroy(THIS->hLoadConfigDirectory);
@@ -443,11 +448,14 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		return 0;
 	}
+    THIS->PE64 = kPEMagic64 == Magic;
 	SDFPrint(THIS->hOptionalHeader);
+    THIS->hOptionalHeaderExtra = SDFCreate(THIS->PE64 ? PEOptionalHeaderExtra64 : PEOptionalHeaderExtra, pContext->hReader);
+    SDFPrint(THIS->hOptionalHeaderExtra);
 	THIS->AddressOfEntryPoint = SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint);
 	OffsetSectionHeaders = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE) + SDFSizeInBytes(PEFileHeader) + SizeOfOptionalHeader;
-	THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - SDFSizeInBytes(PEOptionalHeader)) / sizeof(PEDataDirectory));
-	THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
+    THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - SDFSizeInBytes(PEOptionalHeader) - SDFSizeInBytes(THIS->PE64 ? PEOptionalHeaderExtra64 : PEOptionalHeaderExtra)) / sizeof(PEDataDirectory));
+    THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderNumberOfRvaAndSizes64 : PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
 	if (THIS->DataDirectoriesCount > 0)
 	{
 		if (NULL == (THIS->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * THIS->DataDirectoriesCount)))

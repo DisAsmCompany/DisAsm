@@ -371,15 +371,36 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		if (Ob == pOperand->type)
 		{
-			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
+            switch (pContext->currentSize)
+            {
+            case 2: pInfo->sizeImm = 2; break;
+            case 4: pInfo->sizeImm = 4; break;
+            case 8: pInfo->sizeImm = 4; break;
+            default:
+                break;
+            }
 		}
 		if (LoType == v)
 		{
-			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
+            switch (pContext->currentSize)
+            {
+            case 2: pInfo->sizeImm = 2; break;
+            case 4: pInfo->sizeImm = 4; break;
+            case 8: pInfo->sizeImm = 4; break;
+            default:
+                break;
+            }
 		}
 		if (LoType == z)
 		{
-			pInfo->sizeImm = (4 == pContext->currentSize) ? 4 : 2;
+            switch (pContext->currentSize)
+            {
+            case 2: pInfo->sizeImm = 2; break;
+            case 4: pInfo->sizeImm = 4; break;
+            case 8: pInfo->sizeImm = 4; break;
+            default:
+                break;
+            }
 		}
 		if (LoType == w)
 		{
@@ -463,7 +484,6 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 	pElement = ChooseOpCode(pContext, pInfo);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == pContext->error)
 	{
-		//__asm int 3;
 		return 0;
 	}
 	pInfo->hasModRM = 0;
