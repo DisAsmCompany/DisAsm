@@ -14,6 +14,7 @@
 #define __PEEXPORTDIRECTORY_H__
 
 static const uint32_t PEExportDirectoryNumberOfFunctions     = 20;
+static const uint32_t PEExportDirectoryNumberOfNames         = 24;
 static const uint32_t PEExportDirectoryAddressOfFunctions    = 28;
 static const uint32_t PEExportDirectoryAddressOfNames        = 32;
 static const uint32_t PEExportDirectoryAddressOfNameOrdinals = 36;
@@ -26,7 +27,7 @@ static const SDFElement PEExportDirectory[] =
 	{"MajorVersion         ", kUnsigned, 2, 1},
 	{"MinorVersion         ", kUnsigned, 2, 1},
 	{"Name                 ", kUnsigned, 4, 1},
-	{"Base                 ", kUnsigned, 4, 1},
+	{"OrdinalBase          ", kUnsigned, 4, 1},
 	{"NumberOfFunctions    ", kUnsigned, 4, 1},
 	{"NumberOfNames        ", kUnsigned, 4, 1},
 	{"AddressOfFunctions   ", kUnsigned, 4, 1},

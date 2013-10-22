@@ -45,6 +45,7 @@ typedef struct PEFileContext_t
 	HSDF hLoadConfigDirectory;
 	uint32_t NumberOfSections;
 	uint32_t NumberOfFunctions;
+    uint32_t NumberOfNames;
 	uint32_t AddressOfEntryPoint;
 	uint32_t OffsetExport;
 	uint32_t SizeExport;
@@ -107,6 +108,30 @@ uint32_t PERVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 	return offset;
 }
 
+char * NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
+{
+    char * name = NULL;
+    uint16_t value  = 0;
+    uint32_t address = 0;
+    uint32_t i = 0;
+    for (i = 0; i < THIS->NumberOfNames; ++i)
+    {
+        ReaderSeek(pContext->hReader, THIS->OffsetExportOrdinals + i * sizeof(uint16_t));
+        ReaderRead(pContext->hReader, &value, sizeof(uint16_t));
+
+        /* specification is wrong : we don't need to subtract Ordinal Base here */
+        if (value == ordinal)
+        {
+            ReaderSeek(pContext->hReader, THIS->OffsetExportNames + i * sizeof(uint32_t));
+            ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
+            address = PERVAToOffset(pContext, address);
+            name = FetchString(pContext, address);
+            break;
+        }
+    }
+    return name;
+}
+
 int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	uint32_t i = 0;
@@ -128,6 +153,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	THIS->hExportDirectory = SDFCreate(PEExportDirectory, pContext->hReader);
 	SDFPrint(THIS->hExportDirectory);
 	THIS->NumberOfFunctions = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
+    THIS->NumberOfNames    = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
 	THIS->OffsetExportFunctions = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
 	THIS->OffsetExportOrdinals  = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNameOrdinals));
 	THIS->OffsetExportNames     = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNames));
@@ -139,25 +165,33 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + i * 4);
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
 		address = PERVAToOffset(pContext, ptr);
-
-		ReaderSeek(pContext->hReader, THIS->OffsetExportNames + i * sizeof(uint32_t));
-		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
-		ptr = PERVAToOffset(pContext, ptr);
-
-		name = FetchString(pContext, ptr);
-
+        name = NameForOrdinal(pContext, i);
 		/* Forwarder RVA (within Export Directory) */
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
 
-			printf("0x%04X 0x%08X %s -> %s\n", i, address, name, forwarder);
+            if (name)
+            {
+                printf("0x%04X 0x%08X %s -> %s\n", i, address, name, forwarder);
+            }
+            else
+            {
+                printf("0x%04X 0x%08X [0x%02X] -> %s\n", i, address, i, forwarder);
+            }
 
 			free(forwarder);
 		}
 		else
 		{
-			printf("0x%04X 0x%08X %s\n", i, address, name);
+            if (name)
+            {
+                printf("0x%04X 0x%08X %s\n", i, address, name);
+            }
+            else
+            {
+                printf("0x%04X 0x%08X [0x%02X]\n", i, address, i);
+            }
 		}
 		free(name);
 		name = NULL;
@@ -349,11 +383,7 @@ char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 	{
 		return 0;
 	}
-
-	ReaderSeek(pContext->hReader, THIS->OffsetExportNames + index * sizeof(uint32_t));
-	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
-	address = PERVAToOffset(pContext, address);
-	return FetchString(pContext, address);
+	return NameForOrdinal(pContext, index);
 }
 
 char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index)
