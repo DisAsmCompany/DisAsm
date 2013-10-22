@@ -236,9 +236,9 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->value.reg = (pOperand->value.reg - rRegister);
             switch (pContext->currentSize)
             {
-            case 2: pOperand->value.reg += Reg16;
-            case 4: pOperand->value.reg += Reg32;
-            case 8: pOperand->value.reg += Reg64;
+            case 2: pOperand->value.reg += Reg16; break;
+            case 4: pOperand->value.reg += Reg32; break;
+            case 8: pOperand->value.reg += Reg64; break;
             default: break;
             }
 		}
@@ -247,9 +247,9 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->value.reg = (pOperand->value.reg - eRegister);
             switch (pContext->currentSize)
             {
-            case 2: pOperand->value.reg += Reg16;
-            case 4: pOperand->value.reg += Reg32;
-            case 8: pOperand->value.reg += Reg32;
+            case 2: pOperand->value.reg += Reg16; break;
+            case 4: pOperand->value.reg += Reg32; break;
+            case 8: pOperand->value.reg += Reg32; break;
             default: break;
             }
 		}
