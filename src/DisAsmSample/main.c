@@ -112,6 +112,7 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 			{
 				printf("; jump to ");
 				PrintAddress(address);
+				break;
 			}
 		}
 		printf("\n");

@@ -125,7 +125,10 @@ char * NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
             ReaderSeek(pContext->hReader, THIS->OffsetExportNames + i * sizeof(uint32_t));
             ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
             address = PERVAToOffset(pContext, address);
-            name = FetchString(pContext, address);
+            if (0 != address)
+            {
+                name = FetchString(pContext, address);
+            }
             break;
         }
     }
@@ -165,7 +168,10 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + i * 4);
 		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
 		address = PERVAToOffset(pContext, ptr);
-        name = NameForOrdinal(pContext, i);
+        if (0 != address)
+        {
+            name = NameForOrdinal(pContext, i);
+        }
 		/* Forwarder RVA (within Export Directory) */
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
@@ -246,11 +252,18 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 				{
 					uint16_t hint = 0;
 					uint32_t ptr = PERVAToOffset(pContext, element);
-					ReaderSeek(pContext->hReader, ptr);
-					ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
-					name = FetchString(pContext, ptr + sizeof(uint16_t));
-					printf("0x%04X %s\n", hint, name);
-					free(name);
+					if (0 != ptr)
+                    {
+                        ReaderSeek(pContext->hReader, ptr);
+					    ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
+					    name = FetchString(pContext, ptr + sizeof(uint16_t));
+					    printf("0x%04X %s\n", hint, name);
+					    free(name);
+                    }
+                    else
+                    {
+                        printf("0x%04X\n", hint);
+                    }
 				}
 			}
 			printf("\n");
