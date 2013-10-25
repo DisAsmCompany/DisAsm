@@ -435,14 +435,15 @@ char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index
 
 Architecture PEFileGetArchitecture(ExecutableContext * pContext)
 {
-	Architecture architecture = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
-    switch (architecture)
-    {
-    case kPEMachineX86: return ArchX86;
-    case kPEMachineX64: return ArchX64;
-    default: break;
-    }
-	return ArchUnknown;
+	Architecture arch = ArchUnknown;
+	PEMachine machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
+	switch (machine)
+	{
+	case kPEMachineX86: arch = ArchX86;
+	case kPEMachineX64: arch = ArchX64;
+	default: arch = ArchUnknown; break;
+	}
+	return arch;
 }
 
 void PEFileDestroy(ExecutableContext * pContext)
