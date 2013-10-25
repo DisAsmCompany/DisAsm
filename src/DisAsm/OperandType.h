@@ -111,7 +111,7 @@ calculate operands count : how many non-zero bytes are in packed type definition
 	(PACK_TYPE(y) << ShiftOperand1) | \
 	(PACK_TYPE(z) << ShiftOperand2) | \
 	(PACK_TYPE(w) << ShiftOperand3), \
-	(x), (y), (z), (w)
+	(Register)(x), (Register)(y), (Register)(z), (Register)(w)
 
 #define OP3(x, y, z) OP4(x, y, z, 0)
 #define OP2(x, y)    OP4(x, y, 0, 0)
