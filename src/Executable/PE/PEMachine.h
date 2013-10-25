@@ -13,9 +13,16 @@
 #ifndef __PEMACHINE_H__
 #define __PEMACHINE_H__
 
-static const SDFEnum PEMachine[] =
+typedef enum PEMachine_t
 {
-	{"IMAGE_FILE_MACHINE_I386",      0x014C},
+	kPEMachineX86   = 0x014C,
+	kPEMachineX64 = 0x8664
+}
+PEMachine;
+
+static const SDFEnum _PEMachine[] =
+{
+	{"IMAGE_FILE_MACHINE_I386",      kPEMachineX86},
 	{"IMAGE_FILE_MACHINE_R3000",     0x0162},
 	{"IMAGE_FILE_MACHINE_R4000",     0x0166},
 	{"IMAGE_FILE_MACHINE_R10000",    0x0168},
@@ -39,7 +46,7 @@ static const SDFEnum PEMachine[] =
 	{"IMAGE_FILE_MACHINE_TRICORE",   0x0520},
 	{"IMAGE_FILE_MACHINE_CEF",       0x0CEF},
 	{"IMAGE_FILE_MACHINE_EBC",       0x0EBC},
-	{"IMAGE_FILE_MACHINE_AMD64",     0x8664},
+	{"IMAGE_FILE_MACHINE_AMD64",     kPEMachineX64},
 	{"IMAGE_FILE_MACHINE_M32R",      0x9041},
 	{"IMAGE_FILE_MACHINE_CEE",       0xC0EE},
 	{NULL}

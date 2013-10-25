@@ -13,7 +13,6 @@
 #ifndef __PESECTIONHEADER_H__
 #define __PESECTIONHEADER_H__
 
-
 static const uint32_t PESectionHeaderVirtualAddress   = 12;
 static const uint32_t PESectionHeaderSizeOfRawData    = 16;
 static const uint32_t PESectionHeaderPointerToRawData = 20;

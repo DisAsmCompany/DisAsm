@@ -44,10 +44,15 @@ SDFElement;
 
 typedef void * HSDF;
 
+uint64_t LE2BE64(uint64_t value);
+uint32_t LE2BE32(uint32_t value);
+uint16_t LE2BE16(uint16_t value);
+
 uint32_t SDFSizeInBytes(const SDFElement * definition);
 HSDF SDFCreate(const SDFElement * definition, HREADER hReader);
 void SDFPrint(HSDF hSDF);
 
+uint8_t SDFReadUInt8(HSDF hSDF, uint32_t offset);
 uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset);
 uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset);
 void SDFSetEndian(HSDF hSDF, uint8_t endian);

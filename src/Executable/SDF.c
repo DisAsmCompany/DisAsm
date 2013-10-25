@@ -163,12 +163,13 @@ void SDFPrint(HSDF hSDF)
 				if (kStringASCII == pContext->definition[i].type)
 				{
 					char * value = (char*) (pContext->data + offset);
-					printf(" : ");
+					printf(" : '");
 					for (k = 0; k < pContext->definition[i].size; ++k)
 					{
 						if (value[k] == 0) break;
 						printf("%c", value[k]);
 					}
+					printf("'");
 				}
                 else
                 {
@@ -219,6 +220,14 @@ void SDFPrint(HSDF hSDF)
 			offset += pContext->definition[i].size;
 		}
 	}
+}
+
+uint8_t SDFReadUInt8(HSDF hSDF, uint32_t offset)
+{
+	SDFContext * pContext = (SDFContext*) hSDF;
+	uint8_t value = 0;
+	value = * (uint8_t*) (pContext->data + offset);
+	return value;
 }
 
 uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset)

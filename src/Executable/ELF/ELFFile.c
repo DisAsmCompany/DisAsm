@@ -18,6 +18,7 @@
 #include "ELFType.h"
 #include "ELFMachine.h"
 #include "ELFVersion.h"
+#include "ELFABI.h"
 #include "ELFHeader.h"
 #include "ELFSectionType.h"
 #include "ELFSectionFlags.h"
@@ -57,6 +58,10 @@ int ELFFileCreate(ExecutableContext * pContext)
 		return 0;
 	}
 	THIS->hHeader = SDFCreate(ELFHeader, pContext->hReader);
+	if (kELFMagic != SDFReadUInt32(THIS->hHeader, ELFHeaderMagic))
+	{
+		return 0;
+	}
 	SDFPrint(THIS->hHeader);
 
 	THIS->AddressOfEntryPoint = SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint);

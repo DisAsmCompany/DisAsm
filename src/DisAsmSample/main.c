@@ -187,16 +187,16 @@ int main(int argc, char * const argv[])
 		return EXIT_FAILURE;
 	}
 	architecture = ExecutableGetArchitecture(hExecutable);
-	if (0 == architecture)
+	if (ArchUnknown == architecture)
 	{
-		fprintf(stderr, "[ERROR] cannot open executable file (unknown architecture) \"%s\"\n", argv[1]);
+		fprintf(stderr, "[ERROR] cannot open executable file (unknown/unsupported architecture) \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
-	if (x86 == architecture)
+	if (ArchX86 == architecture)
 	{
 		hDisAsm = DisAsmCreate(32);
 	}
-	if (x64 == architecture)
+	if (ArchX64 == architecture)
 	{
 		hDisAsm = DisAsmCreate(64);
 	}

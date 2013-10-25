@@ -15,6 +15,7 @@
 
 static const uint32_t kELFMagic = 0x464C457FUL;
 
+static const uint32_t ELFHeaderMagic               = 0;
 static const uint32_t ELFHeaderAddressOfEntryPoint = 24;
 static const uint32_t ELFHeaderOffsetSections      = 32;
 static const uint32_t ELFHeaderOffsetPrograms      = 28;
@@ -30,7 +31,9 @@ static const SDFElement ELFHeader[] =
 	{"Class                    ", kUnsigned, 1, 1, ELFClass},
 	{"Data                     ", kUnsigned, 1, 1, ELFData},
 	{"Version                  ", kUnsigned, 1, 1, ELFVersion},
-	{"Padding                  ", kReserved, 1, 9},
+	{"OS ABI                   ", kUnsigned, 1, 1, ELFABI},
+	{"OS ABI Version           ", kUnsigned, 1, 1},
+	{"Padding                  ", kReserved, 1, 7},
 	{"Type                     ", kUnsigned, 2, 1, ELFType},
 	{"Machine                  ", kUnsigned, 2, 1, ELFMachine},
 	{"Version                  ", kUnsigned, 4, 1, ELFVersion},

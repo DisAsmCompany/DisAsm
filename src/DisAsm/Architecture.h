@@ -15,8 +15,9 @@
 
 typedef enum Architecture_t
 {
-	x86 = 0x00000001UL,
-	x64 = 0x00000002UL
+	ArchUnknown = 0x00000000UL,
+	ArchX86     = 0x00000001UL,
+	ArchX64     = 0x00000002UL
 }
 Architecture;
 
