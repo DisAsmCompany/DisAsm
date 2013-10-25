@@ -439,8 +439,8 @@ Architecture PEFileGetArchitecture(ExecutableContext * pContext)
 	PEMachine machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
 	switch (machine)
 	{
-	case kPEMachineX86: arch = ArchX86;
-	case kPEMachineX64: arch = ArchX64;
+	case kPEMachineX86: arch = ArchX86; break;
+	case kPEMachineX64: arch = ArchX64; break;
 	default: arch = ArchUnknown; break;
 	}
 	return arch;
