@@ -144,6 +144,10 @@ void SDFPrint(HSDF hSDF)
 	SDFContext * pContext = (SDFContext*) hSDF;
 	uint32_t i = 0, j = 0, k = 0;
 	uint32_t offset = 0;
+	if (NULL == pContext)
+	{
+		return;
+	}
 	printf("%s\n", pContext->definition[0].name);
 	for (i = 1; ; ++i)
 	{

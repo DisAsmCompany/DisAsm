@@ -1,26 +1,26 @@
 /*
-* Filename: PEDOSHeader.h
+* Filename: MZDOSHeader.h
 * Author:   DisAsmCompany
 * Date:     22/09/2013
 *
-* Description: DOS Header structure
-*              of PE file (Portable Executable)
+* Description: MZ DOS Header structure
+*
 *              
 *
 */
 
 #pragma once
-#ifndef __PEDOSHEADER_H__
-#define __PEDOSHEADER_H__
+#ifndef __MZDOSHEADER_H__
+#define __MZDOSHEADER_H__
 
-static const uint32_t kPEDOSSignature = 0x5A4D; /* MZ */
+static const uint32_t kMZDOSSignature = 0x5A4D; /* MZ */
 
-static const uint32_t PEDOSHeaderSignature = 0;
-static const uint32_t PEDOSHeaderAddressPE = 0x3C;
+static const uint32_t MZDOSHeaderSignature = 0;
+static const uint32_t MZDOSHeaderAddressNew = 0x3C;
 
-static const SDFElement PEDOSHeader[] =
+static const SDFElement MZDOSHeader[] =
 {
-	{"PE DOS Header"},
+	{"MZ DOS Header"},
 	/* DOS signature, either 'MZ' or 'ZM' */
 	{"Signature        ", kSignature, 2, 1},
 	{"BytesInLastPage  ", kUnsigned, 2, 1},
@@ -44,8 +44,8 @@ static const SDFElement PEDOSHeader[] =
 	{"OEMID            ", kUnsigned, 2, 1},
 	{"OEMInfo          ", kUnsigned, 2, 1},
 	{"Reserved         ", kReserved, 2, 10},
-	{"AddressPE        ", kUnsigned, 4, 1},
+	{"AddressNew       ", kUnsigned, 4, 1},
 	{NULL}
 };
 
-#endif /* __PEDOSHEADER_H__ */
+#endif /* __MZDOSHEADER_H__ */

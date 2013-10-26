@@ -17,9 +17,6 @@ typedef void * HEXECUTABLE;
 
 struct ExecutableContext_t;
 
-typedef Architecture (*pfnExecutableGetArchitecture)(struct ExecutableContext_t * hExecutable);
-typedef uint32_t (*pfnExecutableGetEntryPoint)(struct ExecutableContext_t * hExecutable);
-typedef uint32_t (*pfnExecutableGetStubEntryPoint)(struct ExecutableContext_t * hExecutable);
 typedef uint32_t (*pfnExecutableGetExportCount)(struct ExecutableContext_t * hExecutable);
 typedef uint32_t (*pfnExecutableGetExportAddress)(struct ExecutableContext_t * hExecutable, uint32_t index);
 typedef char *   (*pfnExecutableGetExportName)(struct ExecutableContext_t * hExecutable, uint32_t index);
@@ -30,15 +27,15 @@ typedef struct ExecutableContext_t
 {
 	uint8_t memory;
 	HREADER hReader;
-	pfnExecutableGetArchitecture        pGetArchitecture;
-	pfnExecutableGetEntryPoint          pGetEntryPoint;
-	pfnExecutableGetStubEntryPoint      pGetStubEntryPoint;
 	pfnExecutableGetExportCount         pGetExportCount;
 	pfnExecutableGetExportAddress       pGetExportAddress;
 	pfnExecutableGetExportName          pGetExportName;
 	pfnExecutableGetExportForwarderName pGetExportForwarderName;
 	pfnExecutableDestroy pDestroy;
 	void * pPrivate;
+	Architecture Arch;
+	uint32_t EntryPoint;
+	uint32_t StubEntryPoint;
 }
 ExecutableContext;
 

@@ -13,6 +13,10 @@
 #ifndef __ELFSECTIONHEADER_H__
 #define __ELFSECTIONHEADER_H__
 
+static const uint32_t ELFSectionHeaderAddress = 12;
+static const uint32_t ELFSectionHeaderOffset  = 16;
+static const uint32_t ELFSectionHeaderSize    = 20;
+
 static const SDFElement ELFSectionHeader[] =
 {
 	{"ELF Section Header"},

@@ -4,7 +4,7 @@
  * Date:     02/10/2013
  *
  * Description: PE file abstraction
- *
+ *              (Portable Executable)
  *
  *
  */
@@ -12,6 +12,7 @@
 #include "../../DisAsm/DisAsm"
 #include "../Executable"
 
+#include "../MZ/MZDOSHeader.h"
 #include "PEMachine.h"
 #include "PESubsystem.h"
 #include "PEMagic.h"
@@ -19,7 +20,6 @@
 #include "PECharacteristics.h"
 #include "PEDllCharacteristics.h"
 #include "PESectionCharacteristics.h"
-#include "PEDOSHeader.h"
 #include "PEFileHeader.h"
 #include "PEDataDirectory.h"
 #include "PEOptionalHeader.h"
@@ -49,38 +49,35 @@ typedef struct PEFileContext_t
 	HSDF hExportDirectory;
 	HSDF hDebugDirectory;
 	HSDF hLoadConfigDirectory;
-	uint32_t NumberOfSections;
+	uint16_t NumberOfSections;
 	uint32_t NumberOfFunctions;
     uint32_t NumberOfNames;
-	uint32_t AddressOfEntryPoint;
 	uint32_t OffsetExport;
 	uint32_t SizeExport;
-	uint32_t OffsetExportFunctions;
-	uint32_t OffsetExportOrdinals;
-	uint32_t OffsetExportNames;
 	uint32_t AddressPE;
 	uint32_t PointerToSymbolTable;
 	uint32_t NumberOfSymbols;
 	uint8_t PE64;
 	uint8_t Object;
+
+	uint32_t * ExportFunctions;
+	uint32_t * ExportNames;
+	uint16_t * ExportOrdinals;
 }
 PEFileContext;
 
 #undef THIS
 #define THIS ((PEFileContext*)(pContext->pPrivate))
 
+#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
+#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
+
 char * FetchString(ExecutableContext * pContext, uint32_t address)
 {
 	char * buffer = NULL; 
 	uint32_t i = 0;
-	if (0 == ReaderSeek(pContext->hReader, address))
-	{
-		return NULL;
-	}
-	if (NULL == (buffer = malloc(1024)))
-	{
-		return NULL;
-	}
+	CHECK_CALL(ReaderSeek(pContext->hReader, address));
+	CHECK_ALLOC(buffer = malloc(1024));
 	for (i = 0; i < 1024; ++i)
 	{
 		if (0 == ReaderRead(pContext->hReader, &buffer[i], sizeof(uint8_t)))
@@ -124,30 +121,29 @@ char * NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
     uint16_t value  = 0;
     uint32_t address = 0;
     uint32_t i = 0;
-    for (i = 0; i < THIS->NumberOfNames; ++i)
-    {
-        ReaderSeek(pContext->hReader, THIS->OffsetExportOrdinals + i * sizeof(uint16_t));
-        ReaderRead(pContext->hReader, &value, sizeof(uint16_t));
-
-        /* specification is wrong : we don't need to subtract Ordinal Base here */
-        if (value == ordinal)
-        {
-            ReaderSeek(pContext->hReader, THIS->OffsetExportNames + i * sizeof(uint32_t));
-            ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
-            address = PERVAToOffset(pContext, address);
-            if (0 != address)
-            {
-                name = FetchString(pContext, address);
-            }
-            break;
-        }
-    }
+	if (NULL != THIS->ExportOrdinals && NULL != THIS->ExportNames)
+	{
+		for (i = 0; i < THIS->NumberOfNames; ++i)
+		{
+			/* specification is wrong : we don't need to subtract Ordinal Base here */
+			if (ordinal == THIS->ExportOrdinals[i])
+			{
+				if (0 != (address = PERVAToOffset(pContext, THIS->ExportNames[i])))
+				{
+					name = FetchString(pContext, address);
+				}
+				break;
+			}
+		}
+	}
     return name;
 }
 
 int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
+	uint32_t OffsetExportFunctions, OffsetExportOrdinals, OffsetExportNames;
 	uint32_t i = 0;
+	uint32_t size = 0;
 	char * name = NULL;
 	THIS->OffsetExport = PERVAToOffset(pContext, pDirectory->VirtualAddress);
 	THIS->SizeExport = pDirectory->Size;
@@ -159,25 +155,40 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	{
 		return 0;
 	}
-	if (0 == ReaderSeek(pContext->hReader, THIS->OffsetExport))
-	{
-		return 0;
-	}
-	THIS->hExportDirectory = SDFCreate(PEExportDirectory, pContext->hReader);
+	CHECK_CALL(ReaderSeek(pContext->hReader, THIS->OffsetExport));
+	CHECK_CALL(THIS->hExportDirectory = SDFCreate(PEExportDirectory, pContext->hReader));
 	SDFPrint(THIS->hExportDirectory);
 	THIS->NumberOfFunctions = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
-    THIS->NumberOfNames    = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
-	THIS->OffsetExportFunctions = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
-	THIS->OffsetExportOrdinals  = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNameOrdinals));
-	THIS->OffsetExportNames     = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNames));
+    THIS->NumberOfNames     = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
+	OffsetExportFunctions = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
+	OffsetExportOrdinals  = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNameOrdinals));
+	OffsetExportNames     = PERVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfNames));
+
+	if (0 != OffsetExportFunctions)
+	{
+		size = sizeof(uint32_t) * THIS->NumberOfFunctions;
+		CHECK_ALLOC(THIS->ExportFunctions = (uint32_t*) malloc(size));
+		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetExportFunctions));
+		CHECK_CALL(ReaderRead(pContext->hReader, THIS->ExportFunctions, size));
+	}
+	if (0 != OffsetExportNames)
+	{
+		size = sizeof(uint32_t) * THIS->NumberOfNames;
+		CHECK_ALLOC(THIS->ExportNames = (uint32_t*) malloc(size));
+		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetExportNames));
+		CHECK_CALL(ReaderRead(pContext->hReader, THIS->ExportNames, size));
+	}
+	if (0 != OffsetExportOrdinals)
+	{
+		size = sizeof(uint16_t) * THIS->NumberOfNames;
+		CHECK_ALLOC(THIS->ExportOrdinals = (uint16_t*) malloc(size));
+		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetExportOrdinals));
+		CHECK_CALL(ReaderRead(pContext->hReader, THIS->ExportOrdinals, size));
+	}
 
 	for (i = 0; i < THIS->NumberOfFunctions; ++i)
 	{
-		uint32_t address = 0;
-		uint32_t ptr = 0;
-		ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + i * 4);
-		ReaderRead(pContext->hReader, &ptr, sizeof(uint32_t));
-		address = PERVAToOffset(pContext, ptr);
+		uint32_t address = PERVAToOffset(pContext, THIS->ExportFunctions[i]);
         if (0 != address)
         {
             name = NameForOrdinal(pContext, i);
@@ -186,28 +197,12 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
-
-            if (name)
-            {
-                printf("0x%04X 0x%08X %s -> %s\n", i, address, name, forwarder);
-            }
-            else
-            {
-                printf("0x%04X 0x%08X [0x%02X] -> %s\n", i, address, i, forwarder);
-            }
-
+            printf("[0x%04X] 0x%08X \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
 			free(forwarder);
 		}
 		else
 		{
-            if (name)
-            {
-                printf("0x%04X 0x%08X %s\n", i, address, name);
-            }
-            else
-            {
-                printf("0x%04X 0x%08X [0x%02X]\n", i, address, i);
-            }
+            printf("[0x%04X] 0x%08X \"%s\"\n", i, address, name ? name : "(null)");
 		}
 		free(name);
 		name = NULL;
@@ -229,10 +224,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 		HSDF hImportDescriptor;
 		char * name = NULL;
 		uint32_t OriginalFirstThunk = 0;
-		if (0 == ReaderSeek(pContext->hReader, offset + pos))
-		{
-			return 0;
-		}
+		CHECK_CALL(ReaderSeek(pContext->hReader, offset + pos));
 		hImportDescriptor = SDFCreate(PEImportDescriptor, pContext->hReader);
 		SDFPrint(hImportDescriptor);
 		OriginalFirstThunk = SDFReadUInt32(hImportDescriptor, PEImportDescriptorOriginalFirstThunk);
@@ -295,11 +287,8 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	{
 		return 0;
 	}
-	if (0 == ReaderSeek(pContext->hReader, offset))
-	{
-		return 0;
-	}
-	THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, pContext->hReader);
+	CHECK_CALL(ReaderSeek(pContext->hReader, offset));
+	CHECK_CALL(THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, pContext->hReader));
 	SDFPrint(THIS->hDebugDirectory);
 	return 1;
 }
@@ -308,24 +297,17 @@ int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirecto
 {
 	uint32_t size = 0;
 	uint32_t offset = PERVAToOffset(pContext, pDirectory->VirtualAddress);
-
 	if (0 == offset)
 	{
 		return 0;
 	}
-	if (0 == ReaderSeek(pContext->hReader, offset))
-	{
-		return 0;
-	}
-	if (0 == ReaderRead(pContext->hReader, &size, sizeof(uint32_t)))
-	{
-		return 0;
-	}
+	CHECK_CALL(ReaderSeek(pContext->hReader, offset));
+	CHECK_CALL(ReaderRead(pContext->hReader, &size, sizeof(uint32_t)));
 	if (size < SDFSizeInBytes(PELoadConfigDirectory))
 	{
 		return 0;
 	}
-	THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, pContext->hReader);
+	CHECK_CALL(THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, pContext->hReader));
 	SDFPrint(THIS->hLoadConfigDirectory);
 	return 1;
 }
@@ -369,16 +351,6 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 	printf("\n");
 }
 
-uint32_t PEFileGetEntryPoint(ExecutableContext * pContext)
-{
-	return THIS->Object ? 0 : PERVAToOffset(pContext, THIS->AddressOfEntryPoint);
-}
-
-uint32_t PEFileGetStubEntryPoint(ExecutableContext * pContext)
-{
-	return THIS->Object ? 0 : SDFSizeInBytes(PEDOSHeader);
-}
-
 uint32_t PEFileGetExportCount(ExecutableContext * pContext)
 {
 	return THIS->Object ? THIS->NumberOfSymbols : THIS->NumberOfFunctions;
@@ -388,21 +360,18 @@ uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
 
-	if (index >= THIS->NumberOfFunctions)
+	if (NULL == THIS->ExportFunctions || index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
-
-	ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + index * sizeof(uint32_t));
-	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
-	return PERVAToOffset(pContext, address);
+	return PERVAToOffset(pContext, THIS->ExportFunctions[index]);
 }
 
 char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
 
-	if (index >= THIS->NumberOfFunctions)
+	if (NULL == THIS->ExportFunctions || index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
@@ -412,20 +381,15 @@ char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index)
 {
 	uint32_t address = 0;
-
 	if (1 == THIS->Object)
 	{
 		return 0;
 	}
-
 	if (index >= THIS->NumberOfFunctions)
 	{
 		return 0;
 	}
-
-	ReaderSeek(pContext->hReader, THIS->OffsetExportFunctions + index * sizeof(uint32_t));
-	ReaderRead(pContext->hReader, &address, sizeof(uint32_t));
-	address = PERVAToOffset(pContext, address);
+	address = PERVAToOffset(pContext, THIS->ExportFunctions[index]);
 	if (THIS->OffsetExport <= address && address <= THIS->OffsetExport + THIS->SizeExport)
 	{
 		return FetchString(pContext, address);
@@ -433,22 +397,9 @@ char * PEFileGetExportForwarderName(ExecutableContext * pContext, uint32_t index
 	return NULL;
 }
 
-Architecture PEFileGetArchitecture(ExecutableContext * pContext)
-{
-	Architecture arch = ArchUnknown;
-	PEMachine machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
-	switch (machine)
-	{
-	case kPEMachineX86: arch = ArchX86; break;
-	case kPEMachineX64: arch = ArchX64; break;
-	default: arch = ArchUnknown; break;
-	}
-	return arch;
-}
-
 void PEFileDestroy(ExecutableContext * pContext)
 {
-	uint32_t i = 0;
+	uint16_t i = 0;
 	for (i = 0; i < THIS->NumberOfSections; ++i)
 	{
 		SDFDestroy(THIS->phSectionHeaders[i]);
@@ -461,6 +412,9 @@ void PEFileDestroy(ExecutableContext * pContext)
 	SDFDestroy(THIS->hExportDirectory);
 	SDFDestroy(THIS->hDebugDirectory);
 	SDFDestroy(THIS->hLoadConfigDirectory);
+	free(THIS->ExportFunctions);
+	free(THIS->ExportNames);
+	free(THIS->ExportOrdinals);
 	free(THIS->DataDirectories);
 	free(THIS);
 }
@@ -468,52 +422,58 @@ void PEFileDestroy(ExecutableContext * pContext)
 int PEFileOpen(ExecutableContext * pContext)
 {
 	uint32_t Signature;
+	uint16_t Machine;
 
-	THIS->hDOSHeader = SDFCreate(PEDOSHeader, pContext->hReader);
-
-	if (0 == ReaderSeek(pContext->hReader, 0))
+	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
+	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));
+	if (kMZDOSSignature != SDFReadUInt16(THIS->hDOSHeader, MZDOSHeaderSignature))
 	{
 		return 0;
 	}
-	if (kPEDOSSignature != SDFReadUInt16(THIS->hDOSHeader, PEDOSHeaderSignature))
+	THIS->AddressPE = SDFReadUInt32(THIS->hDOSHeader, MZDOSHeaderAddressNew);
+	CHECK_CALL(ReaderSeek(pContext->hReader, THIS->AddressPE));
+	CHECK_CALL(ReaderRead(pContext->hReader, &Signature, sizeof(uint32_t)));
+	if (kPESignature != Signature)
 	{
 		return 0;
 	}
+	CHECK_CALL(THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader));
 	SDFPrint(THIS->hDOSHeader);
-	THIS->AddressPE = SDFReadUInt32(THIS->hDOSHeader, PEDOSHeaderAddressPE);
-	if (0 == ReaderSeek(pContext->hReader, THIS->AddressPE))
-	{
-		return 0;
-	}
-	if (0 == ReaderRead(pContext->hReader, &Signature, sizeof(uint32_t)))
-	{
-		return 0;
-	}
-	if (kPENTSignature != Signature)
-	{
-		return 0;
-	}
-	THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
 	SDFPrint(THIS->hFileHeader);
+
+	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
+	switch (Machine)
+	{
+	case kPEMachineX86: pContext->Arch = ArchX86; break;
+	case kPEMachineX64: pContext->Arch = ArchX64; break;
+	default: pContext->Arch = ArchUnknown; break;
+	}
+	pContext->StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
 }
 
 int OBJFileOpen(ExecutableContext * pContext)
 {
-	uint16_t Arch = ArchUnknown;
+	uint16_t Machine = ArchUnknown;
 	if (0 == ReaderSeek(pContext->hReader, 0))
 	{
 		return 0;
 	}
 	THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
-	Arch = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
-	if (kPEMachineX86 == Arch || kPEMachineX64 == Arch)
+	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
+	if (kPEMachineX86 == Machine || kPEMachineX64 == Machine)
 	{
 		SDFPrint(THIS->hFileHeader);
 		THIS->Object = 1;
 		THIS->PointerToSymbolTable = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderPointerToSymbolTable);
 		THIS->NumberOfSymbols = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderNumberOfSymbols);
 
+		switch (Machine)
+		{
+		case kPEMachineX86: pContext->Arch = ArchX86; break;
+		case kPEMachineX64: pContext->Arch = ArchX64; break;
+		default: pContext->Arch = ArchUnknown; break;
+		}
 		return 1;
 	}
 	return 0;
@@ -525,40 +485,8 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 	{
 		uint32_t i = 0;
 		uint32_t j = 0;
-		char * buffer = 0;
+		char * buffer = NULL;
 		uint32_t size = 0;
-		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
-		{
-			return 0;
-		}
-		for (i = 0; i < THIS->NumberOfSymbols; ++i)
-		{
-			uint8_t Aux = 0;
-			uint8_t Class = 0;
-			HSDF hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
-			SDFPrint(hSymbols);
-
-			Class = SDFReadUInt8(hSymbols, COFFSymbolTableStorageClass);
-			
-			Aux = SDFReadUInt8(hSymbols, COFFSymbolTableNumberOfAuxiliarySymbols);
-
-			for (j = 0; j < Aux; ++j)
-			{
-				if (kCOFFSymbolClassFile == Class)
-				{
-					HSDF hAux = SDFCreate(COFFSymbolTableAuxiliaryFormatFiles, pContext->hReader);
-					SDFPrint(hAux);
-					SDFDestroy(hAux);
-				}
-				else
-				{
-					ReaderSkip(pContext->hReader, 18);
-				}
-			}
-			i += Aux;
-			
-			SDFDestroy(hSymbols);
-		}
 		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable + THIS->NumberOfSymbols * 18))
 		{
 			return 0;
@@ -585,6 +513,53 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		{
 			printf("%s\n", buffer + i);
 		}
+		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
+		{
+			return 0;
+		}
+		for (i = 0; i < THIS->NumberOfSymbols; ++i)
+		{
+			uint8_t Aux = 0;
+			uint8_t Class = 0;
+			uint32_t Symbol[2] = {0};
+			HSDF hSymbols = NULL;
+
+			ReaderRead(pContext->hReader, &Symbol, 8);
+			if (0 == Symbol[0])
+			{
+				printf("%s\n", buffer + Symbol[1] - 4);
+			}
+			else
+			{
+				char name[9] = {0};
+				memcpy(name, &Symbol, 8);
+				printf("%s\n", name);
+			}
+			
+			hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
+			SDFPrint(hSymbols);
+
+			Class = SDFReadUInt8(hSymbols, COFFSymbolTableStorageClass);
+			
+			Aux = SDFReadUInt8(hSymbols, COFFSymbolTableNumberOfAuxiliarySymbols);
+
+			for (j = 0; j < Aux; ++j)
+			{
+				if (kCOFFSymbolClassFile == Class)
+				{
+					HSDF hAux = SDFCreate(COFFSymbolTableAuxiliaryFormatFiles, pContext->hReader);
+					SDFPrint(hAux);
+					SDFDestroy(hAux);
+				}
+				else
+				{
+					ReaderSkip(pContext->hReader, 18);
+				}
+			}
+			i += Aux;
+			
+			SDFDestroy(hSymbols);
+		}
 		free(buffer);
 	}
 	return 1;
@@ -605,20 +580,19 @@ int PEFileInit(ExecutableContext * pContext)
 	{
 		/* file has an optional header */
 		const SDFElement * Extra = NULL;
-		THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, pContext->hReader);
+		CHECK_CALL(THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, pContext->hReader));
 		Magic = SDFReadUInt16(THIS->hOptionalHeader, PEOptionalHeaderMagic);
 		if (kPEMagic32 != Magic && kPEMagic64 != Magic)
 		{
 			return 0;
 		}
-		THIS->AddressOfEntryPoint = SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint);
 		THIS->PE64 = kPEMagic64 == Magic;
 		SDFPrint(THIS->hOptionalHeader);
 		Extra = THIS->PE64 ? PEOptionalHeaderExtra64 : PEOptionalHeaderExtra;
 		ExtraSize = SDFSizeInBytes(Extra);
 		if (SizeOfOptionalHeader >= PEOptionalHeaderSize + ExtraSize)
 		{
-			THIS->hOptionalHeaderExtra = SDFCreate(Extra, pContext->hReader);
+			CHECK_CALL(THIS->hOptionalHeaderExtra = SDFCreate(Extra, pContext->hReader));
 			SDFPrint(THIS->hOptionalHeaderExtra);
 		}
 		else if (0 == THIS->Object)
@@ -640,27 +614,15 @@ int PEFileInit(ExecutableContext * pContext)
 	}
 	if (THIS->DataDirectoriesCount > 0)
 	{
-		if (NULL == (THIS->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * THIS->DataDirectoriesCount)))
-		{
-			return 0;
-		}
-		if (0 == ReaderRead(pContext->hReader, THIS->DataDirectories, sizeof(PEDataDirectory) * THIS->DataDirectoriesCount))
-		{
-			return 0;
-		}
+		CHECK_ALLOC(THIS->DataDirectories = (PEDataDirectory*) malloc(sizeof(PEDataDirectory) * THIS->DataDirectoriesCount));
+		CHECK_CALL(ReaderRead(pContext->hReader, THIS->DataDirectories, sizeof(PEDataDirectory) * THIS->DataDirectoriesCount));
 	}
 	if (0 == (THIS->NumberOfSections = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderNumberOfSections)))
 	{
 		return 0;
 	}
-	if (NULL == (THIS->phSectionHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->NumberOfSections)))
-	{
-		return 0;
-	}
-	if (0 == ReaderSeek(pContext->hReader, OffsetSectionHeaders))
-	{
-		return 0;
-	}
+	CHECK_ALLOC(THIS->phSectionHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->NumberOfSections));
+	CHECK_CALL(ReaderSeek(pContext->hReader, OffsetSectionHeaders));
 	for (i = 0; i < THIS->NumberOfSections; ++i)
 	{
 		THIS->phSectionHeaders[i] = SDFCreate(PESectionHeader, pContext->hReader);
@@ -669,6 +631,10 @@ int PEFileInit(ExecutableContext * pContext)
 	for (i = 0; i < THIS->DataDirectoriesCount; ++i)
 	{
 		PEFileProcessDirectory(pContext, i);
+	}
+	if (0 == THIS->Object)
+	{
+		pContext->EntryPoint = PERVAToOffset(pContext, SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint));
 	}
 	OBJProcessSymbols(pContext);
 	return 1;
@@ -809,11 +775,7 @@ int PEFileCreate(ExecutableContext * pContext)
 	{
 		PEFileDestroy(pContext);
 		return 0;
-	}
-
-	pContext->pGetArchitecture        = PEFileGetArchitecture;
-	pContext->pGetEntryPoint          = PEFileGetEntryPoint;
-	pContext->pGetStubEntryPoint      = PEFileGetStubEntryPoint;
+	};
 	pContext->pGetExportCount         = PEFileGetExportCount;
 	pContext->pGetExportAddress       = PEFileGetExportAddress;
 	pContext->pGetExportName          = PEFileGetExportName;

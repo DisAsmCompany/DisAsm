@@ -13,15 +13,14 @@
 #ifndef __COFFSYMBOLTABLE_H__
 #define __COFFSYMBOLTABLE_H__
 
-static const uint32_t COFFSymbolTableSectionNumber            = 12;
-static const uint32_t COFFSymbolTableType                     = 14;
-static const uint32_t COFFSymbolTableStorageClass             = 16;
-static const uint32_t COFFSymbolTableNumberOfAuxiliarySymbols = 17;
+static const uint32_t COFFSymbolTableSectionNumber            = 4;
+static const uint32_t COFFSymbolTableType                     = 6;
+static const uint32_t COFFSymbolTableStorageClass             = 8;
+static const uint32_t COFFSymbolTableNumberOfAuxiliarySymbols = 9;
 
 static const SDFElement COFFSymbolTable[] = 
 {
 	{"COFF Symbol Table"},
-	{"Name                       ", kStringASCII, 8, 1},
 	{"Value                      ", kUnsigned, 4, 1},
 	{"Section Number             ", kUnsigned, 2, 1, COFFSectionNumber},
 	{"Type                       ", kUnsigned, 2, 1, COFFSymbolType},

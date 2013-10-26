@@ -4,7 +4,7 @@
  * Date:     02/10/2013
  *
  * Description: PE file abstraction
- *
+ *              (Portable Executable)
  *
  *
  */

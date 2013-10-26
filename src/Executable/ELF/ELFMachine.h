@@ -13,7 +13,15 @@
 #ifndef __ELFMACHINE_H__
 #define __ELFMACHINE_H__
 
-static const SDFEnum ELFMachine[] =
+typedef enum ELFMachine_t
+{
+	kELFMachine386   = 0x0003,
+	kELFMachine486   = 0x0006,
+	kELFMachineX8664 = 0x003E
+}
+ELFMachine;
+
+static const SDFEnum _ELFMachine[] =
 {
 	{"EM_NONE",        0x0000},
 	{"EM_M32",         0x0001},
@@ -22,8 +30,17 @@ static const SDFEnum ELFMachine[] =
 	{"EM_68K",         0x0004},
 	{"EM_88K",         0x0005},
 	{"EM_860",         0x0007},
+	{"EM_486",         0x0006},
 	{"EM_MIPS",        0x0008},
 	{"EM_MIPS_RS4_BE", 0x000A},
+	{"EM_PARISC",      0x000F},
+	{"EM_SPARC32PLUS", 0x0012},
+	{"EM_PPC",         0x0014},
+	{"EM_PPC64",       0x0015},
+	{"EM_SH",          0x002A},
+	{"EM_SPARCV9",     0x002B},
+	{"EM_IA_64",       0x0032},
+	{"EM_X8664",       0x003E},
 	{NULL}
 };
 

@@ -13,7 +13,7 @@
 #ifndef __PEFILEHEADER_H__
 #define __PEFILEHEADER_H__
 
-static const uint32_t kPENTSignature = 0x00004550; /* PE */
+static const uint32_t kPESignature = 0x00004550; /* PE */
 
 static const uint32_t PEFileHeaderMachine              = 0;
 static const uint32_t PEFileHeaderNumberOfSections     = 2;

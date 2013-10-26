@@ -25,9 +25,13 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	{
 		return NULL;
 	}
+	memset(pContext, 0, sizeof(ExecutableContext));
 	pContext->hReader = hReader;
 	pContext->memory = memory;
-	if (0 == PEFileCreate(pContext) && 0 == MachOFileCreate(pContext) && 0 == ELFFileCreate(pContext))
+	if (0 == PEFileCreate(pContext) && 
+		0 == NEFileCreate(pContext) &&
+		0 == MachOFileCreate(pContext) && 
+		0 == ELFFileCreate(pContext))
 	{
 		free(pContext);
 		return 0;
@@ -38,48 +42,67 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 void ExecutableDestroy(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	pContext->pDestroy(hExecutable);
+	if (NULL != pContext && NULL != pContext->pDestroy)
+	{
+		pContext->pDestroy(hExecutable);
+	}
 	free(hExecutable);
 }
 
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetArchitecture(pContext);
+	return NULL != pContext ? pContext->Arch : ArchUnknown;
 }
 
 uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetEntryPoint(pContext);
+	return NULL != pContext ? pContext->EntryPoint : 0;
 }
 
 uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetStubEntryPoint(pContext);
+	return NULL != pContext ? pContext->StubEntryPoint : 0;
 }
 
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetExportCount(pContext);
+	if (NULL != pContext && NULL != pContext->pGetExportCount)
+	{
+		return pContext->pGetExportCount(pContext);
+	}
+	return 0;
 }
 
 uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetExportAddress(pContext, index);
+	if (NULL != pContext && NULL != pContext->pGetExportAddress)
+	{
+		return pContext->pGetExportAddress(pContext, index);
+	}
+	return 0;
 }
 
 char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetExportName(pContext, index);
+	if (NULL != pContext && NULL != pContext->pGetExportName)
+	{
+		return pContext->pGetExportName(pContext, index);
+	}
+	return 0;
 }
 
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return pContext->pGetExportForwarderName(pContext, index);
+	if (NULL != pContext && NULL != pContext->pGetExportForwarderName)
+	{
+		return pContext->pGetExportForwarderName(pContext, index);
+	}
+	return 0;
 }

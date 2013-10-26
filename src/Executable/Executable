@@ -13,5 +13,6 @@
 
 #include "SDF.h"
 #include "PE/PEFile.h"
+#include "NE/NEFile.h"
 #include "MachO/MachOFile.h"
 #include "ELF/ELFFile.h"

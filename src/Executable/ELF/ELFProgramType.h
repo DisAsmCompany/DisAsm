@@ -15,13 +15,15 @@
 
 static const SDFEnum ELFProgramType[] =
 {
-	{"PT_NULL",    0x0000},
-	{"PT_LOAD",    0x0001},
-	{"PT_DYNAMIC", 0x0002},
-	{"PT_INTERP",  0x0003},
-	{"PT_NOTE",    0x0004},
-	{"PT_SHLIB",   0x0005},
-	{"PT_PHDR",    0x0006},
+	{"PT_NULL",         0x00000000UL},
+	{"PT_LOAD",         0x00000001UL},
+	{"PT_DYNAMIC",      0x00000002UL},
+	{"PT_INTERP",       0x00000003UL},
+	{"PT_NOTE",         0x00000004UL},
+	{"PT_SHLIB",        0x00000005UL},
+	{"PT_PHDR",         0x00000006UL},
+	{"PT_GNU_EH_FRAME", 0x6474e550UL},
+	{"PT_GNU_STACK",    0x6474e551UL},
 	{NULL}
 };
 

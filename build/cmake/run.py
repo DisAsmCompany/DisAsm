@@ -16,12 +16,13 @@ extensions = {
 '.vxd' : 'VXD : Virtual XXX Driver',
 '.386' : '386 : i386 Executable',
 };
-disasm = 'windows64\debug\DisAsmSample.exe'
+disasm = 'windows32\debug\DisAsmSample.exe'
 sysroot = os.environ['SYSTEMROOT'] + '\System32';
 for root, dirs, files in os.walk(sysroot):
+	while len(dirs) > 0:
+		dirs.pop();
 	for file in files:
 		for ext in extensions:
 			if file.endswith(ext):
-				print file
+				print(file);
 				os.system(disasm + ' ' + file + ' > ' + 'out\\' + file + '.txt')
-				
