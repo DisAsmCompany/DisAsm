@@ -13,6 +13,9 @@
 #ifndef __EXECUTABLE_H__
 #define __EXECUTABLE_H__
 
+#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
+#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
+
 typedef void * HEXECUTABLE;
 
 struct ExecutableContext_t;

@@ -235,11 +235,11 @@ int main(int argc, char * const argv[])
 		}
 		if (NULL != forwarder)
 		{
-			printf("%s -> %s\n", name, forwarder);
+			printf("[0x%02X] %s -> %s\n", i, name ? name : "(null)", forwarder);
 		}
 		else
 		{
-			printf("%s\n", name);
+			printf("[0x%02X] %s\n", i, name ? name : "(null)");
 			ReaderSeek(hReader, address);
 			DisAsmFunction(hDisAsm, hReader, hBenchmark, address, base, list);
 		}

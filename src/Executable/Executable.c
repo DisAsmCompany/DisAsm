@@ -30,6 +30,7 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	pContext->memory = memory;
 	if (0 == PEFileCreate(pContext) && 
 		0 == NEFileCreate(pContext) &&
+		0 == LXFileCreate(pContext) &&
 		0 == MachOFileCreate(pContext) && 
 		0 == ELFFileCreate(pContext))
 	{

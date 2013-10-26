@@ -57,13 +57,7 @@ int MachOFileCreate(ExecutableContext * pContext)
 	uint32_t magic = 0;
 	uint32_t i = 0, j = 0, k = 0;
 	
-	MachOFileContext * pMachOFileContext = (MachOFileContext*) malloc(sizeof(MachOFileContext));
-	if (NULL == pMachOFileContext)
-	{
-		return 0;
-	}
-	memset(pMachOFileContext, 0, sizeof(MachOFileContext));
-	pContext->pPrivate = pMachOFileContext;
+	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(MachOFileContext)));
 	
 	if (0 == ReaderSeek(pContext->hReader, 0))
 	{

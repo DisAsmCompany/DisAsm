@@ -12,8 +12,8 @@ file(GLOB SOURCES ${SRC}/StrAsm/*.c)
 file(GLOB HEADERS ${SRC}/StrAsm/*.h)
 add_library(StrAsm ${SOURCES} ${HEADERS})
 
-file(GLOB SOURCES ${SRC}/Executable/*.c ${SRC}/Executable/PE/*.c ${SRC}/Executable/NE/*.c ${SRC}/Executable/MachO/*.c ${SRC}/Executable/ELF/*.c)
-file(GLOB HEADERS ${SRC}/Executable/*.h ${SRC}/Executable/PE/*.h ${SRC}/Executable/NE/*.h ${SRC}/Executable/MachO/*.h ${SRC}/Executable/ELF/*.h)
+file(GLOB SOURCES ${SRC}/Executable/*.c ${SRC}/Executable/PE/*.c ${SRC}/Executable/NE/*.c ${SRC}/Executable/LX/*.c ${SRC}/Executable/MachO/*.c ${SRC}/Executable/ELF/*.c)
+file(GLOB HEADERS ${SRC}/Executable/*.h ${SRC}/Executable/PE/*.h ${SRC}/Executable/NE/*.h ${SRC}/Executable/LX/*.h ${SRC}/Executable/MachO/*.h ${SRC}/Executable/ELF/*.h)
 add_library(Executable ${SOURCES} ${HEADERS})
 
 file(GLOB SOURCES ${SRC}/DisAsmTest/*.c)

@@ -69,9 +69,6 @@ PEFileContext;
 #undef THIS
 #define THIS ((PEFileContext*)(pContext->pPrivate))
 
-#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
-#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
-
 char * FetchString(ExecutableContext * pContext, uint32_t address)
 {
 	char * buffer = NULL; 
@@ -758,13 +755,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 
 int PEFileCreate(ExecutableContext * pContext)
 {
-	PEFileContext * pPEFileContext = (PEFileContext*) malloc(sizeof(PEFileContext));
-	if (NULL == pPEFileContext)
-	{
-		return 0;
-	}
-	memset(pPEFileContext, 0, sizeof(PEFileContext));
-	pContext->pPrivate = pPEFileContext;
+	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(PEFileContext)));
 
 	if (0 == PEFileOpen(pContext) && 0 == OBJFileOpen(pContext) && 0 == LIBFileOpen(pContext))
 	{

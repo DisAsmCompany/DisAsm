@@ -39,9 +39,6 @@ ELFFileContext;
 #undef THIS
 #define THIS ((ELFFileContext*)(pContext->pPrivate))
 
-#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
-#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
-
 uint32_t ELFRVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 {
 	uint32_t offset = 0;
@@ -137,13 +134,7 @@ void ELFFileDestroy(ExecutableContext * pContext)
 
 int ELFFileCreate(ExecutableContext * pContext)
 {
-	ELFFileContext * pELFFileContext = (ELFFileContext*) malloc(sizeof(ELFFileContext));
-	if (NULL == pELFFileContext)
-	{
-		return 0;
-	}
-	memset(pELFFileContext, 0, sizeof(ELFFileContext));
-	pContext->pPrivate = pELFFileContext;
+	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(ELFFileContext)));
 	if (0 == ELFFileOpen(pContext))
 	{
 		ELFFileDestroy(pContext);

@@ -26,12 +26,36 @@ NEFileContext;
 #undef THIS
 #define THIS ((NEFileContext*)(pContext->pPrivate))
 
-#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
-#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
+int NEReadStringTable(ExecutableContext * pContext)
+{
+	uint8_t length = 0;
+	char * buffer = NULL;
+	uint16_t ordinal = 0;
+
+	for (;;)
+	{
+		CHECK_CALL(ReaderRead(pContext->hReader, &length, sizeof(uint8_t)));
+		if (0 == length)
+		{
+			break;
+		}
+		CHECK_ALLOC(buffer = (char*) malloc(length + 1));
+		CHECK_CALL(ReaderRead(pContext->hReader, buffer, length));
+		CHECK_CALL(ReaderRead(pContext->hReader, &ordinal, sizeof(uint16_t)));
+		buffer[length] = 0;
+
+		printf("%s\n", buffer);
+
+		free(buffer);
+	}
+	return 1;
+}
 
 int NEFileOpen(ExecutableContext * pContext)
 {
 	uint16_t Signature;
+	uint32_t Offset;
+	uint8_t i = 0;
 
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));
@@ -50,6 +74,18 @@ int NEFileOpen(ExecutableContext * pContext)
 	SDFPrint(THIS->hDOSHeader);
 	SDFPrint(THIS->hSegmentedHeader);
 
+	Offset = SDFReadUInt16(THIS->hSegmentedHeader, NESegmentedHeaderResidentNamesTableOffset);
+	if (0 != Offset)
+	{
+		CHECK_CALL(ReaderSeek(pContext->hReader, THIS->AddressNE + Offset));
+		CHECK_CALL(NEReadStringTable(pContext));
+	}
+	Offset = SDFReadUInt32(THIS->hSegmentedHeader, NESegmentedHeaderNonResidentNamesTableOffset);
+	if (0 != Offset)
+	{
+		CHECK_CALL(ReaderSeek(pContext->hReader, Offset));
+		CHECK_CALL(NEReadStringTable(pContext));
+	}
 	pContext->Arch = ArchX86;
 	pContext->StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
@@ -64,13 +100,7 @@ void NEFileDestroy(ExecutableContext * pContext)
 
 int NEFileCreate(ExecutableContext * pContext)
 {
-	NEFileContext * pNEFileContext = (NEFileContext*) malloc(sizeof(NEFileContext));
-	if (NULL == pNEFileContext)
-	{
-		return 0;
-	}
-	memset(pNEFileContext, 0, sizeof(NEFileContext));
-	pContext->pPrivate = pNEFileContext;
+	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(NEFileContext)));
 
 	if (0 == NEFileOpen(pContext))
 	{
@@ -78,7 +108,7 @@ int NEFileCreate(ExecutableContext * pContext)
 		return 0;
 	}
 
-	pContext->pDestroy                = NEFileDestroy;
+	pContext->pDestroy = NEFileDestroy;
 
 	return 1;
 }

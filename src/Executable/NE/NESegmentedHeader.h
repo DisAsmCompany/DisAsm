@@ -13,7 +13,11 @@
 #ifndef __NESEGMENTEDHEADER_H__
 #define __NESEGMENTEDHEADER_H__
 
-static const uint32_t kNESignature = 0x454E; /* NE */
+static const uint16_t kNESignature = 0x454E; /* NE */
+
+static const uint32_t NESegmentedHeaderEntryTableOffset            = 0x02;
+static const uint32_t NESegmentedHeaderResidentNamesTableOffset    = 0x24;
+static const uint32_t NESegmentedHeaderNonResidentNamesTableOffset = 0x2A;
 
 static const SDFElement NESegmentedHeader[] =
 {
@@ -27,8 +31,8 @@ static const SDFElement NESegmentedHeader[] =
 	{"Segment Number                 ", kUnsigned, 2, 1},
 	{"Initial Heap Size              ", kUnsigned, 2, 1},
 	{"Initial Stack Size             ", kUnsigned, 2, 1},
-	{"CS:IP                          ", kUnsigned, 1, 1},
-	{"SS:SP                          ", kUnsigned, 1, 1},
+	{"CS:IP                          ", kUnsigned, 4, 1},
+	{"SS:SP                          ", kUnsigned, 4, 1},
 	{"Segment Table Count            ", kUnsigned, 2, 1},
 	{"Module Reference Table Count   ", kUnsigned, 2, 1},
 	{"Non-Resident Names Table Size  ", kUnsigned, 2, 1},
@@ -37,7 +41,7 @@ static const SDFElement NESegmentedHeader[] =
 	{"Resident Name Table Offset     ", kUnsigned, 2, 1},
 	{"Module Reference Table Offset  ", kUnsigned, 2, 1},
 	{"Imported Names Table Offset    ", kUnsigned, 2, 1},
-	{"Non-Resident Names Table Offset", kUnsigned, 1, 1},
+	{"Non-Resident Names Table Offset", kUnsigned, 4, 1},
 	{"Number Of Movable Entries      ", kUnsigned, 2, 1},
 	{"Logical Sector Alignment Shift ", kUnsigned, 2, 1},
 	{"Number Of Resource Entries     ", kUnsigned, 2, 1},

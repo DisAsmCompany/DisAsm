@@ -4,7 +4,7 @@
 * Date:     22/09/2013
 *
 * Description: MZ DOS Header structure
-*
+*              used in PE/NE/LE/LX files
 *              
 *
 */
@@ -13,7 +13,8 @@
 #ifndef __MZDOSHEADER_H__
 #define __MZDOSHEADER_H__
 
-static const uint32_t kMZDOSSignature = 0x5A4D; /* MZ */
+static const uint16_t kMZDOSSignature = 0x5A4D; /* MZ */
+static const uint16_t kZMDOSSignature = 0x4D5A; /* ZM */
 
 static const uint32_t MZDOSHeaderSignature = 0;
 static const uint32_t MZDOSHeaderAddressNew = 0x3C;
