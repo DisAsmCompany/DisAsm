@@ -52,134 +52,168 @@ MachOFileContext;
 #undef THIS
 #define THIS ((MachOFileContext*)(pContext->pPrivate))
 
-int MachOFileCreate(ExecutableContext * pContext)
+uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
+{
+	uint32_t i = 0;
+	uint32_t count = 0;
+	const SDFElement * Segment = x64 ? MachOSegment64 : MachOSegment;
+	const SDFElement * Section = x64 ? MachOSection64 : MachOSection;
+	uint32_t NumberOfSections = 0;
+	HSDF hSegment = NULL;
+	
+	CHECK_CALL(hSegment = SDFCreate(Segment, pContext->hReader));
+	NumberOfSections = SDFReadUInt32(hSegment, x64 ? kMachOSegment64NumberOfSections : kMachOSegmentNumberOfSections);
+	SDFPrint(hSegment);
+	SDFDestroy(hSegment);
+	count += SDFSizeInBytes(Segment);
+	
+	for (i = 0; i < NumberOfSections; ++i)
+	{
+		HSDF hSection = SDFCreate(Section, pContext->hReader);
+		SDFPrint(hSection);
+		SDFDestroy(hSection);
+		count += SDFSizeInBytes(Section);
+	}
+	return count;
+}
+
+uint32_t MachOProcessCommandDylib(ExecutableContext * pContext)
+{
+	uint32_t count = 0;
+	uint32_t i = 0;
+	HSDF hDylib = SDFCreate(MachODylib, pContext->hReader);
+	SDFPrint(hDylib);
+	SDFDestroy(hDylib);
+	count += SDFSizeInBytes(MachODylib);
+	for (i = 0; i < count; ++i)
+	{
+		char c;
+		ReaderRead(pContext->hReader, &c, 1);
+		if (0 == c || '\n' == c || '\r' == c)
+		{
+			break;
+		}
+		printf("%c", c);
+	}
+	count += i + 1;
+	printf("\n");
+	return count;
+}
+
+uint32_t MachOProcessCommandUUID(ExecutableContext * pContext)
+{
+	unsigned char uuid[16];
+	CHECK_CALL(ReaderRead(pContext->hReader, uuid, 16));
+	printf("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
+		   uuid[0], uuid[1], uuid[2], uuid[3], uuid[4], uuid[5], uuid[6], uuid[7], uuid[8], uuid[9], uuid[10], uuid[11], uuid[12], uuid[13], uuid[14], uuid[15]);
+	return 16;
+}
+
+uint32_t MachOProcessCommandSymTab(ExecutableContext * pContext)
+{
+	HSDF hSymTab = SDFCreate(MachOSymTab, pContext->hReader);
+	SDFPrint(hSymTab);
+	SDFDestroy(hSymTab);
+	return SDFSizeInBytes(MachOSymTab);
+}
+
+void MachOFileDestroy(ExecutableContext * pContext)
+{
+	uint32_t i = 0;
+	for (i = 0; i < THIS->nFatHeaders; ++i)
+	{
+		SDFDestroy(THIS->phFatHeaders[i]);
+		SDFDestroy(THIS->phMachHeaders[i]);
+	}
+	free(THIS->phFatHeaders);
+	free(THIS->phMachHeaders);
+	free(THIS);
+}
+
+int MachOFileInit(ExecutableContext * pContext)
 {
 	uint32_t magic = 0;
-	uint32_t i = 0, j = 0, k = 0;
+	uint32_t i = 0, j = 0;
 	
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(MachOFileContext)));
-	
-	if (0 == ReaderSeek(pContext->hReader, 0))
+	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
+	CHECK_CALL(ReaderRead(pContext->hReader, &magic, sizeof(uint32_t)));
+	if (kMachOFatMagicBE != magic && kMachOFatMagicLE != magic)
 	{
 		return 0;
 	}
-	if (0 == ReaderRead(pContext->hReader, &magic, sizeof(uint32_t)))
+	
+	CHECK_CALL(ReaderRead(pContext->hReader, &THIS->nFatHeaders, sizeof(uint32_t)));
+	
+	THIS->nFatHeaders = LEtoBE(THIS->nFatHeaders);
+	if (0 == THIS->nFatHeaders)
 	{
 		return 0;
 	}
-	if (kMachOFatMagicBE == magic || kMachOFatMagicLE == magic)
+	CHECK_ALLOC(THIS->phFatHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders));
+	CHECK_ALLOC(THIS->phMachHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders));
+	for (i = 0; i < THIS->nFatHeaders; ++i)
 	{
-		if (0 == ReaderRead(pContext->hReader, &THIS->nFatHeaders, sizeof(uint32_t)))
+		CHECK_CALL(THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader));
+		SDFSetEndian(THIS->phFatHeaders[i], kMachOFatMagicBE == magic);
+		SDFPrint(THIS->phFatHeaders[i]);
+	}
+	for (i = 0; i < THIS->nFatHeaders; ++i)
+	{
+		uint32_t Offset = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset);
+		uint32_t CpuType = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType);
+		
+		CHECK_CALL(ReaderSeek(pContext->hReader, Offset));
+		CHECK_CALL(THIS->phMachHeaders[i] = SDFCreate(CpuType & 0x01000000UL ? MachOHeader64 : MachOHeader, pContext->hReader));
+		SDFPrint(THIS->phMachHeaders[i]);
+		
+		THIS->nCommands = SDFReadUInt32(THIS->phMachHeaders[i], MachOHeaderCountCommands);
+		for (j = 0; j < THIS->nCommands; ++j)
 		{
-			return 0;
-		}
-		THIS->nFatHeaders = LEtoBE(THIS->nFatHeaders);
-		if (0 == THIS->nFatHeaders)
-		{
-			return 0;
-		}
-		THIS->phFatHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders);
-		THIS->phMachHeaders = (HSDF*) malloc(sizeof(HSDF) * THIS->nFatHeaders);
-		for (i = 0; i < THIS->nFatHeaders; ++i)
-		{
-			THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader);
-			SDFSetEndian(THIS->phFatHeaders[i], kMachOFatMagicBE == magic);
-			SDFPrint(THIS->phFatHeaders[i]);
-		}
-		for (i = 0; i < THIS->nFatHeaders; ++i)
-		{
-			uint32_t offset = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset);
-			uint32_t CpuType = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType);
+			uint32_t count, type;
+			HSDF hCommand = NULL;
+			CHECK_CALL(hCommand = SDFCreate(MachOLoadCommand, pContext->hReader));
+			type = SDFReadUInt32(hCommand, MachOLoadCommandCommand);
+			count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand);
 			
-			if (0 == ReaderSeek(pContext->hReader, offset))
-			{
-				return 0;
-			}
-			THIS->phMachHeaders[i] = SDFCreate(CpuType & 0x01000000UL ? MachOHeader64 : MachOHeader, pContext->hReader);
-			SDFPrint(THIS->phMachHeaders[i]);
+			SDFPrint(hCommand);
 			
-			THIS->nCommands = SDFReadUInt32(THIS->phMachHeaders[i], MachOHeaderCountCommands);
-			for (j = 0; j < THIS->nCommands; ++j)
+			switch (type)
 			{
-				uint32_t count, type;
-				HSDF hCommand = SDFCreate(MachOLoadCommand, pContext->hReader);
-				type = SDFReadUInt32(hCommand, MachOLoadCommandCommand);
-				count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand);
-				
-				SDFPrint(hCommand);
-				
-				if (kMachOLoadCommandSegment32 == type)
-				{
-					HSDF hSegment = SDFCreate(MachOSegment, pContext->hReader);
-					uint32_t NumberOfSections = SDFReadUInt32(hSegment, kMachOSegmentNumberOfSections);
-					SDFPrint(hSegment);
-					SDFDestroy(hSegment);
-					count -= SDFSizeInBytes(MachOSegment);
-					
-					for (k = 0; k < NumberOfSections; ++k)
-					{
-						HSDF hSection = SDFCreate(MachOSection, pContext->hReader);
-						SDFPrint(hSection);
-						SDFDestroy(hSection);
-						count -= SDFSizeInBytes(MachOSection);
-					}
-				}
-				if (kMachOLoadCommandSegment64 == type)
-				{
-					HSDF hSegment = SDFCreate(MachOSegment64, pContext->hReader);
-					uint32_t NumberOfSections = SDFReadUInt32(hSegment, MachOSegment64NumberOfSections);
-					SDFPrint(hSegment);
-					SDFDestroy(hSegment);
-					count -= SDFSizeInBytes(MachOSegment64);
-					
-					for (k = 0; k < NumberOfSections; ++k)
-					{
-						HSDF hSection = SDFCreate(MachOSection64, pContext->hReader);
-						SDFPrint(hSection);
-						SDFDestroy(hSection);
-						count -= SDFSizeInBytes(MachOSection64);
-					}
-				}
-				if (kMachOLoadCommandLoadDylib == type || kMachOLoadCommandIdDylib == type || kMachOLoadCommandReexportDylib == type)
-				{
-					HSDF hDylib = SDFCreate(MachODylib, pContext->hReader);
-					SDFPrint(hDylib);
-					SDFDestroy(hDylib);
-					count -= SDFSizeInBytes(MachODylib);
-					for (k = 0; k < count; ++k)
-					{
-						char c;
-						ReaderRead(pContext->hReader, &c, 1);
-						if (0 == c || '\n' == c || '\r' == c)
-						{
-							break;
-						}
-						printf("%c", c);
-					}
-					count -= k + 1;
-					printf("\n");
-				}
-				if (kMachOLoadCommandUUID == type)
-				{
-					unsigned char uuid[16];
-					ReaderRead(pContext->hReader, uuid, 16);
-					printf("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
-						   uuid[0], uuid[1], uuid[2], uuid[3], uuid[4], uuid[5], uuid[6], uuid[7], uuid[8], uuid[9], uuid[10], uuid[11], uuid[12], uuid[13], uuid[14], uuid[15]
-						   );
-					count -= 16;
-				}
-				if (kMachOLoadCommandSymTab == type)
-				{
-					HSDF hSymTab = SDFCreate(MachOSymTab, pContext->hReader);
-					SDFPrint(hSymTab);
-					SDFDestroy(hSymTab);
-					count -= SDFSizeInBytes(MachOSymTab);
-				}
-				ReaderSkip(pContext->hReader, count);
-				
-				SDFDestroy(hCommand);
+				case kMachOLoadCommandSegment32:
+					count -= MachOProcessCommandSegment(pContext, 0);
+					break;
+				case kMachOLoadCommandSegment64:
+					count -= MachOProcessCommandSegment(pContext, 1);
+					break;
+				case kMachOLoadCommandLoadDylib:
+				case kMachOLoadCommandIdDylib:
+				case kMachOLoadCommandReexportDylib:
+					/*count -= MachOProcessCommandDylib(pContext);*/
+					break;
+				case kMachOLoadCommandUUID:
+					count -= MachOProcessCommandUUID(pContext);
+					break;
+				case kMachOLoadCommandSymTab:
+					count -= MachOProcessCommandSymTab(pContext);
+					break;
+				default :
+					break;
 			}
+			ReaderSkip(pContext->hReader, count);
+			SDFDestroy(hCommand);
 		}
 	}
 	return 0;
+}
+
+int MachOFileCreate(ExecutableContext * pContext)
+{
+	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(MachOFileContext)));
+	if (0 == MachOFileInit(pContext))
+	{
+		MachOFileDestroy(pContext);
+		return 0;
+	}
+	pContext->pDestroy = MachOFileDestroy;
+	return 1;
 }
