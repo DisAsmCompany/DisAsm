@@ -55,7 +55,6 @@ int NEFileOpen(ExecutableContext * pContext)
 {
 	uint16_t Signature;
 	uint32_t Offset;
-	uint8_t i = 0;
 
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));

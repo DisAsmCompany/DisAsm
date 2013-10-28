@@ -115,7 +115,6 @@ uint32_t PERVAToOffset(ExecutableContext * pContext, uint32_t RVA)
 char * NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 {
     char * name = NULL;
-    uint16_t value  = 0;
     uint32_t address = 0;
     uint32_t i = 0;
 	if (NULL != THIS->ExportOrdinals && NULL != THIS->ExportNames)
@@ -355,8 +354,6 @@ uint32_t PEFileGetExportCount(ExecutableContext * pContext)
 
 uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 {
-	uint32_t address = 0;
-
 	if (NULL == THIS->ExportFunctions || index >= THIS->NumberOfFunctions)
 	{
 		return 0;
@@ -366,8 +363,6 @@ uint32_t PEFileGetExportAddress(ExecutableContext * pContext, uint32_t index)
 
 char * PEFileGetExportName(ExecutableContext * pContext, uint32_t index)
 {
-	uint32_t address = 0;
-
 	if (NULL == THIS->ExportFunctions || index >= THIS->NumberOfFunctions)
 	{
 		return 0;
@@ -568,7 +563,6 @@ int PEFileInit(ExecutableContext * pContext)
 	uint32_t OffsetSectionHeaders = 0;
 	uint32_t SizeOfOptionalHeader = 0;
 	uint32_t i = 0;
-	uint32_t j = 0;
 	uint32_t PEOptionalHeaderSize = SDFSizeInBytes(PEOptionalHeader);
 	uint32_t ExtraSize = 0;
 	SizeOfOptionalHeader = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderSizeOfOptionalHeader);
