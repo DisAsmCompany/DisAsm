@@ -13,7 +13,7 @@
 #ifndef __PEOPTIONALHEADEREXTRA_H__
 #define __PEOPTIONALHEADEREXTRA_H__
 
-static const uint32_t PEOptionalHeaderNumberOfRvaAndSizes = 70;
+static const uint32_t PEOptionalHeaderNumberOfRvaAndSizes = 68;
 
 static const SDFElement PEOptionalHeaderExtra[] =
 {

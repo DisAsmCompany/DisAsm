@@ -585,13 +585,14 @@ int PEFileInit(ExecutableContext * pContext)
 		{
 			CHECK_CALL(THIS->hOptionalHeaderExtra = SDFCreate(Extra, pContext->hReader));
 			SDFPrint(THIS->hOptionalHeaderExtra);
+			
+			THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - PEOptionalHeaderSize - ExtraSize / sizeof(PEDataDirectory)));
+			THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderNumberOfRvaAndSizes64 : PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
 		}
 		else if (0 == THIS->Object)
 		{
 			return 0;
 		}
-		THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - PEOptionalHeaderSize - ExtraSize / sizeof(PEDataDirectory)));
-		THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderNumberOfRvaAndSizes64 : PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
 	}
 	else if (0 == THIS->Object)
 	{
