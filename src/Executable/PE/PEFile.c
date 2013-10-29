@@ -432,15 +432,19 @@ int PEFileOpen(ExecutableContext * pContext)
 	CHECK_CALL(THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader));
 	SDFPrint(THIS->hDOSHeader);
 	SDFPrint(THIS->hFileHeader);
+	
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) malloc(sizeof(ExecutableObject)));
+	pContext->iObject = 0;
+	pContext->nObjects = 1;
 
 	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
 	switch (Machine)
 	{
-	case kPEMachineX86: pContext->Arch = ArchX86; break;
-	case kPEMachineX64: pContext->Arch = ArchX64; break;
-	default: pContext->Arch = ArchUnknown; break;
+	case kPEMachineX86: pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
+	case kPEMachineX64: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
+	default: pContext->pObjects[pContext->iObject].Arch = ArchUnknown; break;
 	}
-	pContext->StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
+	pContext->pObjects[pContext->iObject].StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
 }
 
@@ -451,20 +455,21 @@ int OBJFileOpen(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader);
+	CHECK_CALL(THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader));
 	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
 	if (kPEMachineX86 == Machine || kPEMachineX64 == Machine)
 	{
 		SDFPrint(THIS->hFileHeader);
-		THIS->Object = 1;
+		CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) malloc(sizeof(ExecutableObject)));
+		pContext->iObject = 0;
+		pContext->nObjects = 1;
 		THIS->PointerToSymbolTable = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderPointerToSymbolTable);
 		THIS->NumberOfSymbols = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderNumberOfSymbols);
-
 		switch (Machine)
 		{
-		case kPEMachineX86: pContext->Arch = ArchX86; break;
-		case kPEMachineX64: pContext->Arch = ArchX64; break;
-		default: pContext->Arch = ArchUnknown; break;
+		case kPEMachineX86: pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
+		case kPEMachineX64: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
+		default: pContext->pObjects[pContext->iObject].Arch = ArchUnknown; break;
 		}
 		return 1;
 	}
@@ -479,14 +484,8 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		uint32_t j = 0;
 		char * buffer = NULL;
 		uint32_t size = 0;
-		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable + THIS->NumberOfSymbols * 18))
-		{
-			return 0;
-		}
-		if (0 == ReaderRead(pContext->hReader, &size, sizeof(uint32_t)))
-		{
-			return 0;
-		}
+		CHECK_CALL(ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable + THIS->NumberOfSymbols * 18));
+		CHECK_CALL(ReaderRead(pContext->hReader, &size, sizeof(uint32_t)));
 		if (size < sizeof(uint32_t))
 		{
 			return 0;
@@ -507,6 +506,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		}
 		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
 		{
+			free(buffer);
 			return 0;
 		}
 		for (i = 0; i < THIS->NumberOfSymbols; ++i)
@@ -532,7 +532,6 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			SDFPrint(hSymbols);
 
 			Class = SDFReadUInt8(hSymbols, COFFSymbolTableStorageClass);
-			
 			Aux = SDFReadUInt8(hSymbols, COFFSymbolTableNumberOfAuxiliarySymbols);
 
 			for (j = 0; j < Aux; ++j)
@@ -626,7 +625,7 @@ int PEFileInit(ExecutableContext * pContext)
 	}
 	if (0 == THIS->Object)
 	{
-		pContext->EntryPoint = PERVAToOffset(pContext, SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint));
+		pContext->pObjects[pContext->iObject].EntryPoint = PERVAToOffset(pContext, SDFReadUInt32(THIS->hOptionalHeader, PEOptionalHeaderAddressOfEntryPoint));
 	}
 	OBJProcessSymbols(pContext);
 	return 1;

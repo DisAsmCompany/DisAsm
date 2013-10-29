@@ -12,32 +12,39 @@
 #include "../DisAsm/DisAsm"
 #include "Executable"
 
+typedef int (*pfnCreate)(struct ExecutableContext_t * hExecutable);
+
+static const pfnCreate Registry[] =
+{
+	PEFileCreate,
+	NEFileCreate,
+	LXFileCreate,
+	MachOFileCreate,
+	ELFFileCreate,
+	NULL
+};
+
 HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 {
 	ExecutableContext * pContext = NULL;
+	uint32_t i = 0;
 
 	if (NULL == hReader)
 	{
 		return NULL;
 	}
-	pContext = (ExecutableContext*) malloc(sizeof(ExecutableContext));
-	if (NULL == pContext)
-	{
-		return NULL;
-	}
-	memset(pContext, 0, sizeof(ExecutableContext));
+	CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
 	pContext->hReader = hReader;
-	pContext->memory = memory;
-	if (0 == PEFileCreate(pContext) && 
-		0 == NEFileCreate(pContext) &&
-		0 == LXFileCreate(pContext) &&
-		0 == MachOFileCreate(pContext) && 
-		0 == ELFFileCreate(pContext))
+	while (NULL != Registry[i])
 	{
-		free(pContext);
-		return 0;
+		if (0 != Registry[i](pContext))
+		{
+			return (HEXECUTABLE) pContext;
+		}
+		++i;
 	}
-	return (HEXECUTABLE) pContext;
+	free(pContext);
+	return 0;
 }
 
 void ExecutableDestroy(HEXECUTABLE hExecutable)
@@ -53,19 +60,19 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->Arch : ArchUnknown;
+	return NULL != pContext ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
 }
 
 uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->EntryPoint : 0;
+	return NULL != pContext ? pContext->pObjects[pContext->iObject].EntryPoint : 0;
 }
 
 uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->StubEntryPoint : 0;
+	return NULL != pContext ? pContext->pObjects[pContext->iObject].StubEntryPoint : 0;
 }
 
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)

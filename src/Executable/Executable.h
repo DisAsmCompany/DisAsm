@@ -26,6 +26,14 @@ typedef char *   (*pfnExecutableGetExportName)(struct ExecutableContext_t * hExe
 typedef char *   (*pfnExecutableGetExportForwarderName)(struct ExecutableContext_t * hExecutable, uint32_t index);
 typedef void (*pfnExecutableDestroy)(struct ExecutableContext_t * hExecutable);
 
+typedef struct ExecutableObject_t
+{
+	Architecture Arch;
+	uint32_t EntryPoint;
+	uint32_t StubEntryPoint;
+}
+ExecutableObject;
+
 typedef struct ExecutableContext_t
 {
 	uint8_t memory;
@@ -34,11 +42,12 @@ typedef struct ExecutableContext_t
 	pfnExecutableGetExportAddress       pGetExportAddress;
 	pfnExecutableGetExportName          pGetExportName;
 	pfnExecutableGetExportForwarderName pGetExportForwarderName;
-	pfnExecutableDestroy pDestroy;
+	pfnExecutableDestroy                pDestroy;
 	void * pPrivate;
-	Architecture Arch;
-	uint32_t EntryPoint;
-	uint32_t StubEntryPoint;
+	
+	ExecutableObject * pObjects;
+	uint32_t nObjects;
+	uint32_t iObject;
 }
 ExecutableContext;
 

@@ -13,11 +13,19 @@
 #ifndef __MACHOCPUTYPE_H__
 #define __MACHOCPUTYPE_H__
 
-static const SDFEnum MachOCPUType[] =
+typedef enum MachOCPUType_t
+{
+	kMachOCPUType64  = 0x01000000UL,
+	kMachOCPUTypeX86 = 0x00000007UL,
+	kMachOCPUTypeX64 = kMachOCPUTypeX86 | kMachOCPUType64
+}
+MachOCPUType;
+
+static const SDFEnum _MachOCPUType[] =
 {
 	{"CPU_TYPE_MC680x0",   0x00000006UL},
-	{"CPU_TYPE_X86",       0x00000007UL},
-	{"CPU_TYPE_X86_64",    0x01000007UL},
+	{"CPU_TYPE_X86",       kMachOCPUTypeX86},
+	{"CPU_TYPE_X86_64",    kMachOCPUTypeX64},
 	{"CPU_TYPE_ARM",       0x0000000CUL},
 	{"CPU_TYPE_POWERPC",   0x00000012UL},
 	{"CPU_TYPE_POWERPC64", 0x01000012UL},

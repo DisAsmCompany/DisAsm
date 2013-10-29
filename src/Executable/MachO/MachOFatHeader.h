@@ -19,7 +19,7 @@ static const uint32_t MachOFatHeaderOffset = 8;
 static const SDFElement MachOFatHeader[] =
 {
 	{"Mach-O Fat Header"},
-	{"CpuType   ", kUnsigned, 4, 1, MachOCPUType},
+	{"CpuType   ", kUnsigned, 4, 1, _MachOCPUType},
 	{"CpuSubType", kUnsigned, 4, 1},
 	{"Offset    ", kUnsigned, 4, 1},
 	{"Size      ", kUnsigned, 4, 1},

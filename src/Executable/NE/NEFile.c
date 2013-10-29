@@ -85,8 +85,8 @@ int NEFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(ReaderSeek(pContext->hReader, Offset));
 		CHECK_CALL(NEReadStringTable(pContext));
 	}
-	pContext->Arch = ArchX86;
-	pContext->StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
+	pContext->pObjects[pContext->iObject].Arch = ArchX86;
+	pContext->pObjects[pContext->iObject].StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
 }
 

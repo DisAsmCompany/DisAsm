@@ -77,10 +77,10 @@ int ELFFileOpen(ExecutableContext * pContext)
 	Machine = SDFReadUInt16(THIS->hHeader, ELFHeaderMachine);
 	switch (Machine)
 	{
-	case kELFMachine386:   pContext->Arch = ArchX86; break;
-	case kELFMachine486:   pContext->Arch = ArchX86; break;
-	case kELFMachineX8664: pContext->Arch = ArchX64; break;
-	default:               pContext->Arch = ArchUnknown; break;
+	case kELFMachine386:   pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
+	case kELFMachine486:   pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
+	case kELFMachineX8664: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
+	default:               pContext->pObjects[pContext->iObject].Arch = ArchUnknown; break;
 	}
 
 	OffsetSections   = SDFReadUInt32(THIS->hHeader, ELFHeaderOffsetSections);
@@ -111,7 +111,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(THIS->phProgramHeaders[i] = SDFCreate(ELFProgramHeader, pContext->hReader));
 		SDFPrint(THIS->phProgramHeaders[i]);
 	}
-	pContext->EntryPoint = ELFRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
+	pContext->pObjects[pContext->iObject].EntryPoint = ELFRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
 	return 1;
 }
 
