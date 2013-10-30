@@ -34,6 +34,7 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 		return NULL;
 	}
 	CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
+	pContext->memory = memory;
 	pContext->hReader = hReader;
 	while (NULL != Registry[i])
 	{
