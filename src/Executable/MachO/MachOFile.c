@@ -9,9 +9,6 @@
  *
  */
 
-#include "mach-o/loader.h"
-#include "mach/thread_status.h"
-
 #include "../../DisAsm/DisAsm"
 #include "../Executable"
 
