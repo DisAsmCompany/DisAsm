@@ -21,6 +21,69 @@ void PrintByte(uint32_t value)
 	printf("%02X", value);
 }
 
+void InternalPrintString(const char * string, TextColor color)
+{
+#ifdef _WIN32
+	CONSOLE_SCREEN_BUFFER_INFO info = {0};
+	DWORD mode = 0;
+	DWORD written = 0;
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	if (GetConsoleMode(hStdOut, &mode))
+	{
+		WORD attributes;
+		GetConsoleScreenBufferInfo(hStdOut, &info);
+		attributes = info.wAttributes & ~(FOREGROUND_BLUE | FOREGROUND_GREEN |FOREGROUND_RED | FOREGROUND_INTENSITY);
+		attributes |= (color & kRed)   ? FOREGROUND_RED   : 0;
+		attributes |= (color & kGreen) ? FOREGROUND_GREEN : 0;
+		attributes |= (color & kBlue)  ? FOREGROUND_BLUE  : 0;
+		attributes |= FOREGROUND_INTENSITY;
+		SetConsoleTextAttribute(hStdOut, attributes);
+		WriteConsole(hStdOut, string, strlen(string), &written, NULL);
+		SetConsoleTextAttribute(hStdOut, info.wAttributes);
+	}
+	else
+	{
+		WriteFile(hStdOut, string, strlen(string), &written, NULL);
+	}
+	FlushFileBuffers(hStdOut);
+#else /* _WIN32 */
+	printf("%s", string);
+#endif /* _WIN32 */
+}
+
+void PrintError(const char * string)
+{
+#ifdef _WIN32
+	CONSOLE_SCREEN_BUFFER_INFO info = {0};
+	DWORD mode = 0;
+	DWORD written = 0;
+	HANDLE hStdOut = GetStdHandle(STD_ERROR_HANDLE);
+	if (GetConsoleMode(hStdOut, &mode))
+	{
+		WORD attributes;
+		GetConsoleScreenBufferInfo(hStdOut, &info);
+		attributes = info.wAttributes & ~(FOREGROUND_BLUE | FOREGROUND_GREEN |FOREGROUND_RED | FOREGROUND_INTENSITY);
+		attributes |= FOREGROUND_RED | FOREGROUND_INTENSITY;
+		SetConsoleTextAttribute(hStdOut, attributes);
+		WriteConsole(hStdOut, string, strlen(string), &written, NULL);
+		SetConsoleTextAttribute(hStdOut, info.wAttributes);
+	}
+	else
+	{
+		WriteFile(hStdOut, string, strlen(string), &written, NULL);
+	}
+	FlushFileBuffers(hStdOut);
+	OutputDebugStringA(string);
+#else /* _WIN32 */
+	fprintf(stderr, "%s", string);
+#endif /* _WIN32 */
+}
+
+void PrintString(const char * string, TextColor color)
+{
+	InternalPrintString(string, color);
+}
+
 uint8_t IsNegative(uint32_t value, uint8_t size)
 {
 	return !!(value & (0x80 << 8 * (size - 1)));
@@ -78,7 +141,6 @@ void PrintSegment(InstructionInfo * pInfo)
 
 void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 {
-	
 	if (pOperand->type == Reg)
 	{
 		char * reg = RegisterToString(pOperand->value.reg);
@@ -205,7 +267,7 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	}
 	mnemonic = MnemonicToString(pInfo->mnemonic);
 	if (mnemonic[0] == '_') ++mnemonic;
-	printf("%s", mnemonic);
+	PrintString(mnemonic, kBlue);
 
 	for (i = 0; i < pInfo->nOperands; ++i)
 	{

@@ -178,7 +178,9 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 #endif /* 0 */
 			{
 				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
-				element = &OpCodeMapTwoByte0F[opcode & 0xFF];
+				uint32_t index = opcode & 0xFF;
+				index = ((index >> 3) << 5) + (index & 0x07);
+				element = &OpCodeMapTwoByte0F[index];
 			}
 			break;
 		}
@@ -332,6 +334,64 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->index |= Reg32;
 		}
 		break;
+	case P:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg;
+		switch (LoType)
+		{
+		case q:
+			pOperand->value.reg |= RegMMX;
+			break;
+		default:
+			break;
+		}
+		break;
+	case Q:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.RM;
+		switch (LoType)
+		{
+		case q:
+			pOperand->value.reg |= RegMMX;
+			break;
+		default:
+			break;
+		}
+	case W:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.RM;
+		switch (LoType)
+		{
+		case ps:
+		case ss:
+		case pd:
+		case sd:
+		case o:
+			pOperand->value.reg |= RegSSE;
+			break;
+		default:
+			break;
+		}
+		break;
+	case V:
+		pOperand->memory = 0;
+		pOperand->type = Reg;
+		pOperand->value.reg = pInfo->ModRM.fields.Reg;
+		switch (LoType)
+		{
+		case ps:
+		case ss:
+		case pd:
+		case sd:
+		case o:
+			pOperand->value.reg |= RegSSE;
+			break;
+		default:
+			break;
+		}
 	case C:
 		pOperand->memory = 0;
 		pOperand->type = Reg;
@@ -429,11 +489,11 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 {
 	pInfo->mnemonic = pElement->mnemonic;
-	pInfo->nOperands = OPCOUNT(pElement->type);
-	pInfo->operands[0].type = OP1GET(pElement->type);
-	pInfo->operands[1].type = OP2GET(pElement->type);
-	pInfo->operands[2].type = OP3GET(pElement->type);
-	pInfo->operands[3].type = OP4GET(pElement->type);
+	pInfo->nOperands = !!pElement->type1 + !!pElement->type2 + !!pElement->type3 + !!pElement->type4;
+	pInfo->operands[0].type = pElement->type1;
+	pInfo->operands[1].type = pElement->type2;
+	pInfo->operands[2].type = pElement->type3;
+	pInfo->operands[3].type = pElement->type4;
 	pInfo->operands[0].value.reg = pElement->reg1;
 	pInfo->operands[1].value.reg = pElement->reg2;
 	pInfo->operands[2].value.reg = pElement->reg3;
@@ -454,7 +514,7 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 			pInfo->nOperands = 2;
 			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
 		}
-		else if (pElement->type)
+		else if (pElement->type1)
 		{
 			CopyElementInfo(pInfo, pElement);
 		}

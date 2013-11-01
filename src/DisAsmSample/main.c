@@ -154,7 +154,7 @@ int main(int argc, char * const argv[])
 
 	if (argc < 2)
 	{
-		fprintf(stderr, "[ERROR] usage : DisAsmSample <file>\n");
+		PrintError("[ERROR] usage : DisAsmSample <file>\n");
 		return EXIT_FAILURE;
 	}
 	if (argc >= 3)
@@ -177,19 +177,25 @@ int main(int argc, char * const argv[])
 	}
 	if (NULL == hReader)
 	{
-		fprintf(stderr, "[ERROR] cannot open input file \"%s\"\n", argv[1]);
+		PrintError("[ERROR] cannot open input file \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
 		return EXIT_FAILURE;
 	}
 	hExecutable = ExecutableCreate(hReader, memory);
 	if (NULL == hExecutable)
 	{
-		fprintf(stderr, "[ERROR] cannot open executable file \"%s\"\n", argv[1]);
+		PrintError("[ERROR] cannot open executable file \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
 		return EXIT_FAILURE;
 	}
 	architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
-		fprintf(stderr, "[ERROR] cannot open executable file (unknown/unsupported architecture) \"%s\"\n", argv[1]);
+		PrintError("[ERROR] cannot open executable file (unknown/unsupported architecture) \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
 		return EXIT_FAILURE;
 	}
 	if (ArchX86 == architecture)
@@ -202,25 +208,27 @@ int main(int argc, char * const argv[])
 	}
 	if (NULL == hDisAsm)
 	{
-		fprintf(stderr, "[ERROR] cannot create disassembler\n");
+		PrintError("[ERROR] cannot create disassembler \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
 		return EXIT_FAILURE;
 	}
 	entry = ExecutableGetEntryPoint(hExecutable);
 	if (0 != entry)
 	{
-		printf("Entry Point :\n");
+		PrintString("Entry Point :\n", kYellow);
 		ReaderSeek(hReader, entry);
 		DisAsmFunction(hDisAsm, hReader, hBenchmark, entry, base, list);
-		printf("\n");
+		PrintString("\n", kYellow);
 	}
 	entry = ExecutableGetStubEntryPoint(hExecutable);
 	if (0 != entry)
 	{
 		HDISASM hDisAsmDOS = DisAsmCreate(16);
-		printf("Stub Entry Point :\n");
+		PrintString("Stub Entry Point :\n", kYellow);
 		ReaderSeek(hReader, entry);
 		DisAsmFunction(hDisAsmDOS, hReader, hBenchmark, entry, base, list);
-		printf("\n");
+		PrintString("\n", kYellow);
 		DisAsmDestroy(hDisAsmDOS);
 	}
 	count = ExecutableGetExportCount(hExecutable);

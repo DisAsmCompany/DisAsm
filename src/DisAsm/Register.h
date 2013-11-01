@@ -22,7 +22,9 @@ in order to allow coding of Operand Type / Register in single word field
 (see also OperandType.h for details on coding)
 */
 
-#define SHIFT3(x) (0x0200UL + (x) * 8)
+#define REGISTERBASE 0x00010000UL
+
+#define SHIFT3(x) (REGISTERBASE + (x) * 8)
 
 #define rRegister  SHIFT3(0x00UL) /* mask */
 #define eRegister  SHIFT3(0x01UL) /* mask */
@@ -58,7 +60,7 @@ in order to allow coding of Operand Type / Register in single word field
 #define r6 6
 #define r7 7
 
-_ENUM_START(Register, 0x0200UL)
+_ENUM_START(Register, REGISTERBASE)
 
 _ENUM_ELEMENT_VALUE(rAX, rRegister | r0)
 _ENUM_ELEMENT_VALUE(rCX, rRegister | r1)
@@ -177,6 +179,6 @@ _ENUM_ELEMENT_VALUE(DR5,  RegDebug | r5)
 _ENUM_ELEMENT_VALUE(DR6,  RegDebug | r6)
 _ENUM_ELEMENT_VALUE(DR7,  RegDebug | r7)
 
-_ENUM_STOP(Register, 0x0200UL)
+_ENUM_STOP(Register, REGISTERBASE)
 
 #endif /* __REGISTER_H__ */

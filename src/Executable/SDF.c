@@ -10,6 +10,7 @@
  */
 
 #include "../DisAsm/DisAsm"
+#include "../StrAsm/StrAsm"
 #include "Executable"
 
 typedef struct SDFContext_t
@@ -148,7 +149,8 @@ void SDFPrint(HSDF hSDF)
 	{
 		return;
 	}
-	printf("%s\n", pContext->definition[0].name);
+	PrintString(pContext->definition[0].name, kYellow);
+	PrintString("\n", kYellow);
 	for (i = 1; ; ++i)
 	{
 		if (NULL == pContext->definition[i].name)
