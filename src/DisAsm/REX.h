@@ -15,11 +15,11 @@
 
 typedef struct REXs_t
 {
-	uint8_t _ : 4;
-	uint8_t W : 1;
-	uint8_t R : 1;
-	uint8_t X : 1;
 	uint8_t B : 1;
+	uint8_t X : 1;
+	uint8_t R : 1;
+	uint8_t W : 1;
+	uint8_t _ : 4;
 }
 REXs;
 

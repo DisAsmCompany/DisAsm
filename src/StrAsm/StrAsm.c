@@ -106,7 +106,7 @@ uint32_t Inverse(uint32_t value, uint8_t size)
 	return value + 1;
 }
 
-void PrintValue(uint32_t value)
+void PrintValue(uint64_t value)
 {
 	if (value > 0xFFFFUL)
 	{

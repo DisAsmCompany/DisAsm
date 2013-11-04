@@ -70,14 +70,45 @@ uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint32_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
+uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	uint32_t result = 0;
+	uint64_t result = 0;
+	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
+	result =
+		((uint64_t)pInfo->bytes[pInfo->length + 7] << 56) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 6] << 48) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 5] << 40) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 4] << 32) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 3] << 24) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 2] << 16) | 
+		((uint64_t)pInfo->bytes[pInfo->length + 1] << 8) | 
+		((uint64_t)pInfo->bytes[pInfo->length]);
+	pInfo->length += 8;
+	return result;
+}
+
+uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
+{
+	uint64_t result = 0;
+	uint8_t i = 0;
+	for (i = 0; i < N; ++i)
+	{
+		result = (result << 8) + Fetch1(pContext, pInfo);
+	}
+	pInfo->length += N;
+	return result;
+}
+
+uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
+{
+	uint64_t result = 0;
 	switch (N)
 	{
 	case 1: result = Fetch1(pContext, pInfo); break;
 	case 2: result = Fetch2(pContext, pInfo); break;
 	case 4: result = Fetch4(pContext, pInfo); break;
+	case 8: result = Fetch8(pContext, pInfo); break;
+	default: result = Fetch(pContext, pInfo, N); break;
 	}
 	return result;
 }
@@ -89,16 +120,53 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	uint8_t byte = Fetch1(pContext, pInfo);
 	OpCode opcode = 0;
 
-	if (8 == pContext->size && 0x40 <= byte && byte <= 0x4F)
+	if (8 == pContext->size)
 	{
-		if (pInfo->hasREX)
+		/* REX prefix */
+		switch (byte)
 		{
-			return NULL;
+		case 0x40: case 0x41: case 0x42: case 0x43:
+		case 0x44: case 0x45: case 0x46: case 0x47:
+		case 0x48: case 0x49: case 0x4A: case 0x4B:
+		case 0x4C: case 0x4D: case 0x4E: case 0x4F:
+			if (pInfo->hasREX)
+			{
+				return NULL;
+			}
+			pInfo->hasREX = 1;
+			pInfo->REX.value = byte;
+			return ChooseOpCode(pContext, pInfo);
+		/* 2-byte VEX prefix */
+		case 0xC5:
+			if (pInfo->hasVEX2 || pInfo->hasVEX3)
+			{
+				return NULL;
+			}
+			pInfo->hasVEX2 = 1;
+			pInfo->VEX2.value = Fetch1(pContext, pInfo);
+			return ChooseOpCode(pContext, pInfo);
+		/* 3-byte VEX prefix */
+		case 0xC4:
+			if (pInfo->hasVEX2 || pInfo->hasVEX3)
+			{
+				return NULL;
+			}
+			pInfo->hasVEX3 = 1;
+			pInfo->VEX3.value = Fetch2(pContext, pInfo);
+			return ChooseOpCode(pContext, pInfo);
+		/* 3-byte XOP prefix */
+		case 0x8F:
+			if (pInfo->hasXOP) 
+			{
+				return NULL;
+			}
+			pInfo->hasXOP = 1;
+			pInfo->XOP.value = Fetch2(pContext, pInfo);
+			return ChooseOpCode(pContext, pInfo);
+		default:
+			break;
 		}
-		pInfo->hasREX = 0;
-		pInfo->REX.value = byte;
-		return ChooseOpCode(pContext, pInfo);
-	}
+ 	}
 	opcode = byte;
 
 	switch (opcode)
@@ -460,7 +528,16 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
             {
             case 2: pInfo->sizeImm = 2; break;
             case 4: pInfo->sizeImm = 4; break;
-            case 8: pInfo->sizeImm = 4; break;
+            case 8: 
+				if (pInfo->hasREX && 1 == pInfo->REX.fields.W)
+				{
+					pInfo->sizeImm = 8;
+				}
+				else
+				{
+					pInfo->sizeImm = 4;
+				}
+				break;
             default:
                 break;
             }
