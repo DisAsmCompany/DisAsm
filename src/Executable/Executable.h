@@ -26,11 +26,25 @@ typedef char *   (*pfnExecutableGetExportName)(struct ExecutableContext_t * hExe
 typedef char *   (*pfnExecutableGetExportForwarderName)(struct ExecutableContext_t * hExecutable, uint32_t index);
 typedef void (*pfnExecutableDestroy)(struct ExecutableContext_t * hExecutable);
 
+typedef struct ExecutableSection_t
+{
+	uint32_t VirtualAddress;
+	uint32_t VirtualSize;
+	uint32_t VirtualAlignment;
+	uint32_t FileAddress;
+	uint32_t FileSize;
+	uint32_t FileAlignment;
+}
+ExecutableSection;
+
 typedef struct ExecutableObject_t
 {
 	Architecture Arch;
 	uint32_t EntryPoint;
 	uint32_t StubEntryPoint;
+
+	uint32_t nSections;
+	ExecutableSection * pSections;
 }
 ExecutableObject;
 
@@ -60,5 +74,7 @@ uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index);
+
+uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA);
 
 #endif /* __EXECUTABLE_H__ */

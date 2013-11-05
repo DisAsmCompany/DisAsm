@@ -115,3 +115,29 @@ char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 	}
 	return 0;
 }
+
+uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA)
+{
+	uint32_t offset = 0;
+	uint16_t i = 0;
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	if (NULL != pContext && NULL != pContext->pObjects)
+	{
+		if (pContext->memory)
+		{
+			return RVA;
+		}
+		for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
+		{
+			uint32_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
+			uint32_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
+			uint32_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
+			if (Address <= RVA && RVA <= Address + Size)
+			{
+				offset = Data + RVA - Address;
+				break;
+			}
+		}
+	}
+	return offset;
+}

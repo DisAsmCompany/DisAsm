@@ -43,9 +43,10 @@ void InternalPrintString(const char * string, TextColor color)
 	}
 	else
 	{
-		WriteFile(hStdOut, string, strlen(string), &written, NULL);
+		printf("%s", string);
+		//WriteFile(hStdOut, string, strlen(string), &written, NULL);
 	}
-	FlushFileBuffers(hStdOut);
+	//FlushFileBuffers(hStdOut);
 #else /* _WIN32 */
 	printf("%s", string);
 #endif /* _WIN32 */

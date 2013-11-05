@@ -29,33 +29,13 @@
 typedef struct ELFFileContext_t
 {
 	HSDF hHeader;
-	HSDF * phSectionHeaders;
 	HSDF * phProgramHeaders;
-	uint16_t NumberOfSections;
 	uint16_t NumberOfPrograms;
 }
 ELFFileContext;
 
 #undef THIS
 #define THIS ((ELFFileContext*)(pContext->pPrivate))
-
-uint32_t ELFRVAToOffset(ExecutableContext * pContext, uint32_t RVA)
-{
-	uint32_t offset = 0;
-	uint16_t i = 0;
-	for (i = 0; i < THIS->NumberOfSections; ++i)
-	{
-		uint32_t Address = SDFReadUInt32(THIS->phSectionHeaders[i], ELFSectionHeaderAddress);
-		uint32_t Size    = SDFReadUInt32(THIS->phSectionHeaders[i], ELFSectionHeaderSize);
-		uint32_t Data    = SDFReadUInt32(THIS->phSectionHeaders[i], ELFSectionHeaderOffset);
-		if (Address <= RVA && RVA <= Address + Size)
-		{
-			offset = Data + RVA - Address;
-			break;
-		}
-	}
-	return offset;
-}
 
 int ELFFileOpen(ExecutableContext * pContext)
 {
@@ -74,6 +54,10 @@ int ELFFileOpen(ExecutableContext * pContext)
 	}
 	SDFPrint(THIS->hHeader);
 
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) malloc(sizeof(ExecutableObject)));
+	pContext->iObject = 0;
+	pContext->nObjects = 1;
+
 	Machine = SDFReadUInt16(THIS->hHeader, ELFHeaderMachine);
 	switch (Machine)
 	{
@@ -84,18 +68,26 @@ int ELFFileOpen(ExecutableContext * pContext)
 	}
 
 	OffsetSections   = SDFReadUInt32(THIS->hHeader, ELFHeaderOffsetSections);
-	THIS->NumberOfSections = SDFReadUInt16(THIS->hHeader, ELFHeaderNumberOfSections);
+	pContext->pObjects[pContext->iObject].nSections = SDFReadUInt16(THIS->hHeader, ELFHeaderNumberOfSections);
 	SizeOfSection    = SDFReadUInt16(THIS->hHeader, ELFHeaderSizeOfSection);
 	if (SizeOfSection < SDFSizeInBytes(ELFSectionHeader))
 	{
 		return 0;
 	}
-	CHECK_ALLOC(THIS->phSectionHeaders = malloc(SDFSizeInBytes(ELFSectionHeader) * THIS->NumberOfSections));
-	for (i = 0; i < THIS->NumberOfSections; ++i)
+	CHECK_ALLOC(pContext->pObjects[pContext->iObject].pSections = malloc(sizeof(ExecutableSection) * pContext->pObjects[pContext->iObject].nSections));
+	for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
 	{
+		HSDF hSectionHeader = NULL;
 		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetSections + SizeOfSection * i));
-		CHECK_CALL(THIS->phSectionHeaders[i] = SDFCreate(ELFSectionHeader, pContext->hReader));
-		SDFPrint(THIS->phSectionHeaders[i]);
+		CHECK_CALL(hSectionHeader = SDFCreate(ELFSectionHeader, pContext->hReader));
+
+		pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress = SDFReadUInt32(hSectionHeader, ELFSectionHeaderAddress);
+		pContext->pObjects[pContext->iObject].pSections[i].FileAddress    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderOffset);
+		pContext->pObjects[pContext->iObject].pSections[i].FileSize       =
+		pContext->pObjects[pContext->iObject].pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderSize);
+
+		SDFPrint(hSectionHeader);
+		SDFDestroy(hSectionHeader);
 	}
 	OffsetPrograms   = SDFReadUInt32(THIS->hHeader, ELFHeaderOffsetPrograms);
 	THIS->NumberOfPrograms = SDFReadUInt16(THIS->hHeader, ELFHeaderNumberOfPrograms);
@@ -111,18 +103,14 @@ int ELFFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(THIS->phProgramHeaders[i] = SDFCreate(ELFProgramHeader, pContext->hReader));
 		SDFPrint(THIS->phProgramHeaders[i]);
 	}
-	pContext->pObjects[pContext->iObject].EntryPoint = ELFRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
+	pContext->pObjects[pContext->iObject].EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
+	pContext->pObjects[pContext->iObject].StubEntryPoint = 0;
 	return 1;
 }
 
 void ELFFileDestroy(ExecutableContext * pContext)
 {
 	uint16_t i = 0;
-	for (i = 0; i < THIS->NumberOfSections; ++i)
-	{
-		SDFDestroy(THIS->phSectionHeaders[i]);
-	}
-	free(THIS->phSectionHeaders);
 	for (i = 0; i < THIS->NumberOfPrograms; ++i)
 	{
 		SDFDestroy(THIS->phProgramHeaders[i]);
