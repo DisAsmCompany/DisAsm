@@ -58,8 +58,8 @@ HREADER FileReaderCreate(const char * path)
 			return NULL;
 		}
 	}
-	pContext = (ReaderContext*) malloc(sizeof(ReaderContext));
-	pPrivate = (FileReaderContext*) malloc(sizeof(FileReaderContext));
+	pContext = (ReaderContext*) calloc(1, sizeof(ReaderContext));
+	pPrivate = (FileReaderContext*) calloc(1, sizeof(FileReaderContext));
 	pPrivate->f = f;
 	pContext->pRead    = FileReaderRead;
 	pContext->pSeek    = FileReaderSeek;

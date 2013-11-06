@@ -39,7 +39,7 @@ int NEReadStringTable(ExecutableContext * pContext)
 		{
 			break;
 		}
-		CHECK_ALLOC(buffer = (char*) malloc(length + 1));
+		CHECK_ALLOC(buffer = (char*) calloc(1, length + 1));
 		CHECK_CALL(ReaderRead(pContext->hReader, buffer, length));
 		CHECK_CALL(ReaderRead(pContext->hReader, &ordinal, sizeof(uint16_t)));
 		buffer[length] = 0;

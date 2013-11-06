@@ -69,13 +69,13 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 {
 	SDFContext * pContext = NULL;
 	uint32_t bytes = SDFSizeInBytes(definition);
-	pContext = (SDFContext*) malloc(sizeof(SDFContext));
+	pContext = (SDFContext*) calloc(1, sizeof(SDFContext));
 	if (NULL == pContext)
 	{
 		return NULL;
 	}
 	pContext->definition = definition;
-	pContext->data = malloc(bytes);
+	pContext->data = calloc(1, bytes);
 	pContext->endian = 0;
 	if (NULL == pContext->data)
 	{

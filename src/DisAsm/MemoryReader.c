@@ -54,12 +54,12 @@ HREADER MemoryReaderCreate(void * buffer, uint32_t size)
 	{
 		return NULL;
 	}
-	pContext = (ReaderContext*) malloc(sizeof(ReaderContext));
+	pContext = (ReaderContext*) calloc(1, sizeof(ReaderContext));
 	if (NULL == pContext)
 	{
 		return NULL;
 	}
-	pPrivate = (MemoryReaderContext*) malloc(sizeof(MemoryReaderContext));
+	pPrivate = (MemoryReaderContext*) calloc(1, sizeof(MemoryReaderContext));
 	if (NULL == pPrivate)
 	{
 		free(pContext);

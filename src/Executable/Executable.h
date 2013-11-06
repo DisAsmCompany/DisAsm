@@ -20,10 +20,6 @@ typedef void * HEXECUTABLE;
 
 struct ExecutableContext_t;
 
-typedef uint32_t (*pfnExecutableGetExportCount)(struct ExecutableContext_t * hExecutable);
-typedef uint32_t (*pfnExecutableGetExportAddress)(struct ExecutableContext_t * hExecutable, uint32_t index);
-typedef char *   (*pfnExecutableGetExportName)(struct ExecutableContext_t * hExecutable, uint32_t index);
-typedef char *   (*pfnExecutableGetExportForwarderName)(struct ExecutableContext_t * hExecutable, uint32_t index);
 typedef void (*pfnExecutableDestroy)(struct ExecutableContext_t * hExecutable);
 
 typedef struct ExecutableSection_t
@@ -37,6 +33,15 @@ typedef struct ExecutableSection_t
 }
 ExecutableSection;
 
+typedef struct ExecutableSymbol_t
+{
+	uint32_t Name;
+	uint32_t Ordinal;
+	uint32_t Address;
+	uint32_t Forwarder;
+}
+ExecutableSymbol;
+
 typedef struct ExecutableObject_t
 {
 	Architecture Arch;
@@ -45,6 +50,9 @@ typedef struct ExecutableObject_t
 
 	uint32_t nSections;
 	ExecutableSection * pSections;
+
+	uint32_t nExports;
+	ExecutableSymbol * pExports;
 }
 ExecutableObject;
 
@@ -52,13 +60,8 @@ typedef struct ExecutableContext_t
 {
 	uint8_t memory;
 	HREADER hReader;
-	pfnExecutableGetExportCount         pGetExportCount;
-	pfnExecutableGetExportAddress       pGetExportAddress;
-	pfnExecutableGetExportName          pGetExportName;
-	pfnExecutableGetExportForwarderName pGetExportForwarderName;
-	pfnExecutableDestroy                pDestroy;
+	pfnExecutableDestroy pDestroy;
 	void * pPrivate;
-	
 	ExecutableObject * pObjects;
 	uint32_t nObjects;
 	uint32_t iObject;
@@ -76,5 +79,6 @@ char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index);
 
 uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA);
+char * FetchString(ExecutableContext * pContext, uint32_t address);
 
 #endif /* __EXECUTABLE_H__ */

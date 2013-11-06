@@ -15,7 +15,7 @@
 
 HDISASM DisAsmCreate(uint32_t bitness)
 {
-	DisAsmContext * pContext = malloc(sizeof(DisAsmContext));
+	DisAsmContext * pContext = calloc(1, sizeof(DisAsmContext));
 	if (NULL == pContext)
 	{
 		return NULL;
@@ -460,6 +460,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		default:
 			break;
 		}
+		break;
 	case C:
 		pOperand->memory = 0;
 		pOperand->type = Reg;

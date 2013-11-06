@@ -69,7 +69,7 @@ int LXFileOpen(ExecutableContext * pContext)
 	}
 	THIS->NumberOfObjects = Count;
 
-	CHECK_ALLOC(THIS->phObjectTable = (HSDF*) malloc(sizeof(HSDF) * THIS->NumberOfObjects));
+	CHECK_ALLOC(THIS->phObjectTable = (HSDF*) calloc(1, sizeof(HSDF) * THIS->NumberOfObjects));
 	CHECK_CALL(ReaderSeek(pContext->hReader, THIS->AddressLX + Offset));
 	for (i = 0; i < THIS->NumberOfObjects; ++i)
 	{

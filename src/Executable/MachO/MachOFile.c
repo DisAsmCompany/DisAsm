@@ -152,9 +152,9 @@ int MachOFileInit(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) malloc(sizeof(ExecutableObject) * pContext->nObjects));
-	CHECK_ALLOC(THIS->phFatHeaders = (HSDF*) malloc(sizeof(HSDF) * pContext->nObjects));
-	CHECK_ALLOC(THIS->phMachHeaders = (HSDF*) malloc(sizeof(HSDF) * pContext->nObjects));
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject) * pContext->nObjects));
+	CHECK_ALLOC(THIS->phFatHeaders = (HSDF*) calloc(1, sizeof(HSDF) * pContext->nObjects));
+	CHECK_ALLOC(THIS->phMachHeaders = (HSDF*) calloc(1, sizeof(HSDF) * pContext->nObjects));
 	for (i = 0; i < pContext->nObjects; ++i)
 	{
 		CHECK_CALL(THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader));

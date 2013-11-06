@@ -24,7 +24,7 @@ BenchmarkContext;
 
 HBENCHMARK BenchmarkCreate()
 {
-	BenchmarkContext * pContext = (BenchmarkContext*) malloc(sizeof(BenchmarkContext));
+	BenchmarkContext * pContext = (BenchmarkContext*) calloc(1, sizeof(BenchmarkContext));
 #ifdef _WIN32
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);

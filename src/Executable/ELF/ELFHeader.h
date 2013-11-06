@@ -23,7 +23,8 @@ static const uint32_t ELFHeaderOffsetPrograms      = 28;
 static const uint32_t ELFHeaderSizeOfProgram       = 42;
 static const uint32_t ELFHeaderNumberOfPrograms    = 44;
 static const uint32_t ELFHeaderSizeOfSection       = 46;
-static const uint32_t ELFHeaderNumberOfSections    = 50;
+static const uint32_t ELFHeaderNumberOfSections    = 48;
+static const uint32_t ELFHeaderSectionHeaderIndex  = 50;
 
 static const SDFElement ELFHeader[] =
 {

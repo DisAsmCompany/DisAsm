@@ -79,19 +79,15 @@ uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pGetExportCount)
-	{
-		return pContext->pGetExportCount(pContext);
-	}
-	return 0;
+	return NULL != pContext ? pContext->pObjects[pContext->iObject].nExports : 0;
 }
 
 uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pGetExportAddress)
+	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
 	{
-		return pContext->pGetExportAddress(pContext, index);
+		return pContext->pObjects[pContext->iObject].pExports[index].Address;
 	}
 	return 0;
 }
@@ -99,21 +95,29 @@ uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pGetExportName)
+	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
 	{
-		return pContext->pGetExportName(pContext, index);
+		uint32_t address = pContext->pObjects[pContext->iObject].pExports[index].Name;
+		if (0 != address)
+		{
+			return FetchString(pContext, address);
+		}
 	}
-	return 0;
+	return NULL;
 }
 
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pGetExportForwarderName)
+	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
 	{
-		return pContext->pGetExportForwarderName(pContext, index);
+		uint32_t address = pContext->pObjects[pContext->iObject].pExports[index].Forwarder;
+		if (0 != address)
+		{
+			return FetchString(pContext, address);
+		}
 	}
-	return 0;
+	return NULL;
 }
 
 uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA)
@@ -140,4 +144,25 @@ uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA)
 		}
 	}
 	return offset;
+}
+
+char * FetchString(ExecutableContext * pContext, uint32_t address)
+{
+	char * buffer = NULL; 
+	uint32_t i = 0;
+	CHECK_CALL(ReaderSeek(pContext->hReader, address));
+	CHECK_ALLOC(buffer = calloc(1, 1024));
+	for (i = 0; i < 1024; ++i)
+	{
+		if (0 == ReaderRead(pContext->hReader, &buffer[i], sizeof(uint8_t)))
+		{
+			break;
+		}
+		if (0 == buffer[i] || '\n' == buffer[i] || '\r' == buffer[i])
+		{
+			break;
+		}
+	}
+	buffer[i] = 0;
+	return buffer;
 }

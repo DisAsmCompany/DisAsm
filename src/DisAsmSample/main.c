@@ -23,10 +23,10 @@ List;
 
 List * ListCreate()
 {
-	List * list = (List*) malloc(sizeof(List));
+	List * list = (List*) calloc(1, sizeof(List));
 	list->used = 0;
 	list->size = 16;
-	list->memory = (uint32_t *) malloc(list->size * sizeof(uint32_t));
+	list->memory = (uint32_t *) calloc(1, list->size * sizeof(uint32_t));
 	return list;
 }
 
