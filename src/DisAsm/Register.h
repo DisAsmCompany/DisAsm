@@ -26,6 +26,7 @@ in order to allow coding of Operand Type / Register in single word field
 
 #define SHIFT4(x) (REGISTERBASE + (x) * 16)
 
+#ifndef DefineRegisters
 #define DefineRegisters(name0, name1, name2, name3, name4, name5, name6, name7, name8, name9, name10, name11, name12, name13, name14, name15, value) \
 _ENUM_ELEMENT_VALUE(name0,  value | 0) \
 _ENUM_ELEMENT_VALUE(name1,  value | 1) \
@@ -43,7 +44,9 @@ _ENUM_ELEMENT_VALUE(name12, value | 12) \
 _ENUM_ELEMENT_VALUE(name13, value | 13) \
 _ENUM_ELEMENT_VALUE(name14, value | 14) \
 _ENUM_ELEMENT_VALUE(name15, value | 15)
+#endif /* DefineRegisters */
 
+#ifndef DefineRegisters16
 #define DefineRegisters16(name, value) \
 _ENUM_ELEMENT_VALUE(name##0,  value | 0) \
 _ENUM_ELEMENT_VALUE(name##1,  value | 1) \
@@ -61,6 +64,7 @@ _ENUM_ELEMENT_VALUE(name##12, value | 12) \
 _ENUM_ELEMENT_VALUE(name##13, value | 13) \
 _ENUM_ELEMENT_VALUE(name##14, value | 14) \
 _ENUM_ELEMENT_VALUE(name##15, value | 15)
+#endif /* DefineRegisters16 */
 
 #define rRegister  SHIFT4(0x00UL) /* mask */
 #define eRegister  SHIFT4(0x01UL) /* mask */
