@@ -58,7 +58,6 @@ int ELFProcessExport(ExecutableContext * pContext)
 	for (i = 0; i < count; ++i)
 	{
 		uint32_t name = 0;
-		uint16_t index = 0;
 		HSDF hSymbol = NULL;
 		CHECK_CALL(ReaderSeek(pContext->hReader, THIS->ExportAddress + i * SDFSizeInBytes(ELFSymbol)));
 		CHECK_CALL(hSymbol = SDFCreate(ELFSymbol, pContext->hReader));
