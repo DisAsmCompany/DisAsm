@@ -152,7 +152,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 
 			if (pOperand->hasBase)
 			{
-				char * base = RegisterToString(pOperand->base);
+				char * base = RegisterToString(pOperand->value.reg);
 				printf("%s", base);
 			}
 			if (pOperand->hasIndex)

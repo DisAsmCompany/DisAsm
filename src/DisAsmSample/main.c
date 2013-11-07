@@ -74,6 +74,8 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	uint8_t ret = 0;
+	/* store function start in order to analyze jumps */
+	uint32_t start = address + base;
 	while (1)
 	{
 		BenchmarkSampleBegin(hBenchmark);
@@ -100,19 +102,89 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 			PrintAddress(offset);
 			ListAdd(list, offset);
 		}
-		if (JMP == info.mnemonic)
+		/* non-conditional jump instructions (JMP) */
+		if (JMP == info.mnemonic && 1 == info.nOperands)
 		{
-			if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
+			uint32_t destination = 0;
+			uint32_t rel = info.imm;
+			/* explicit jump offset */
+			if (J == HITYPE(info.operands[0].type))
 			{
+				destination = address;
+				switch (info.sizeImm)
+				{
+				case 1:
+					if (0x80UL & rel)
+					{
+						rel = 0xFFUL - rel + 1;
+						destination = (destination > rel) ? (destination - rel) : 0;
+					}
+					else
+					{
+						destination += rel;
+					}
+					break;
+				case 2:
+					if (0x8000UL & rel)
+					{
+						rel = 0xFFUL - rel + 1;
+						destination = (destination > rel) ? (destination - rel) : 0;
+					}
+					else
+					{
+						destination += rel;
+					}
+					break;
+				case 4:
+					if (0x80000000UL & rel)
+					{
+						rel = 0xFFUL - rel + 1;
+						destination = (destination > rel) ? (destination - rel) : 0;
+					}
+					else
+					{
+						destination += rel;
+					}
+					break;
+				case 8:
+					break;
+				default:
+					break;
+				}
+				destination += base;
 				printf("; jump to ");
-				PrintAddress(address);
+			}
+			/* special case - memory operand with no registers involved */
+			else if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
+			{
+				destination = info.disp;
+				printf("; jump to ");
+			}
+			/* jump uses registers, therefore cannot be calculated without emulation */
+			else
+			{
+				/* abort disassembler */
 				break;
 			}
-			if (Jz == info.operands[0].type)
+			PrintAddress(destination);
+
+			/* branch somewhere into already disassembled part of function */
+			if (start <= destination && destination < base + address)
 			{
-				printf("; jump to ");
-				PrintAddress(address);
 				break;
+			}
+			/* jump somewhere outside module */
+			else if (0 == destination)
+			{
+				break;
+			}
+			else
+			{
+				address = destination - base;
+				if (0 == ReaderSeek(hReader, address))
+				{
+					break;
+				}
 			}
 		}
 		printf("\n");
@@ -212,6 +284,10 @@ int main(int argc, char * const argv[])
 		PrintError(argv[1]);
 		PrintError("\"\n");
 		return EXIT_FAILURE;
+	}
+	if (0 == base)
+	{
+		base = ExecutableGetBase(hExecutable);
 	}
 	entry = ExecutableGetEntryPoint(hExecutable);
 	if (0 != entry)

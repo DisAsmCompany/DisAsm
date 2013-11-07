@@ -324,6 +324,12 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
             }
 		}
 	}
+	if (Ap == pOperand->type)
+	{
+		pInfo->hasDisp = 1;
+		pInfo->sizeDisp = 4;
+		pInfo->hasSeg = 1;
+	}
 	switch (HiType)
 	{
 	case S:
@@ -348,7 +354,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			{
 				pOperand->hasIndex = 0;
 			}
-			if (5 == (pOperand->base = pInfo->SIB.fields.Base))
+			if (5 == (pOperand->value.reg = pInfo->SIB.fields.Base))
 			{
 				switch (pInfo->ModRM.fields.Mod)
 				{
@@ -364,7 +370,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->hasBase = 1;
 			pOperand->hasIndex = 0;
-			pOperand->base = pInfo->ModRM.fields.RM;
 			pOperand->value.reg = pInfo->ModRM.fields.RM;
 			if (5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod)
 			{
@@ -374,31 +379,26 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		if (LoType == v)
 		{
 			pOperand->value.reg |= Reg32;
-			pOperand->base |= Reg32;
 			pOperand->index |= Reg32;
 		}
 		else if (LoType == q)
 		{
 			pOperand->value.reg |= Reg32;
-			pOperand->base |= Reg32;
 			pOperand->index |= Reg32;
 		}
 		else if (LoType == w)
 		{
 			pOperand->value.reg |= Reg16;
-			pOperand->base |= Reg16;
 			pOperand->index |= Reg16;
 		}
 		else if (LoType == b)
 		{
 			pOperand->value.reg |= Reg8;
-			pOperand->base |= Reg8;
 			pOperand->index |= Reg8;
 		}
 		else
 		{
 			pOperand->value.reg |= Reg32;
-			pOperand->base |= Reg32;
 			pOperand->index |= Reg32;
 		}
 		break;
@@ -700,6 +700,7 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 		OperandDecode(pContext, pInfo, &pInfo->operands[i]);
 	}
 	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo, pInfo->sizeDisp) : 0;
+	pInfo->seg  = pInfo->hasSeg  ? Fetch2(pContext, pInfo) : 0;
 	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo, pInfo->sizeImm)  : 0;
 	return pInfo->length;
 }

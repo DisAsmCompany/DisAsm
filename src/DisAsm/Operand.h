@@ -28,7 +28,6 @@ typedef struct Operand_t
 	uint8_t scale;
 	uint8_t hasBase;
 	uint8_t hasIndex;
-	Register base;
 	Register index;
 }
 Operand;

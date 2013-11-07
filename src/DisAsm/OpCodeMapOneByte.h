@@ -31,7 +31,7 @@ A X X X X X X X X A X X X X X X X X A
 B X X X X X X X X B X X X X X X X X B
 C X X X X     X X C X X X X X X X X C
 D X X X X X X X X D + + + + + + + + D
-E X X X X X X X X E X X   X X X X X E
+E X X X X X X X X E X X X X X X X X E
 F P X P P X X X X F X X X X X X X X F
   0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
@@ -97,7 +97,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* E0h - E7h */
 	{LOOPNE, OP1(Jb)}, {LOOPE, OP1(Jb)}, {LOOP, OP1(Jb)}, {JCXZ, OP1(Jb)}, {_IN, OP2(AL, Ib)}, {_IN, OP2(eAX, Ib)}, {_OUT, OP2(Ib, AL)}, {_OUT, OP2(Ib, eAX)},
 	/* E8h - EFh */
-	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {DB}, {JMP, OP1(Jb)}, {_IN, OP2(AL, DX)}, {_IN, OP2(eAX, DX)}, {_OUT, OP2(DL, AL)}, {_OUT, OP2(DX, eAX)},
+	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {JMP, OP1(Ap)}, {JMP, OP1(Jb)}, {_IN, OP2(AL, DX)}, {_IN, OP2(eAX, DX)}, {_OUT, OP2(DL, AL)}, {_OUT, OP2(DX, eAX)},
 	/* F0h - F7h */
 	{LOCK}, {_INT, OP1(1)}, {REPNE}, {REP}, {HLT}, {CMC}, {GROUP3, OP1(Eb)}, {GROUP3, OP1(Ev)},
 	/* F8h - FFh */

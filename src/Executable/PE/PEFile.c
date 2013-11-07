@@ -505,7 +505,9 @@ int PEFileInit(ExecutableContext * pContext)
 			SDFPrint(THIS->hOptionalHeaderExtra);
 			
 			THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - PEOptionalHeaderSize - ExtraSize / sizeof(PEDataDirectory)));
-			THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderNumberOfRvaAndSizes64 : PEOptionalHeaderNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
+			THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderExtra64NumberOfRvaAndSizes : PEOptionalHeaderExtraNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
+
+			pContext->pObjects[pContext->iObject].Base = SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderExtra64ImageBase : PEOptionalHeaderExtraImageBase);
 		}
 		else if (0 == THIS->Object)
 		{
@@ -688,7 +690,7 @@ int PEFileCreate(ExecutableContext * pContext)
 		PEFileDestroy(pContext);
 		return 0;
 	};
-	pContext->pDestroy                = PEFileDestroy;
+	pContext->pDestroy = PEFileDestroy;
 	
 	return 1;
 }

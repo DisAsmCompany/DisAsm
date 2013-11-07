@@ -64,6 +64,12 @@ Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
 }
 
+uint32_t ExecutableGetBase(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	return NULL != pContext ? pContext->pObjects[pContext->iObject].Base : 0;
+}
+
 uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;

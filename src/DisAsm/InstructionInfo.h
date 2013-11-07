@@ -20,6 +20,7 @@ typedef struct InstructionInfo_t
 	Mnemonic mnemonic;
 	uint8_t hasModRM : 1;
 	uint8_t hasSIB   : 1;
+	uint8_t hasSeg   : 1;
 	uint8_t hasDisp  : 1;
 	uint8_t hasImm   : 1;
 	uint8_t hasREX   : 1;
@@ -28,6 +29,7 @@ typedef struct InstructionInfo_t
 	uint8_t hasXOP   : 1;
 	uint8_t sizeDisp;
 	uint8_t sizeImm;
+	uint16_t seg;
 	ModRMu ModRM;
 	SIBu SIB;
 	REXu REX;

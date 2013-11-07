@@ -47,6 +47,7 @@ typedef struct ExecutableObject_t
 	Architecture Arch;
 	uint32_t EntryPoint;
 	uint32_t StubEntryPoint;
+	uint32_t Base;
 
 	uint32_t nSections;
 	ExecutableSection * pSections;
@@ -71,6 +72,7 @@ ExecutableContext;
 HEXECUTABLE ExecutableCreate(HREADER hReader, int memory);
 void ExecutableDestroy(HEXECUTABLE hExecutable);
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable);
+uint32_t ExecutableGetBase(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable);
