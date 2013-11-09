@@ -16,7 +16,7 @@
 
 /* 
        0 1 2 3 4 5 6 7   8 9 A B C D E F
-NONE 0     X X   X X X 0 X X   X   X X + 0
+NONE 0 X X X X U X X X 0 X X   X   X X + 0
 0x66 0                 0                 0
 0xF2 0                 0                 0
 0xF3 0                 0                 0
@@ -24,7 +24,7 @@ NONE 1 X X             1 X X X X X X X X 1
 0x66 1 X X             1                 1
 0xF2 1 X X             1                 1
 0xF3 1 X X             1                 1
-NONE 2 X X X X         2 X X             2
+NONE 2 X X X X U U U U 2 X X             2
 0x66 2                 2 X X             2
 0xF2 2                 2                 2
 0xF3 2                 2                 2
@@ -87,7 +87,7 @@ NONE F                 F X X X X X X X X F
 OpCodeMapElement OpCodeMapTwoByte0F[] =
 {
 	/* 0F00h - 0F07h */
-	{DB}, {DB}, {LAR, OP2(Gv, Ew)}, {LSL, OP2(Gv, Ew)}, {LOADALL}, {SYSCALL}, {CLTS}, {SYSRET},
+	{GROUP6}, {GROUP7}, {LAR, OP2(Gv, Ew)}, {LSL, OP2(Gv, Ew)}, {LOADALL}, {SYSCALL}, {CLTS}, {SYSRET},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

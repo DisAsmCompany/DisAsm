@@ -50,6 +50,8 @@ typedef enum OperandType_t
 	ss = 0x0A, /* 128-bit or 256-bit scalar single-precision floating-point data */
 	pd = 0x0B, /* 128-bit or 256-bit packed double-precision floating-point data */
 	sd = 0x0C, /* 128-bit or 256-bit scalar double-precision floating-point data */
+	a  = 0x0D, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
+	_  = 0x0E, /* no type */
 
 #define DEFINE_TYPE(T) \
 	T##b  = 0x1000 | T | b, \
@@ -64,6 +66,8 @@ typedef enum OperandType_t
 	T##ss = 0x1000 | T | ss, \
 	T##pd = 0x1000 | T | pd, \
 	T##sd = 0x1000 | T | sd, \
+	T##a  = 0x1000 | T | a, \
+	T##_  = 0x1000 | T | _, \
 
 	DEFINE_TYPE(E)
 	DEFINE_TYPE(G)
@@ -124,6 +128,8 @@ calculate operands count : how many non-zero bytes are in packed type definition
 #define OP2(x, y)    OP4(x, y, 0, 0)
 #define OP1(x)       OP4(x, 0, 0, 0)
 #define OP0          OP4(0, 0, 0, 0)
+
+#define OPCOUNT(x) (!!(x)[0] + !!(x)[1] + !!(x)[2] + !!(x)[3])
 
 #define LOTYPE(x) ((x - 0x1000) & 0x000F)
 #define HITYPE(x) ((x - 0x1000) & 0x0FF0)

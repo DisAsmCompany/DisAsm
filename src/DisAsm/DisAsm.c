@@ -298,9 +298,9 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 {
 	OperandType HiType = HITYPE(pOperand->type);
 	OperandType LoType = LOTYPE(pOperand->type);
+	pOperand->memory = 0;
 	if (Reg == pOperand->type)
 	{
-		pOperand->memory = 0;
 		if (rRegister <= pOperand->value.reg && pOperand->value.reg <= rRegister + 7)
 		{
 			pOperand->value.reg = (pOperand->value.reg - rRegister);
@@ -334,7 +334,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	{
 	case S:
 		pOperand->type = Reg;
-		pOperand->memory = 0;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg | RegSeg;
 		break;
 	case M:
@@ -342,9 +341,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	case E:
 		pOperand->type = Reg;
 		pOperand->memory = pInfo->ModRM.fields.Mod != 3;
-		pOperand->scale = 0;
-		pOperand->hasBase = 0;
-		pOperand->hasIndex = 0;
+		pOperand->scale = pOperand->hasBase = pOperand->hasIndex = 0;
 		if (pInfo->hasSIB)
 		{
 			pOperand->hasBase = 1;
@@ -403,7 +400,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case P:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		switch (LoType)
@@ -416,7 +412,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case Q:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.RM;
 		switch (LoType)
@@ -428,7 +423,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			break;
 		}
 	case W:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.RM;
 		switch (LoType)
@@ -445,7 +439,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case V:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		switch (LoType)
@@ -462,7 +455,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case C:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		if (LoType == d)
@@ -471,7 +463,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case D:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		if (LoType == d)
@@ -480,7 +471,6 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		}
 		break;
 	case G:
-		pOperand->memory = 0;
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		if (LoType == v)
@@ -567,15 +557,15 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 {
 	pInfo->mnemonic = pElement->mnemonic;
-	pInfo->nOperands = !!pElement->type1 + !!pElement->type2 + !!pElement->type3 + !!pElement->type4;
-	pInfo->operands[0].type = pElement->type1;
-	pInfo->operands[1].type = pElement->type2;
-	pInfo->operands[2].type = pElement->type3;
-	pInfo->operands[3].type = pElement->type4;
-	pInfo->operands[0].value.reg = pElement->reg1;
-	pInfo->operands[1].value.reg = pElement->reg2;
-	pInfo->operands[2].value.reg = pElement->reg3;
-	pInfo->operands[3].value.reg = pElement->reg4;
+	pInfo->nOperands = OPCOUNT(pElement->type);
+	pInfo->operands[0].type = pElement->type[0];
+	pInfo->operands[1].type = pElement->type[1];
+	pInfo->operands[2].type = pElement->type[2];
+	pInfo->operands[3].type = pElement->type[3];
+	pInfo->operands[0].value.reg = pElement->reg[0];
+	pInfo->operands[1].value.reg = pElement->reg[1];
+	pInfo->operands[2].value.reg = pElement->reg[2];
+	pInfo->operands[3].value.reg = pElement->reg[3];
 }
 
 void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
@@ -592,7 +582,7 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 			pInfo->nOperands = 2;
 			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
 		}
-		else if (pElement->type1)
+		else if (pElement->type[0])
 		{
 			CopyElementInfo(pInfo, pElement);
 		}
@@ -616,6 +606,143 @@ void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 		}
 		pElement = &OpCodeMapX87[index];
 		CopyElementInfo(pInfo, pElement);
+	}
+}
+
+uint32_t PrintOpCode(uint32_t OpCode)
+{
+	uint32_t length = 0;
+	uint8_t i = 0;
+	OpCodeMapElement * pElement = &OpCodeMapOneByte[OpCode];
+
+	char * mnemonic = MnemonicToString(pElement->mnemonic);
+	
+	uint8_t nOperands = OPCOUNT(pElement->type);
+
+	switch (pElement->mnemonic)
+	{
+	case PrefixCS: mnemonic = "CS"; break;
+	case PrefixSS: mnemonic = "SS"; break;
+	case PrefixDS: mnemonic = "DS"; break;
+	case PrefixES: mnemonic = "ES"; break;
+	case PrefixFS: mnemonic = "FS"; break;
+	case PrefixGS: mnemonic = "GS"; break;
+	/* FIXME */
+	case _IN : mnemonic = "IN"; break;
+	case _INT: mnemonic = "INT"; break;
+	case _OUT: mnemonic = "OUT"; break;
+	default: break;
+	}
+	length += strlen(mnemonic);
+
+	printf("%s", mnemonic);
+
+	for (i = 0; i < nOperands; ++i)
+	{
+		printf(i == 0 ? " " : ", ");
+		length += i == 0 ? 1 : 2;
+		if (Reg == pElement->type[i])
+		{
+			char * reg = RegisterToString(pElement->reg[i]);
+			length += strlen(reg);
+			printf("%s", reg);
+		}
+		else if (Imm == pElement->type[i])
+		{
+			printf("%d", pElement->reg[i]);
+			++length;
+		}
+		else
+		{
+			OperandType hi = HITYPE(pElement->type[i]);
+			OperandType lo = LOTYPE(pElement->type[i]);
+
+			length += 2;
+
+			switch (hi)
+			{
+			case E: printf("E"); break;
+			case G: printf("G"); break;
+			case I: printf("I"); break;
+			case J: printf("J"); break;
+			case M: printf("M"); break;
+			case O: printf("O"); break;
+			case X: printf("X"); break;
+			case Y: printf("Y"); break;
+			case F: printf("F"); break;
+			case S: printf("S"); break;
+			case R: printf("R"); break;
+			case D: printf("D"); break;
+			case C: printf("C"); break;
+			case U: printf("U"); break;
+			case V: printf("V"); break;
+			case W: printf("W"); break;
+			case P: printf("P"); break;
+			case Q: printf("Q"); break;
+			case A: printf("A"); break;
+			default: --length; break;
+			}
+			switch (lo)
+			{
+			case b: printf("b"); break;
+			case v: printf("v"); break;
+			case z: printf("z"); break;
+			case p: printf("p"); break;
+			case w: printf("w"); break;
+			case q: printf("q"); break;
+			case d: printf("d"); break;
+			case o: printf("o"); break;
+			case ps: printf("ps"); ++length; break;
+			case ss: printf("ss"); ++length; break;
+			case pd: printf("pd"); ++length; break;
+			case sd: printf("sd"); ++length; break;
+			case a: printf("a"); break;
+			default: --length; break;
+			}
+		}
+	}
+	return length;
+}
+
+void DisAsmPrintOpCodeMap(HDISASM hDisAsm)
+{
+	uint32_t width = 16;
+	uint32_t i = 0;
+	uint32_t j = 0;
+	uint8_t k = 0;
+
+	printf("  ");
+	for (i = 0x00; i < 0x08; ++i)
+	{
+		printf("        %X       ", i);
+	}
+	printf("\n");
+	for (i = 0x00; i < 0x10; ++i)
+	{
+		printf("%X ", i);
+		for (j = 0x00; j < 0x08; ++j)
+		{
+			uint32_t padding = width - PrintOpCode((i << 4) | j);
+			for (k = 0; k < padding; ++k) printf(" ");
+		}
+		printf("\n");
+	}
+	printf("\n");
+	printf("  ");
+	for (i = 0x08; i < 0x10; ++i)
+	{
+		printf("        %X       ", i);
+	}
+	printf("\n");
+	for (i = 0x00; i < 0x10; ++i)
+	{
+		printf("%X ", i);
+		for (j = 0x08; j < 0x10; ++j)
+		{
+			uint32_t padding = width - PrintOpCode((i << 4) | j);
+			for (k = 0; k < padding; ++k) printf(" ");
+		}
+		printf("\n");
 	}
 }
 

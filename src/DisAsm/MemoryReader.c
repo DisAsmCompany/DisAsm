@@ -23,21 +23,33 @@ MemoryReaderContext;
 
 int MemoryReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
-	memcpy(buffer, AccessPrivateData(pContext)->buffer + AccessPrivateData(pContext)->offset, size);
-	AccessPrivateData(pContext)->offset += size;
-	return 1;
+	if (AccessPrivateData(pContext)->offset + size <= AccessPrivateData(pContext)->size)
+	{
+		memcpy(buffer, AccessPrivateData(pContext)->buffer + AccessPrivateData(pContext)->offset, size);
+		AccessPrivateData(pContext)->offset += size;
+		return 1;
+	}
+	return 0;
 }
 
 int MemoryReaderSeek(ReaderContext * pContext, uint32_t pos)
 {
-	AccessPrivateData(pContext)->offset = pos;
-	return 1;
+	if (pos < AccessPrivateData(pContext)->size)
+	{
+		AccessPrivateData(pContext)->offset = pos;
+		return 1;
+	}
+	return 0;
 }
 
 int MemoryReaderSkip(ReaderContext * pContext, uint32_t count)
 {
-	AccessPrivateData(pContext)->offset += count;
-	return 1;
+	if (AccessPrivateData(pContext)->offset + count < AccessPrivateData(pContext)->size)
+	{
+		AccessPrivateData(pContext)->offset += count;
+		return 1;
+	}
+	return 0;
 }
 
 void MemoryReaderDestroy(ReaderContext * pContext)
@@ -65,9 +77,9 @@ HREADER MemoryReaderCreate(void * buffer, uint32_t size)
 		free(pContext);
 		return NULL;
 	}
-	pPrivate->buffer = buffer;
-	pPrivate->size = size;
-	pPrivate->offset = 0;
+	pPrivate->buffer   = buffer;
+	pPrivate->size     = size;
+	pPrivate->offset   = 0;
 	pContext->pRead    = MemoryReaderRead;
 	pContext->pSeek    = MemoryReaderSeek;
 	pContext->pSkip    = MemoryReaderSkip;

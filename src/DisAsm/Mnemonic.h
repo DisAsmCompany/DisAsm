@@ -103,7 +103,10 @@ _ENUM_ELEMENT(BTS)    /* Bit Test and Set */
 _ENUM_ELEMENT(BTR)    /* Bit Test and Reset */
 _ENUM_ELEMENT(BTC)    /* Bit Test and Complement */
 _ENUM_ELEMENT(ARPL)   /* Adjust RPL Field of Segment Selector */
+_ENUM_ELEMENT(BOUND)  /* Check Array Index Against Bounds */
 _ENUM_ELEMENT(LOADALL)/* [Undocummented] Load All */
+_ENUM_ELEMENT(LDS)    /* Load Far Pointer */
+_ENUM_ELEMENT(LES)    /* Load Far Pointer */
 /* Undefined Instruction */
 _ENUM_ELEMENT(UD0)    /* Undefined Instruction */
 _ENUM_ELEMENT(UD1)    /* Undefined Instruction */

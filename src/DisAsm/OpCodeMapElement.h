@@ -16,14 +16,8 @@
 typedef struct OpCodeMapElement_t
 {
 	Mnemonic mnemonic;
-	OperandType type1;
-	OperandType type2;
-	OperandType type3;
-	OperandType type4;
-	Register reg1;
-	Register reg2;
-	Register reg3;
-	Register reg4;
+	OperandType type[4];
+	Register reg[4];
 }
 OpCodeMapElement;
 

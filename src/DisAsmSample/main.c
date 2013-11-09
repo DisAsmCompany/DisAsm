@@ -87,10 +87,9 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 			fprintf(stderr, "[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
 			break;
 		}
-		{
-			PrintAddress(address);
-			printf(" ");
-		}
+		PrintAddress(address);
+		printf(" ");
+
 		StrAsmPrintInstruction(&info);
 
 		address += length;
@@ -173,6 +172,11 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 			{
 				break;
 			}
+			/* branch somewhere before function */
+			if (destination < start)
+			{
+				break;
+			}
 			/* jump somewhere outside module */
 			else if (0 == destination)
 			{
@@ -229,6 +233,13 @@ int main(int argc, char * const argv[])
 		PrintError("[ERROR] usage : DisAsmSample <file>\n");
 		return EXIT_FAILURE;
 	}
+	if (0 == strcmp(argv[1], "map"))
+	{
+		hDisAsm = DisAsmCreate(32);
+		DisAsmPrintOpCodeMap(hDisAsm);
+		DisAsmDestroy(hDisAsm);
+		return EXIT_SUCCESS;
+	}
 	if (argc >= 3)
 	{
 		if (0 == strcmp(argv[2], "memory"))
@@ -239,8 +250,10 @@ int main(int argc, char * const argv[])
 	if (memory)
 	{
 #ifdef _WIN32
+		MODULEINFO info = {0};
 		base = (uint32_t) LoadLibraryA(argv[1]);
-		hReader = MemoryReaderCreate((void*)base, 0);
+		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
+		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);
 #endif /* _WIN32 */
 	}
 	else
@@ -317,27 +330,31 @@ int main(int argc, char * const argv[])
 		{
 			continue;
 		}
-		if (NULL != forwarder)
+		if (0 != ReaderSeek(hReader, address))
 		{
-			printf("[0x%02X] %s -> %s\n", i, name ? name : "(null)", forwarder);
+			if (NULL != forwarder)
+			{
+				printf("[0x%02X] %s -> %s\n", i, name ? name : "(null)", forwarder);
+			}
+			else
+			{
+				printf("[0x%02X] %s\n", i, name ? name : "(null)");
+				DisAsmFunction(hDisAsm, hReader, hBenchmark, address, base, list);
+			}
+			printf("\n");
 		}
-		else
-		{
-			printf("[0x%02X] %s\n", i, name ? name : "(null)");
-			ReaderSeek(hReader, address);
-			DisAsmFunction(hDisAsm, hReader, hBenchmark, address, base, list);
-		}
-		printf("\n");
 		free(name);
 		free(forwarder);
 	}
 	for (i = 0; i < ListSize(list); ++i)
 	{
 		uint32_t element = ListGet(list, i);
-		ReaderSeek(hReader, element);
-		printf("function %d %08X :\n", i, element);
-		DisAsmFunction(hDisAsm, hReader, hBenchmark, element, base, list);
-		printf("\n");
+		if (0 != ReaderSeek(hReader, element))
+		{
+			printf("function %d %08X :\n", i, element);
+			DisAsmFunction(hDisAsm, hReader, hBenchmark, element, base, list);
+			printf("\n");
+		}
 	}
 	ListDestroy(list);
 	DisAsmDestroy(hDisAsm);

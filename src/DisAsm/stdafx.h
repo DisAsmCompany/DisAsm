@@ -23,6 +23,8 @@
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
+#include <psapi.h>
+#pragma comment(lib, "psapi.lib")
 #else /* _WIN32 */
 #include <sys/time.h>
 #endif /* _WIN32 */
