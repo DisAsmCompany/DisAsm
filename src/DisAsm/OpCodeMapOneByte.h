@@ -59,9 +59,9 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 48h - 4Fh */
 	{DEC, OP1(eAX)}, {DEC, OP1(eCX)}, {DEC, OP1(eDX)}, {DEC, OP1(eBX)}, {DEC, OP1(eSP)}, {DEC, OP1(eBP)}, {DEC, OP1(eSI)}, {DEC, OP1(eDI)},
 	/* 50h - 57h */
-	{PUSH, OP1(rAX)}, {PUSH, OP1(rCX)}, {PUSH, OP1(rBX)}, {PUSH, OP1(rDX)}, {PUSH, OP1(rSP)}, {PUSH, OP1(rBP)}, {PUSH, OP1(rSI)}, {PUSH, OP1(rDI)},
+	{PUSH, OP1(rAX)}, {PUSH, OP1(rCX)}, {PUSH, OP1(rDX)}, {PUSH, OP1(rBX)}, {PUSH, OP1(rSP)}, {PUSH, OP1(rBP)}, {PUSH, OP1(rSI)}, {PUSH, OP1(rDI)},
 	/* 57h - 5Fh */
-	{POP , OP1(rAX)}, {POP , OP1(rCX)}, {POP , OP1(rBX)}, {POP , OP1(rDX)}, {POP , OP1(rSP)}, {POP , OP1(rBP)}, {POP , OP1(rSI)}, {POP , OP1(rDI)},
+	{POP , OP1(rAX)}, {POP , OP1(rCX)}, {POP , OP1(rDX)}, {POP , OP1(rBX)}, {POP , OP1(rSP)}, {POP , OP1(rBP)}, {POP , OP1(rSI)}, {POP , OP1(rDI)},
 	/* 60h - 67h */
 	{PUSHA}, {POPA}, {BOUND, OP2(Gv, Ma)}, {ARPL, OP2(Ew, Gw)}, {PrefixFS}, {PrefixGS}, {OperandSize}, {AddressSize},
 	/* 68h - 6Fh */
