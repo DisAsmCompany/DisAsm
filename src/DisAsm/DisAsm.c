@@ -615,7 +615,7 @@ uint32_t PrintOpCode(uint32_t OpCode)
 	uint8_t i = 0;
 	OpCodeMapElement * pElement = &OpCodeMapOneByte[OpCode];
 
-	char * mnemonic = MnemonicToString(pElement->mnemonic);
+	char * mnemonic = (char*)MnemonicToString(pElement->mnemonic);
 	
 	uint8_t nOperands = OPCOUNT(pElement->type);
 
@@ -643,7 +643,7 @@ uint32_t PrintOpCode(uint32_t OpCode)
 		length += i == 0 ? 1 : 2;
 		if (Reg == pElement->type[i])
 		{
-			char * reg = RegisterToString(pElement->reg[i]);
+			char * reg = (char*)RegisterToString(pElement->reg[i]);
 			length += strlen(reg);
 			printf("%s", reg);
 		}
