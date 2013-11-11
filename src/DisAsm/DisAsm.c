@@ -12,6 +12,20 @@
 #include "DisAsm"
 #include "OpCodeMap.h"
 #include "DisAsmContext.h"
+#define _STR_ENUM
+#undef  __MNEMONIC_H__
+#undef  __REGISTER_H__
+#include "../DisAsm/DisAsm"
+
+char * DisAsmMnemonicToString(Mnemonic mnemonic)
+{
+	return MnemonicToString(mnemonic);
+}
+
+char * DisAsmRegisterToString(Register reg)
+{
+	return RegisterToString(reg);
+}
 
 HDISASM DisAsmCreate(uint32_t bitness)
 {

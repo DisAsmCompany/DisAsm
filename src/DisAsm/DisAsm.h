@@ -21,6 +21,9 @@ void DisAsmDestroy(HDISASM hDisAsm);
 void DisAsmPrintOpCodeMap(HDISASM hDisAsm);
 uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReaders, InstructionInfo * pInfo);
 
+char * DisAsmMnemonicToString(Mnemonic mnemonic);
+char * DisAsmRegisterToString(Register reg);
+
 /* for tests */
 
 OpCode _ChooseOpCode(uint8_t * buffer);

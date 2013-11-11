@@ -10,10 +10,6 @@
 */
 
 #include "../DisAsm/DisAsm"
-#define _STR_ENUM
-#undef  __MNEMONIC_H__
-#undef  __REGISTER_H__
-#include "../DisAsm/DisAsm"
 #include "StrAsm"
 
 void PrintByte(uint32_t value)
@@ -144,7 +140,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 {
 	if (pOperand->type == Reg)
 	{
-		char * reg = RegisterToString(pOperand->value.reg);
+		char * reg = DisAsmRegisterToString(pOperand->value.reg);
 		if (pOperand->memory)
 		{
 			PrintSegment(pInfo);
@@ -152,7 +148,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 
 			if (pOperand->hasBase)
 			{
-				char * base = RegisterToString(pOperand->value.reg);
+				char * base = DisAsmRegisterToString(pOperand->value.reg);
 				printf("%s", base);
 			}
 			if (pOperand->hasIndex)
@@ -165,7 +161,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 				{
 					printf("%d * ", pOperand->scale);
 				}
-				printf("%s", RegisterToString(pOperand->index));
+				printf("%s", DisAsmRegisterToString(pOperand->index));
 			}
 			if (pInfo->hasDisp)
 			{
@@ -259,14 +255,14 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 		case REP:
 		case REPE:
 		case REPZ:
-			mnemonic = MnemonicToString(pInfo->prefixes[i].mnemonic);
+			mnemonic = DisAsmMnemonicToString(pInfo->prefixes[i].mnemonic);
 			printf("%s ", mnemonic);
 			break;
 		default:
 			break;
 		}
 	}
-	mnemonic = MnemonicToString(pInfo->mnemonic);
+	mnemonic = DisAsmMnemonicToString(pInfo->mnemonic);
 	if (mnemonic[0] == '_') ++mnemonic;
 	PrintString(mnemonic, kBlue);
 
