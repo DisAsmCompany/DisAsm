@@ -4,7 +4,7 @@
  * Author:   DisAsmCompany
  * Date:     29/10/2013
  *
- * Description: Mach-O header
+ * Description: Mach-O thread status (x86)
  *
  *
  *
@@ -13,6 +13,8 @@
 #pragma once
 #ifndef __MACHOTHREADSTTUSX86_H__
 #define __MACHOTHREADSTTUSX86_H__
+
+static const uint32_t MachOThreadStatusX86EIP = 40;
 
 static const SDFElement MachOThreadStatusX86[] =
 {

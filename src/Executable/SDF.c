@@ -254,6 +254,15 @@ uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset)
 	return value;
 }
 
+uint64_t SDFReadUInt64(HSDF hSDF, uint64_t offset)
+{
+	SDFContext * pContext = (SDFContext*) hSDF;
+	uint64_t value = 0;
+	value = * (uint64_t*) (pContext->data + offset);
+	value = pContext->endian ? LE2BE64(value) : value;
+	return value;
+}
+
 void SDFSetEndian(HSDF hSDF, uint8_t endian)
 {
 	SDFContext * pContext = (SDFContext*) hSDF;

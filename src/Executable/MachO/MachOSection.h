@@ -13,6 +13,10 @@
 #ifndef __MACHOSECTION_H__
 #define __MACHOSECTION_H__
 
+static const uint32_t MachOSectionAddress = 32;
+static const uint32_t MachOSectionSize    = 36;
+static const uint32_t MachOSectionOffset  = 40;
+
 static const SDFElement MachOSection[] =
 {
 	{"Mach-O Section"},

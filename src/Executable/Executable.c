@@ -126,7 +126,37 @@ char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 	return NULL;
 }
 
-uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA)
+uint32_t ExecutableGetObjectCount(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	if (NULL != pContext)
+	{
+		return pContext->nObjects;
+	}
+	return 0;
+}
+
+uint32_t ExecutableGetCurrentObject(HEXECUTABLE hExecutable)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	if (NULL != pContext)
+	{
+		return pContext->iObject;
+	}
+	return 0;
+}
+
+uint32_t ExecutableSetCurrentObject(HEXECUTABLE hExecutable, uint32_t index)
+{
+	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
+	if (NULL != pContext && index < pContext->nObjects)
+	{
+		return pContext->iObject = index;
+	}
+	return 0;
+}
+
+uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint64_t RVA)
 {
 	uint32_t offset = 0;
 	uint16_t i = 0;
@@ -139,12 +169,12 @@ uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint32_t RVA)
 		}
 		for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
 		{
-			uint32_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
-			uint32_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
-			uint32_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
+			uint64_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
+			uint64_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
+			uint64_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
 			if (Address <= RVA && RVA <= Address + Size)
 			{
-				offset = Data + RVA - Address;
+				offset = pContext->pObjects[pContext->iObject].Offset + Data + RVA - Address;
 				break;
 			}
 		}

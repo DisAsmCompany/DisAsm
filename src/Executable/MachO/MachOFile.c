@@ -30,7 +30,9 @@
 #include "MachOSection64.h"
 #include "MachODylib.h"
 #include "MachOSymTab.h"
+#include "MachOThreadStatus.h"
 #include "MachOThreadStatusX86.h"
+#include "MachOThreadStatusX64.h"
 
 uint32_t LEtoBE(uint32_t value)
 {
@@ -54,6 +56,7 @@ MachOFileContext;
 
 uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
 {
+	uint32_t base = 0;
 	uint32_t i = 0;
 	uint32_t count = 0;
 	const SDFElement * Segment = x64 ? MachOSegment64 : MachOSegment;
@@ -67,10 +70,31 @@ uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
 	SDFDestroy(hSegment);
 	count += SDFSizeInBytes(Segment);
 	
+	base = pContext->pObjects[pContext->iObject].nSections;
+	pContext->pObjects[pContext->iObject].nSections += NumberOfSections;
+	CHECK_ALLOC(pContext->pObjects[pContext->iObject].pSections = 
+				realloc(pContext->pObjects[pContext->iObject].pSections, sizeof(ExecutableSection) * pContext->pObjects[pContext->iObject].nSections));
+	
 	for (i = 0; i < NumberOfSections; ++i)
 	{
 		HSDF hSection = SDFCreate(Section, pContext->hReader);
 		SDFPrint(hSection);
+		
+		if (x64)
+		{
+			pContext->pObjects[pContext->iObject].pSections[base + i].VirtualAddress = SDFReadUInt64(hSection, MachOSection64Address);
+			pContext->pObjects[pContext->iObject].pSections[base + i].VirtualSize    = SDFReadUInt64(hSection, MachOSection64Size);
+			pContext->pObjects[pContext->iObject].pSections[base + i].FileAddress    = SDFReadUInt32(hSection, MachOSection64Offset);
+			pContext->pObjects[pContext->iObject].pSections[base + i].FileSize       = SDFReadUInt64(hSection, MachOSection64Size);
+		}
+		else 
+		{
+			pContext->pObjects[pContext->iObject].pSections[base + i].VirtualAddress = SDFReadUInt32(hSection, MachOSectionAddress);
+			pContext->pObjects[pContext->iObject].pSections[base + i].VirtualSize    = SDFReadUInt32(hSection, MachOSectionSize);
+			pContext->pObjects[pContext->iObject].pSections[base + i].FileAddress    = SDFReadUInt32(hSection, MachOSectionOffset);
+			pContext->pObjects[pContext->iObject].pSections[base + i].FileSize       = SDFReadUInt32(hSection, MachOSectionSize);
+		}
+		
 		SDFDestroy(hSection);
 		count += SDFSizeInBytes(Section);
 	}
@@ -117,10 +141,40 @@ uint32_t MachOProcessCommandSymTab(ExecutableContext * pContext)
 	return SDFSizeInBytes(MachOSymTab);
 }
 
+uint32_t MachOProcessCommandThreadX86(ExecutableContext * pContext)
+{
+	HSDF hThread = SDFCreate(MachOThreadStatusX86, pContext->hReader);
+	SDFPrint(hThread);
+	pContext->pObjects[pContext->iObject].EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(hThread, MachOThreadStatusX86EIP));
+	SDFDestroy(hThread);
+	return SDFSizeInBytes(MachOThreadStatusX86);
+}
+
+uint32_t MachOProcessCommandThreadX64(ExecutableContext * pContext)
+{
+	HSDF hThread = SDFCreate(MachOThreadStatusX64, pContext->hReader);
+	SDFPrint(hThread);
+	pContext->pObjects[pContext->iObject].EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt64(hThread, MachOThreadStatusX64EIP));
+	SDFDestroy(hThread);
+	return SDFSizeInBytes(MachOThreadStatusX64);
+}
+
 uint32_t MachOProcessCommandThread(ExecutableContext * pContext)
 {
+	uint32_t result = 0;
 	
-	return 0;
+	HSDF hThread = SDFCreate(MachOThreadStatus, pContext->hReader);
+	SDFPrint(hThread);
+	SDFDestroy(hThread);
+	result += SDFSizeInBytes(MachOThreadStatus);
+	
+	switch (pContext->pObjects[pContext->iObject].Arch)
+	{
+	case ArchX86: result += MachOProcessCommandThreadX86(pContext); break;
+	case ArchX64: result += MachOProcessCommandThreadX64(pContext); break;
+	default: break;
+	}
+	return result;
 }
 
 void MachOFileDestroy(ExecutableContext * pContext)
@@ -163,10 +217,18 @@ int MachOFileInit(ExecutableContext * pContext)
 	}
 	for (i = 0; i < pContext->nObjects; ++i)
 	{
-		uint32_t Offset = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset);
+		pContext->iObject = i;
+		pContext->pObjects[pContext->iObject].Offset = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset);
 		uint32_t CpuType = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType);
 		
-		CHECK_CALL(ReaderSeek(pContext->hReader, Offset));
+		switch (CpuType)
+		{
+			case kMachOCPUTypeX86: pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
+			case kMachOCPUTypeX64: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
+			default: break;
+		}
+		
+		CHECK_CALL(ReaderSeek(pContext->hReader, pContext->pObjects[pContext->iObject].Offset));
 		CHECK_CALL(THIS->phMachHeaders[i] = SDFCreate(CpuType & kMachOCPUType64 ? MachOHeader64 : MachOHeader, pContext->hReader));
 		SDFPrint(THIS->phMachHeaders[i]);
 		
@@ -210,7 +272,8 @@ int MachOFileInit(ExecutableContext * pContext)
 			SDFDestroy(hCommand);
 		}
 	}
-	return 0;
+	pContext->iObject = 0;
+	return 1;
 }
 
 int MachOFileCreate(ExecutableContext * pContext)

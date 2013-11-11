@@ -55,6 +55,7 @@ void SDFPrint(HSDF hSDF);
 uint8_t SDFReadUInt8(HSDF hSDF, uint32_t offset);
 uint16_t SDFReadUInt16(HSDF hSDF, uint32_t offset);
 uint32_t SDFReadUInt32(HSDF hSDF, uint32_t offset);
+uint64_t SDFReadUInt64(HSDF hSDF, uint64_t offset);
 void SDFSetEndian(HSDF hSDF, uint8_t endian);
 
 void SDFDestroy(HSDF hSDF);

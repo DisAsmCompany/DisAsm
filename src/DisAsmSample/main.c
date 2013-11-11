@@ -214,74 +214,19 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 	}
 }
 
-int main(int argc, char * const argv[])
+uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t base)
 {
-	uint32_t base = 0;
+	uint32_t entry = 0;
+	HDISASM hDisAsm = NULL;
+	uint32_t i = 0;
+	uint32_t count = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
 	List * list = ListCreate();
-	HREADER hReader = NULL;
-	HEXECUTABLE hExecutable = NULL;
-	HDISASM hDisAsm = NULL;
-	Architecture architecture = 0;
-	uint32_t count = 0;
-	uint32_t i = 0;
-	uint32_t entry = 0;
-	uint8_t memory = 0;
-
-	if (argc < 2)
-	{
-		PrintError("[ERROR] usage : DisAsmSample <file>\n");
-		return EXIT_FAILURE;
-	}
-	if (0 == strcmp(argv[1], "map"))
-	{
-		hDisAsm = DisAsmCreate(32);
-		DisAsmPrintOpCodeMap(hDisAsm);
-		DisAsmDestroy(hDisAsm);
-		return EXIT_SUCCESS;
-	}
-	if (argc >= 3)
-	{
-		if (0 == strcmp(argv[2], "memory"))
-		{
-			memory = 1;
-		}
-	}
-	if (memory)
-	{
-#ifdef _WIN32
-		MODULEINFO info = {0};
-		base = (uint32_t) LoadLibraryA(argv[1]);
-		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
-		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);
-#endif /* _WIN32 */
-	}
-	else
-	{
-		hReader = FileReaderCreate(argv[1]);
-	}
-	if (NULL == hReader)
-	{
-		PrintError("[ERROR] cannot open input file \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
-		return EXIT_FAILURE;
-	}
-	hExecutable = ExecutableCreate(hReader, memory);
-	if (NULL == hExecutable)
-	{
-		PrintError("[ERROR] cannot open executable file \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
-		return EXIT_FAILURE;
-	}
-	architecture = ExecutableGetArchitecture(hExecutable);
+	Architecture architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
-		PrintError("[ERROR] cannot open executable file (unknown/unsupported architecture) \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
-		return EXIT_FAILURE;
+		PrintError("[ERROR] cannot open executable file (unknown/unsupported architecture) \n");
+		return 0;
 	}
 	if (ArchX86 == architecture)
 	{
@@ -293,32 +238,34 @@ int main(int argc, char * const argv[])
 	}
 	if (NULL == hDisAsm)
 	{
-		PrintError("[ERROR] cannot create disassembler \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
-		return EXIT_FAILURE;
+		PrintError("[ERROR] cannot create disassembler \n");
+		return 0;
 	}
 	if (0 == base)
 	{
 		base = ExecutableGetBase(hExecutable);
-	}
+	}	
 	entry = ExecutableGetEntryPoint(hExecutable);
 	if (0 != entry)
 	{
-		PrintString("Entry Point :\n", kYellow);
-		ReaderSeek(hReader, entry);
-		DisAsmFunction(hDisAsm, hReader, hBenchmark, entry, base, list);
-		PrintString("\n", kYellow);
+		if (0 != ReaderSeek(hReader, entry))
+		{
+			PrintString("Entry Point :\n", kYellow);
+			DisAsmFunction(hDisAsm, hReader, hBenchmark, entry, base, list);
+			PrintString("\n", kYellow);
+		}
 	}
 	entry = ExecutableGetStubEntryPoint(hExecutable);
 	if (0 != entry)
 	{
-		HDISASM hDisAsmDOS = DisAsmCreate(16);
 		PrintString("Stub Entry Point :\n", kYellow);
-		ReaderSeek(hReader, entry);
-		DisAsmFunction(hDisAsmDOS, hReader, hBenchmark, entry, base, list);
-		PrintString("\n", kYellow);
-		DisAsmDestroy(hDisAsmDOS);
+		if (0 != ReaderSeek(hReader, entry))
+		{
+			HDISASM hDisAsmDOS = DisAsmCreate(16);
+			DisAsmFunction(hDisAsmDOS, hReader, hBenchmark, entry, base, list);
+			PrintString("\n", kYellow);
+			DisAsmDestroy(hDisAsmDOS);
+		}
 	}
 	count = ExecutableGetExportCount(hExecutable);
 	for (i = 0; i < count; ++i)
@@ -358,9 +305,75 @@ int main(int argc, char * const argv[])
 	}
 	ListDestroy(list);
 	DisAsmDestroy(hDisAsm);
-	ExecutableDestroy(hExecutable);
-	ReaderDestroy(hReader);
 	BenchmarkPrintData(hBenchmark);
 	BenchmarkDestroy(hBenchmark);
+	return 1;
+}
+
+int main(int argc, char * const argv[])
+{
+	uint32_t base = 0;
+	HREADER hReader = NULL;
+	HEXECUTABLE hExecutable = NULL;
+	uint32_t i = 0;
+	uint32_t count = 0;
+	uint8_t memory = 0;
+
+	if (argc < 2)
+	{
+		PrintError("[ERROR] usage : DisAsmSample <file>\n");
+		return EXIT_FAILURE;
+	}
+	if (0 == strcmp(argv[1], "map"))
+	{
+		HDISASM hDisAsm = DisAsmCreate(32);
+		DisAsmPrintOpCodeMap(hDisAsm);
+		DisAsmDestroy(hDisAsm);
+		return EXIT_SUCCESS;
+	}
+	if (argc >= 3)
+	{
+		if (0 == strcmp(argv[2], "memory"))
+		{
+			memory = 1;
+		}
+	}
+	if (memory)
+	{
+#ifdef _WIN32
+		MODULEINFO info = {0};
+		base = (uint32_t) LoadLibraryA(argv[1]);
+		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
+		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);
+#endif /* _WIN32 */
+	}
+	else
+	{
+		hReader = FileReaderCreate(argv[1]);
+	}
+	if (NULL == hReader)
+	{
+		PrintError("[ERROR] cannot open input file \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
+		return EXIT_FAILURE;
+	}
+	hExecutable = ExecutableCreate(hReader, memory);
+	if (NULL == hExecutable)
+	{
+		PrintError("[ERROR] cannot open executable file \"");
+		PrintError(argv[1]);
+		PrintError("\"\n");
+		return EXIT_FAILURE;
+	}
+	count = ExecutableGetObjectCount(hExecutable);
+	for (i = 0; i < count; ++i)
+	{
+		ExecutableSetCurrentObject(hExecutable, i);
+		ProcessExecutable(hReader, hExecutable, base);
+	}
+	ExecutableDestroy(hExecutable);
+	ReaderDestroy(hReader);
+	
 	return EXIT_SUCCESS;
 }

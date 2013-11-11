@@ -12,16 +12,36 @@ file(GLOB SOURCES ${SRC}/StrAsm/*.c)
 file(GLOB HEADERS ${SRC}/StrAsm/*.h)
 add_library(StrAsm ${SOURCES} ${HEADERS})
 
-file(GLOB SOURCES ${SRC}/Executable/*.c ${SRC}/Executable/PE/*.c ${SRC}/Executable/NE/*.c ${SRC}/Executable/LX/*.c ${SRC}/Executable/MachO/*.c ${SRC}/Executable/ELF/*.c)
-file(GLOB HEADERS ${SRC}/Executable/*.h ${SRC}/Executable/PE/*.h ${SRC}/Executable/NE/*.h ${SRC}/Executable/LX/*.h ${SRC}/Executable/MachO/*.h ${SRC}/Executable/ELF/*.h)
+file(GLOB SOURCES ${SRC}/Executable/PE/*.c)
+file(GLOB HEADERS ${SRC}/Executable/PE/*.h)
+add_library(PluginFormatPE ${SOURCES} ${HEADERS})
+
+file(GLOB SOURCES ${SRC}/Executable/NE/*.c)
+file(GLOB HEADERS ${SRC}/Executable/NE/*.h)
+add_library(PluginFormatNE ${SOURCES} ${HEADERS})
+
+file(GLOB SOURCES ${SRC}/Executable/LX/*.c)
+file(GLOB HEADERS ${SRC}/Executable/LX/*.h)
+add_library(PluginFormatLX ${SOURCES} ${HEADERS})
+
+file(GLOB SOURCES ${SRC}/Executable/ELF/*.c)
+file(GLOB HEADERS ${SRC}/Executable/ELF/*.h)
+add_library(PluginFormatELF ${SOURCES} ${HEADERS})
+
+file(GLOB SOURCES ${SRC}/Executable/MachO/*.c)
+file(GLOB HEADERS ${SRC}/Executable/MachO/*.h)
+add_library(PluginFormatMachO ${SOURCES} ${HEADERS})
+
+file(GLOB SOURCES ${SRC}/Executable/*.c)
+file(GLOB HEADERS ${SRC}/Executable/*.h)
 add_library(Executable ${SOURCES} ${HEADERS})
 
 file(GLOB SOURCES ${SRC}/DisAsmTest/*.c)
 file(GLOB HEADERS ${SRC}/DisAsmTest/*.h)
 add_executable(DisAsmTest ${SOURCES} ${HEADERS})
-target_link_libraries(DisAsmTest DisAsm StrAsm Executable)
+target_link_libraries(DisAsmTest DisAsm StrAsm PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO Executable)
 
 file(GLOB SOURCES ${SRC}/DisAsmSample/*.c)
 file(GLOB HEADERS ${SRC}/DisAsmSample/*.h)
 add_executable(DisAsmSample ${SOURCES} ${HEADERS})
-target_link_libraries(DisAsmSample DisAsm StrAsm Executable)
+target_link_libraries(DisAsmSample DisAsm StrAsm PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO Executable)
