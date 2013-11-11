@@ -44,7 +44,7 @@ NONE 6                 6                 6
 0x66 6                 6                 6
 0xF2 6                 6                 6
 0xF3 6                 6                 6
-NONE 7               X 7                 7
+NONE 7   X X X       X 7                 7
 0x66 7                 7                 7
 0xF2 7                 7                 7
 0xF3 7                 7                 7
@@ -65,7 +65,7 @@ NONE B X X   X     X X B   X X X     X X B
 0x66 B                 B                 B
 0xF2 B                 B                 B
 0xF3 B                 B                 B
-NONE C X X             C X X X X X X X X C
+NONE C X X           X C X X X X X X X X C
 0x66 C                 C                 C
 0xF2 C                 C                 C
 0xF3 C                 C                 C
@@ -138,9 +138,9 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F50h - 0F57h */
 	{DB}, {SQRTPS, OP2(Vps, Wps)}, {RSQRTPS, OP2(Vps, Wps)}, {RCPPS, OP2(Vps, Wps)}, {ANDPS, OP2(Vps, Wps)}, {ANDNPS, OP2(Vps, Wps)}, {ORPS, OP2(Vps, Wps)}, {XORPS, OP2(Vps, Wps)},
-	{DB}, {SQRTPD, OP2(Vpd, Wpd)}, {DB}, {DB}, {ANDPD, OP2(Vpd, Wpd)}, {ANDNPD, OP2(Vpd, Wpd)}, {ORPD, OP2(Vpd, Wpd)}, {XORPD, OP2(Vpd, Wpd)},
-	{DB}, {SQRTSD, OP2(Vsd, Wsd)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {SQRTSS, OP2(Vss, Wss)}, {RSQRTSS, OP2(Vss, Wss)}, {RCPSS, OP2(Vss, Wss)}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {SQRTPD, OP2(Vpd, Wpd)}, {DB},                     {DB},                   {ANDPD, OP2(Vpd, Wpd)}, {ANDNPD, OP2(Vpd, Wpd)}, {ORPD, OP2(Vpd, Wpd)}, {XORPD, OP2(Vpd, Wpd)},
+	{DB}, {SQRTSD, OP2(Vsd, Wsd)}, {DB},                     {DB},                   {DB},                   {DB},                    {DB},                  {DB},
+	{DB}, {SQRTSS, OP2(Vss, Wss)}, {RSQRTSS, OP2(Vss, Wss)}, {RCPSS, OP2(Vss, Wss)}, {DB},                   {DB},                    {DB},                  {DB},
 	/* 0F57h - 0F5Fh */
 	{ADDPS, OP2(Vps, Wps)}, {MULPS, OP2(Vps, Wps)}, {DB}, {DB}, {SUBPS, OP2(Vps, Wps)}, {MINPS, OP2(Vps, Wps)}, {DIVPS, OP2(Vps, Wps)}, {MAXPS, OP2(Vps, Wps)},
 	{ADDPD, OP2(Vpd, Wpd)}, {MULPD, OP2(Vpd, Wpd)}, {DB}, {DB}, {SUBPD, OP2(Vpd, Wpd)}, {MINPD, OP2(Vpd, Wpd)}, {DIVPD, OP2(Vpd, Wpd)}, {MAXPD, OP2(Vpd, Wpd)},
@@ -157,7 +157,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F70h - 0F77h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {EMMS},
+	{DB}, {GROUP12}, {GROUP13}, {GROUP14}, {DB}, {DB}, {DB}, {EMMS},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
@@ -207,7 +207,7 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC0h - 0FC7h */
-	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {DB}, {DB}, {DB}, {DB}, {DB}, {GROUP9},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

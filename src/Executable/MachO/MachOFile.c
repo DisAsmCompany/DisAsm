@@ -217,9 +217,10 @@ int MachOFileInit(ExecutableContext * pContext)
 	}
 	for (i = 0; i < pContext->nObjects; ++i)
 	{
+		uint32_t CpuType = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType);
+		
 		pContext->iObject = i;
 		pContext->pObjects[pContext->iObject].Offset = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderOffset);
-		uint32_t CpuType = SDFReadUInt32(THIS->phFatHeaders[i], MachOFatHeaderCpuType);
 		
 		switch (CpuType)
 		{

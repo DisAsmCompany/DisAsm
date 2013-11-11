@@ -338,6 +338,7 @@ int main(int argc, char * const argv[])
 			memory = 1;
 		}
 	}
+	LeakTrackerInstall(1);
 	if (memory)
 	{
 #ifdef _WIN32
@@ -374,6 +375,8 @@ int main(int argc, char * const argv[])
 	}
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);
+
+	LeakTrackerInstall(0);
 	
 	return EXIT_SUCCESS;
 }

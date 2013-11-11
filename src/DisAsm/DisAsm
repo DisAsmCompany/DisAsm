@@ -33,3 +33,4 @@
 #include "InstructionSet.h"
 #include "InstructionInfo.h"
 #include "DisAsm.h"
+#include "LeakTracker.h"

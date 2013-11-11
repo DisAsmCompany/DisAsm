@@ -762,88 +762,99 @@ void DisAsmPrintOpCodeMap(HDISASM hDisAsm)
 
 uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInfo * pInfo)
 {
+	InstructionInfo info;
 	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
 	OpCodeMapElement * pElement = 0;
 	uint8_t i = 0;
 
-	pInfo->length = 0;
+	info.length = 0;
 	pContext->error = 0;
 	pContext->hReader = hReader;
 	pContext->currentSize = pContext->size;
 
-	pInfo->nPrefixes = 0;
-	pInfo->hasREX = 0;
+	info.nPrefixes = 0;
+	info.hasREX = 0;
 
-	pElement = ChooseOpCode(pContext, pInfo);
+	if (NULL != pInfo)
+	{
+		pInfo->mnemonic = DB;
+		pInfo->length = 0;
+	}
+
+	pElement = ChooseOpCode(pContext, &info);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == pContext->error)
 	{
 		return 0;
 	}
-	pInfo->hasModRM = 0;
-	pInfo->set = GP;
+	info.hasSeg = 0;
+	info.hasModRM = 0;
+	info.set = GP;
 	if (ESCAPEX87 == pElement->mnemonic)
 	{
-		pInfo->hasModRM = 1;
-		pInfo->set = x87;
+		info.hasModRM = 1;
+		info.set = x87;
 	}
 	if (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP)
 	{
-		pInfo->hasModRM = 1;
+		info.hasModRM = 1;
 	}
-	pInfo->hasDisp = 0;
-	pInfo->hasImm  = 0;
+	info.hasDisp = 0;
+	info.hasImm  = 0;
 
-	CopyElementInfo(pInfo, pElement);
-	pInfo->hasModRM |= HASMODRM(pInfo->operands[0].type);
-	pInfo->hasModRM |= HASMODRM(pInfo->operands[1].type);
-	pInfo->hasModRM |= HASMODRM(pInfo->operands[2].type);
-	pInfo->hasModRM |= HASMODRM(pInfo->operands[3].type);
+	CopyElementInfo(&info, pElement);
+	info.hasModRM |= HASMODRM(info.operands[0].type);
+	info.hasModRM |= HASMODRM(info.operands[1].type);
+	info.hasModRM |= HASMODRM(info.operands[2].type);
+	info.hasModRM |= HASMODRM(info.operands[3].type);
 
-	if (pInfo->hasModRM)
+	if (info.hasModRM)
 	{
-		pInfo->ModRM.value = Fetch1(pContext, pInfo);
-		pInfo->hasSIB = (pInfo->ModRM.fields.Mod != 3) && (pInfo->ModRM.fields.RM == 4);
+		info.ModRM.value = Fetch1(pContext, &info);
+		info.hasSIB = (info.ModRM.fields.Mod != 3) && (info.ModRM.fields.RM == 4);
 
-		GroupDecode(pContext, pInfo);
-		x87Decode(pContext, pInfo);
-		if (ESCAPEX87 == pInfo->mnemonic || DB == pInfo->mnemonic || (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP))
+		GroupDecode(pContext, &info);
+		x87Decode(pContext, &info);
+		if (ESCAPEX87 == info.mnemonic || DB == info.mnemonic || (GROUP1 <= info.mnemonic && info.mnemonic <= GROUPP))
 		{
-			pInfo->mnemonic = DB;
 			return 0;
 		}
 
-		switch (pInfo->ModRM.fields.Mod)
+		switch (info.ModRM.fields.Mod)
 		{
 		case 0:
-			if (pInfo->ModRM.fields.RM == 5)
+			if (info.ModRM.fields.RM == 5)
 			{
-				pInfo->hasDisp = 1;
-				pInfo->sizeDisp = 4;
+				info.hasDisp = 1;
+				info.sizeDisp = 4;
 			}
 			break;
 		case 1:
-			pInfo->hasDisp = 1;
-			pInfo->sizeDisp = 1;
+			info.hasDisp = 1;
+			info.sizeDisp = 1;
 			break;
 		case 2:
-			pInfo->hasDisp = 1;
-			pInfo->sizeDisp = 4;
+			info.hasDisp = 1;
+			info.sizeDisp = 4;
 			break;
 		}
 
-		if (pInfo->hasSIB)
+		if (info.hasSIB)
 		{
-			pInfo->SIB.value = Fetch1(pContext, pInfo);
+			info.SIB.value = Fetch1(pContext, &info);
 		}
 	}
-	for (i = 0; i < pInfo->nOperands; ++i)
+	for (i = 0; i < info.nOperands; ++i)
 	{
-		OperandDecode(pContext, pInfo, &pInfo->operands[i]);
+		OperandDecode(pContext, &info, &info.operands[i]);
 	}
-	pInfo->disp = pInfo->hasDisp ? FetchN(pContext, pInfo, pInfo->sizeDisp) : 0;
-	pInfo->seg  = pInfo->hasSeg  ? Fetch2(pContext, pInfo) : 0;
-	pInfo->imm  = pInfo->hasImm  ? FetchN(pContext, pInfo, pInfo->sizeImm)  : 0;
-	return pInfo->length;
+	info.disp = info.hasDisp ? FetchN(pContext, &info, info.sizeDisp) : 0;
+	info.seg  = info.hasSeg  ? Fetch2(pContext, &info) : 0;
+	info.imm  = info.hasImm  ? FetchN(pContext, &info, info.sizeImm)  : 0;
+	if (NULL != pInfo)
+	{
+		memcpy(pInfo, &info, sizeof(InstructionInfo));
+	}
+	return info.length;
 }
 
 /* for tests */
