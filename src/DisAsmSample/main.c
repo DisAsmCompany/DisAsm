@@ -13,63 +13,12 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-typedef struct List_t
-{
-	uint32_t used;
-	uint32_t size;
-	uint32_t * memory;
-}
-List;
-
-List * ListCreate()
-{
-	List * list = (List*) calloc(1, sizeof(List));
-	list->used = 0;
-	list->size = 16;
-	list->memory = (uint32_t *) calloc(1, list->size * sizeof(uint32_t));
-	return list;
-}
-
-void ListDestroy(List * list)
-{
-	free(list->memory);
-	free(list);
-}
-
-uint32_t ListSize(List * list)
-{
-	return list->used;
-}
-
-void ListAdd(List * list, uint32_t value)
-{
-	uint32_t i = 0;
-	for (i = 0; i < list->used; ++i)
-	{
-		if (list->memory[i] == value)
-		{
-			return;
-		}
-	}
-	list->memory[list->used] = value;
-	if (++list->used == list->size)
-	{
-		list->size *= 2;
-		list->memory = realloc(list->memory, list->size * sizeof(uint32_t));
-	}
-}
-
-uint32_t ListGet(List * list, uint32_t index)
-{
-	return list->memory[index];
-}
-
 void PrintAddress(uint32_t address)
 {
 	printf("%08X", address);
 }
 
-void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, List * list)
+void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, DynamicArray * array)
 {
 	InstructionInfo info = {0};
 	uint8_t length = 0;
@@ -99,7 +48,7 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 			uint32_t offset = address + length + info.imm;
 			printf("; call to ");
 			PrintAddress(offset);
-			ListAdd(list, offset);
+			DynamicArrayAdd(array, offset);
 		}
 		/* non-conditional jump instructions (JMP) */
 		if (JMP == info.mnemonic && 1 == info.nOperands)
@@ -221,7 +170,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 	uint32_t i = 0;
 	uint32_t count = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
-	List * list = ListCreate();
+	DynamicArray * list = DynamicArrayCreate();
 	Architecture architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
@@ -282,9 +231,9 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		free(name);
 		free(forwarder);
 	}
-	for (i = 0; i < ListSize(list); ++i)
+	for (i = 0; i < DynamicArraySize(list); ++i)
 	{
-		uint32_t element = ListGet(list, i);
+		uint32_t element = DynamicArrayGet(list, i);
 		if (0 != element && 0 != ReaderSeek(hReader, element))
 		{
 			printf("function %d %08X :\n", i, element);
@@ -292,7 +241,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 			printf("\n");
 		}
 	}
-	ListDestroy(list);
+	DynamicArrayDestroy(list);
 	BenchmarkPrintData(hBenchmark);
 	BenchmarkDestroy(hBenchmark);
 	return 1;

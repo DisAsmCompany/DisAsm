@@ -32,5 +32,6 @@
 #include "Prefix.h"
 #include "InstructionSet.h"
 #include "InstructionInfo.h"
+#include "DynamicArray.h"
 #include "DisAsm.h"
 #include "LeakTracker.h"

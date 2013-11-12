@@ -582,7 +582,6 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 
 void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
-	OpCodeMapElement * pElement = NULL;
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
 		uint32_t index = 0;
@@ -594,8 +593,7 @@ void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 		{
 			index = pInfo->ModRM.fields.Reg + (pInfo->opcode - 0xD8) * 8;
 		}
-		pElement = &OpCodeMapX87[index];
-		CopyElementInfo(pInfo, pElement);
+		CopyElementInfo(pInfo, &OpCodeMapX87[index]);
 	}
 }
 
@@ -838,7 +836,8 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 OpCode _ChooseOpCode(uint8_t * buffer)
 {
 	InstructionInfo info = {0};
-
-	ChooseOpCode(4, &info);
+	DisAsmContext context;
+	context.size = context.currentSize = 4;
+	ChooseOpCode(&context, &info);
 	return info.opcode;
 }
