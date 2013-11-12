@@ -13,13 +13,8 @@
 #ifndef __DISASM_H__
 #define __DISASM_H__
 
-typedef void * HDISASM;
-
-HDISASM DisAsmCreate(uint32_t bitness);
-void DisAsmDestroy(HDISASM hDisAsm);
-
-void DisAsmPrintOpCodeMap(HDISASM hDisAsm);
-uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReaders, InstructionInfo * pInfo);
+void DisAsmPrintOpCodeMap();
+uint8_t DisAsmInstructionDecode(uint8_t size, HREADER hReaders, InstructionInfo * pInfo);
 
 char * DisAsmMnemonicToString(Mnemonic mnemonic);
 char * DisAsmRegisterToString(Register reg);

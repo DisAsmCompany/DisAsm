@@ -27,30 +27,6 @@ char * DisAsmRegisterToString(Register reg)
 	return RegisterToString(reg);
 }
 
-HDISASM DisAsmCreate(uint32_t bitness)
-{
-	DisAsmContext * pContext = calloc(1, sizeof(DisAsmContext));
-	if (NULL == pContext)
-	{
-		return NULL;
-	}
-	pContext->hReader = NULL;
-	switch (bitness)
-	{
-	case 8 : pContext->size = 1; break;
-	case 16: pContext->size = 2; break;
-	case 32: pContext->size = 4; break;
-	case 64: pContext->size = 8; break;
-	default: break;
-	}
-	return (HDISASM) pContext;
-}
-
-void DisAsmDestroy(HDISASM hDisAsm)
-{
-	free(hDisAsm);
-}
-
 uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint8_t result = 0;
@@ -718,7 +694,7 @@ uint32_t PrintOpCode(uint32_t OpCode)
 	return length;
 }
 
-void DisAsmPrintOpCodeMap(HDISASM hDisAsm)
+void DisAsmPrintOpCodeMap()
 {
 	uint32_t width = 16;
 	uint32_t i = 0;
@@ -760,17 +736,17 @@ void DisAsmPrintOpCodeMap(HDISASM hDisAsm)
 	}
 }
 
-uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInfo * pInfo)
+uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInfo * pInfo)
 {
 	InstructionInfo info;
-	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
+	DisAsmContext context;
 	OpCodeMapElement * pElement = 0;
 	uint8_t i = 0;
 
 	info.length = 0;
-	pContext->error = 0;
-	pContext->hReader = hReader;
-	pContext->currentSize = pContext->size;
+	context.error = 0;
+	context.hReader = hReader;
+	context.currentSize = context.size = bitness / 8;
 
 	info.nPrefixes = 0;
 	info.hasREX = 0;
@@ -781,8 +757,8 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 		pInfo->length = 0;
 	}
 
-	pElement = ChooseOpCode(pContext, &info);
-	if (NULL == pElement || DB == pElement->mnemonic || 1 == pContext->error)
+	pElement = ChooseOpCode(&context, &info);
+	if (NULL == pElement || DB == pElement->mnemonic || 1 == context.error)
 	{
 		return 0;
 	}
@@ -809,11 +785,11 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 
 	if (info.hasModRM)
 	{
-		info.ModRM.value = Fetch1(pContext, &info);
+		info.ModRM.value = Fetch1(&context, &info);
 		info.hasSIB = (info.ModRM.fields.Mod != 3) && (info.ModRM.fields.RM == 4);
 
-		GroupDecode(pContext, &info);
-		x87Decode(pContext, &info);
+		GroupDecode(&context, &info);
+		x87Decode(&context, &info);
 		if (ESCAPEX87 == info.mnemonic || DB == info.mnemonic || (GROUP1 <= info.mnemonic && info.mnemonic <= GROUPP))
 		{
 			return 0;
@@ -840,16 +816,16 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 
 		if (info.hasSIB)
 		{
-			info.SIB.value = Fetch1(pContext, &info);
+			info.SIB.value = Fetch1(&context, &info);
 		}
 	}
 	for (i = 0; i < info.nOperands; ++i)
 	{
-		OperandDecode(pContext, &info, &info.operands[i]);
+		OperandDecode(&context, &info, &info.operands[i]);
 	}
-	info.disp = info.hasDisp ? FetchN(pContext, &info, info.sizeDisp) : 0;
-	info.seg  = info.hasSeg  ? Fetch2(pContext, &info) : 0;
-	info.imm  = info.hasImm  ? FetchN(pContext, &info, info.sizeImm)  : 0;
+	info.disp = info.hasDisp ? FetchN(&context, &info, info.sizeDisp) : 0;
+	info.seg  = info.hasSeg  ? Fetch2(&context, &info) : 0;
+	info.imm  = info.hasImm  ? FetchN(&context, &info, info.sizeImm)  : 0;
 	if (NULL != pInfo)
 	{
 		memcpy(pInfo, &info, sizeof(InstructionInfo));
@@ -861,10 +837,8 @@ uint8_t DisAsmInstructionDecode(HDISASM hDisAsm, HREADER hReader, InstructionInf
 
 OpCode _ChooseOpCode(uint8_t * buffer)
 {
-	HDISASM hDisAsm = DisAsmCreate(32);
 	InstructionInfo info = {0};
-	DisAsmContext * pContext = (DisAsmContext*) hDisAsm;
-	ChooseOpCode(pContext, &info);
-	DisAsmDestroy(hDisAsm);
+
+	ChooseOpCode(4, &info);
 	return info.opcode;
 }

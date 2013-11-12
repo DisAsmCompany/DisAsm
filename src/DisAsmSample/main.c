@@ -69,7 +69,7 @@ void PrintAddress(uint32_t address)
 	printf("%08X", address);
 }
 
-void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, List * list)
+void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, List * list)
 {
 	InstructionInfo info = {0};
 	uint8_t length = 0;
@@ -79,7 +79,7 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 	while (1)
 	{
 		BenchmarkSampleBegin(hBenchmark);
-		length = DisAsmInstructionDecode(hDisAsm, hReader, &info);
+		length = DisAsmInstructionDecode(bitness, hReader, &info);
 		BenchmarkSampleEnd(hBenchmark);
 		if (0 == length)
 		{
@@ -216,8 +216,8 @@ void DisAsmFunction(HDISASM hDisAsm, HREADER hReader, HBENCHMARK hBenchmark, uin
 
 uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t base)
 {
+    uint8_t bitness = 0;
 	uint32_t entry = 0;
-	HDISASM hDisAsm = NULL;
 	uint32_t i = 0;
 	uint32_t count = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
@@ -228,19 +228,14 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		PrintError("[ERROR] cannot open executable file (unknown/unsupported architecture) \n");
 		return 0;
 	}
-	if (ArchX86 == architecture)
-	{
-		hDisAsm = DisAsmCreate(32);
-	}
-	if (ArchX64 == architecture)
-	{
-		hDisAsm = DisAsmCreate(64);
-	}
-	if (NULL == hDisAsm)
-	{
-		PrintError("[ERROR] cannot create disassembler \n");
-		return 0;
-	}
+    switch (architecture)
+    {
+    case ArchX86: bitness = 32; break;
+    case ArchX64: bitness = 64; break;
+    default:
+        PrintError("[ERROR] cannot open executable file (unsupported architecture) \n");
+        break;
+    }
 	if (0 == base)
 	{
 		base = ExecutableGetBase(hExecutable);
@@ -251,7 +246,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		if (0 != ReaderSeek(hReader, entry))
 		{
 			PrintString("Entry Point :\n", kYellow);
-			DisAsmFunction(hDisAsm, hReader, hBenchmark, entry, base, list);
+			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, list);
 			PrintString("\n", kYellow);
 		}
 	}
@@ -261,10 +256,8 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		PrintString("Stub Entry Point :\n", kYellow);
 		if (0 != ReaderSeek(hReader, entry))
 		{
-			HDISASM hDisAsmDOS = DisAsmCreate(16);
-			DisAsmFunction(hDisAsmDOS, hReader, hBenchmark, entry, base, list);
+			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, list);
 			PrintString("\n", kYellow);
-			DisAsmDestroy(hDisAsmDOS);
 		}
 	}
 	count = ExecutableGetExportCount(hExecutable);
@@ -273,11 +266,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		char * name = ExecutableGetExportName(hExecutable, i);
 		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
 		uint32_t address = ExecutableGetExportAddress(hExecutable, i);
-		if (0 == address)
-		{
-			continue;
-		}
-		if (0 != ReaderSeek(hReader, address))
+		if (0 != address && 0 != ReaderSeek(hReader, address))
 		{
 			if (NULL != forwarder)
 			{
@@ -286,7 +275,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 			else
 			{
 				printf("[0x%02X] %s\n", i, name ? name : "(null)");
-				DisAsmFunction(hDisAsm, hReader, hBenchmark, address, base, list);
+				DisAsmFunction(bitness, hReader, hBenchmark, address, base, list);
 			}
 			printf("\n");
 		}
@@ -296,15 +285,14 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 	for (i = 0; i < ListSize(list); ++i)
 	{
 		uint32_t element = ListGet(list, i);
-		if (0 != ReaderSeek(hReader, element))
+		if (0 != element && 0 != ReaderSeek(hReader, element))
 		{
 			printf("function %d %08X :\n", i, element);
-			DisAsmFunction(hDisAsm, hReader, hBenchmark, element, base, list);
+			DisAsmFunction(bitness, hReader, hBenchmark, element, base, list);
 			printf("\n");
 		}
 	}
 	ListDestroy(list);
-	DisAsmDestroy(hDisAsm);
 	BenchmarkPrintData(hBenchmark);
 	BenchmarkDestroy(hBenchmark);
 	return 1;
@@ -326,9 +314,7 @@ int main(int argc, char * const argv[])
 	}
 	if (0 == strcmp(argv[1], "map"))
 	{
-		HDISASM hDisAsm = DisAsmCreate(32);
-		DisAsmPrintOpCodeMap(hDisAsm);
-		DisAsmDestroy(hDisAsm);
+		DisAsmPrintOpCodeMap();
 		return EXIT_SUCCESS;
 	}
 	if (argc >= 3)

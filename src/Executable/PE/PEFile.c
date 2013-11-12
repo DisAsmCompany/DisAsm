@@ -68,7 +68,6 @@ PEFileContext;
 
 uint32_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 {
-    //char * name = NULL;
     uint32_t address = 0;
     uint32_t i = 0;
 	if (NULL != THIS->ExportOrdinals && NULL != THIS->ExportNames)
@@ -78,10 +77,7 @@ uint32_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 			/* specification is wrong : we don't need to subtract Ordinal Base here */
 			if (ordinal == THIS->ExportOrdinals[i])
 			{
-				if (0 != (address = ExecutableRVAToOffset(pContext, THIS->ExportNames[i])))
-				{
-					//name = FetchString(pContext, address);
-				}
+				address = ExecutableRVAToOffset(pContext, THIS->ExportNames[i]);
 				break;
 			}
 		}
@@ -192,6 +188,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 		OriginalFirstThunk = SDFReadUInt32(hImportDescriptor, PEImportDescriptorOriginalFirstThunk);
 		if (0 == OriginalFirstThunk)
 		{
+            SDFDestroy(hImportDescriptor);
 			break;
 		}
 		SDFPrint(hImportDescriptor);

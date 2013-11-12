@@ -42,4 +42,6 @@ typedef unsigned long long uint64_t;
 
 #endif /* defined(__STDC_VERSION__) && (__STDC_VERSION__ >= __C99__) */
 
+typedef uint64_t address_t;
+
 #endif /* __SUPPORTINT_H__ */

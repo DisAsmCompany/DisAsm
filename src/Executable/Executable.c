@@ -51,9 +51,19 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 void ExecutableDestroy(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pDestroy)
+	if (NULL != pContext)
 	{
-		pContext->pDestroy(hExecutable);
+        uint32_t i = 0;
+        for (i = 0; i < pContext->nObjects; ++i)
+        {
+            free(pContext->pObjects[i].pSections);
+            free(pContext->pObjects[i].pExports);
+        }
+        free(pContext->pObjects);
+        if (NULL != pContext->pDestroy)
+        {
+            pContext->pDestroy(hExecutable);
+        }
 	}
 	free(hExecutable);
 }

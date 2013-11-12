@@ -18,19 +18,16 @@
 
 void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 {
-	HDISASM hDisAsm = DisAsmCreate(32);
 	InstructionInfo info = {0};
 	uint8_t * buffer = (uint8_t*) &opcode;
-	uint8_t length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
+	uint8_t length = DisAsmInstructionDecode(32, buffer, &info);
 	TestAssert(1 == length);
 	TestAssert(1 == info.length);
 	TestAssert(mnemonic == info.mnemonic);
-	DisAsmDestroy(hDisAsm);
 }
 
 void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 {
-	HDISASM hDisAsm = DisAsmCreate(32);
 	uint8_t i = 0x00;
 	do
 	{
@@ -61,7 +58,7 @@ void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 		buffer[0] = (uint8_t) opcode;
 		buffer[1] = ModRM.value;
 		buffer[2] = SIB;
-		length = DisAsmInstructionDecode(hDisAsm, buffer, &info);
+		length = DisAsmInstructionDecode(32, buffer, &info);
 		TestAssert(expected == length);
 		TestAssert(expected == info.length);
 		TestAssert(mnemonic == info.mnemonic);
@@ -72,7 +69,6 @@ void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 		++i;
 	}
 	while (i != 0);
-	DisAsmDestroy(hDisAsm);
 }
 
 /* very simple test to decode famous x86 NOP instruction - opcode 90h */

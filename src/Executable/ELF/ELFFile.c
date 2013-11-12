@@ -155,6 +155,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 				}
 				printf("section %s\n", value);
 			}
+            free(value);
 		}
 
 		type = SDFReadUInt32(hSectionHeader, ELFSectionHeaderType);
