@@ -29,12 +29,15 @@ static pfnHeapFree pOriginalHeapFree = NULL;
 #define THUNK_SIZE 20
 uint8_t xThunkHeapAlloc[2 * THUNK_SIZE], xThunkHeapReAlloc[2 * THUNK_SIZE], xThunkHeapFree[2 * THUNK_SIZE], xThunkRtlFreeHeap[2 * THUNK_SIZE];
 
+enum {MaxCallStack = 16};
+
 typedef struct Allocation_t
 {
 	void * address;
     void * heap;
 	uint32_t size;
 	uint8_t freed;
+	address_t callstack[MaxCallStack];
 }
 Allocation;
 
@@ -122,7 +125,22 @@ typedef enum
 }
 SYM_TYPE;
 
-typedef struct _IMAGEHLP_MODULE64
+typedef struct _IMAGEHLP_MODULE64_V2
+{
+	DWORD    SizeOfStruct;
+	DWORD64  BaseOfImage;
+	DWORD    ImageSize;
+	DWORD    TimeDateStamp;
+	DWORD    CheckSum;
+	DWORD    NumSyms;
+	SYM_TYPE SymType;
+	CHAR     ModuleName[32];
+	CHAR     ImageName[256];
+	CHAR     LoadedImageName[256];
+}
+IMAGEHLP_MODULE64_V2, *PIMAGEHLP_MODULE64_V2;
+
+typedef struct _IMAGEHLP_MODULE64_V3
 {
 	DWORD    SizeOfStruct;
 	DWORD64  BaseOfImage;
@@ -148,7 +166,35 @@ typedef struct _IMAGEHLP_MODULE64
 	BOOL     SourceIndexed;
 	BOOL     Publics;
 }
-IMAGEHLP_MODULE64, *PIMAGEHLP_MODULE64;
+IMAGEHLP_MODULE64_V3, *PIMAGEHLP_MODULE64_V3;
+
+#define SYMOPT_CASE_INSENSITIVE         0x00000001
+#define SYMOPT_UNDNAME                  0x00000002
+#define SYMOPT_DEFERRED_LOADS           0x00000004
+#define SYMOPT_NO_CPP                   0x00000008
+#define SYMOPT_LOAD_LINES               0x00000010
+#define SYMOPT_OMAP_FIND_NEAREST        0x00000020
+#define SYMOPT_LOAD_ANYTHING            0x00000040
+#define SYMOPT_IGNORE_CVREC             0x00000080
+#define SYMOPT_NO_UNQUALIFIED_LOADS     0x00000100
+#define SYMOPT_FAIL_CRITICAL_ERRORS     0x00000200
+#define SYMOPT_EXACT_SYMBOLS            0x00000400
+#define SYMOPT_ALLOW_ABSOLUTE_SYMBOLS   0x00000800
+#define SYMOPT_IGNORE_NT_SYMPATH        0x00001000
+#define SYMOPT_INCLUDE_32BIT_MODULES    0x00002000
+#define SYMOPT_PUBLICS_ONLY             0x00004000
+#define SYMOPT_NO_PUBLICS               0x00008000
+#define SYMOPT_AUTO_PUBLICS             0x00010000
+#define SYMOPT_NO_IMAGE_SEARCH          0x00020000
+#define SYMOPT_SECURE                   0x00040000
+#define SYMOPT_NO_PROMPTS               0x00080000
+#define SYMOPT_OVERWRITE                0x00100000
+#define SYMOPT_IGNORE_IMAGEDIR          0x00200000
+#define SYMOPT_FLAT_DIRECTORY           0x00400000
+#define SYMOPT_FAVOR_COMPRESSED         0x00800000
+#define SYMOPT_ALLOW_ZERO_ADDRESS       0x01000000
+
+#define SYMOPT_DEBUG                    0x80000000
 
 typedef BOOL (__stdcall *PREAD_PROCESS_MEMORY_ROUTINE64)(HANDLE hProcess, DWORD64 qwBaseAddress, 
 														 PVOID lpBuffer, DWORD nSize, LPDWORD lpNumberOfBytesRead);
@@ -169,7 +215,8 @@ typedef BOOL  (__stdcall *pfnStackWalk64)(DWORD MachineType, HANDLE hProcess, HA
 typedef BOOL  (__stdcall *pfnSymGetSymFromAddr64)(HANDLE hProcess, DWORD64 qwAddr, PDWORD64 pdwDisplacement, PIMAGEHLP_SYMBOL64 Symbol);
 typedef PVOID (__stdcall *pfnSymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
 typedef DWORD64 (__stdcall *pfnSymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
-typedef BOOL (__stdcall *pfnSymGetModuleInfo64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULE64 ModuleInfo);
+typedef BOOL (__stdcall *pfnSymGetModuleInfo64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULE64_V3 ModuleInfo);
+typedef DWORD64 (__stdcall *pfnSymLoadModule64)(HANDLE hProcess, HANDLE hFile, PCSTR ImageName, PCSTR ModuleName, DWORD64 BaseOfDll, DWORD SizeOfDll);
 
 pfnSymInitialize            pSymInitialize            = NULL;
 pfnSymCleanup               pSymCleanup               = NULL;
@@ -180,94 +227,237 @@ pfnSymGetSymFromAddr64      pSymGetSymFromAddr64      = NULL;
 pfnSymFunctionTableAccess64 pSymFunctionTableAccess64 = NULL;
 pfnSymGetModuleBase64       pSymGetModuleBase64       = NULL;
 pfnSymGetModuleInfo64       pSymGetModuleInfo64       = NULL;
+pfnSymLoadModule64          pSymLoadModule64          = NULL;
 
-void StackWalk()
+enum {NtfsMaxPath = 32768};
+
+typedef struct ModuleInfo_t
+{
+	address_t address;
+	uint32_t size;
+	char path[NtfsMaxPath];
+	char name[NtfsMaxPath];
+}
+ModuleInfo;
+
+ModuleInfo * g_Modules = NULL;
+uint32_t g_nModules = 0;
+
+char * ShortName(char * name)
+{
+	char * p = name + strlen(name) - 1;
+	for (; p != name; --p)
+	{
+		if (*p == '\\' || *p == '/' || *p == ':')
+		{
+			return p;
+		}
+	}
+	return name;
+}
+
+void LoadModules(HANDLE hProcess)
+{
+	HMODULE * modules = NULL;
+	DWORD needed = 0;
+	DWORD i = 0;
+	char exe[NtfsMaxPath];
+
+	GetModuleFileNameA(NULL, exe, NtfsMaxPath);
+	EnumProcessModules(hProcess, NULL, 0, &needed);
+	g_nModules = needed / 4;
+	g_Modules = (ModuleInfo*) malloc(g_nModules * sizeof(ModuleInfo));
+	modules = (HMODULE*) malloc(g_nModules * sizeof(HMODULE));
+	if (NULL != modules && NULL != g_Modules)
+	{
+		EnumProcessModules(hProcess, modules, needed, &needed);
+
+		for (i = 0; i < g_nModules; ++i)
+		{
+			MODULEINFO info = {0};
+			IMAGEHLP_MODULE64_V3 info3 = {0};
+			info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V3);
+			GetModuleInformation(hProcess, modules[i], &info, sizeof(MODULEINFO));
+			GetModuleFileNameA(modules[i], g_Modules[i].path, NtfsMaxPath);
+			if (!pSymLoadModule64(hProcess, NULL, exe, g_Modules[i].path, info.lpBaseOfDll, info.SizeOfImage))
+			{
+				fprintf(stderr, "SymLoadModule64 failed for \"%s\"\n", g_Modules[i].path);
+			}
+			if (!pSymGetModuleInfo64(hProcess, info.lpBaseOfDll, &info3))
+			{
+				info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V2);
+				if (!pSymGetModuleInfo64(hProcess, info.lpBaseOfDll, &info3))
+				{
+					fprintf(stderr, "SymGetModuleInfo64 failed for \"%s\"\n", g_Modules[i].path);
+				}
+			}
+			g_Modules[i].address = info.lpBaseOfDll;
+			g_Modules[i].size = info.SizeOfImage;
+			strcpy(g_Modules[i].name, ShortName(g_Modules[i].path) + 1);
+		}
+	}
+	free(modules);
+}
+
+HMODULE hDbgHelp = NULL;
+
+void StackWalkInit()
 {
 	HANDLE hProcess = GetCurrentProcess();
 	HANDLE hThread  = GetCurrentThread();
-	HMODULE hModule = LoadLibrary(_T("dbghelp.dll"));
-	if (NULL != hModule)
+	hDbgHelp = LoadLibrary(_T("dbghelp.dll"));
+	
+	if (NULL != hDbgHelp)
 	{
-		pSymInitialize            = (pfnSymInitialize)            GetProcAddress(hModule, "SymInitialize");
-		pSymCleanup               = (pfnSymCleanup)               GetProcAddress(hModule, "SymCleanup");
-		pSymGetOptions            = (pfnSymGetOptions)            GetProcAddress(hModule, "SymGetOptions");
-		pSymSetOptions            = (pfnSymSetOptions)            GetProcAddress(hModule, "SymSetOptions");
-		pStackWalk64              = (pfnStackWalk64)              GetProcAddress(hModule, "StackWalk64");
-		pSymGetSymFromAddr64      = (pfnSymGetSymFromAddr64)      GetProcAddress(hModule, "SymGetSymFromAddr64");
-		pSymFunctionTableAccess64 = (pfnSymFunctionTableAccess64) GetProcAddress(hModule, "SymFunctionTableAccess64");
-		pSymGetModuleBase64       = (pfnSymGetModuleBase64)       GetProcAddress(hModule, "SymGetModuleBase64");
-		pSymGetModuleInfo64       = (pfnSymGetModuleInfo64)       GetProcAddress(hModule, "SymGetModuleInfo64");
+		char path[NtfsMaxPath] = {0};
+		char temp[NtfsMaxPath];
+		pSymInitialize            = (pfnSymInitialize)            GetProcAddress(hDbgHelp, "SymInitialize");
+		pSymCleanup               = (pfnSymCleanup)               GetProcAddress(hDbgHelp, "SymCleanup");
+		pSymGetOptions            = (pfnSymGetOptions)            GetProcAddress(hDbgHelp, "SymGetOptions");
+		pSymSetOptions            = (pfnSymSetOptions)            GetProcAddress(hDbgHelp, "SymSetOptions");
+		pStackWalk64              = (pfnStackWalk64)              GetProcAddress(hDbgHelp, "StackWalk64");
+		pSymGetSymFromAddr64      = (pfnSymGetSymFromAddr64)      GetProcAddress(hDbgHelp, "SymGetSymFromAddr64");
+		pSymFunctionTableAccess64 = (pfnSymFunctionTableAccess64) GetProcAddress(hDbgHelp, "SymFunctionTableAccess64");
+		pSymGetModuleBase64       = (pfnSymGetModuleBase64)       GetProcAddress(hDbgHelp, "SymGetModuleBase64");
+		pSymGetModuleInfo64       = (pfnSymGetModuleInfo64)       GetProcAddress(hDbgHelp, "SymGetModuleInfo64");
+		pSymLoadModule64          = (pfnSymLoadModule64)          GetProcAddress(hDbgHelp, "SymLoadModule64");
 
-		if (pSymInitialize(hProcess, NULL, false))
+		if (GetCurrentDirectoryA(NtfsMaxPath, temp))
 		{
-			DWORD i = 0;
-			DWORD * modules = NULL;
-			DWORD needed = 0;
-			CONTEXT context = {0};
-			STACKFRAME64 frame = {0};
-			DWORD machine = 0;
-			enum { MaxNameLength = 1024 }; 
-			IMAGEHLP_SYMBOL64 * pSymbol = (IMAGEHLP_SYMBOL64*) malloc(sizeof(IMAGEHLP_SYMBOL64) + MaxNameLength);
-			pSymbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
-			pSymbol->MaxNameLength = MaxNameLength;
-			RtlCaptureContext(&context);
+			temp[NtfsMaxPath - 1] = 0;
+			strcat(path, temp);
+			strcat(path, ";");
+		}
+		if (GetModuleFileNameA(NULL, temp, NtfsMaxPath))
+		{
+			temp[NtfsMaxPath - 1] = 0;
+			ShortName(temp)[0] = 0;
+			strcat(path, temp);
+			strcat(path, ";");
+		}
+		if (GetEnvironmentVariableA("_NT_SYMBOL_PATH", temp, NtfsMaxPath))
+		{
+			temp[NtfsMaxPath - 1] = 0;
+			strcat(path, temp);
+			strcat(path, ";");
+		}
+		if (GetEnvironmentVariableA("_NT_ALTERNATE_SYMBOL_PATH", temp, NtfsMaxPath))
+		{
+			temp[NtfsMaxPath - 1] = 0;
+			strcat(path, temp);
+			strcat(path, ";");
+		}
+		if (GetEnvironmentVariableA("SYSTEMROOT", temp, NtfsMaxPath))
+		{
+			temp[NtfsMaxPath - 1] = 0;
+			strcat(path, temp);
+			strcat(path, ";");
+			strcat(temp, "\\system32");
+			strcat(path, temp);
+			strcat(path, ";");
+		}
+		if (GetEnvironmentVariableA("TEMP", temp, NtfsMaxPath))
+		{
+			temp[NtfsMaxPath - 1] = 0;
+			strcat(path, "SRV*");
+			strcat(path, temp);
+			strcat(path, "\\websymbols*http://msdl.microsoft.com/download/symbols;");
+		}
+		else
+		{
+			strcat(path, "SRC*C:\\temp\\websymbols*http://msdl.microsoft.com/download/symbols;");
+		}
+
+		if (pSymInitialize(hProcess, path, false))
+		{
+			DWORD options = pSymGetOptions();
+			options |= SYMOPT_DEBUG;
+			pSymSetOptions(options);
+
+			LoadModules(hProcess);
+		}
+	}
+}
+
+void StackWalkSymbol(address_t address)
+{
+	DWORD i = 0;
+	DWORD64 disp;
+	enum { MaxNameLength = 1024 }; 
+	char buffer[sizeof(IMAGEHLP_SYMBOL64) + MaxNameLength];
+	IMAGEHLP_SYMBOL64 * pSymbol = (IMAGEHLP_SYMBOL64*) buffer;
+	pSymbol->SizeOfStruct = sizeof(IMAGEHLP_SYMBOL64);
+	pSymbol->MaxNameLength = MaxNameLength;
+	
+	for (i = 0; i < g_nModules; ++i)
+	{
+		if (g_Modules[i].address <= address && address <= g_Modules[i].address + g_Modules[i].size)
+		{
+			printf("%s!", g_Modules[i].name);
+			break;
+		}
+	}
+	
+	if (pSymGetSymFromAddr64(GetCurrentProcess(), address, &disp, pSymbol))
+	{
+		if (NULL != pSymbol->Name)
+		{
+			printf("%s", pSymbol->Name);
+		}
+	}
+}
+
+void StackWalkCleanup()
+{
+	if (NULL != pSymCleanup)
+	{
+		pSymCleanup(GetCurrentProcess());
+	}
+	FreeLibrary(hDbgHelp);
+	hDbgHelp = NULL;
+}
+
+void StackWalk(address_t * callstack)
+{
+	HANDLE hProcess = GetCurrentProcess();
+	HANDLE hThread  = GetCurrentThread();
+
+	CONTEXT context = {0};
+	STACKFRAME64 frame = {0};
+	DWORD machine = 0;
+	DWORD i = 0;
+	RtlCaptureContext(&context);
 #ifdef _M_IX86
-			machine = IMAGE_FILE_MACHINE_I386;
-			frame.AddrPC.Offset    = context.Eip;
-			frame.AddrPC.Mode      = AddrModeFlat;
-			frame.AddrFrame.Offset = context.Ebp;
-			frame.AddrFrame.Mode   = AddrModeFlat;
-			frame.AddrStack.Offset = context.Esp;
-			frame.AddrStack.Mode   = AddrModeFlat;
+	machine = IMAGE_FILE_MACHINE_I386;
+	frame.AddrPC.Offset    = context.Eip;
+	frame.AddrPC.Mode      = AddrModeFlat;
+	frame.AddrFrame.Offset = context.Ebp;
+	frame.AddrFrame.Mode   = AddrModeFlat;
+	frame.AddrStack.Offset = context.Esp;
+	frame.AddrStack.Mode   = AddrModeFlat;
 #endif /* _M_IX86 */
 #ifdef _M_X64
-			machine = IMAGE_FILE_MACHINE_AMD64;
+	machine = IMAGE_FILE_MACHINE_AMD64;
 #endif /* _M_IA64 */
 #ifdef _M_X64
-			machine = IMAGE_FILE_MACHINE_IA64;
+	machine = IMAGE_FILE_MACHINE_IA64;
 #endif /* _M_IA64 */
 
-			EnumProcessModules(hProcess, NULL, 0, &needed);
-			modules = (DWORD*) malloc(needed / 4);
-			EnumProcessModules(hProcess, (HMODULE*)modules, needed, &needed);
-			for (i = 0; i < needed / 4; ++i)
-			{
-				IMAGEHLP_MODULE64 info;
-				info.SizeOfStruct = sizeof(IMAGEHLP_MODULE64);
-				if (!pSymGetModuleInfo64(hProcess, modules[i], &info))
-				{
-					int x = 0;
-				}
-				else
-				{
-					int x = 0;
-				}
-			}
-
-			for (;;)
-			{
-				if (!pStackWalk64(machine, hProcess, hThread, &frame, &context, NULL, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL))
-				{
-					break;
-				}
-				if (0 == frame.AddrReturn.Offset)
-				{
-					break;
-				}
-				if (0 != frame.AddrPC.Offset)
-				{
-					DWORD64 disp;
-					if (pSymGetSymFromAddr64(hProcess, frame.AddrPC.Offset, &disp, pSymbol))
-					{
-						int x = 0;
-					}
-				}
-				printf("0x%08X\n", frame.AddrPC.Offset);
-			}
-
-			pSymCleanup(hProcess);
+	memset(callstack, 0, sizeof(address_t) * MaxCallStack);
+	for (i = 0; i < MaxCallStack; ++i)
+	{
+		if (!pStackWalk64(machine, hProcess, hThread, &frame, &context, NULL, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL))
+		{
+			break;
 		}
-		FreeLibrary(hModule);
+		if (0 == frame.AddrReturn.Offset)
+		{
+			break;
+		}
+		if (0 != frame.AddrPC.Offset)
+		{
+			callstack[i] = frame.AddrPC.Offset;
+		}
 	}
 }
 
@@ -328,7 +518,8 @@ void xAddAllocation(void * address, void * heap, uint32_t size, uint8_t freed)
 	    g_Allocations[g_nTotalAllocations - 1].address = address;
 	    g_Allocations[g_nTotalAllocations - 1].heap    = heap;
         g_Allocations[g_nTotalAllocations - 1].size    = size;
-	    g_Allocations[g_nTotalAllocations - 1].freed   = false;
+	    g_Allocations[g_nTotalAllocations - 1].freed   = freed;
+		StackWalk(g_Allocations[g_nTotalAllocations - 1].callstack);
     }
 }
 
@@ -552,33 +743,45 @@ void LeakTrackerInstall(uint8_t install)
 
 	if (install)
 	{
+		StackWalkInit();
+
 		g_Allocations = (Allocation*)HeapAlloc(GetProcessHeap(), 0, sizeof(Allocation));
 
-		/* need to capture RtlFreeHeap, because sometimes memory allocated by HeapAlloc
-		is being freed directly by this function instead of HeapFree */
-        pOriginalRtlFreeHeap = (pfnHeapFree)   (&xThunkRtlFreeHeap);
+		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
 		pOriginalHeapAlloc   = (pfnHeapAlloc)  (&xThunkHeapAlloc);
 		pOriginalHeapReAlloc = (pfnHeapReAlloc)(&xThunkHeapReAlloc);
-		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
+		pOriginalRtlFreeHeap = (pfnHeapFree)   (&xThunkRtlFreeHeap);
+		/* need to capture RtlFreeHeap, because sometimes memory allocated by HeapAlloc
+		is being freed directly by this function instead of HeapFree
+		but if RtlFreeHeap is the same function as HeapFree, no need to patch twice
+		*/
 
 		VirtualProtect(xThunkHeapAlloc,   PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
 		VirtualProtect(xThunkHeapReAlloc, PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
 		VirtualProtect(xThunkHeapFree,    PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
+		VirtualProtect(xThunkRtlFreeHeap, PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
 
 		PatchFunction((uint8_t*)HeapReAlloc, (uint8_t*)xHeapReAlloc, xThunkHeapReAlloc);
 		PatchFunction((uint8_t*)HeapAlloc,   (uint8_t*)xHeapAlloc,   xThunkHeapAlloc);
 		PatchFunction((uint8_t*)HeapFree,    (uint8_t*)xHeapFree,    xThunkHeapFree);
-        PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
+		if (RtlFreeHeap != HeapFree)
+		{
+			PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
+		}
 	}
 	else
 	{
 		uint32_t i = 0;
+		uint32_t j = 0;
 		uint32_t total = 0;
 
 		RestoreFunction((uint8_t*)HeapAlloc,   xThunkHeapAlloc);
 		RestoreFunction((uint8_t*)HeapReAlloc, xThunkHeapReAlloc);
 		RestoreFunction((uint8_t*)HeapFree,    xThunkHeapFree);
-        RestoreFunction((uint8_t*)RtlFreeHeap, xThunkRtlFreeHeap);
+		if (RtlFreeHeap != HeapFree)
+		{
+			RestoreFunction((uint8_t*)RtlFreeHeap, xThunkRtlFreeHeap);
+		}
 
 		for (i = 0; i < g_nTotalAllocations; ++i)
 		{
@@ -586,8 +789,22 @@ void LeakTrackerInstall(uint8_t install)
 			{
 				total += g_Allocations[i].size;
 				printf("memory leak 0x%08X of %d bytes\n", g_Allocations[i].address, g_Allocations[i].size);
+
+				for (j = 0; j < MaxCallStack; ++j)
+				{
+					if (0 == g_Allocations[i].callstack[j])
+					{
+						break;
+					}
+					printf("0x%08X ", g_Allocations[i].callstack[j]);
+					StackWalkSymbol(g_Allocations[i].callstack[j]);
+					printf("\n");
+				}
+				printf("\n");
 			}
 		}
 		printf("total leaked %d bytes\n", total);
+
+		StackWalkCleanup();
 	}
 }
