@@ -417,6 +417,23 @@ void StackWalkCleanup()
 	hDbgHelp = NULL;
 }
 
+#ifndef GETCONTEXT
+#ifdef _M_IX86
+#define GETCONTEXT(c) \
+	do \
+	{ \
+		__asm    call x \
+		__asm x: pop eax \
+		__asm    mov c.Eip, eax \
+		__asm    mov c.Ebp, ebp \
+		__asm    mov c.Esp, esp \
+	} \
+	while(0);
+#else /* _M_IX86 */
+#define GETCONTEXT(c) do { RtlCaptureContext(&context); } while (0);
+#endif /* _M_IX86 */
+#endif /* GETCONTEXT */
+
 void StackWalk(address_t * callstack)
 {
 	HANDLE hProcess = GetCurrentProcess();
@@ -426,7 +443,8 @@ void StackWalk(address_t * callstack)
 	STACKFRAME64 frame = {0};
 	DWORD machine = 0;
 	DWORD i = 0;
-	RtlCaptureContext(&context);
+	GETCONTEXT(context);
+	context.ContextFlags = CONTEXT_FULL;
 #ifdef _M_IX86
 	machine = IMAGE_FILE_MACHINE_I386;
 	frame.AddrPC.Offset    = context.Eip;
