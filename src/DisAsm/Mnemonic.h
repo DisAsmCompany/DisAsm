@@ -154,7 +154,7 @@ _ENUM_ELEMENT(MOVSQ)  /* Move String to String */
 _ENUM_ELEMENT(CMPS)   /* Compare String Operands */
 _ENUM_ELEMENT(CMPSB)  /* Compare String Operands */
 _ENUM_ELEMENT(CMPSW)  /* Compare String Operands */
-_ENUM_ELEMENT(CMPSD)  /* Compare String Operands */
+/*_ENUM_ELEMENT(CMPSD)*/  /* Compare String Operands */
 _ENUM_ELEMENT(CMPSQ)  /* Compare String Operands */
 /* Store String */
 _ENUM_ELEMENT(STOS)   /* Store String */
@@ -411,6 +411,9 @@ _ENUM_ELEMENT(PAND)     /* Bitwise Logical AND */
 _ENUM_ELEMENT(PANDN)    /* Bitwise Logical AND-NOT */
 _ENUM_ELEMENT(POR)      /* Bitwise Logical OR */
 _ENUM_ELEMENT(PXOR)     /* Bitwise Logical XOR */
+_ENUM_ELEMENT(MOVQ)     /* Move Quadword */
+_ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
+_ENUM_ELEMENT(MOVDQU)   /* Move Unaligned Double-Quadword */
 /* 3DNow! */
 _ENUM_ELEMENT(FEMMS)
 /* SSE */
@@ -439,6 +442,10 @@ _ENUM_ELEMENT(DIVPS)    /* Divide Packed Single-Precision Floating Point Values 
 _ENUM_ELEMENT(DIVSS)    /* Divide Scalar Single-Precision Floating Point Values */
 _ENUM_ELEMENT(MAXPS)    /* Maximum Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(MAXSS)    /* Maximum Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(COMISS)   /* Compare Scalar Ordered Single-Precision Floating Point Values */
+_ENUM_ELEMENT(UCOMISS)  /* Compare Scalar Unordered Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CMPPS)    /* Compare Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CMPSS)    /* Compare Scalar Single-Precision Floating Point Values */
 /* SSE2 */
 _ENUM_ELEMENT(MOVUPD)   /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPD)   /* Move Aligned Packed Double-Precision Floating Point Values */
@@ -463,6 +470,10 @@ _ENUM_ELEMENT(DIVPD)    /* Divide Packed Double-Precision Floating Point Values 
 _ENUM_ELEMENT(DIVSD)    /* Divide Scalar Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MAXPD)    /* Maximum Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MAXSD)    /* Maximum Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(COMISD)   /* Compare Scalar Ordered Double-Precision Floating Point Values */
+_ENUM_ELEMENT(UCOMISD)  /* Compare Scalar Unordered Double-Precision Floating Point Values */
+_ENUM_ELEMENT(CMPPD)    /* Compare Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(CMPSD)    /* Compare Scalar Double-Precision Floating Point Values */
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */

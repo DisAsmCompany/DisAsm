@@ -1,4 +1,5 @@
 import os
+import sys
 extensions = {
 '.exe' : 'EXE : EXEcutable', 
 '.dll' : 'DLL : Dynamic Link Library', 
@@ -25,4 +26,6 @@ for root, dirs, files in os.walk(sysroot):
 		for ext in extensions:
 			if file.endswith(ext):
 				print(file);
+				print(file, file=sys.stderr);
+				sys.stderr.flush();
 				os.system(disasm + ' ' + file + ' > ' + 'out\\' + file + '.txt')
