@@ -102,41 +102,41 @@ char * UTC(uint64_t TimeStamp)
 void SDFPrintSignature(uint64_t Signature, uint32_t size)
 {
     uint32_t i = 0;
-    printf(" ('");
+    ConsoleIOPrint(" ('");
     for (i = 0; i < size; ++i)
     {
         char byte = (Signature >> (i * 8)) & 0xFF;
         if (isalnum(byte))
         {
-            printf("%c", byte);
+            ConsoleIOPrintFormatted("%c", byte);
         }
         else
         {
-            printf("[%02X]", byte);
+            ConsoleIOPrintFormatted("[%02X]", byte);
         }
     }
-    printf("')");
+    ConsoleIOPrint("')");
 }
-
 
 void SDFPrintEnum(const SDFEnum * enumeration, uint64_t value)
 {
     uint8_t first = 1;
 	if (NULL != enumeration)
 	{
-        printf(" (");
+        ConsoleIOPrint(" (");
 		while (NULL != enumeration->name)
 		{
             uint32_t mask = enumeration->mask;
             if (0 == mask) mask = 0xFFFFFFFFUL;
 			if (enumeration->value == (value & mask))
 			{
-                printf(first ? "%s" : " | %s", enumeration->name);
+				if (!first) ConsoleIOPrint(" | ");
+				ConsoleIOPrint(enumeration->name);
                 first = 0;
 			}
 			++enumeration;
 		}
-        printf(")");
+        ConsoleIOPrint(")");
 	}
 }
 
@@ -149,8 +149,8 @@ void SDFPrint(HSDF hSDF)
 	{
 		return;
 	}
-	PrintString(pContext->definition[0].name, kYellow);
-	PrintString("\n", kYellow);
+	PrintColoredString(pContext->definition[0].name, kYellow);
+	ConsoleIOPrint("\n");
 	for (i = 1; ; ++i)
 	{
 		if (NULL == pContext->definition[i].name)
@@ -161,21 +161,21 @@ void SDFPrint(HSDF hSDF)
 		{
 			if (kReserved != pContext->definition[i].type)
 			{
-				printf("%s", pContext->definition[i].name);
+				ConsoleIOPrintFormatted("%s", pContext->definition[i].name);
 				if (pContext->definition[i].count > 1)
 				{
-					printf("[%d]", j);
+					ConsoleIOPrintFormatted("[%d]", j);
 				}
 				if (kStringASCII == pContext->definition[i].type)
 				{
 					char * value = (char*) (pContext->data + offset);
-					printf(" : '");
+					ConsoleIOPrint(" : '");
 					for (k = 0; k < pContext->definition[i].size; ++k)
 					{
 						if (value[k] == 0) break;
-						printf("%c", value[k]);
+						ConsoleIOPrintFormatted("%c", value[k]);
 					}
-					printf("'");
+					ConsoleIOPrint("'");
 				}
                 else
                 {
@@ -183,37 +183,37 @@ void SDFPrint(HSDF hSDF)
                     if (1 == pContext->definition[i].size)
                     {
                         uint8_t value8 = *(uint8_t*) (pContext->data + offset);
-                        printf(" : 0x%02X", value8);
+                        ConsoleIOPrintFormatted(" : 0x%02X", value8);
                         value = value8;
                     }
                     if (2 == pContext->definition[i].size)
                     {
                         uint16_t value16 = *(uint16_t*) (pContext->data + offset);
                         value16 = pContext->endian ? LE2BE16(value16) : value16;
-                        printf(" : 0x%04X", value16);
+                        ConsoleIOPrintFormatted(" : 0x%04X", value16);
                         value = value16;
                     }
                     if (4 == pContext->definition[i].size)
                     {
                         uint32_t value32 = *(uint32_t*) (pContext->data + offset);
                         value32 = pContext->endian ? LE2BE32(value32) : value32;
-                        printf(" : 0x%08X", value32);
+                        ConsoleIOPrintFormatted(" : 0x%08X", value32);
                         value = value32;
                     }
                     if (8 == pContext->definition[i].size)
                     {
                         uint64_t value64 = *(uint64_t*) (pContext->data + offset);
                         value = pContext->endian ? LE2BE64(value64) : value64;
-                        printf(" : 0x%016LX", value64);
+                        ConsoleIOPrintFormatted(" : 0x%016LX", value64);
                         value = value64;
                     }
                     if (kUTC == pContext->definition[i].type)
                     {
-                        printf(" (%s)", UTC(value));
+                        ConsoleIOPrintFormatted(" (%s)", UTC(value));
                     }
                     if (kVersion == pContext->definition[i].type)
                     {
-                        printf(" (%Ld.%Ld.%Ld)", (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
+                        ConsoleIOPrintFormatted(" (%Ld.%Ld.%Ld)", (value >> 16) & 0xFF, (value >> 8) & 0xFF, value & 0xFF);
                     }
                     if (kSignature == pContext->definition[i].type)
                     {
@@ -221,7 +221,7 @@ void SDFPrint(HSDF hSDF)
                     }
                     SDFPrintEnum(pContext->definition[i].enumeration, value);
                 }
-				printf("\n");
+				ConsoleIOPrint("\n");
 			}
 			offset += pContext->definition[i].size;
 		}

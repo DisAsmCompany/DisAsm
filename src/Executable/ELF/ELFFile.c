@@ -153,7 +153,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 				{
 					THIS->NamesAddress = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
 				}
-				printf("section %s\n", value);
+				ConsoleIOPrintFormatted("section %s\n", value);
 			}
             free(value);
 		}

@@ -623,21 +623,21 @@ uint32_t PrintOpCode(uint32_t OpCode)
 	}
 	length += strlen(mnemonic);
 
-	printf("%s", mnemonic);
+	ConsoleIOPrint(mnemonic);
 
 	for (i = 0; i < nOperands; ++i)
 	{
-		printf(i == 0 ? " " : ", ");
+		ConsoleIOPrint(i == 0 ? " " : ", ");
 		length += i == 0 ? 1 : 2;
 		if (Reg == pElement->type[i])
 		{
 			char * reg = (char*)RegisterToString(pElement->reg[i]);
 			length += strlen(reg);
-			printf("%s", reg);
+			ConsoleIOPrint(reg);
 		}
 		else if (Imm == pElement->type[i])
 		{
-			printf("%d", pElement->reg[i]);
+			ConsoleIOPrintFormatted("%d", pElement->reg[i]);
 			++length;
 		}
 		else
@@ -649,42 +649,42 @@ uint32_t PrintOpCode(uint32_t OpCode)
 
 			switch (hi)
 			{
-			case E: printf("E"); break;
-			case G: printf("G"); break;
-			case I: printf("I"); break;
-			case J: printf("J"); break;
-			case M: printf("M"); break;
-			case O: printf("O"); break;
-			case X: printf("X"); break;
-			case Y: printf("Y"); break;
-			case F: printf("F"); break;
-			case S: printf("S"); break;
-			case R: printf("R"); break;
-			case D: printf("D"); break;
-			case C: printf("C"); break;
-			case U: printf("U"); break;
-			case V: printf("V"); break;
-			case W: printf("W"); break;
-			case P: printf("P"); break;
-			case Q: printf("Q"); break;
-			case A: printf("A"); break;
+			case E: ConsoleIOPrint("E"); break;
+			case G: ConsoleIOPrint("G"); break;
+			case I: ConsoleIOPrint("I"); break;
+			case J: ConsoleIOPrint("J"); break;
+			case M: ConsoleIOPrint("M"); break;
+			case O: ConsoleIOPrint("O"); break;
+			case X: ConsoleIOPrint("X"); break;
+			case Y: ConsoleIOPrint("Y"); break;
+			case F: ConsoleIOPrint("F"); break;
+			case S: ConsoleIOPrint("S"); break;
+			case R: ConsoleIOPrint("R"); break;
+			case D: ConsoleIOPrint("D"); break;
+			case C: ConsoleIOPrint("C"); break;
+			case U: ConsoleIOPrint("U"); break;
+			case V: ConsoleIOPrint("V"); break;
+			case W: ConsoleIOPrint("W"); break;
+			case P: ConsoleIOPrint("P"); break;
+			case Q: ConsoleIOPrint("Q"); break;
+			case A: ConsoleIOPrint("A"); break;
 			default: --length; break;
 			}
 			switch (lo)
 			{
-			case b: printf("b"); break;
-			case v: printf("v"); break;
-			case z: printf("z"); break;
-			case p: printf("p"); break;
-			case w: printf("w"); break;
-			case q: printf("q"); break;
-			case d: printf("d"); break;
-			case o: printf("o"); break;
-			case ps: printf("ps"); ++length; break;
-			case ss: printf("ss"); ++length; break;
-			case pd: printf("pd"); ++length; break;
-			case sd: printf("sd"); ++length; break;
-			case a: printf("a"); break;
+			case b:  ConsoleIOPrint("b"); break;
+			case v:  ConsoleIOPrint("v"); break;
+			case z:  ConsoleIOPrint("z"); break;
+			case p:  ConsoleIOPrint("p"); break;
+			case w:  ConsoleIOPrint("w"); break;
+			case q:  ConsoleIOPrint("q"); break;
+			case d:  ConsoleIOPrint("d"); break;
+			case o:  ConsoleIOPrint("o"); break;
+			case ps: ConsoleIOPrint("ps"); ++length; break;
+			case ss: ConsoleIOPrint("ss"); ++length; break;
+			case pd: ConsoleIOPrint("pd"); ++length; break;
+			case sd: ConsoleIOPrint("sd"); ++length; break;
+			case a:  ConsoleIOPrint("a"); break;
 			default: --length; break;
 			}
 		}
@@ -699,38 +699,38 @@ void DisAsmPrintOpCodeMap()
 	uint32_t j = 0;
 	uint8_t k = 0;
 
-	printf("  ");
+	ConsoleIOPrint("  ");
 	for (i = 0x00; i < 0x08; ++i)
 	{
-		printf("        %X       ", i);
+		ConsoleIOPrintFormatted("        %X       ", i);
 	}
-	printf("\n");
+	ConsoleIOPrint("\n");
 	for (i = 0x00; i < 0x10; ++i)
 	{
-		printf("%X ", i);
+		ConsoleIOPrintFormatted("%X ", i);
 		for (j = 0x00; j < 0x08; ++j)
 		{
 			uint32_t padding = width - PrintOpCode((i << 4) | j);
-			for (k = 0; k < padding; ++k) printf(" ");
+			for (k = 0; k < padding; ++k) ConsoleIOPrint(" ");
 		}
-		printf("\n");
+		ConsoleIOPrint("\n");
 	}
-	printf("\n");
-	printf("  ");
+	ConsoleIOPrint("\n");
+	ConsoleIOPrint("  ");
 	for (i = 0x08; i < 0x10; ++i)
 	{
-		printf("        %X       ", i);
+		ConsoleIOPrintFormatted("        %X       ", i);
 	}
-	printf("\n");
+	ConsoleIOPrint("\n");
 	for (i = 0x00; i < 0x10; ++i)
 	{
-		printf("%X ", i);
+		ConsoleIOPrintFormatted("%X ", i);
 		for (j = 0x08; j < 0x10; ++j)
 		{
 			uint32_t padding = width - PrintOpCode((i << 4) | j);
-			for (k = 0; k < padding; ++k) printf(" ");
+			for (k = 0; k < padding; ++k) ConsoleIOPrint(" ");
 		}
-		printf("\n");
+		ConsoleIOPrint("\n");
 	}
 }
 
@@ -758,6 +758,10 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pElement = ChooseOpCode(&context, &info);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == context.error)
 	{
+		if (NULL != pInfo)
+		{
+			memcpy(pInfo, &info, sizeof(InstructionInfo));
+		}
 		return 0;
 	}
 	info.hasSeg = 0;
@@ -790,6 +794,10 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 		x87Decode(&context, &info);
 		if (ESCAPEX87 == info.mnemonic || DB == info.mnemonic || (GROUP1 <= info.mnemonic && info.mnemonic <= GROUPP))
 		{
+			if (NULL != pInfo)
+			{
+				memcpy(pInfo, &info, sizeof(InstructionInfo));
+			}
 			return 0;
 		}
 

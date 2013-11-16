@@ -77,9 +77,9 @@ void BenchmarkPrintData(HBENCHMARK hBenchmark)
 
 	if (pContext->count > 0)
 	{
-		printf("avg : %.4f\n", (float) pContext->total / (pContext->frequency * pContext->count));
-		printf("min : %.4f\n", (float) pContext->_min / pContext->frequency);
-		printf("max : %.4f\n", (float) pContext->_max / pContext->frequency);
+		ConsoleIOPrintFormatted("avg : %.4f\n", (float) pContext->total / (pContext->frequency * pContext->count));
+		ConsoleIOPrintFormatted("min : %.4f\n", (float) pContext->_min / pContext->frequency);
+		ConsoleIOPrintFormatted("max : %.4f\n", (float) pContext->_max / pContext->frequency);
 	}
 }
 

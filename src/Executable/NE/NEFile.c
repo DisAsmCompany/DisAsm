@@ -44,7 +44,7 @@ int NEReadStringTable(ExecutableContext * pContext)
 		CHECK_CALL(ReaderRead(pContext->hReader, &ordinal, sizeof(uint16_t)));
 		buffer[length] = 0;
 
-		printf("%s\n", buffer);
+		ConsoleIOPrintFormatted("%s\n", buffer);
 
 		free(buffer);
 	}

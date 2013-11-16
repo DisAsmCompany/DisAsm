@@ -15,7 +15,7 @@
 
 void PrintAddress(uint32_t address)
 {
-	printf("%08X", address);
+	ConsoleIOPrintFormatted("%08X", address);
 }
 
 void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, DynamicArray * array)
@@ -32,12 +32,10 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 		BenchmarkSampleEnd(hBenchmark);
 		if (0 == length)
 		{
-			fprintf(stdout, "[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
-			fprintf(stderr, "[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
+			ConsoleIOPrintFormatted("[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
 			break;
 		}
-		PrintAddress(address);
-		printf(" ");
+		ConsoleIOPrintFormatted("%08X ", address);
 
 		StrAsmPrintInstruction(&info);
 
@@ -45,8 +43,8 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 
 		if (CALL == info.mnemonic && Jz == info.operands[0].type)
 		{
-			uint32_t offset = address + length + info.imm;
-			printf("; call to ");
+			uint32_t offset = address + info.imm;
+			ConsoleIOPrint("; call to ");
 			PrintAddress(offset);
 			DynamicArrayAdd(array, offset);
 		}
@@ -100,13 +98,13 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 					break;
 				}
 				destination += base;
-				printf("; jump to ");
+				ConsoleIOPrint("; jump to ");
 			}
 			/* special case - memory operand with no registers involved */
 			else if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
 			{
 				destination = info.disp;
-				printf("; jump to ");
+				ConsoleIOPrint("; jump to ");
 			}
 			/* jump uses registers, therefore cannot be calculated without emulation */
 			else
@@ -140,7 +138,7 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 				}
 			}
 		}
-		printf("\n");
+		ConsoleIOPrint("\n");
 
 		if (JO <= info.mnemonic && info.mnemonic <= JG)
 		{
@@ -150,15 +148,18 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 		{
 			break;
 		}
-		/* detect sequence MOV EAX, 4C01h; INT 21h */
-		if (ret && 2 == info.length && 0xCD == info.bytes[0] && 0x21 == info.bytes[1])
+		if (16 == bitness)
 		{
-			break;
-		}
-		ret = 0;
-		if (3 == info.length && 0xB8 == info.bytes[0] && 0x01 == info.bytes[1] && 0x4C == info.bytes[2])
-		{
-			ret = 1;
+			/* detect sequence MOV EAX, 4C01h; INT 21h */
+			if (ret && 2 == info.length && 0xCD == info.bytes[0] && 0x21 == info.bytes[1])
+			{
+				break;
+			}
+			ret = 0;
+			if (3 == info.length && 0xB8 == info.bytes[0] && 0x01 == info.bytes[1] && 0x4C == info.bytes[2])
+			{
+				ret = 1;
+			}
 		}
 	}
 }
@@ -170,11 +171,11 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 	uint32_t i = 0;
 	uint32_t count = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
-	DynamicArray * list = DynamicArrayCreate();
+	DynamicArray * array = NULL;
 	Architecture architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
-		PrintError("[ERROR] cannot open executable file (unknown/unsupported architecture) \n");
+		ConsoleIOPrint("[ERROR] cannot open executable file (unknown/unsupported architecture) \n");
 		return 0;
 	}
     switch (architecture)
@@ -182,31 +183,32 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
     case ArchX86: bitness = 32; break;
     case ArchX64: bitness = 64; break;
     default:
-        PrintError("[ERROR] cannot open executable file (unsupported architecture) \n");
+        ConsoleIOPrint("[ERROR] cannot open executable file (unsupported architecture) \n");
         break;
     }
 	if (0 == base)
 	{
 		base = ExecutableGetBase(hExecutable);
-	}	
+	}
+	array = DynamicArrayCreate();
 	entry = ExecutableGetEntryPoint(hExecutable);
 	if (0 != entry)
 	{
 		if (0 != ReaderSeek(hReader, entry))
 		{
-			PrintString("Entry Point :\n", kYellow);
-			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, list);
-			PrintString("\n", kYellow);
+			ConsoleIOPrint("Entry Point :\n");
+			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, array);
+			ConsoleIOPrint("\n");
 		}
 	}
 	entry = ExecutableGetStubEntryPoint(hExecutable);
 	if (0 != entry)
 	{
-		PrintString("Stub Entry Point :\n", kYellow);
+		ConsoleIOPrint("Stub Entry Point :\n");
 		if (0 != ReaderSeek(hReader, entry))
 		{
-			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, list);
-			PrintString("\n", kYellow);
+			DisAsmFunction(16, hReader, hBenchmark, entry, base, array);
+			ConsoleIOPrint("\n");
 		}
 	}
 	count = ExecutableGetExportCount(hExecutable);
@@ -219,29 +221,29 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 		{
 			if (NULL != forwarder)
 			{
-				printf("[0x%02X] %s -> %s\n", i, name ? name : "(null)", forwarder);
+				ConsoleIOPrintFormatted("[0x%02X] %s -> %s\n", i, name ? name : "(null)", forwarder);
 			}
 			else
 			{
-				printf("[0x%02X] %s\n", i, name ? name : "(null)");
-				DisAsmFunction(bitness, hReader, hBenchmark, address, base, list);
+				ConsoleIOPrintFormatted("[0x%02X] %s\n", i, name ? name : "(null)");
+				DisAsmFunction(bitness, hReader, hBenchmark, address, base, array);
 			}
-			printf("\n");
+			ConsoleIOPrint("\n");
 		}
 		free(name);
 		free(forwarder);
 	}
-	for (i = 0; i < DynamicArraySize(list); ++i)
+	for (i = 0; i < DynamicArraySize(array); ++i)
 	{
-		uint32_t element = DynamicArrayGet(list, i);
+		uint32_t element = DynamicArrayGet(array, i);
 		if (0 != element && 0 != ReaderSeek(hReader, element))
 		{
-			printf("function %d %08X :\n", i, element);
-			DisAsmFunction(bitness, hReader, hBenchmark, element, base, list);
-			printf("\n");
+			ConsoleIOPrintFormatted("function %d %08X :\n", i, element);
+			DisAsmFunction(bitness, hReader, hBenchmark, element, base, array);
+			ConsoleIOPrint("\n");
 		}
 	}
-	DynamicArrayDestroy(list);
+	DynamicArrayDestroy(array);
 	BenchmarkPrintData(hBenchmark);
 	BenchmarkDestroy(hBenchmark);
 	return 1;
@@ -256,9 +258,11 @@ int main(int argc, char * const argv[])
 	uint32_t count = 0;
 	uint8_t memory = 0;
 
+	ConsoleIOInit();
+
 	if (argc < 2)
 	{
-		PrintError("[ERROR] usage : DisAsmSample <file>\n");
+		ConsoleIOPrint("[ERROR] usage : DisAsmSample <file>\n");
 		return EXIT_FAILURE;
 	}
 	if (0 == strcmp(argv[1], "map"))
@@ -273,6 +277,8 @@ int main(int argc, char * const argv[])
 			memory = 1;
 		}
 	}
+	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+	CrashHandlerInstall();
 	LeakTrackerInstall(1);
 	if (memory)
 	{
@@ -289,17 +295,13 @@ int main(int argc, char * const argv[])
 	}
 	if (NULL == hReader)
 	{
-		PrintError("[ERROR] cannot open input file \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
+		ConsoleIOPrintFormatted("[ERROR] cannot open input file \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
 	hExecutable = ExecutableCreate(hReader, memory);
 	if (NULL == hExecutable)
 	{
-		PrintError("[ERROR] cannot open executable file \"");
-		PrintError(argv[1]);
-		PrintError("\"\n");
+		ConsoleIOPrintFormatted("[ERROR] cannot open executable file \"%s\"\n", argv[1]);
 		return EXIT_FAILURE;
 	}
 	count = ExecutableGetObjectCount(hExecutable);

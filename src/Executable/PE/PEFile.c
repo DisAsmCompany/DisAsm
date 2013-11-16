@@ -154,14 +154,14 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
-            printf("[0x%04X] 0x%08X \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
+            ConsoleIOPrintFormatted("[0x%04X] 0x%08X \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
 			free(forwarder);
 
 			pContext->pObjects[pContext->iObject].pExports[i].Forwarder = address;
 		}
 		else
 		{
-            printf("[0x%04X] 0x%08X \"%s\"\n", i, address, name ? name : "(null)");
+            ConsoleIOPrintFormatted("[0x%04X] 0x%08X \"%s\"\n", i, address, name ? name : "(null)");
 		}
 		free(name);
 		name = NULL;
@@ -194,7 +194,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 		SDFPrint(hImportDescriptor);
 		address = ExecutableRVAToOffset(pContext, SDFReadUInt32(hImportDescriptor, PEImportDescriptorName));
 		name = FetchString(pContext, address);
-		printf("Import %s\n", name ? name : "");
+		ConsoleIOPrintFormatted("Import %s\n", name ? name : "");
 		free(name);
 		address = ExecutableRVAToOffset(pContext, OriginalFirstThunk);
 		if (0 != address)
@@ -208,7 +208,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 				if (0 == element) break;
 				if (element & 0x80000000UL)
 				{
-					printf("ordinal 0x%08lX\n", element & ~0x80000000UL);
+					ConsoleIOPrintFormatted("ordinal 0x%08lX\n", element & ~0x80000000UL);
 				}
 				else
 				{
@@ -219,16 +219,16 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
                         ReaderSeek(pContext->hReader, ptr);
 					    ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
 					    name = FetchString(pContext, ptr + sizeof(uint16_t));
-					    printf("0x%04X %s\n", hint, name);
+					    ConsoleIOPrintFormatted("0x%04X %s\n", hint, name);
 					    free(name);
                     }
                     else
                     {
-                        printf("0x%04X\n", hint);
+                        ConsoleIOPrintFormatted("0x%04X\n", hint);
                     }
 				}
 			}
-			printf("\n");
+			ConsoleIOPrint("\n");
 		}
 		SDFDestroy(hImportDescriptor);
 		pos += SDFSizeInBytes(PEImportDescriptor);
@@ -276,26 +276,26 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 {
 	switch (index)
 	{
-	case 0x00: printf("IMAGE_DIRECTORY_ENTRY_EXPORT        \n"); break;
-	case 0x01: printf("IMAGE_DIRECTORY_ENTRY_IMPORT        \n"); break;
-	case 0x02: printf("IMAGE_DIRECTORY_ENTRY_RESOURCE      \n"); break;
-	case 0x03: printf("IMAGE_DIRECTORY_ENTRY_EXCEPTION     \n"); break;
-	case 0x04: printf("IMAGE_DIRECTORY_ENTRY_SECURITY      \n"); break;
-	case 0x05: printf("IMAGE_DIRECTORY_ENTRY_BASERELOC     \n"); break;
-	case 0x06: printf("IMAGE_DIRECTORY_ENTRY_DEBUG         \n"); break;
-	case 0x07: printf("IMAGE_DIRECTORY_ENTRY_ARCHITECTURE  \n"); break;
-	case 0x08: printf("IMAGE_DIRECTORY_ENTRY_GLOBALPTR     \n"); break;
-	case 0x09: printf("IMAGE_DIRECTORY_ENTRY_TLS           \n"); break;
-	case 0x0A: printf("IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   \n"); break;
-	case 0x0B: printf("IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  \n"); break;
-	case 0x0C: printf("IMAGE_DIRECTORY_ENTRY_IAT           \n"); break;
-	case 0x0D: printf("IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT  \n"); break;
-	case 0x0E: printf("IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR\n"); break;
-	case 0x0F: printf("IMAGE_DIRECTORY_ENTRY_RESERVED      \n"); break;
+	case 0x00: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_EXPORT        \n"); break;
+	case 0x01: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_IMPORT        \n"); break;
+	case 0x02: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_RESOURCE      \n"); break;
+	case 0x03: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_EXCEPTION     \n"); break;
+	case 0x04: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_SECURITY      \n"); break;
+	case 0x05: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_BASERELOC     \n"); break;
+	case 0x06: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_DEBUG         \n"); break;
+	case 0x07: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_ARCHITECTURE  \n"); break;
+	case 0x08: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_GLOBALPTR     \n"); break;
+	case 0x09: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_TLS           \n"); break;
+	case 0x0A: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   \n"); break;
+	case 0x0B: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  \n"); break;
+	case 0x0C: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_IAT           \n"); break;
+	case 0x0D: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT  \n"); break;
+	case 0x0E: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR\n"); break;
+	case 0x0F: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_RESERVED      \n"); break;
 	default: break;
 	}
-	printf("Size    : 0x%08X\n" , THIS->DataDirectories[index].Size);
-	printf("Address : 0x%08X\n" , THIS->DataDirectories[index].VirtualAddress);
+	ConsoleIOPrintFormatted("Size    : 0x%08X\n" , THIS->DataDirectories[index].Size);
+	ConsoleIOPrintFormatted("Address : 0x%08X\n" , THIS->DataDirectories[index].VirtualAddress);
 
 	if (THIS->DataDirectories[index].Size > 0 && THIS->DataDirectories[index].VirtualAddress > 0)
 	{
@@ -308,7 +308,7 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 		default: break;
 		}
 	}
-	printf("\n");
+	ConsoleIOPrint("\n");
 }
 
 void PEFileDestroy(ExecutableContext * pContext)
@@ -418,7 +418,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		}
 		for (i = 0; i < size; i += strlen(buffer + i) + 1)
 		{
-			printf("%s\n", buffer + i);
+			ConsoleIOPrintFormatted("%s\n", buffer + i);
 		}
 		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
 		{
@@ -435,13 +435,13 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			ReaderRead(pContext->hReader, &Symbol, 8);
 			if (0 == Symbol[0])
 			{
-				printf("%s\n", buffer + Symbol[1] - 4);
+				ConsoleIOPrintFormatted("%s\n", buffer + Symbol[1] - 4);
 			}
 			else
 			{
 				char name[9] = {0};
 				memcpy(name, &Symbol, 8);
-				printf("%s\n", name);
+				ConsoleIOPrintFormatted("%s\n", name);
 			}
 			
 			hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
@@ -570,9 +570,9 @@ int GetString(HREADER hReader)
 		{
 			break;
 		}
-		printf("%c", c);
+		ConsoleIOPrintFormatted("%c", c);
 	}
-	printf("\n");
+	ConsoleIOPrint("\n");
 	return 1;
 }
 
@@ -610,7 +610,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		{
 			return 0;
 		}
-		printf("Offset : 0x%08X\n", Offset);
+		ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
 	}
 	for (i = 0; i < NumberOfSymbols; ++i)
 	{
@@ -633,7 +633,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		{
 			return 0;
 		}
-		printf("Offset : 0x%08X\n", Offset);
+		ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
 	}
 	if (0 == ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)))
 	{
@@ -651,7 +651,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		{
 			return 0;
 		}
-		printf("0x%02X 0x%02X\n", Index1, Index2);
+		ConsoleIOPrintFormatted("0x%02X 0x%02X\n", Index1, Index2);
 	}
 	for (i = 0; i < NumberOfSymbols; ++i)
 	{

@@ -12,75 +12,6 @@
 #include "../DisAsm/DisAsm"
 #include "StrAsm"
 
-void PrintByte(uint32_t value)
-{
-	printf("%02X", value);
-}
-
-void InternalPrintString(const char * string, TextColor color)
-{
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO info = {0};
-	DWORD mode = 0;
-	DWORD written = 0;
-	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (GetConsoleMode(hStdOut, &mode))
-	{
-		WORD attributes;
-		GetConsoleScreenBufferInfo(hStdOut, &info);
-		attributes = info.wAttributes & ~(FOREGROUND_BLUE | FOREGROUND_GREEN |FOREGROUND_RED | FOREGROUND_INTENSITY);
-		attributes |= (color & kRed)   ? FOREGROUND_RED   : 0;
-		attributes |= (color & kGreen) ? FOREGROUND_GREEN : 0;
-		attributes |= (color & kBlue)  ? FOREGROUND_BLUE  : 0;
-		attributes |= FOREGROUND_INTENSITY;
-		SetConsoleTextAttribute(hStdOut, attributes);
-		WriteConsole(hStdOut, string, strlen(string), &written, NULL);
-		SetConsoleTextAttribute(hStdOut, info.wAttributes);
-	}
-	else
-	{
-		printf("%s", string);
-		//WriteFile(hStdOut, string, strlen(string), &written, NULL);
-	}
-	//FlushFileBuffers(hStdOut);
-#else /* _WIN32 */
-	printf("%s", string);
-#endif /* _WIN32 */
-}
-
-void PrintError(const char * string)
-{
-#ifdef _WIN32
-	CONSOLE_SCREEN_BUFFER_INFO info = {0};
-	DWORD mode = 0;
-	DWORD written = 0;
-	HANDLE hStdOut = GetStdHandle(STD_ERROR_HANDLE);
-	if (GetConsoleMode(hStdOut, &mode))
-	{
-		WORD attributes;
-		GetConsoleScreenBufferInfo(hStdOut, &info);
-		attributes = info.wAttributes & ~(FOREGROUND_BLUE | FOREGROUND_GREEN |FOREGROUND_RED | FOREGROUND_INTENSITY);
-		attributes |= FOREGROUND_RED | FOREGROUND_INTENSITY;
-		SetConsoleTextAttribute(hStdOut, attributes);
-		WriteConsole(hStdOut, string, strlen(string), &written, NULL);
-		SetConsoleTextAttribute(hStdOut, info.wAttributes);
-	}
-	else
-	{
-		WriteFile(hStdOut, string, strlen(string), &written, NULL);
-	}
-	FlushFileBuffers(hStdOut);
-	OutputDebugStringA(string);
-#else /* _WIN32 */
-	fprintf(stderr, "%s", string);
-#endif /* _WIN32 */
-}
-
-void PrintString(const char * string, TextColor color)
-{
-	InternalPrintString(string, color);
-}
-
 uint8_t IsNegative(uint32_t value, uint8_t size)
 {
 	return !!(value & (0x80 << 8 * (size - 1)));
@@ -115,7 +46,7 @@ void PrintValue(uint64_t value)
 		PrintByte((value >> 8) & 0xFF);
 	}
 	PrintByte(value & 0xFF);
-	printf("h");
+	ConsoleIOPrint("h");
 }
 
 void PrintSegment(InstructionInfo * pInfo)
@@ -125,12 +56,12 @@ void PrintSegment(InstructionInfo * pInfo)
 	{
 		switch (pInfo->prefixes[i].mnemonic)
 		{
-		case PrefixCS: printf("CS:"); break;
-		case PrefixSS: printf("SS:"); break;
-		case PrefixDS: printf("DS:"); break;
-		case PrefixES: printf("ES:"); break;
-		case PrefixFS: printf("FS:"); break;
-		case PrefixGS: printf("GS:"); break;
+		case PrefixCS: ConsoleIOPrint("CS:"); break;
+		case PrefixSS: ConsoleIOPrint("SS:"); break;
+		case PrefixDS: ConsoleIOPrint("DS:"); break;
+		case PrefixES: ConsoleIOPrint("ES:"); break;
+		case PrefixFS: ConsoleIOPrint("FS:"); break;
+		case PrefixGS: ConsoleIOPrint("GS:"); break;
 		default:break;
 		}
 	}
@@ -140,28 +71,26 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 {
 	if (pOperand->type == Reg)
 	{
-		char * reg = DisAsmRegisterToString(pOperand->value.reg);
 		if (pOperand->memory)
 		{
 			PrintSegment(pInfo);
-			printf("[");
+			ConsoleIOPrint("[");
 
 			if (pOperand->hasBase)
 			{
-				char * base = DisAsmRegisterToString(pOperand->value.reg);
-				printf("%s", base);
+				ConsoleIOPrint(DisAsmRegisterToString(pOperand->value.reg));
 			}
 			if (pOperand->hasIndex)
 			{
 				if (pOperand->hasBase)
 				{
-					printf(" + ");
+					ConsoleIOPrint(" + ");
 				}
 				if (pOperand->scale > 1)
 				{
-					printf("%d * ", pOperand->scale);
+					ConsoleIOPrintFormatted("%d * ", pOperand->scale);
 				}
-				printf("%s", DisAsmRegisterToString(pOperand->index));
+				ConsoleIOPrint(DisAsmRegisterToString(pOperand->index));
 			}
 			if (pInfo->hasDisp)
 			{
@@ -169,11 +98,11 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 				{
 					if (pOperand->hasBase || pOperand->hasIndex)
 					{
-						printf(" - ");
+						ConsoleIOPrint(" - ");
 					}
 					else 
 					{
-						printf("-");
+						ConsoleIOPrint("-");
 					}
 
 					PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
@@ -182,16 +111,16 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 				{
 					if (pOperand->hasBase || pOperand->hasIndex)
 					{
-						printf(" + ");
+						ConsoleIOPrint(" + ");
 					}
 					PrintValue(pInfo->disp);
 				}
 			}
-			printf("]");
+			ConsoleIOPrint("]");
 		}
 		else 
 		{
-			printf("%s", reg);
+			ConsoleIOPrint(DisAsmRegisterToString(pOperand->value.reg));
 		}
 
 	}
@@ -206,15 +135,15 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	if (HITYPE(pOperand->type) == O)
 	{
 		PrintSegment(pInfo);
-		printf("[");
+		ConsoleIOPrint("[");
 		PrintValue(pInfo->imm);
-		printf("]");
+		ConsoleIOPrint("]");
 	}
 	if (HITYPE(pOperand->type) == I)
 	{
 		if (IsNegative(pInfo->imm, pInfo->sizeImm))
 		{
-			printf("-");
+			ConsoleIOPrint("-");
 			PrintValue(Inverse(pInfo->imm, pInfo->sizeImm));
 		}
 		else
@@ -224,11 +153,11 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	}
 	if (HITYPE(pOperand->type) == X)
 	{
-		printf("DS:[ESI]");
+		ConsoleIOPrint("DS:[ESI]");
 	}
 	if (HITYPE(pOperand->type) == Y)
 	{
-		printf("ES:[EDI]");
+		ConsoleIOPrint("ES:[EDI]");
 	}
 }
 
@@ -238,12 +167,11 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	uint8_t i;
 	for (i = 0; i < pInfo->length; ++i)
 	{
-		PrintByte(pInfo->bytes[i]);
-		printf(" ");
+		ConsoleIOPrintFormatted("%02X ", pInfo->bytes[i]);
 	}
 	for (i = pInfo->length; i < 15; ++i)
 	{
-		printf("   ");
+		ConsoleIOPrint("   ");
 	}
 	for (i = 0; i < pInfo->nPrefixes; ++i)
 	{
@@ -256,7 +184,8 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 		case REPE:
 		case REPZ:
 			mnemonic = DisAsmMnemonicToString(pInfo->prefixes[i].mnemonic);
-			printf("%s ", mnemonic);
+			PrintColoredString(mnemonic, kGreen);
+			ConsoleIOPrint(" ");
 			break;
 		default:
 			break;
@@ -264,11 +193,11 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	}
 	mnemonic = DisAsmMnemonicToString(pInfo->mnemonic);
 	if (mnemonic[0] == '_') ++mnemonic;
-	PrintString(mnemonic, kBlue);
+	PrintColoredString(mnemonic, kBlue);
 
 	for (i = 0; i < pInfo->nOperands; ++i)
 	{
-		printf(i > 0 ? ", " : " ");
+		ConsoleIOPrint(i > 0 ? ", " : " ");
 		PrintOperand(pInfo, &pInfo->operands[i]);
 	}
 }
