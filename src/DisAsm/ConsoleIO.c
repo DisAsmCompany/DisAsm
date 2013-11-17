@@ -27,6 +27,16 @@ uint32_t xstrlen(const char * str)
 	return length;
 }
 
+void xstrcat(char * dst, uint32_t size, const char * src)
+{
+	uint32_t sizedst = xstrlen(dst);
+	uint32_t sizesrc = xstrlen(src);
+	uint32_t remain = sizedst < size ? size - sizedst : 0;
+	uint32_t copy = sizesrc > remain ? remain : sizesrc;
+
+	memcpy(dst + sizedst, src, copy);
+}
+
 void ConsoleIOInit()
 {
 	DWORD mode = 0;
@@ -88,12 +98,12 @@ void PrintColoredString(const char * str, TextColor color)
 	ConsoleIOPrintInternal(str, xstrlen(str), color, 0);
 }
 
-void PrintByte(uint32_t value)
+void PrintByte(uint64_t value)
 {
-	ConsoleIOPrintFormatted("%02X", value);
+	ConsoleIOPrintFormatted("%02LX", value);
 }
 
-uint32_t AppendDec(char * buffer, uint32_t value)
+uint32_t AppendDec(char * buffer, uint64_t value, uint32_t width)
 {
 	uint32_t length = 0;
 	uint32_t i = 0;
@@ -108,16 +118,21 @@ uint32_t AppendDec(char * buffer, uint32_t value)
 		++length;
 		divider *= 10;
 	}
+	width = width < length ? length : width;
+	for (i = length; i < width; ++i)
+	{
+		buffer[i - length] = '0';
+	}
 	for (i = 0; i < length; ++i)
 	{
 		uint32_t divider10 = divider / 10;
-		buffer[i] = (value % divider) / divider10 + '0';
+		buffer[width - length + i] = (char)((value % divider) / divider10 + '0');
 		divider = divider10;
 	}
-	return length;
+	return width;
 }
 
-uint32_t AppendHex(char * buffer, uint32_t value, uint32_t width)
+uint32_t AppendHex(char * buffer, uint64_t value, uint32_t width)
 {
 	char digits[] = "0123456789ABCDEF";
 	uint32_t i = 0;
@@ -178,28 +193,28 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 				case 'c': message[j] = va_arg(args, char); ++i; ++j; break;
 				case 'd':
 					{
-						uint32_t value = va_arg(args, uint32_t);
+						uint64_t value = large ? va_arg(args, uint64_t) : va_arg(args, uint32_t);
 						++i;
-						j += AppendDec(message + j, value);
+						j += AppendDec(message + j, value, width);
 					}
 					break;
 				case 'f':
 					{
-						float value = va_arg(args, float);
+						/*float value = va_arg(args, float);*/
 					}
-				case 'l': large = 1; break;
-				case 'L': stop = 0; break;
+				case 'l':
+				case 'L': stop = 0; large = 1; ++i; break;
 				case 's':
 					{
 						const char * value = va_arg(args, const char *);
-						strcat(message + j, value);
+						xstrcat(message + j, MaxLength, value);
 						j += strlen(value);
 						++i;
 					}
 					break;
 				case 'X':
 					{
-						uint32_t value = va_arg(args, uint32_t);
+						uint64_t value = large ? va_arg(args, uint64_t) : va_arg(args, uint32_t);
 						++i;
 						j += AppendHex(message + j, value, width);
 					}

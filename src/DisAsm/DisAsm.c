@@ -558,7 +558,7 @@ void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 	pInfo->operands[3].value.reg = pElement->reg[3];
 }
 
-void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
+void GroupDecode(InstructionInfo * pInfo)
 {
 	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
@@ -580,7 +580,7 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
-void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+void x87Decode(InstructionInfo * pInfo)
 {
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
@@ -790,8 +790,8 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 		info.ModRM.value = Fetch1(&context, &info);
 		info.hasSIB = (info.ModRM.fields.Mod != 3) && (info.ModRM.fields.RM == 4);
 
-		GroupDecode(&context, &info);
-		x87Decode(&context, &info);
+		GroupDecode(&info);
+		x87Decode(&info);
 		if (ESCAPEX87 == info.mnemonic || DB == info.mnemonic || (GROUP1 <= info.mnemonic && info.mnemonic <= GROUPP))
 		{
 			if (NULL != pInfo)

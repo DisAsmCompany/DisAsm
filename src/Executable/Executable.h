@@ -13,8 +13,8 @@
 #ifndef __EXECUTABLE_H__
 #define __EXECUTABLE_H__
 
-#define CHECK_CALL(x) do { if (0 == (x)) return 0; } while (0);
-#define CHECK_ALLOC(x) do { if (NULL == (x)) return 0; } while (0);
+#define CHECK_CALL(x) for (;;) { if (0 == (x)) return 0; break; }
+#define CHECK_ALLOC(x) for (;;) { if (NULL == (x)) return 0; break; }
 
 typedef void * HEXECUTABLE;
 
@@ -24,31 +24,31 @@ typedef void (*pfnExecutableDestroy)(struct ExecutableContext_t * hExecutable);
 
 typedef struct ExecutableSection_t
 {
-	uint64_t VirtualAddress;
-	uint64_t VirtualSize;
-	uint64_t VirtualAlignment;
-	uint64_t FileAddress;
-	uint64_t FileSize;
-	uint64_t FileAlignment;
+	address_t VirtualAddress;
+	uint64_t  VirtualSize;
+	uint32_t  VirtualAlignment;
+	address_t FileAddress;
+	uint64_t  FileSize;
+	uint32_t  FileAlignment;
 }
 ExecutableSection;
 
 typedef struct ExecutableSymbol_t
 {
-	uint32_t Name;
-	uint32_t Ordinal;
-	uint32_t Address;
-	uint32_t Forwarder;
+	address_t Name;
+	uint32_t  Ordinal;
+	address_t Address;
+	address_t Forwarder;
 }
 ExecutableSymbol;
 
 typedef struct ExecutableObject_t
 {
 	Architecture Arch;
-	uint32_t EntryPoint;
-	uint32_t StubEntryPoint;
-	uint32_t Base;
-	uint32_t Offset;
+	address_t EntryPoint;
+	address_t StubEntryPoint;
+	address_t Base;
+	address_t Offset;
 
 	uint32_t nSections;
 	ExecutableSection * pSections;
@@ -73,11 +73,11 @@ ExecutableContext;
 HEXECUTABLE ExecutableCreate(HREADER hReader, int memory);
 void ExecutableDestroy(HEXECUTABLE hExecutable);
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable);
-uint32_t ExecutableGetBase(HEXECUTABLE hExecutable);
-uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable);
-uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable);
-uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable);
-uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index);
+address_t ExecutableGetBase(HEXECUTABLE hExecutable);
+address_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable);
+address_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable);
+uint32_t  ExecutableGetExportCount(HEXECUTABLE hExecutable);
+address_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index);
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index);
 
@@ -86,7 +86,7 @@ uint32_t ExecutableGetObjectCount(HEXECUTABLE hExecutable);
 uint32_t ExecutableGetCurrentObject(HEXECUTABLE hExecutable);
 uint32_t ExecutableSetCurrentObject(HEXECUTABLE hExecutable, uint32_t index);
 
-uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint64_t RVA);
-char * FetchString(ExecutableContext * pContext, uint32_t address);
+address_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, address_t RVA);
+char * FetchString(ExecutableContext * pContext, address_t address);
 
 #endif /* __EXECUTABLE_H__ */

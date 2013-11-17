@@ -17,13 +17,13 @@ int ReaderRead(HREADER hReader, void * buffer, uint32_t size)
 	return pContext->pRead(hReader, buffer, size);
 }
 
-int ReaderSeek(HREADER hReader, uint32_t pos)
+int ReaderSeek(HREADER hReader, uint64_t pos)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pSeek(hReader, pos);
 }
 
-int ReaderSkip(HREADER hReader, uint32_t count)
+int ReaderSkip(HREADER hReader, uint64_t count)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pSkip(hReader, count);

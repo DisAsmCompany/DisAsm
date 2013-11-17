@@ -35,10 +35,13 @@ typedef enum TextColor_t
 }
 TextColor;
 
+uint32_t xstrlen(const char * str);
+void xstrcat(char * dst, uint32_t size, const char * src);
+
 void ConsoleIOInit();
 void ConsoleIOPrint(const char * string);
 void PrintColoredString(const char * string, TextColor color);
-void PrintByte(uint32_t value);
+void PrintByte(uint64_t value);
 void ConsoleIOPrintFormatted(const char * format, ...);
 
 #endif /* __CONSOLEIO_H__ */

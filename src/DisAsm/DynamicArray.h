@@ -17,14 +17,14 @@ typedef struct DynamicArray_t
 {
 	uint32_t used;
 	uint32_t size;
-	uint32_t * memory;
+	uint64_t * memory;
 }
 DynamicArray;
 
 DynamicArray * DynamicArrayCreate();
 void DynamicArrayDestroy(DynamicArray * array);
 uint32_t DynamicArraySize(DynamicArray * array);
-void DynamicArrayAdd(DynamicArray * array, uint32_t value);
-uint32_t DynamicArrayGet(DynamicArray * array, uint32_t index);
+void DynamicArrayAdd(DynamicArray * array, uint64_t value);
+uint64_t DynamicArrayGet(DynamicArray * array, uint64_t index);
 
 #endif /* __DYNAMICARRAY_H__ */

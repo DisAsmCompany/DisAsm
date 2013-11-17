@@ -74,19 +74,19 @@ Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
 }
 
-uint32_t ExecutableGetBase(HEXECUTABLE hExecutable)
+address_t ExecutableGetBase(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].Base : 0;
 }
 
-uint32_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
+address_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].EntryPoint : 0;
 }
 
-uint32_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
+address_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].StubEntryPoint : 0;
@@ -98,7 +98,7 @@ uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)
 	return NULL != pContext ? pContext->pObjects[pContext->iObject].nExports : 0;
 }
 
-uint32_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
+address_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
@@ -113,7 +113,7 @@ char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index)
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
 	{
-		uint32_t address = pContext->pObjects[pContext->iObject].pExports[index].Name;
+		address_t address = pContext->pObjects[pContext->iObject].pExports[index].Name;
 		if (0 != address)
 		{
 			return FetchString(pContext, address);
@@ -127,7 +127,7 @@ char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
 	{
-		uint32_t address = pContext->pObjects[pContext->iObject].pExports[index].Forwarder;
+		address_t address = pContext->pObjects[pContext->iObject].pExports[index].Forwarder;
 		if (0 != address)
 		{
 			return FetchString(pContext, address);
@@ -166,9 +166,9 @@ uint32_t ExecutableSetCurrentObject(HEXECUTABLE hExecutable, uint32_t index)
 	return 0;
 }
 
-uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint64_t RVA)
+address_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, address_t RVA)
 {
-	uint32_t offset = 0;
+	address_t offset = 0;
 	uint16_t i = 0;
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext && NULL != pContext->pObjects)
@@ -179,9 +179,9 @@ uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint64_t RVA)
 		}
 		for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
 		{
-			uint64_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
-			uint64_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
-			uint64_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
+			address_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
+			address_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
+			address_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
 			if (Address <= RVA && RVA <= Address + Size)
 			{
 				offset = pContext->pObjects[pContext->iObject].Offset + Data + RVA - Address;
@@ -192,7 +192,7 @@ uint32_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, uint64_t RVA)
 	return offset;
 }
 
-char * FetchString(ExecutableContext * pContext, uint32_t address)
+char * FetchString(ExecutableContext * pContext, address_t address)
 {
 	char * buffer = NULL; 
 	uint32_t i = 0;

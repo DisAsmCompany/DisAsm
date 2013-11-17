@@ -32,10 +32,10 @@ typedef struct ELFFileContext_t
 {
 	HSDF hHeader;
 	HSDF * phProgramHeaders;
-	uint16_t NumberOfPrograms;
-	uint32_t ExportAddress;
-	uint32_t ExportSize;
-	uint32_t NamesAddress;
+	uint16_t  NumberOfPrograms;
+	address_t ExportAddress;
+	uint64_t  ExportSize;
+	address_t NamesAddress;
 }
 ELFFileContext;
 
@@ -46,7 +46,7 @@ int ELFProcessExport(ExecutableContext * pContext)
 {
 	uint32_t i = 0;
 	uint32_t address = 0;
-	uint32_t count = THIS->ExportSize / SDFSizeInBytes(ELFSymbol);
+	uint32_t count = (uint32_t) (THIS->ExportSize / SDFSizeInBytes(ELFSymbol));
 
 	if (0 == THIS->ExportAddress || 0 == THIS->ExportSize)
 	{

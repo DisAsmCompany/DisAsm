@@ -14,8 +14,8 @@
 typedef struct MemoryReaderContext_t
 {
 	uint8_t * buffer;
-	uint32_t size;
-	uint32_t offset;
+	uint64_t size;
+	uint64_t offset;
 }
 MemoryReaderContext;
 
@@ -32,7 +32,7 @@ int MemoryReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 	return 0;
 }
 
-int MemoryReaderSeek(ReaderContext * pContext, uint32_t pos)
+int MemoryReaderSeek(ReaderContext * pContext, uint64_t pos)
 {
 	if (pos < AccessPrivateData(pContext)->size)
 	{
@@ -42,7 +42,7 @@ int MemoryReaderSeek(ReaderContext * pContext, uint32_t pos)
 	return 0;
 }
 
-int MemoryReaderSkip(ReaderContext * pContext, uint32_t count)
+int MemoryReaderSkip(ReaderContext * pContext, uint64_t count)
 {
 	if (AccessPrivateData(pContext)->offset + count < AccessPrivateData(pContext)->size)
 	{

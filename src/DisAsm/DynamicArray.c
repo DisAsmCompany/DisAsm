@@ -16,7 +16,7 @@ DynamicArray * DynamicArrayCreate()
 	DynamicArray * array = (DynamicArray*) calloc(1, sizeof(DynamicArray));
 	array->used = 0;
 	array->size = 16;
-	array->memory = (uint32_t *) calloc(1, array->size * sizeof(uint32_t));
+	array->memory = (uint64_t *) calloc(1, array->size * sizeof(uint64_t));
 	return array;
 }
 
@@ -31,7 +31,7 @@ uint32_t DynamicArraySize(DynamicArray * array)
 	return array->used;
 }
 
-void DynamicArrayAdd(DynamicArray * array, uint32_t value)
+void DynamicArrayAdd(DynamicArray * array, uint64_t value)
 {
 	uint32_t i = 0;
 	for (i = 0; i < array->used; ++i)
@@ -45,11 +45,11 @@ void DynamicArrayAdd(DynamicArray * array, uint32_t value)
 	if (++array->used == array->size)
 	{
 		array->size *= 2;
-		array->memory = realloc(array->memory, array->size * sizeof(uint32_t));
+		array->memory = realloc(array->memory, array->size * sizeof(uint64_t));
 	}
 }
 
-uint32_t DynamicArrayGet(DynamicArray * array, uint32_t index)
+uint64_t DynamicArrayGet(DynamicArray * array, uint64_t index)
 {
 	return array->memory[index];
 }

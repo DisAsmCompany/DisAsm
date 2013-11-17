@@ -91,12 +91,51 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 	return (HSDF)pContext;
 }
 
-char * UTC(uint64_t TimeStamp)
+#define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400)))
+#define YEARSIZE(year) (LEAPYEAR(year) ? 366 : 365)
+
+static const uint8_t MonthSizes[2][12] = 
 {
-	time_t time = TimeStamp;
-	char * c = ctime(&time);
-	c[strlen(c) - 1] = 0;
-	return c;
+	{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},
+	{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+};
+
+static const char * Days[] = 
+{
+	"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+};
+
+static const char * Months[] = 
+{
+	"January", "February", "March",	"April", "May", "June",	"July", "August", "September",	"October", "November", "December"
+};
+
+void UTC(uint64_t TimeStamp)
+{
+	enum { SecondsInDay = 24ULL * 60ULL * 60ULL };
+
+	uint64_t clock = TimeStamp % SecondsInDay;
+	uint64_t day = TimeStamp / SecondsInDay;
+	uint64_t seconds = clock % 60;
+	uint64_t minutes = (clock % 3600) / 60;
+	uint64_t hours = clock / 3600;
+	uint64_t dayofweek = (day + 4) % 7; /* day 0 of 1970 was a Thursday */
+	uint64_t year = 1970;
+	uint64_t month = 0;
+
+	while (day >= YEARSIZE(year))
+	{
+		day -= YEARSIZE(year);
+		++year;
+	}
+	while (day >= MonthSizes[LEAPYEAR(year)][month])
+	{
+		day -= MonthSizes[LEAPYEAR(year)][month];
+		++month;
+	}
+	++day;
+
+	ConsoleIOPrintFormatted(" (%s %s %ld %02ld:%02ld:%02ld %ld)", Days[dayofweek], Months[month], day, hours, minutes, seconds, year);
 }
 
 void SDFPrintSignature(uint64_t Signature, uint32_t size)
@@ -105,7 +144,7 @@ void SDFPrintSignature(uint64_t Signature, uint32_t size)
     ConsoleIOPrint(" ('");
     for (i = 0; i < size; ++i)
     {
-        char byte = (Signature >> (i * 8)) & 0xFF;
+        char byte = (char)((Signature >> (i * 8)) & 0xFF);
         if (isalnum(byte))
         {
             ConsoleIOPrintFormatted("%c", byte);
@@ -179,7 +218,7 @@ void SDFPrint(HSDF hSDF)
 				}
                 else
                 {
-                    uint64_t value;
+                    uint64_t value = 0;
                     if (1 == pContext->definition[i].size)
                     {
                         uint8_t value8 = *(uint8_t*) (pContext->data + offset);
@@ -209,7 +248,7 @@ void SDFPrint(HSDF hSDF)
                     }
                     if (kUTC == pContext->definition[i].type)
                     {
-                        ConsoleIOPrintFormatted(" (%s)", UTC(value));
+						UTC(value);
                     }
                     if (kVersion == pContext->definition[i].type)
                     {

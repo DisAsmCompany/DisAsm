@@ -241,21 +241,21 @@ void LoadModules(HANDLE hProcess)
 			info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V3);
 			GetModuleInformation(hProcess, modules[i], &info, sizeof(MODULEINFO));
 			GetModuleFileNameA(modules[i], g_Modules[i].path, NtfsMaxPath);
-			if (!pSymLoadModule64(hProcess, NULL, exe, g_Modules[i].path, info.lpBaseOfDll, info.SizeOfImage))
+			g_Modules[i].address = (address_t) info.lpBaseOfDll;
+			g_Modules[i].size = info.SizeOfImage;
+			if (!pSymLoadModule64(hProcess, NULL, exe, g_Modules[i].path, g_Modules[i].address, g_Modules[i].size))
 			{
 				ConsoleIOPrintFormatted("SymLoadModule64 failed for \"%s\"\n", g_Modules[i].path);
 			}
-			if (!pSymGetModuleInfo64(hProcess, info.lpBaseOfDll, &info3))
+			if (!pSymGetModuleInfo64(hProcess, g_Modules[i].address, &info3))
 			{
 				info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V2);
-				if (!pSymGetModuleInfo64(hProcess, info.lpBaseOfDll, &info3))
+				if (!pSymGetModuleInfo64(hProcess, g_Modules[i].address, &info3))
 				{
 					ConsoleIOPrintFormatted("SymGetModuleInfo64 failed for \"%s\"\n", g_Modules[i].path);
 				}
 			}
-			g_Modules[i].address = info.lpBaseOfDll;
-			g_Modules[i].size = info.SizeOfImage;
-			strcpy(g_Modules[i].name, ShortName(g_Modules[i].path) + 1);
+			xstrcat(g_Modules[i].name, NtfsMaxPath, ShortName(g_Modules[i].path) + 1);
 		}
 	}
 	free(modules);
@@ -266,7 +266,6 @@ HMODULE hDbgHelp = NULL;
 void StackWalkInit()
 {
 	HANDLE hProcess = GetCurrentProcess();
-	HANDLE hThread  = GetCurrentThread();
 	hDbgHelp = LoadLibrary(_T("dbghelp.dll"));
 
 	if (NULL != hDbgHelp)
@@ -287,47 +286,47 @@ void StackWalkInit()
 		if (GetCurrentDirectoryA(NtfsMaxPath, temp))
 		{
 			temp[NtfsMaxPath - 1] = 0;
-			strcat(path, temp);
-			strcat(path, ";");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
 		}
 		if (GetModuleFileNameA(NULL, temp, NtfsMaxPath))
 		{
 			temp[NtfsMaxPath - 1] = 0;
 			ShortName(temp)[0] = 0;
-			strcat(path, temp);
-			strcat(path, ";");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
 		}
 		if (GetEnvironmentVariableA("_NT_SYMBOL_PATH", temp, NtfsMaxPath))
 		{
 			temp[NtfsMaxPath - 1] = 0;
-			strcat(path, temp);
-			strcat(path, ";");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
 		}
 		if (GetEnvironmentVariableA("_NT_ALTERNATE_SYMBOL_PATH", temp, NtfsMaxPath))
 		{
 			temp[NtfsMaxPath - 1] = 0;
-			strcat(path, temp);
-			strcat(path, ";");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
 		}
 		if (GetEnvironmentVariableA("SYSTEMROOT", temp, NtfsMaxPath))
 		{
 			temp[NtfsMaxPath - 1] = 0;
-			strcat(path, temp);
-			strcat(path, ";");
-			strcat(temp, "\\system32");
-			strcat(path, temp);
-			strcat(path, ";");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
+			xstrcat(temp, NtfsMaxPath, "\\system32");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, ";");
 		}
 		if (GetEnvironmentVariableA("TEMP", temp, NtfsMaxPath))
 		{
 			temp[NtfsMaxPath - 1] = 0;
-			strcat(path, "SRV*");
-			strcat(path, temp);
-			strcat(path, "\\websymbols*http://msdl.microsoft.com/download/symbols;");
+			xstrcat(path, NtfsMaxPath, "SRV*");
+			xstrcat(path, NtfsMaxPath, temp);
+			xstrcat(path, NtfsMaxPath, "\\websymbols*http://msdl.microsoft.com/download/symbols;");
 		}
 		else
 		{
-			strcat(path, "SRC*C:\\temp\\websymbols*http://msdl.microsoft.com/download/symbols;");
+			xstrcat(path, NtfsMaxPath, "SRC*C:\\temp\\websymbols*http://msdl.microsoft.com/download/symbols;");
 		}
 
 		if (pSymInitialize(hProcess, path, false))
@@ -411,9 +410,9 @@ void StackWalk(address_t * callstack, Context * pContext)
 	}
 	else
 	{
-		context.Eip = pContext->InstructionPointer;
-		context.Esp = pContext->StackFramePointer;
-		context.Ebp = pContext->StackBasePointer;
+		context.Eip = (uint32_t) pContext->InstructionPointer;
+		context.Esp = (uint32_t) pContext->StackFramePointer;
+		context.Ebp = (uint32_t) pContext->StackBasePointer;
 	}
 	context.ContextFlags = CONTEXT_FULL;
 #ifdef _M_IX86

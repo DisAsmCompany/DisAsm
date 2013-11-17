@@ -12,24 +12,28 @@
 #include "../DisAsm/DisAsm"
 #include "StrAsm"
 
-uint8_t IsNegative(uint32_t value, uint8_t size)
+uint8_t IsNegative(uint64_t value, uint8_t size)
 {
 	return !!(value & (0x80 << 8 * (size - 1)));
 }
 
-uint32_t Inverse(uint32_t value, uint8_t size)
+uint64_t Inverse(uint64_t value, uint8_t size)
 {
+	if (size == 8)
+	{
+		value = 0xFFFFFFFFFFFFFFFFULL - value;
+	}
 	if (size == 4)
 	{
-		value = 0xFFFFFFFFUL - value;
+		value = 0xFFFFFFFFULL - value;
 	}
 	if (size == 2)
 	{
-		value = 0xFFFFUL - value;
+		value = 0xFFFFULL - value;
 	}
 	if (size == 1)
 	{
-		value = 0xFFUL - value;
+		value = 0xFFULL - value;
 	}
 	return value + 1;
 }

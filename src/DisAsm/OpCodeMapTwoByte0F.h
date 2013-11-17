@@ -207,10 +207,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC0h - 0FC7h */
-	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {CMPPS, OP2(Vps, Wps, Ib)}, {DB}, {DB}, {DB}, {DB}, {GROUP9},
-	{DB},                {DB},                {CMPPD, OP2(Vpd, Wpd, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB},                {DB},                {CMPSD, OP2(Vsd, Wss, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB},                {DB},                {CMPSS, OP2(Vss, Wss, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{XADD, OP2(Eb, Gb)}, {XADD, OP2(Ev, Gv)}, {CMPPS, OP3(Vps, Wps, Ib)}, {DB}, {DB}, {DB}, {DB}, {GROUP9},
+	{DB},                {DB},                {CMPPD, OP3(Vpd, Wpd, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                {DB},                {CMPSD, OP3(Vsd, Wss, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                {DB},                {CMPSS, OP3(Vss, Wss, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FC8h - 0FCFh */
 	{BSWAP, OP1(rAX)}, {BSWAP, OP1(rCX)}, {BSWAP, OP1(rDX)}, {BSWAP, OP1(rBX)}, {BSWAP, OP1(rSP)}, {BSWAP, OP1(rBP)}, {BSWAP, OP1(rBP)}, {BSWAP, OP1(rDI)},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

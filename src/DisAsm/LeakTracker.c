@@ -213,7 +213,7 @@ address_t CalculateOffsetForJMP(address_t from, address_t to)
 typedef struct CallbackData_t
 {
     uint8_t * pBuffer;
-    uint32_t offset;
+    uint64_t offset;
 }
 CallbackData;
 
@@ -225,14 +225,14 @@ int CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
     return 1;
 }
 
-int CallbackSeek(ReaderContext * pContext, uint32_t pos)
+int CallbackSeek(ReaderContext * pContext, uint64_t pos)
 {
     CallbackData * pData = (CallbackData*) pContext->pPrivate;
     pData->offset = pos;
     return 1;
 }
 
-int CallbackSkip(ReaderContext * pContext, uint32_t count)
+int CallbackSkip(ReaderContext * pContext, uint64_t count)
 {
     CallbackData * pData = (CallbackData*) pContext->pPrivate;
     pData->offset += count;

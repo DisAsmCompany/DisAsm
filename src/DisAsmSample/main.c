@@ -13,19 +13,19 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void PrintAddress(uint32_t address)
+void PrintAddress(address_t address)
 {
 	ConsoleIOPrintFormatted("%08X", address);
 }
 
-void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, uint32_t address, uint32_t base, DynamicArray * array)
+void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array)
 {
 	InstructionInfo info = {0};
 	uint8_t length = 0;
 	uint8_t ret = 0;
 	/* store function start in order to analyze jumps */
-	uint32_t start = address + base;
-	while (1)
+	address_t start = address + base;
+	for (;;)
 	{
 		BenchmarkSampleBegin(hBenchmark);
 		length = DisAsmInstructionDecode(bitness, hReader, &info);
@@ -43,7 +43,7 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 
 		if (CALL == info.mnemonic && Jz == info.operands[0].type)
 		{
-			uint32_t offset = address + info.imm;
+			address_t offset = address + info.imm;
 			ConsoleIOPrint("; call to ");
 			PrintAddress(offset);
 			DynamicArrayAdd(array, offset);
@@ -51,8 +51,8 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 		/* non-conditional jump instructions (JMP) */
 		if (JMP == info.mnemonic && 1 == info.nOperands)
 		{
-			uint32_t destination = 0;
-			uint32_t rel = info.imm;
+			address_t destination = 0;
+			address_t rel = info.imm;
 			/* explicit jump offset */
 			if (J == HITYPE(info.operands[0].type))
 			{
@@ -164,10 +164,10 @@ void DisAsmFunction(uint32_t bitness, HREADER hReader, HBENCHMARK hBenchmark, ui
 	}
 }
 
-uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t base)
+uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t base)
 {
     uint8_t bitness = 0;
-	uint32_t entry = 0;
+	address_t entry = 0;
 	uint32_t i = 0;
 	uint32_t count = 0;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
@@ -216,7 +216,7 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 	{
 		char * name = ExecutableGetExportName(hExecutable, i);
 		char * forwarder = ExecutableGetExportForwarderName(hExecutable, i);
-		uint32_t address = ExecutableGetExportAddress(hExecutable, i);
+		address_t address = ExecutableGetExportAddress(hExecutable, i);
 		if (0 != address && 0 != ReaderSeek(hReader, address))
 		{
 			if (NULL != forwarder)
@@ -235,10 +235,10 @@ uint32_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, uint32_t ba
 	}
 	for (i = 0; i < DynamicArraySize(array); ++i)
 	{
-		uint32_t element = DynamicArrayGet(array, i);
+		address_t element = DynamicArrayGet(array, i);
 		if (0 != element && 0 != ReaderSeek(hReader, element))
 		{
-			ConsoleIOPrintFormatted("function %d %08X :\n", i, element);
+			ConsoleIOPrintFormatted("function %d %08LX :\n", i, element);
 			DisAsmFunction(bitness, hReader, hBenchmark, element, base, array);
 			ConsoleIOPrint("\n");
 		}

@@ -50,7 +50,7 @@ typedef struct PEFileContext_t
 	HSDF hLoadConfigDirectory;
 	uint32_t NumberOfFunctions;
     uint32_t NumberOfNames;
-	uint32_t OffsetExport;
+	address_t OffsetExport;
 	uint32_t SizeExport;
 	uint32_t AddressPE;
 	uint32_t PointerToSymbolTable;
@@ -66,9 +66,9 @@ PEFileContext;
 #undef THIS
 #define THIS ((PEFileContext*)(pContext->pPrivate))
 
-uint32_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
+address_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 {
-    uint32_t address = 0;
+    address_t address = 0;
     uint32_t i = 0;
 	if (NULL != THIS->ExportOrdinals && NULL != THIS->ExportNames)
 	{
@@ -87,7 +87,7 @@ uint32_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 
 int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
-	uint32_t OffsetExportFunctions, OffsetExportOrdinals, OffsetExportNames;
+	address_t OffsetExportFunctions = 0, OffsetExportOrdinals = 0, OffsetExportNames = 0;
 	uint32_t i = 0;
 	uint32_t size = 0;
 	char * name = NULL;
@@ -136,10 +136,10 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 
 	for (i = 0; i < THIS->NumberOfFunctions; ++i)
 	{
-		uint32_t address = ExecutableRVAToOffset(pContext, THIS->ExportFunctions[i]);
+		address_t address = ExecutableRVAToOffset(pContext, THIS->ExportFunctions[i]);
         if (0 != address)
         {
-			uint32_t Name = NameForOrdinal(pContext, i);
+			address_t Name = NameForOrdinal(pContext, i);
 			if (0 != Name)
 			{
 				name = FetchString(pContext, Name);
@@ -154,14 +154,14 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
-            ConsoleIOPrintFormatted("[0x%04X] 0x%08X \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
+			ConsoleIOPrintFormatted("[0x%04X] 0x%08LX \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
 			free(forwarder);
 
 			pContext->pObjects[pContext->iObject].pExports[i].Forwarder = address;
 		}
 		else
 		{
-            ConsoleIOPrintFormatted("[0x%04X] 0x%08X \"%s\"\n", i, address, name ? name : "(null)");
+            ConsoleIOPrintFormatted("[0x%04X] 0x%08LX \"%s\"\n", i, address, name ? name : "(null)");
 		}
 		free(name);
 		name = NULL;
@@ -171,8 +171,8 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 
 int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
-	uint32_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
-	uint32_t address = 0;
+	offset_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
+	address_t address = 0;
 	uint32_t pos = 0;
 	if (0 == offset)
 	{
@@ -213,7 +213,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 				else
 				{
 					uint16_t hint = 0;
-					uint32_t ptr = ExecutableRVAToOffset(pContext, element);
+					address_t ptr = ExecutableRVAToOffset(pContext, element);
 					if (0 != ptr)
                     {
                         ReaderSeek(pContext->hReader, ptr);
@@ -238,7 +238,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 
 int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
-	uint32_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
+	offset_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
 	if (0 == offset)
 	{
 		return 0;
@@ -256,7 +256,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	uint32_t size = 0;
-	uint32_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
+	offset_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
 	if (0 == offset)
 	{
 		return 0;

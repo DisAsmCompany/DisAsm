@@ -13,7 +13,6 @@
 
 void InfoOperationSystem()
 {
-	uint32_t i = 0;
 	OSVERSIONINFOEX osvi = {0};
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
 
