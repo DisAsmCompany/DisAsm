@@ -13,8 +13,8 @@
 #ifndef __PEOPTIONALHEADER_H__
 #define __PEOPTIONALHEADER_H__
 
-static const uint32_t PEOptionalHeaderMagic               = 0;
-static const uint32_t PEOptionalHeaderAddressOfEntryPoint = 16;
+enum { PEOptionalHeaderMagic               = 0  };
+enum { PEOptionalHeaderAddressOfEntryPoint = 16 };
 
 static const SDFElement PEOptionalHeader[] =
 {

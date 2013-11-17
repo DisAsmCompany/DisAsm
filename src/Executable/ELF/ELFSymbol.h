@@ -13,9 +13,9 @@
 #ifndef __ELFSYMBOL_H__
 #define __ELFSYMBOL_H__
 
-static const uint32_t ELFSymbolName  = 0;
-static const uint32_t ELFSymbolValue = 4;
-static const uint32_t ELFSymbolIndex = 14;
+enum { ELFSymbolName  = 0 };
+enum { ELFSymbolValue = 4 };
+enum { ELFSymbolIndex = 14 };
 
 static const SDFElement ELFSymbol[] =
 {

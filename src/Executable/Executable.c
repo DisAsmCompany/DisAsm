@@ -169,10 +169,10 @@ uint32_t ExecutableSetCurrentObject(HEXECUTABLE hExecutable, uint32_t index)
 address_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, address_t RVA)
 {
 	address_t offset = 0;
-	uint16_t i = 0;
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext && NULL != pContext->pObjects)
 	{
+		uint16_t i = 0;
 		if (pContext->memory)
 		{
 			return RVA;

@@ -69,9 +69,9 @@ PEFileContext;
 address_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 {
     address_t address = 0;
-    uint32_t i = 0;
 	if (NULL != THIS->ExportOrdinals && NULL != THIS->ExportNames)
 	{
+		uint32_t i = 0;
 		for (i = 0; i < THIS->NumberOfNames; ++i)
 		{
 			/* specification is wrong : we don't need to subtract Ordinal Base here */
@@ -172,7 +172,6 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory * pDirectory)
 {
 	offset_t offset = ExecutableRVAToOffset(pContext, pDirectory->VirtualAddress);
-	address_t address = 0;
 	uint32_t pos = 0;
 	if (0 == offset)
 	{
@@ -180,6 +179,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 	}
 	while (pos + SDFSizeInBytes(PEImportDescriptor) <= pDirectory->Size)
 	{
+		address_t address = 0;
 		HSDF hImportDescriptor;
 		char * name = NULL;
 		uint32_t OriginalFirstThunk = 0;
@@ -416,7 +416,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			free(buffer);
 			return 0;
 		}
-		for (i = 0; i < size; i += strlen(buffer + i) + 1)
+		for (i = 0; i < size; i += xstrlen(buffer + i) + 1)
 		{
 			ConsoleIOPrintFormatted("%s\n", buffer + i);
 		}
@@ -474,17 +474,18 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 
 int PEFileInit(ExecutableContext * pContext)
 {
-	uint16_t Magic = 0;
 	uint32_t OffsetSectionHeaders = 0;
 	uint32_t SizeOfOptionalHeader = 0;
 	uint32_t i = 0;
 	uint32_t PEOptionalHeaderSize = SDFSizeInBytes(PEOptionalHeader);
-	uint32_t ExtraSize = 0;
+	
 	SizeOfOptionalHeader = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderSizeOfOptionalHeader);
 
 	if (SizeOfOptionalHeader >= PEOptionalHeaderSize)
 	{
 		/* file has an optional header */
+		uint32_t ExtraSize = 0;
+		uint16_t Magic = 0;
 		const SDFElement * Extra = NULL;
 		CHECK_CALL(THIS->hOptionalHeader = SDFCreate(PEOptionalHeader, pContext->hReader));
 		Magic = SDFReadUInt16(THIS->hOptionalHeader, PEOptionalHeaderMagic);

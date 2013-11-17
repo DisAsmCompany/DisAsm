@@ -13,8 +13,8 @@
 #ifndef __PEOPTIONALHEADEREXTRA_H__
 #define __PEOPTIONALHEADEREXTRA_H__
 
-static const uint32_t PEOptionalHeaderExtraImageBase           = 4;
-static const uint32_t PEOptionalHeaderExtraNumberOfRvaAndSizes = 68;
+enum { PEOptionalHeaderExtraImageBase           = 4  };
+enum { PEOptionalHeaderExtraNumberOfRvaAndSizes = 68 };
 
 static const SDFElement PEOptionalHeaderExtra[] =
 {

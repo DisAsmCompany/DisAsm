@@ -13,11 +13,11 @@
 #ifndef __MZDOSHEADER_H__
 #define __MZDOSHEADER_H__
 
-static const uint16_t kMZDOSSignature = 0x5A4D; /* MZ */
-static const uint16_t kZMDOSSignature = 0x4D5A; /* ZM */
+enum { kMZDOSSignature = 0x5A4D }; /* MZ */
+enum { kZMDOSSignature = 0x4D5A }; /* ZM */
 
-static const uint32_t MZDOSHeaderSignature = 0;
-static const uint32_t MZDOSHeaderAddressNew = 0x3C;
+enum { MZDOSHeaderSignature = 0 };
+enum { MZDOSHeaderAddressNew = 0x3C };
 
 static const SDFElement MZDOSHeader[] =
 {

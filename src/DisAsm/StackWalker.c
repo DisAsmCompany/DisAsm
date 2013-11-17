@@ -207,12 +207,12 @@ uint32_t g_nModules = 0;
 
 char * ShortName(char * name)
 {
-	char * p = name + strlen(name) - 1;
-	for (; p != name; --p)
+	char * ptr = name + xstrlen(name) - 1;
+	for (; ptr != name; --ptr)
 	{
-		if (*p == '\\' || *p == '/' || *p == ':')
+		if (*ptr == '\\' || *ptr == '/' || *ptr == ':')
 		{
-			return p;
+			return ptr;
 		}
 	}
 	return name;
@@ -222,7 +222,6 @@ void LoadModules(HANDLE hProcess)
 {
 	HMODULE * modules = NULL;
 	DWORD needed = 0;
-	DWORD i = 0;
 	char exe[NtfsMaxPath];
 
 	GetModuleFileNameA(NULL, exe, NtfsMaxPath);
@@ -232,6 +231,7 @@ void LoadModules(HANDLE hProcess)
 	modules = (HMODULE*) malloc(g_nModules * sizeof(HMODULE));
 	if (NULL != modules && NULL != g_Modules)
 	{
+		DWORD i = 0;
 		EnumProcessModules(hProcess, modules, needed, &needed);
 
 		for (i = 0; i < g_nModules; ++i)
@@ -436,10 +436,12 @@ void StackWalk(address_t * callstack, Context * pContext)
 	{
 		if (!pStackWalk64(machine, hProcess, hThread, &frame, &context, NULL, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL))
 		{
+			ConsoleIOPrint("StackWalk64 failed\n");
 			break;
 		}
 		if (0 == frame.AddrReturn.Offset)
 		{
+			ConsoleIOPrint("StackWalk64 failed : return address is zero\n");
 			break;
 		}
 		if (0 != frame.AddrPC.Offset)

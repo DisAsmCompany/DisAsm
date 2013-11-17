@@ -13,9 +13,9 @@
 #ifndef __MACHOSECTION64_H__
 #define __MACHOSECTION64_H__
 
-static const uint32_t MachOSection64Address = 32;
-static const uint32_t MachOSection64Size    = 40;
-static const uint32_t MachOSection64Offset  = 48;
+enum { MachOSection64Address = 32 };
+enum { MachOSection64Size    = 40 };
+enum { MachOSection64Offset  = 48 };
 
 static const SDFElement MachOSection64[] =
 {

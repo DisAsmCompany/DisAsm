@@ -45,8 +45,6 @@ void ConsoleIOInit()
 	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);
 }
 
-enum { DefaultColor = kWhite | kBackGroundWhite };
-
 void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, uint8_t error)
 {
 	DWORD written = 0;
@@ -55,10 +53,10 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	if (error ? g_isConsoleStdErr : g_isConsoleStdOut)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO info = {0};
-		WORD attributes = 0;
 		/* set custom text color, if necessary */
-		if (DefaultColor != color)
+		if (kDefaultColor != color)
 		{
+			WORD attributes = 0;
 			GetConsoleScreenBufferInfo(hConsole, &info);
 			attributes |= (color & kRed)   ? FOREGROUND_RED   : 0;
 			attributes |= (color & kGreen) ? FOREGROUND_GREEN : 0;
@@ -71,7 +69,7 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 		}
 		WriteConsole(hConsole, str, length, &written, NULL);
 		/* restore color */
-		if (DefaultColor != color)
+		if (kDefaultColor != color)
 		{
 			SetConsoleTextAttribute(hConsole, info.wAttributes);
 		}
@@ -90,7 +88,7 @@ void ConsoleIOPrint(const char * str)
 		ConsoleIOPrintInternal(str, xstrlen(str), kRed, 1);
 		OutputDebugString(str);
 	}
-	ConsoleIOPrintInternal(str, length, DefaultColor, 0);
+	ConsoleIOPrintInternal(str, length, kDefaultColor, 0);
 }
 
 void PrintColoredString(const char * str, TextColor color)
@@ -162,7 +160,6 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 		/* seems like format specifier */
 		if (format[i] == '%')
 		{
-			char specifier = 0;
 			uint32_t width = 0;
 			uint32_t precision = 0;
 			uint8_t period = 0;
@@ -171,8 +168,8 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 
 			do
 			{
+				char specifier = format[i + 1];
 				stop = 1;
-				specifier = format[i + 1];
 				switch (specifier)
 				{
 				case '0': case '1': case '2': case '3': case '4':
@@ -208,7 +205,7 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 					{
 						const char * value = va_arg(args, const char *);
 						xstrcat(message + j, MaxLength, value);
-						j += strlen(value);
+						j += xstrlen(value);
 						++i;
 					}
 					break;

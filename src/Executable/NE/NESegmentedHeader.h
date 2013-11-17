@@ -13,11 +13,11 @@
 #ifndef __NESEGMENTEDHEADER_H__
 #define __NESEGMENTEDHEADER_H__
 
-static const uint16_t kNESignature = 0x454E; /* NE */
+enum { kNESignature = 0x454E }; /* NE */
 
-static const uint32_t NESegmentedHeaderEntryTableOffset            = 0x02;
-static const uint32_t NESegmentedHeaderResidentNamesTableOffset    = 0x24;
-static const uint32_t NESegmentedHeaderNonResidentNamesTableOffset = 0x2A;
+enum { NESegmentedHeaderEntryTableOffset            = 0x02 };
+enum { NESegmentedHeaderResidentNamesTableOffset    = 0x24 };
+enum { NESegmentedHeaderNonResidentNamesTableOffset = 0x2A };
 
 static const SDFElement NESegmentedHeader[] =
 {

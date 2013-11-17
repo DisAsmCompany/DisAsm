@@ -13,25 +13,23 @@
 #ifndef __PEDATADIRECTORY_H__
 #define __PEDATADIRECTORY_H__
 
-#ifndef kPEDataDirectoryCount
-static const uint32_t kPEDataDirectoryCount = 0x10;
-#endif /* PEDataDirectoryCount */
+enum { kPEDataDirectoryCount = 0x10 };
 
-static const uint32_t kPEDataDirectoryExport         =  0; /* Export Directory                  */
-static const uint32_t kPEDataDirectoryImport         =  1; /* Import Directory                  */
-static const uint32_t kPEDataDirectoryResource       =  2; /* Resource Directory                */
-static const uint32_t kPEDataDirectoryException      =  3; /* Exception Directory               */
-static const uint32_t kPEDataDirectorySecurity       =  4; /* Security Directory                */
-static const uint32_t kPEDataDirectoryFixup          =  5; /* Base Relocation Table             */
-static const uint32_t kPEDataDirectoryDebug          =  6; /* Debug Directory                   */
-static const uint32_t kPEDataDirectoryArchitecture   =  7; /* Architecture Specific Data        */
-static const uint32_t kPEDataDirectoryGlobalPtr      =  8; /* RVA of GP                         */
-static const uint32_t kPEDataDirectoryTLS            =  9; /* TLS Directory                     */
-static const uint32_t kPEDataDirectoryLoadConfig     = 10; /* Load Configuration Directory      */
-static const uint32_t kPEDataDirectoryBoundImport    = 11; /* Bound Import Directory in headers */
-static const uint32_t kPEDataDirectoryIAT            = 12; /* Import Address Table              */
-static const uint32_t kPEDataDirectoryDelayImport    = 13; /* Delay Load Import Descriptors     */
-static const uint32_t kPEDataDirectoryCOM            = 14; /* COM Runtime descriptor            */
+enum { kPEDataDirectoryExport         =  0 }; /* Export Directory                  */
+enum { kPEDataDirectoryImport         =  1 }; /* Import Directory                  */
+enum { kPEDataDirectoryResource       =  2 }; /* Resource Directory                */
+enum { kPEDataDirectoryException      =  3 }; /* Exception Directory               */
+enum { kPEDataDirectorySecurity       =  4 }; /* Security Directory                */
+enum { kPEDataDirectoryFixup          =  5 }; /* Base Relocation Table             */
+enum { kPEDataDirectoryDebug          =  6 }; /* Debug Directory                   */
+enum { kPEDataDirectoryArchitecture   =  7 }; /* Architecture Specific Data        */
+enum { kPEDataDirectoryGlobalPtr      =  8 }; /* RVA of GP                         */
+enum { kPEDataDirectoryTLS            =  9 }; /* TLS Directory                     */
+enum { kPEDataDirectoryLoadConfig     = 10 }; /* Load Configuration Directory      */
+enum { kPEDataDirectoryBoundImport    = 11 }; /* Bound Import Directory in headers */
+enum { kPEDataDirectoryIAT            = 12 }; /* Import Address Table              */
+enum { kPEDataDirectoryDelayImport    = 13 }; /* Delay Load Import Descriptors     */
+enum { kPEDataDirectoryCOM            = 14 }; /* COM Runtime descriptor            */
 
 typedef struct PEDataDirectory_t
 {

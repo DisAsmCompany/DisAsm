@@ -68,16 +68,15 @@ void InfoOperationSystem()
 void InfoEnvironment()
 {
 	char * env = NULL;
-	uint32_t length = 0;
-
 	if (NULL != (env = GetEnvironmentStringsA()))
 	{
+		uint32_t length = 0;
 		ConsoleIOPrint("Environment :\n");
 
 		do
 		{
 			ConsoleIOPrintFormatted("%s\n", env);
-			env += (length = strlen(env)) + 1;
+			env += (length = xstrlen(env)) + 1;
 		}
 		while (length > 0);
 	}
@@ -89,7 +88,7 @@ LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExcepti
 	uint32_t i = 0;
 	Context context;
 
-	ConsoleIOPrint("crash!\n");
+	ConsoleIOPrint("[ERROR] crash!\n");
 
 	InfoOperationSystem();
 	InfoEnvironment();

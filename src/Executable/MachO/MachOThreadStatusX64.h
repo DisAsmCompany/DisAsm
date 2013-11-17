@@ -14,7 +14,7 @@
 #ifndef __MACHOTHREADSTTUSX64_H__
 #define __MACHOTHREADSTTUSX64_H__
 
-static const uint32_t MachOThreadStatusX64EIP = 128;
+enum { MachOThreadStatusX64EIP = 128 };
 
 static const SDFElement MachOThreadStatusX64[] =
 {

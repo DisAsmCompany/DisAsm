@@ -329,8 +329,6 @@ void LeakTrackerInstall(uint8_t install)
 
 	if (install)
 	{
-		StackWalkInit();
-
 		g_Allocations = (Allocation*)HeapAlloc(GetProcessHeap(), 0, sizeof(Allocation));
 
 		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
@@ -389,7 +387,5 @@ void LeakTrackerInstall(uint8_t install)
 			}
 		}
 		ConsoleIOPrintFormatted("total leaked %d bytes\n", total);
-
-		StackWalkCleanup();
 	}
 }

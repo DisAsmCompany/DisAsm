@@ -37,8 +37,8 @@ int LXFileOpen(ExecutableContext * pContext)
 	uint16_t Signature = 0;
 	uint32_t Offset = 0;
 	uint32_t Count  = 0;
-	uint32_t EIP = 0;
-	uint32_t EIPObject = 0;
+	/*uint32_t EIP = 0;
+	uint32_t EIPObject = 0;*/
 	uint32_t i = 0;
 
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
@@ -58,8 +58,8 @@ int LXFileOpen(ExecutableContext * pContext)
 	SDFPrint(THIS->hDOSHeader);
 	SDFPrint(THIS->hFileHeader);
 
-	EIP       = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIP);
-	EIPObject = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIPObject);
+	/*EIP       = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIP);
+	EIPObject = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIPObject);*/
 	Offset    = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectTableOffset);
 	Count     = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectTableCount);
 

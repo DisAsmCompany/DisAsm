@@ -13,11 +13,11 @@
 #ifndef __ELFSECTIONHEADER_H__
 #define __ELFSECTIONHEADER_H__
 
-static const uint32_t ELFSectionHeaderName    = 0;
-static const uint32_t ELFSectionHeaderType    = 4;
-static const uint32_t ELFSectionHeaderAddress = 12;
-static const uint32_t ELFSectionHeaderOffset  = 16;
-static const uint32_t ELFSectionHeaderSize    = 20;
+enum { ELFSectionHeaderName    = 0  };
+enum { ELFSectionHeaderType    = 4  };
+enum { ELFSectionHeaderAddress = 12 };
+enum { ELFSectionHeaderOffset  = 16 };
+enum { ELFSectionHeaderSize    = 20 };
 
 static const SDFElement ELFSectionHeader[] =
 {

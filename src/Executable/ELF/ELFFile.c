@@ -45,7 +45,6 @@ ELFFileContext;
 int ELFProcessExport(ExecutableContext * pContext)
 {
 	uint32_t i = 0;
-	uint32_t address = 0;
 	uint32_t count = (uint32_t) (THIS->ExportSize / SDFSizeInBytes(ELFSymbol));
 
 	if (0 == THIS->ExportAddress || 0 == THIS->ExportSize)
@@ -57,6 +56,7 @@ int ELFProcessExport(ExecutableContext * pContext)
 
 	for (i = 0; i < count; ++i)
 	{
+		uint32_t address = 0;
 		uint32_t name = 0;
 		HSDF hSymbol = NULL;
 		CHECK_CALL(ReaderSeek(pContext->hReader, THIS->ExportAddress + i * SDFSizeInBytes(ELFSymbol)));

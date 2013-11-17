@@ -13,13 +13,13 @@
 #ifndef __PEFILEHEADER_H__
 #define __PEFILEHEADER_H__
 
-static const uint32_t kPESignature = 0x00004550; /* PE */
+enum { kPESignature = 0x00004550UL }; /* PE */
 
-static const uint32_t PEFileHeaderMachine              = 0;
-static const uint32_t PEFileHeaderNumberOfSections     = 2;
-static const uint32_t PEFileHeaderPointerToSymbolTable = 8;
-static const uint32_t PEFileHeaderNumberOfSymbols      = 12;
-static const uint32_t PEFileHeaderSizeOfOptionalHeader = 16;
+enum { PEFileHeaderMachine              = 0  };
+enum { PEFileHeaderNumberOfSections     = 2  };
+enum { PEFileHeaderPointerToSymbolTable = 8  };
+enum { PEFileHeaderNumberOfSymbols      = 12 };
+enum { PEFileHeaderSizeOfOptionalHeader = 16 };
 
 static const SDFElement PEFileHeader[] =
 {

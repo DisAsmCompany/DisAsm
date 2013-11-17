@@ -92,7 +92,7 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 }
 
 #define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400)))
-#define YEARSIZE(year) (LEAPYEAR(year) ? 366 : 365)
+#define YEARSIZE(year) (LEAPYEAR(year) ? 366ULL : 365ULL)
 
 static const uint8_t MonthSizes[2][12] = 
 {
@@ -159,9 +159,9 @@ void SDFPrintSignature(uint64_t Signature, uint32_t size)
 
 void SDFPrintEnum(const SDFEnum * enumeration, uint64_t value)
 {
-    uint8_t first = 1;
 	if (NULL != enumeration)
 	{
+		uint8_t first = 1;
         ConsoleIOPrint(" (");
 		while (NULL != enumeration->name)
 		{
@@ -242,7 +242,7 @@ void SDFPrint(HSDF hSDF)
                     if (8 == pContext->definition[i].size)
                     {
                         uint64_t value64 = *(uint64_t*) (pContext->data + offset);
-                        value = pContext->endian ? LE2BE64(value64) : value64;
+                        value64 = pContext->endian ? LE2BE64(value64) : value64;
                         ConsoleIOPrintFormatted(" : 0x%016LX", value64);
                         value = value64;
                     }

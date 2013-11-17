@@ -13,9 +13,9 @@
 #ifndef __MACHOMAGIC_H__
 #define __MACHOMAGIC_H__
 
-static const uint32_t kMachOMagicLE    = 0xFEEDFACEUL;
-static const uint32_t kMachOMagicBE    = 0xCEFAEDFEUL;
-static const uint32_t kMachOFatMagicLE = 0xCAFEBABEUL;
-static const uint32_t kMachOFatMagicBE = 0xBEBAFECAUL;
+enum { kMachOMagicLE    = 0xFEEDFACEUL };
+enum { kMachOMagicBE    = 0xCEFAEDFEUL };
+enum { kMachOFatMagicLE = 0xCAFEBABEUL };
+enum { kMachOFatMagicBE = 0xBEBAFECAUL };
 
 #endif /* __MACHOMAGIC_H__ */

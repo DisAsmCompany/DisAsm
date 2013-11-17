@@ -13,18 +13,18 @@
 #ifndef __ELFHEADER_H__
 #define __ELFHEADER_H__
 
-static const uint32_t kELFMagic = 0x464C457FUL;
+enum { kELFMagic = 0x464C457FUL };
 
-static const uint32_t ELFHeaderMagic               = 0;
-static const uint32_t ELFHeaderMachine             = 18;
-static const uint32_t ELFHeaderAddressOfEntryPoint = 24;
-static const uint32_t ELFHeaderOffsetSections      = 32;
-static const uint32_t ELFHeaderOffsetPrograms      = 28;
-static const uint32_t ELFHeaderSizeOfProgram       = 42;
-static const uint32_t ELFHeaderNumberOfPrograms    = 44;
-static const uint32_t ELFHeaderSizeOfSection       = 46;
-static const uint32_t ELFHeaderNumberOfSections    = 48;
-static const uint32_t ELFHeaderSectionHeaderIndex  = 50;
+enum { ELFHeaderMagic               = 0  };
+enum { ELFHeaderMachine             = 18 };
+enum { ELFHeaderAddressOfEntryPoint = 24 };
+enum { ELFHeaderOffsetSections      = 32 };
+enum { ELFHeaderOffsetPrograms      = 28 };
+enum { ELFHeaderSizeOfProgram       = 42 };
+enum { ELFHeaderNumberOfPrograms    = 44 };
+enum { ELFHeaderSizeOfSection       = 46 };
+enum { ELFHeaderNumberOfSections    = 48 };
+enum { ELFHeaderSectionHeaderIndex  = 50 };
 
 static const SDFElement ELFHeader[] =
 {

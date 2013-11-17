@@ -412,6 +412,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		default:
 			break;
 		}
+		break;
 	case W:
 		pOperand->type = Reg;
 		pOperand->value.reg = pInfo->ModRM.fields.RM;
@@ -567,7 +568,6 @@ void GroupDecode(InstructionInfo * pInfo)
 		/* GROUP3 TEST (/0 and /1) is tricky one */
 		if (GROUP3 == pInfo->mnemonic && TEST == pElement->mnemonic)
 		{
-			pInfo->mnemonic = pElement->mnemonic;
 			pInfo->mnemonic = TEST;
 			pInfo->nOperands = 2;
 			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
@@ -621,7 +621,7 @@ uint32_t PrintOpCode(uint32_t OpCode)
 	case _OUT: mnemonic = "OUT"; break;
 	default: break;
 	}
-	length += strlen(mnemonic);
+	length += xstrlen(mnemonic);
 
 	ConsoleIOPrint(mnemonic);
 
@@ -632,7 +632,7 @@ uint32_t PrintOpCode(uint32_t OpCode)
 		if (Reg == pElement->type[i])
 		{
 			char * reg = (char*)RegisterToString(pElement->reg[i]);
-			length += strlen(reg);
+			length += xstrlen(reg);
 			ConsoleIOPrint(reg);
 		}
 		else if (Imm == pElement->type[i])

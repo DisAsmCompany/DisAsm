@@ -115,7 +115,7 @@ calculate operands count : how many non-zero bytes are in packed type definition
 
 /* other type */
 #define EXTRACT_TYPE(x) (EXTRACT_REG(x) ? Reg : (EXTRACT_IMM(x) ? Imm : (x)))
-#define PACK_TYPE(x) ((EXTRACT_TYPE(x) > 0x1000) ? (EXTRACT_TYPE(x)) : 0)
+#define PACK_TYPE(x) (OperandType)((EXTRACT_TYPE(x) > 0x1000) ? (EXTRACT_TYPE(x)) : 0)
 
 #define OP4(x, y, z, w) \
 	{(PACK_TYPE(x)), \
@@ -131,8 +131,8 @@ calculate operands count : how many non-zero bytes are in packed type definition
 
 #define OPCOUNT(x) (!!(x)[0] + !!(x)[1] + !!(x)[2] + !!(x)[3])
 
-#define LOTYPE(x) ((x - 0x1000) & 0x000F)
-#define HITYPE(x) ((x - 0x1000) & 0x0FF0)
+#define LOTYPE(x) (OperandType)((x - 0x1000) & 0x000F)
+#define HITYPE(x) (OperandType)((x - 0x1000) & 0x0FF0)
 
 #define HASMODRM(x) (0 != (x & MaskModRM))
 

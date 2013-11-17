@@ -13,7 +13,7 @@
 #ifndef __MACHOSEGMENT64_H__
 #define __MACHOSEGMENT64_H__
 
-static const uint32_t kMachOSegment64NumberOfSections = 56;
+enum { kMachOSegment64NumberOfSections = 56 };
 
 static const SDFElement MachOSegment64[] =
 {

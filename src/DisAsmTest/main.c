@@ -66,6 +66,7 @@ void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
 		TestAssert(i == info.ModRM.value);
 		TestAssert(hasSIB == info.hasSIB);
 		TestAssert(SIB == info.SIB.value);
+		TestAssert(hasDisp == info.hasDisp);
 		++i;
 	}
 	while (i != 0);

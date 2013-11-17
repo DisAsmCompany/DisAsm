@@ -13,13 +13,13 @@
 #ifndef __LXFILEHEADER_H__
 #define __LXFILEHEADER_H__
 
-static const uint16_t kLESignature = 0x454C; /* LE */
-static const uint16_t kLXSignature = 0x584C; /* LX */
+enum { kLESignature = 0x454C }; /* LE */
+enum { kLXSignature = 0x584C }; /* LX */
 
-static const uint32_t LXFileHeaderObjectEIP         = 0x16;
-static const uint32_t LXFileHeaderObjectEIPObject   = 0x1A;
-static const uint32_t LXFileHeaderObjectTableOffset = 0x3E;
-static const uint32_t LXFileHeaderObjectTableCount  = 0x42;
+enum { LXFileHeaderObjectEIP         = 0x16 };
+enum { LXFileHeaderObjectEIPObject   = 0x1A };
+enum { LXFileHeaderObjectTableOffset = 0x3E };
+enum { LXFileHeaderObjectTableCount  = 0x42 };
 
 static const SDFElement LXFileHeader[] =
 {

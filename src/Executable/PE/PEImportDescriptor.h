@@ -13,8 +13,8 @@
 #ifndef __PEIMPORTDESCRIPTOR_H__
 #define __PEIMPORTDESCRIPTOR_H__
 
-static const uint32_t PEImportDescriptorOriginalFirstThunk = 0;
-static const uint32_t PEImportDescriptorName               = 12;
+enum { PEImportDescriptorOriginalFirstThunk = 0  };
+enum { PEImportDescriptorName               = 12 };
 
 static const SDFElement PEImportDescriptor[] =
 {

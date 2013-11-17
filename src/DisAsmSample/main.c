@@ -13,20 +13,15 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void PrintAddress(address_t address)
-{
-	ConsoleIOPrintFormatted("%08X", address);
-}
-
 void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array)
 {
 	InstructionInfo info = {0};
-	uint8_t length = 0;
 	uint8_t ret = 0;
 	/* store function start in order to analyze jumps */
 	address_t start = address + base;
 	for (;;)
 	{
+		uint8_t length = 0;
 		BenchmarkSampleBegin(hBenchmark);
 		length = DisAsmInstructionDecode(bitness, hReader, &info);
 		BenchmarkSampleEnd(hBenchmark);
@@ -44,8 +39,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		if (CALL == info.mnemonic && Jz == info.operands[0].type)
 		{
 			address_t offset = address + info.imm;
-			ConsoleIOPrint("; call to ");
-			PrintAddress(offset);
+			ConsoleIOPrintFormatted("; call to %08LX", offset);
 			DynamicArrayAdd(array, offset);
 		}
 		/* non-conditional jump instructions (JMP) */
@@ -98,13 +92,11 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 					break;
 				}
 				destination += base;
-				ConsoleIOPrint("; jump to ");
 			}
 			/* special case - memory operand with no registers involved */
 			else if (Reg == info.operands[0].type && !info.operands[0].hasBase && !info.operands[0].hasIndex)
 			{
 				destination = info.disp;
-				ConsoleIOPrint("; jump to ");
 			}
 			/* jump uses registers, therefore cannot be calculated without emulation */
 			else
@@ -112,7 +104,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 				/* abort disassembler */
 				break;
 			}
-			PrintAddress(destination);
+			ConsoleIOPrintFormatted("; jump to %08LX", destination);
 
 			/* branch somewhere into already disassembled part of function */
 			if (start <= destination && destination < base + address)
@@ -258,6 +250,10 @@ int main(int argc, char * const argv[])
 	uint32_t count = 0;
 	uint8_t memory = 0;
 
+	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+	StackWalkInit();
+	CrashHandlerInstall();
+	LeakTrackerInstall(1);
 	ConsoleIOInit();
 
 	if (argc < 2)
@@ -277,9 +273,6 @@ int main(int argc, char * const argv[])
 			memory = 1;
 		}
 	}
-	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
-	CrashHandlerInstall();
-	LeakTrackerInstall(1);
 	if (memory)
 	{
 #ifdef _WIN32

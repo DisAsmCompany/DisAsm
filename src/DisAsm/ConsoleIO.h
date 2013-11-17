@@ -31,7 +31,9 @@ typedef enum TextColor_t
 	kBackGroundYellow  = kYellow << 8,
 	kBackGroundMagenta = kMagenta << 8,
 	kBackGroundCyan    = kCyan << 8,
-	kBackGroundWhite   = kWhite << 8
+	kBackGroundWhite   = kWhite << 8,
+
+	kDefaultColor = kWhite | kBackGroundWhite
 }
 TextColor;
 
