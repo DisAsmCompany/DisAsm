@@ -16,6 +16,8 @@ static const uint8_t nop = 0x90;
 /* OpCode for JMP (Jump) */
 static const uint8_t jmp = 0xE9;
 
+#ifdef _WIN32
+
 typedef void * (__stdcall * pfnHeapAlloc)(void * hHeap, uint32_t flags, uint32_t size);
 typedef void * (__stdcall * pfnHeapReAlloc)(void * hHeap, uint32_t flags, void * memory, uint32_t size);
 typedef int (__stdcall * pfnHeapFree)(void * hHeap, uint32_t flags, LPVOID lpMem);
@@ -320,8 +322,11 @@ void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 	VirtualProtect(pOriginal, PAGE_SIZE, protect, &protect);
 }
 
+#endif /* _WIN32 */
+
 void LeakTrackerInstall(uint8_t install)
 {
+#ifdef _WIN32
 	uint32_t protect = 0;
 
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
@@ -388,4 +393,5 @@ void LeakTrackerInstall(uint8_t install)
 		}
 		ConsoleIOPrintFormatted("total leaked %d bytes\n", total);
 	}
+#endif /* _WIN32 */
 }

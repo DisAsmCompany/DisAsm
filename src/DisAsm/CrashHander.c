@@ -11,6 +11,28 @@
 
 #include "DisAsm"
 
+#ifdef _WIN32
+
+#ifndef VER_SUITE_WH_SERVER
+#define VER_SUITE_WH_SERVER 0x00008000
+#endif /* VER_SUITE_WH_SERVER */
+
+#ifndef SM_TABLETPC
+#define SM_TABLETPC    86
+#endif /* SM_TABLETPC */
+
+#ifndef SM_MEDIACENTER
+#define SM_MEDIACENTER 87
+#endif /* SM_MEDIACENTER */
+
+#ifndef SM_STARTER
+#define SM_STARTER     88
+#endif /* SM_STARTER */
+
+#ifndef SM_SERVERR2
+#define SM_SERVERR2    89
+#endif /* SM_SERVERR2 */
+
 void InfoOperationSystem()
 {
 	OSVERSIONINFOEX osvi = {0};
@@ -93,9 +115,16 @@ LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExcepti
 	InfoOperationSystem();
 	InfoEnvironment();
 
+#ifdef _M_IX86
 	context.InstructionPointer = pExceptionInfo->ContextRecord->Eip;
 	context.StackBasePointer   = pExceptionInfo->ContextRecord->Ebp;
 	context.StackFramePointer  = pExceptionInfo->ContextRecord->Esp;
+#endif /* _M_IX86 */
+#ifdef _M_X64
+	context.InstructionPointer = pExceptionInfo->ContextRecord->Rip;
+	context.StackBasePointer   = pExceptionInfo->ContextRecord->Rbp;
+	context.StackFramePointer  = pExceptionInfo->ContextRecord->Rsp;
+#endif /* _M_X64 */
 	StackWalk(callstack, &context);
 	for (i = 0; i < MaxCallStack; ++i)
 	{
@@ -137,8 +166,12 @@ BOOL __stdcall CrashHandlerRoutine(uint32_t CtrlType)
 	return true;
 }
 
+#endif /* _WIN32 */
+
 void CrashHandlerInstall()
 {
+#ifdef _WIN32
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
+#endif /* _WIN32 */
 }

@@ -250,7 +250,9 @@ int main(int argc, char * const argv[])
 	uint32_t count = 0;
 	uint8_t memory = 0;
 
+#ifdef _WIN32
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+#endif /* _WIN32 */
 	StackWalkInit();
 	CrashHandlerInstall();
 	LeakTrackerInstall(1);

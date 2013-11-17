@@ -11,6 +11,8 @@
 
 #include "DisAsm"
 
+#ifdef _WIN32
+
 typedef enum
 {
 	AddrMode1616,
@@ -227,8 +229,8 @@ void LoadModules(HANDLE hProcess)
 	GetModuleFileNameA(NULL, exe, NtfsMaxPath);
 	EnumProcessModules(hProcess, NULL, 0, &needed);
 	g_nModules = needed / 4;
-	g_Modules = (ModuleInfo*) malloc(g_nModules * sizeof(ModuleInfo));
-	modules = (HMODULE*) malloc(g_nModules * sizeof(HMODULE));
+	g_Modules = (ModuleInfo*) calloc(1, g_nModules * sizeof(ModuleInfo));
+	modules = (HMODULE*) calloc(1, g_nModules * sizeof(HMODULE));
 	if (NULL != modules && NULL != g_Modules)
 	{
 		DWORD i = 0;
@@ -410,9 +412,16 @@ void StackWalk(address_t * callstack, Context * pContext)
 	}
 	else
 	{
+#ifdef _M_IX86
 		context.Eip = (uint32_t) pContext->InstructionPointer;
 		context.Esp = (uint32_t) pContext->StackFramePointer;
 		context.Ebp = (uint32_t) pContext->StackBasePointer;
+#endif /* _M_IX86 */
+#ifdef _M_X64
+		context.Rip = (uint32_t) pContext->InstructionPointer;
+		context.Rsp = (uint32_t) pContext->StackFramePointer;
+		context.Rbp = (uint32_t) pContext->StackBasePointer;
+#endif /* _M_X64 */
 	}
 	context.ContextFlags = CONTEXT_FULL;
 #ifdef _M_IX86
@@ -426,6 +435,12 @@ void StackWalk(address_t * callstack, Context * pContext)
 #endif /* _M_IX86 */
 #ifdef _M_X64
 	machine = IMAGE_FILE_MACHINE_AMD64;
+	frame.AddrPC.Offset    = context.Rip;
+	frame.AddrPC.Mode      = AddrModeFlat;
+	frame.AddrFrame.Offset = context.Rbp;
+	frame.AddrFrame.Mode   = AddrModeFlat;
+	frame.AddrStack.Offset = context.Rsp;
+	frame.AddrStack.Mode   = AddrModeFlat;
 #endif /* _M_IA64 */
 #ifdef _M_X64
 	machine = IMAGE_FILE_MACHINE_IA64;
@@ -436,12 +451,10 @@ void StackWalk(address_t * callstack, Context * pContext)
 	{
 		if (!pStackWalk64(machine, hProcess, hThread, &frame, &context, NULL, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL))
 		{
-			ConsoleIOPrint("StackWalk64 failed\n");
 			break;
 		}
 		if (0 == frame.AddrReturn.Offset)
 		{
-			ConsoleIOPrint("StackWalk64 failed : return address is zero\n");
 			break;
 		}
 		if (0 != frame.AddrPC.Offset)
@@ -450,3 +463,12 @@ void StackWalk(address_t * callstack, Context * pContext)
 		}
 	}
 }
+
+#else /* _WIN32 */
+
+void StackWalkInit() {}
+void StackWalkCleanup() {}
+void StackWalk(address_t * callstack, Context * context) {}
+void StackWalkSymbol(address_t address) {}
+
+#endif /* _WIN32 */
