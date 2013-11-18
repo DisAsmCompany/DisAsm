@@ -220,20 +220,28 @@ ProtectType;
 
 void Protect(address_t address, ProtectType type)
 {
-	address = address - address % PAGE_SIZE;
 #ifdef __APPLE__
 	int protect = 0;
 	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
 	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
 	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
-	mprotect(address, PAGE_SIZE, PROT_WRITE);
+	mprotect(address - address % PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
 #endif /* __APPLE__ */
 #ifdef _WIN32
 	DWORD protect = 0;
-	protect |= (type & ProtectTypeRead) ? PAGE_READ : 0;
-	protect |= (type & ProtectTypeWrite) ? PAGE_WRITE : 0;
-	protect |= (type & ProtectTypeExecute) ? PAGE_EXECUTE : 0;
-	VirtualProtect(address, PAGE_SIZE, protect, &protect);
+    switch (type)
+    {
+    case ProtectTypeNone: protect = PAGE_NOACCESS; break;
+    case ProtectTypeRead: protect = PAGE_READONLY; break;
+    case ProtectTypeWrite: protect = PAGE_WRITECOPY; break;
+    case ProtectTypeExecute: protect = PAGE_EXECUTE; break;
+    case ProtectTypeRead | ProtectTypeWrite: protect = PAGE_READWRITE; break;
+    case ProtectTypeRead | ProtectTypeExecute: protect = PAGE_EXECUTE_READ; break;
+    case ProtectTypeExecute | ProtectTypeWrite: protect = PAGE_EXECUTE_WRITECOPY; break;
+    case ProtectTypeExecute | ProtectTypeWrite | ProtectTypeRead: protect = PAGE_EXECUTE_READWRITE; break;
+    default: break;
+    }
+	VirtualProtect(address - address % PAGE_SIZE, PAGE_SIZE, protect, &protect);
 #endif /* _WIN32 */
 }
 
@@ -456,30 +464,6 @@ int __stdcall xRtlFreeHeap(void * heap, uint32_t flags, void * address)
     return result;
 }
 
-void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
-{
-	uint32_t protect = 0;
-	uint32_t length = 0;
-	address_t offset = CalculateOffsetForJMP((address_t)pOriginal, (address_t)pHook);
-
-	memset(pThunk, nop, 2 * THUNK_SIZE);
-
-    if (0 == (length = PatchLength(pOriginal, pThunk, 5)))
-    {
-        return;
-    }
-	
-	VirtualProtect(pOriginal, PAGE_SIZE, PAGE_READWRITE, &protect);
-	pOriginal[0] = jmp;
-	memcpy(pOriginal + 1, &offset, 4);
-	memset(pOriginal + 5, nop, length - 5);
-	VirtualProtect(pOriginal, PAGE_SIZE, protect, &protect);
-
-	offset = CalculateOffsetForJMP((address_t)(pThunk + THUNK_SIZE), (address_t)(pOriginal + length));
-	pThunk[THUNK_SIZE] = jmp;
-	memcpy(pThunk + THUNK_SIZE + 1, &offset, 4);
-}
-
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 {
 	uint32_t protect = 0;
@@ -489,22 +473,6 @@ void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 	VirtualProtect(pOriginal, PAGE_SIZE, protect, &protect);
 }
 
-void xfree(void * address)
-{
-	if (xHeapCalled)
-	{
-		pOriginalFree(address);
-		return;
-	}
-	xHeapCalled = true;
-	pOriginalFree(address);
-	if (NULL != address)
-	{
-		xUpdateAllocation(address, NULL, 0, true);
-	}
-	xHeapCalled = false;
-}
-
 void * xAlloc(uint32_t size)
 {
 	return pOriginalHeapAlloc(GetProcessHeap(), 0, size);
@@ -512,7 +480,7 @@ void * xAlloc(uint32_t size)
 
 void * xReAlloc(void * address, uint32_t size)
 {
-	return pOriginalHeapReAlloc(GetProcessHeap(), address, 0, size);
+	return pOriginalHeapReAlloc(GetProcessHeap(), 0, address, size);
 }
 
 void xFree(void * address)
