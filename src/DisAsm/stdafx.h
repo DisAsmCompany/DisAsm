@@ -28,9 +28,9 @@
 #else /* _WIN32 */
 #include <unistd.h>
 #include <signal.h>
+#include <dlfcn.h>
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
-#include <dlfcn.h>
 #endif /* __APPLE__ */
 #include <sys/types.h>
 #include <sys/time.h>
