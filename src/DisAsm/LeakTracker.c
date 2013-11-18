@@ -231,7 +231,7 @@ void Protect(address_t address, ProtectType type)
 	DWORD protect = 0;
     switch (type)
     {
-    case ProtectTypeNone: protect = PAGE_NOACCESS; break;
+    case 0: protect = PAGE_NOACCESS; break;
     case ProtectTypeRead: protect = PAGE_READONLY; break;
     case ProtectTypeWrite: protect = PAGE_WRITECOPY; break;
     case ProtectTypeExecute: protect = PAGE_EXECUTE; break;
