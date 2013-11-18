@@ -26,7 +26,15 @@
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
 #else /* _WIN32 */
+#include <unistd.h>
+#include <signal.h>
+#ifdef __APPLE__
+#include <mach-o/dyld.h>
+#include <dlfcn.h>
+#endif /* __APPLE__ */
+#include <sys/types.h>
 #include <sys/time.h>
+#include <sys/mman.h>
 #endif /* _WIN32 */
 
 #ifndef MIN

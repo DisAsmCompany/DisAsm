@@ -468,7 +468,34 @@ void StackWalk(address_t * callstack, Context * pContext)
 
 void StackWalkInit() {}
 void StackWalkCleanup() {}
-void StackWalk(address_t * callstack, Context * context) {}
-void StackWalkSymbol(address_t address) {}
+void StackWalk(address_t * callstack, Context * context)
+{
+	void **frame = (void**) __builtin_frame_address(0);
+	void **bp = (void**) (*frame);
+	void *ip = frame[1];
+	
+	int i;
+	for (i = 0; bp && ip && i < MaxCallStack; ++i)
+	{
+		callstack[i] = ip;
+		ip = bp[1];
+		bp = (void**)(bp[0]);
+	}
+}
+
+void StackWalkSymbol(address_t address)
+{
+	Dl_info info = {0};
+	
+	ConsoleIOPrintFormatted("%08X", address);
+	if (0 != dladdr(address, &info))
+	{
+		if (NULL != info.dli_sname)
+		{
+			const char * symbol = info.dli_sname;
+			ConsoleIOPrintFormatted(" %s", symbol);
+		}
+	}
+}
 
 #endif /* _WIN32 */

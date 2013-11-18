@@ -16,19 +16,9 @@ static const uint8_t nop = 0x90;
 /* OpCode for JMP (Jump) */
 static const uint8_t jmp = 0xE9;
 
-#ifdef _WIN32
-
-typedef void * (__stdcall * pfnHeapAlloc)(void * hHeap, uint32_t flags, uint32_t size);
-typedef void * (__stdcall * pfnHeapReAlloc)(void * hHeap, uint32_t flags, void * memory, uint32_t size);
-typedef int (__stdcall * pfnHeapFree)(void * hHeap, uint32_t flags, LPVOID lpMem);
-
-static pfnHeapFree pOriginalRtlFreeHeap = NULL;
-static pfnHeapAlloc pOriginalHeapAlloc = NULL;
-static pfnHeapReAlloc pOriginalHeapReAlloc = NULL;
-static pfnHeapFree pOriginalHeapFree = NULL;
-
-#define PAGE_SIZE 4096
 #define THUNK_SIZE 20
+#define PAGE_SIZE 4096
+
 uint8_t xThunkHeapAlloc[2 * THUNK_SIZE], xThunkHeapReAlloc[2 * THUNK_SIZE], xThunkHeapFree[2 * THUNK_SIZE], xThunkRtlFreeHeap[2 * THUNK_SIZE];
 
 typedef struct Allocation_t
@@ -48,6 +38,10 @@ static size_t g_nCapacity = 0;
 Allocation * g_Allocations = NULL;
 
 static bool xHeapCalled = false;
+
+void * xAlloc(uint32_t size);
+void * xReAlloc(void * address, uint32_t size);
+void xFree(void * address);
 
 uint32_t xFindAllocation(void * address, void * heap)
 {
@@ -81,26 +75,31 @@ void xAddAllocation(void * address, void * heap, uint32_t size, uint8_t freed)
 		    g_nCapacity += 1024; /* linear grow */
 			if (!g_Allocations)
 			{
-				g_Allocations = (Allocation*) pOriginalHeapAlloc(GetProcessHeap(), 0, g_nCapacity * sizeof(Allocation));
+				g_Allocations = (Allocation*) xAlloc(g_nCapacity * sizeof(Allocation));
 			}
 			else
 			{
-				g_Allocations = (Allocation*) pOriginalHeapReAlloc(GetProcessHeap(), 0, g_Allocations, g_nCapacity * sizeof(Allocation));
+				g_Allocations = (Allocation*) xReAlloc(g_Allocations, g_nCapacity * sizeof(Allocation));
 				if (!g_Allocations)
 				{
 					/* if realloc fails, then try to do new alloc, then copy data */
-					Allocation * allocations = (Allocation*) pOriginalHeapAlloc(GetProcessHeap(), 0, g_nCapacity * sizeof(Allocation));
+					Allocation * allocations = xAlloc(g_nCapacity * sizeof(Allocation));
 					if (allocations)
 					{
 						memcpy(allocations, g_Allocations, (g_nCapacity - 1024) * sizeof(Allocation));
-						pOriginalHeapFree(GetProcessHeap(), 0, g_Allocations);
+						xFree(g_Allocations);
 						g_Allocations = allocations;
 					}
 				}
 			}
 			if (!g_Allocations)
 		    {
+#ifdef _WIN32
 			    DebugBreak();
+#endif /* _WIN32 */
+#ifdef __APPLE__
+				__asm { int 3 };
+#endif /* __APPLE__ */
 		    }
 	    }
 	    g_Allocations[g_nTotalAllocations - 1].address = address;
@@ -126,84 +125,6 @@ void xUpdateAllocation(void * address, void * heap, uint32_t size, uint8_t freed
 		xAddAllocation(address, heap, size, freed);
 		if (freed) --g_nActiveAllocations;
 	}
-}
-
-void * __stdcall xHeapAlloc(void * heap, uint32_t flags, uint32_t size)
-{
-	void * result = NULL;
-	if (xHeapCalled)
-	{
-		return pOriginalHeapAlloc(heap, flags, size);
-	}
-	xHeapCalled = true;
-	result = pOriginalHeapAlloc(heap, flags, size);
-	if (NULL != result)
-	{
-		xAddAllocation(result, heap, size, false);
-	}
-	xHeapCalled = false;
-	return result;
-}
-
-void * __stdcall xHeapReAlloc(void * heap, uint32_t flags, void * memory, uint32_t size)
-{
-	void * result = NULL;
-	if (xHeapCalled)
-	{
-		return pOriginalHeapReAlloc(heap, flags, memory, size);
-	}
-	xHeapCalled = true;
-	result = pOriginalHeapReAlloc(heap, flags, memory, size);
-	if (NULL != result)
-	{
-		if (result == memory) 
-		{
-			/* same address, just update it */
-			xUpdateAllocation(result, heap, size, false);
-		}
-		else
-		{
-			/* new address : mark old as freed and add entry for new */
-			xUpdateAllocation(memory, heap, 0, true);
-			xAddAllocation(result, heap, size, false);
-		}
-	}
-	xHeapCalled = false;
-	return result;
-}
-
-int __stdcall xHeapFree(void * heap, uint32_t flags, void * memory)
-{
-	int result = 0;
-	if (xHeapCalled)
-	{
-		return pOriginalHeapFree(heap, flags, memory);
-	}
-	xHeapCalled = true;
-	result = pOriginalHeapFree(heap, flags, memory);
-	if (result && NULL != memory)
-	{
-		xUpdateAllocation(memory, heap, 0, true);
-	}
-	xHeapCalled = false;
-	return result;
-}
-
-int __stdcall xRtlFreeHeap(void * heap, uint32_t flags, void * memory)
-{
-    int result = 0;
-    if (xHeapCalled)
-    {
-        return pOriginalRtlFreeHeap(heap, flags, memory);
-    }
-    xHeapCalled = true;
-    result = pOriginalRtlFreeHeap(heap, flags, memory);
-    if (result && NULL != memory)
-    {
-        xUpdateAllocation(memory, heap, 0, true);
-    }
-    xHeapCalled = false;
-    return result;
 }
 
 address_t CalculateOffsetForJMP(address_t from, address_t to)
@@ -251,7 +172,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
     reader.pSeek    = CallbackSeek;
     reader.pPrivate = &data;
     reader.pDestroy = NULL;
-
+	
     data.pBuffer = pData;
     data.offset = 0;
 	
@@ -272,10 +193,10 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 			/* we're unlucky enough - patched function starts from relative jump (JMP) that need to be corrected */
 			memcpy(&offset, pData + total + 1, 4);
 			/* math is simple :
-			old offset = destination - original
-			destination = old offset + original
-			new offset = destination - thunk = old offset + original - thunk
-			*/
+			 old offset = destination - original
+			 destination = old offset + original
+			 new offset = destination - thunk = old offset + original - thunk
+			 */
 			offset = offset + pData - pOut;
 			memcpy(pOut + total + 1, &offset, 4);
 			pOut[total] = jmp;
@@ -287,6 +208,252 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 		total += length;
 	}
 	return total;
+}
+
+typedef enum ProtectType_t
+{
+	ProtectTypeRead = 0x01,
+	ProtectTypeWrite = 0x02,
+	ProtectTypeExecute = 0x04
+}
+ProtectType;
+
+void Protect(address_t address, ProtectType type)
+{
+	address = address - address % PAGE_SIZE;
+#ifdef __APPLE__
+	int protect = 0;
+	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
+	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
+	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
+	mprotect(address, PAGE_SIZE, PROT_WRITE);
+#endif /* __APPLE__ */
+#ifdef _WIN32
+	DWORD protect = 0;
+	protect |= (type & ProtectTypeRead) ? PAGE_READ : 0;
+	protect |= (type & ProtectTypeWrite) ? PAGE_WRITE : 0;
+	protect |= (type & ProtectTypeExecute) ? PAGE_EXECUTE : 0;
+	VirtualProtect(address, PAGE_SIZE, protect, &protect);
+#endif /* _WIN32 */
+}
+
+void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
+{
+	uint32_t length = 0;
+	address_t offset = CalculateOffsetForJMP((address_t)pOriginal, (address_t)pHook);
+	
+	memset(pThunk, nop, 2 * THUNK_SIZE);
+	
+    if (0 == (length = PatchLength(pOriginal, pThunk, 5)))
+    {
+        return;
+    }
+	Protect((address_t) pOriginal, ProtectTypeWrite);
+	pOriginal[0] = jmp;
+	memcpy(pOriginal + 1, &offset, 4);
+	memset(pOriginal + 5, nop, length - 5);
+	Protect((address_t) pOriginal, ProtectTypeExecute);
+	
+	offset = CalculateOffsetForJMP((address_t)(pThunk + THUNK_SIZE), (address_t)(pOriginal + length));
+	pThunk[THUNK_SIZE] = jmp;
+	memcpy(pThunk + THUNK_SIZE + 1, &offset, 4);
+}
+
+#ifdef __APPLE__
+
+typedef void * (*pfnmalloc)(size_t);
+typedef void * (*pfnrealloc)(void *, size_t);
+typedef void   (*pfnfree)(void *);
+typedef void * (*pfncalloc)(size_t, size_t);
+
+static pfnmalloc  pOriginalMalloc = NULL;
+static pfncalloc  pOriginalCalloc = NULL;
+static pfnrealloc pOriginalRealloc = NULL;
+static pfnfree    pOriginalFree = NULL;
+
+uint8_t xThunkMalloc[2 * THUNK_SIZE], xThunkCalloc[2 * THUNK_SIZE], xThunkRealloc[2 * THUNK_SIZE], xThunkFree[2 * THUNK_SIZE];
+
+void * xmalloc(size_t size)
+{
+	void * result = NULL;
+	if (xHeapCalled)
+	{
+		return pOriginalMalloc(size);
+	}
+	xHeapCalled = true;
+	result = pOriginalMalloc(size);
+	if (NULL != result)
+	{
+		xAddAllocation(result, NULL, size, false);
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+void * xcalloc(size_t count, size_t size)
+{
+	void * result = NULL;
+	if (xHeapCalled)
+	{
+		return pOriginalCalloc(count, size);
+	}
+	xHeapCalled = true;
+	result = pOriginalCalloc(count, size);
+	if (NULL != result)
+	{
+		xAddAllocation(result, NULL, count * size, false);
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+void * xrealloc(void * address, size_t size)
+{
+	void * result = NULL;
+	if (xHeapCalled)
+	{
+		return pOriginalRealloc(address, size);
+	}
+	xHeapCalled = true;
+	result = pOriginalRealloc(address, size);
+	if (NULL != result)
+	{
+		if (address == result) 
+		{
+			/* same address, just update it */
+			xUpdateAllocation(result, NULL, size, false);
+		}
+		else
+		{
+			/* new address : mark old as freed and add entry for new */
+			xUpdateAllocation(address, NULL, 0, true);
+			xAddAllocation(result, NULL, size, false);
+		}
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+void xfree(void * address)
+{
+	if (xHeapCalled)
+	{
+		pOriginalFree(address);
+		return;
+	}
+	xHeapCalled = true;
+	pOriginalFree(address);
+	if (NULL != address)
+	{
+		xUpdateAllocation(address, NULL, 0, true);
+	}
+	xHeapCalled = false;
+}
+
+void * xAlloc(uint32_t size)
+{
+	return pOriginalMalloc(size);
+}
+
+void * xReAlloc(void * address, uint32_t size)
+{
+	return pOriginalRealloc(address, size);
+}
+
+void xFree(void * address)
+{
+	pOriginalFree(address);
+}
+
+#endif /* __APPLE__ */
+
+#ifdef _WIN32
+
+typedef void * (__stdcall * pfnHeapAlloc)(void * hHeap, uint32_t flags, uint32_t size);
+typedef void * (__stdcall * pfnHeapReAlloc)(void * hHeap, uint32_t flags, void * memory, uint32_t size);
+typedef int (__stdcall * pfnHeapFree)(void * hHeap, uint32_t flags, LPVOID lpMem);
+
+static pfnHeapFree    pOriginalRtlFreeHeap = NULL;
+static pfnHeapAlloc   pOriginalHeapAlloc = NULL;
+static pfnHeapReAlloc pOriginalHeapReAlloc = NULL;
+static pfnHeapFree    pOriginalHeapFree = NULL;
+
+void * __stdcall xHeapAlloc(void * heap, uint32_t flags, uint32_t size)
+{
+	void * result = NULL;
+	if (xHeapCalled)
+	{
+		return pOriginalHeapAlloc(heap, flags, size);
+	}
+	xHeapCalled = true;
+	result = pOriginalHeapAlloc(heap, flags, size);
+	if (NULL != result)
+	{
+		xAddAllocation(result, heap, size, false);
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+void * __stdcall xHeapReAlloc(void * heap, uint32_t flags, void * address, uint32_t size)
+{
+	void * result = NULL;
+	if (xHeapCalled)
+	{
+		return pOriginalHeapReAlloc(heap, flags, address, size);
+	}
+	xHeapCalled = true;
+	result = pOriginalHeapReAlloc(heap, flags, address, size);
+	if (NULL != result)
+	{
+		if (result == address) 
+		{
+			/* same address, just update it */
+			xUpdateAllocation(result, heap, size, false);
+		}
+		else
+		{
+			/* new address : mark old as freed and add entry for new */
+			xUpdateAllocation(address, heap, 0, true);
+			xAddAllocation(result, heap, size, false);
+		}
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+int __stdcall xHeapFree(void * heap, uint32_t flags, void * address)
+{
+	int result = 0;
+	if (xHeapCalled)
+	{
+		return pOriginalHeapFree(heap, flags, address);
+	}
+	xHeapCalled = true;
+	result = pOriginalHeapFree(heap, flags, address);
+	if (result && NULL != address)
+	{
+		xUpdateAllocation(address, heap, 0, true);
+	}
+	xHeapCalled = false;
+	return result;
+}
+
+int __stdcall xRtlFreeHeap(void * heap, uint32_t flags, void * address)
+{
+    int result = 0;
+    if (xHeapCalled)
+    {
+        return pOriginalRtlFreeHeap(heap, flags, address);
+    }
+    xHeapCalled = true;
+    result = pOriginalRtlFreeHeap(heap, flags, address);
+    if (result && NULL != address)
+    {
+        xUpdateAllocation(address, heap, 0, true);
+    }
+    xHeapCalled = false;
+    return result;
 }
 
 void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
@@ -322,6 +489,37 @@ void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 	VirtualProtect(pOriginal, PAGE_SIZE, protect, &protect);
 }
 
+void xfree(void * address)
+{
+	if (xHeapCalled)
+	{
+		pOriginalFree(address);
+		return;
+	}
+	xHeapCalled = true;
+	pOriginalFree(address);
+	if (NULL != address)
+	{
+		xUpdateAllocation(address, NULL, 0, true);
+	}
+	xHeapCalled = false;
+}
+
+void * xAlloc(uint32_t size)
+{
+	return pOriginalHeapAlloc(GetProcessHeap(), 0, size);
+}
+
+void * xReAlloc(void * address, uint32_t size)
+{
+	return pOriginalHeapReAlloc(GetProcessHeap(), address, 0, size);
+}
+
+void xFree(void * address)
+{
+	pOriginalHeapFree(GetProcessHeap(), 0, address);
+}
+
 #endif /* _WIN32 */
 
 void LeakTrackerInstall(uint8_t install)
@@ -331,9 +529,11 @@ void LeakTrackerInstall(uint8_t install)
 
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
     void * RtlFreeHeap = GetProcAddress(hModule, "RtlFreeHeap");
+#endif /* _WIN32 */
 
 	if (install)
 	{
+#ifdef _WIN32
 		g_Allocations = (Allocation*)HeapAlloc(GetProcessHeap(), 0, sizeof(Allocation));
 
 		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
@@ -356,13 +556,27 @@ void LeakTrackerInstall(uint8_t install)
 		{
 			PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
 		}
+#endif /* _WIN32 */
+#ifdef __APPLE__
+		g_Allocations = (Allocation*) malloc(sizeof(Allocation));
+		
+		pOriginalMalloc = (pfnmalloc) (&xThunkMalloc);
+		pOriginalCalloc = (pfncalloc) (&xThunkCalloc);
+		pOriginalRealloc = (pfnrealloc) (&xThunkRealloc);
+		pOriginalFree = (pfnfree) (&xThunkFree);
+		
+		PatchFunction((uint8_t*) malloc,  (uint8_t*) xmalloc,  xThunkMalloc);
+		PatchFunction((uint8_t*) realloc, (uint8_t*) xrealloc, xThunkRealloc);
+		PatchFunction((uint8_t*) calloc,  (uint8_t*) xcalloc,  xThunkCalloc);
+		PatchFunction((uint8_t*) free,    (uint8_t*) xfree,    xThunkFree);
+#endif /* __APPLE__ */
 	}
 	else
 	{
 		uint32_t i = 0;
 		uint32_t j = 0;
 		uint32_t total = 0;
-
+#ifdef _WIN32
 		RestoreFunction((uint8_t*)HeapAlloc,   xThunkHeapAlloc);
 		RestoreFunction((uint8_t*)HeapReAlloc, xThunkHeapReAlloc);
 		RestoreFunction((uint8_t*)HeapFree,    xThunkHeapFree);
@@ -370,13 +584,13 @@ void LeakTrackerInstall(uint8_t install)
 		{
 			RestoreFunction((uint8_t*)RtlFreeHeap, xThunkRtlFreeHeap);
 		}
-
+#endif /* _WIN32 */
 		for (i = 0; i < g_nTotalAllocations; ++i)
 		{
 			if (0 == g_Allocations[i].freed)
 			{
 				total += g_Allocations[i].size;
-				ConsoleIOPrintFormatted("memory leak 0x%08X of %d bytes\n", g_Allocations[i].address, g_Allocations[i].size);
+				ConsoleIOPrintFormatted("[ERROR] memory leak 0x%08X of %d bytes\n", g_Allocations[i].address, g_Allocations[i].size);
 
 				for (j = 0; j < MaxCallStack; ++j)
 				{
@@ -391,7 +605,9 @@ void LeakTrackerInstall(uint8_t install)
 				ConsoleIOPrint("\n");
 			}
 		}
-		ConsoleIOPrintFormatted("total leaked %d bytes\n", total);
+		if (total > 0)
+		{
+			ConsoleIOPrintFormatted("[ERROR] total leaked %d bytes\n", total);
+		}
 	}
-#endif /* _WIN32 */
 }

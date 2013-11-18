@@ -86,7 +86,7 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 		WriteFile(hConsole, str, length, &written, NULL);
 	}
 #else /* _WIN32 */
-	fprintf(error ? stderr : stdout, "%s", str);
+	write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
 #endif /* _WIN32 */
 }
 

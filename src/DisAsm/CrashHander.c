@@ -167,6 +167,69 @@ BOOL __stdcall CrashHandlerRoutine(uint32_t CtrlType)
 }
 
 #endif /* _WIN32 */
+#ifdef __APPLE__
+
+typedef struct SignalRecord_t
+{
+	int signum;
+	char * message;
+}
+SignalRecord;
+
+static const SignalRecord signals[] =
+{
+	{SIGHUP,  "SIGHUP (hangup)"},
+    {SIGINT,  "SIGINT (Ctrl-C)"},
+    {SIGQUIT, "SIGQUIT (quit program)"},
+    {SIGTRAP, "SIGTRAP (trace trap)"},
+    {SIGABRT, "SIGABRT (abnormal termination)"},
+    {SIGEMT,  "SIGEMT (emulation trap)"},
+    {SIGBUS,  "SIGBUS (bus error)"},
+    {SIGSYS,  "SIGSYS (invalid argument)"},
+    {SIGILL,  "SIGILL (illegal instruction)"},
+    {SIGPIPE, "SIGPIPE (pipe error)"},
+    {SIGALRM, "SIGALRM (alarm clock)"},
+    {SIGFPE,  "SIGFPE (floating-point exception)"},
+    {SIGSEGV, "SIGSEGV (segmentation fault)"},
+    {SIGTERM, "SIGTERM (termination request)"},
+    {SIGTSTP, "SIGTSTP (terminal stop)"},
+    //{SIGCONT, "SIGCONT (continue after stop)"},
+    {SIGURG,  "SIGURG (urgent condition)"},
+    {SIGABRT, "SIGABRT (abort)"},
+    //{SIGCHLD, "SIGCHLD (child terminated)"},
+    //{SIGTTIN, "SIGTTIN (tty input)"},
+    //{SIGTTOU, "SIGTTOU (tty output)"},
+    //{SIGIO, "SIGIO (pollable event)"},
+    {SIGXCPU,   "SIGXCPU (CPU time limit exceeded)"},
+    {SIGXFSZ,   "SIGXFSZ (file size limit exceeded)"},
+    {SIGVTALRM, "SIGVTALRM (virtual timer alarm)"},
+    {SIGPROF,   "SIGPROF (profiler timer alarm)"},
+    //{SIGWINCH, "SIGWINCH (size changed)"},
+    //{SIGINFO, "SIGINFO (status request)"},
+    {SIGUSR1,   "SIGUSR1 (user defined signal 1)"},
+    {SIGUSR2,   "SIGUSR2 (user defined signal 2)"},
+};
+
+void CrashHandler(int signum, siginfo_t * info, void * ucontext)
+{
+	address_t callstack[MaxCallStack] = {0};
+	uint32_t i = 0;
+	
+	ConsoleIOPrint("[ERROR] crash!\n");
+	StackWalk(callstack, NULL);
+	for (i = 0; i < MaxCallStack; ++i)
+	{
+		if (0 == callstack[i])
+		{
+			break;
+		}
+		StackWalkSymbol(callstack[i]);
+		ConsoleIOPrint("\n");
+	}	
+	_exit(EXIT_FAILURE);
+}
+
+#endif /* __APPLE__ */
 
 void CrashHandlerInstall()
 {
@@ -174,4 +237,17 @@ void CrashHandlerInstall()
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
 #endif /* _WIN32 */
+#ifdef __APPLE__
+	size_t i;
+	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
+	{
+		struct sigaction action;
+		action.sa_sigaction = CrashHandler;
+		action.sa_flags = SA_RESTART | SA_SIGINFO;
+		if (0 != sigaction(signals[i].signum, &action, NULL))
+		{
+			ConsoleIOPrintFormatted("[ERROR] cannot install signal handler for signal %s\n", signals[i].message);
+		}
+	}
+#endif /* __APPLE__ */
 }
