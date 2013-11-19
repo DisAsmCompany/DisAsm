@@ -13,6 +13,52 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
+address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
+{
+	address_t destination = address;
+	switch (size)
+	{
+		case 1:
+			if (0x80UL & offset)
+			{
+				offset = 0xFFUL - offset + 1;
+				destination = (destination > offset) ? (destination - offset) : 0;
+			}
+			else
+			{
+				destination += offset;
+			}
+			break;
+		case 2:
+			if (0x8000UL & offset)
+			{
+				offset = 0xFFUL - offset + 1;
+				destination = (destination > offset) ? (destination - offset) : 0;
+			}
+			else
+			{
+				destination += offset;
+			}
+			break;
+		case 4:
+			if (0x80000000UL & offset)
+			{
+				offset = 0xFFUL - offset + 1;
+				destination = (destination > offset) ? (destination - offset) : 0;
+			}
+			else
+			{
+				destination += offset;
+			}
+			break;
+		case 8:
+			break;
+		default:
+			break;
+	}
+	return destination;
+}
+
 void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array)
 {
 	InstructionInfo info = {0};
@@ -36,9 +82,9 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 
 		address += length;
 
-		if (CALL == info.mnemonic && Jz == info.operands[0].type)
+		if (CALL == info.mnemonic && 1 == info.nOperands && J == HITYPE(info.operands[0].type))
 		{
-			address_t offset = address + info.imm;
+			address_t offset = AddressAdjust(address, info.imm, info.sizeImm);
 			ConsoleIOPrintFormatted("; call to %08LX", offset);
 			DynamicArrayAdd(array, offset);
 		}
@@ -46,51 +92,11 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		if (JMP == info.mnemonic && 1 == info.nOperands)
 		{
 			address_t destination = 0;
-			address_t rel = info.imm;
 			/* explicit jump offset */
 			if (J == HITYPE(info.operands[0].type))
 			{
-				destination = address;
-				switch (info.sizeImm)
-				{
-				case 1:
-					if (0x80UL & rel)
-					{
-						rel = 0xFFUL - rel + 1;
-						destination = (destination > rel) ? (destination - rel) : 0;
-					}
-					else
-					{
-						destination += rel;
-					}
-					break;
-				case 2:
-					if (0x8000UL & rel)
-					{
-						rel = 0xFFUL - rel + 1;
-						destination = (destination > rel) ? (destination - rel) : 0;
-					}
-					else
-					{
-						destination += rel;
-					}
-					break;
-				case 4:
-					if (0x80000000UL & rel)
-					{
-						rel = 0xFFUL - rel + 1;
-						destination = (destination > rel) ? (destination - rel) : 0;
-					}
-					else
-					{
-						destination += rel;
-					}
-					break;
-				case 8:
-					break;
-				default:
-					break;
-				}
+				destination = AddressAdjust(address, info.imm, info.sizeImm);
+				
 				destination += base;
 			}
 			/* special case - memory operand with no registers involved */

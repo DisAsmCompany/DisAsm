@@ -63,7 +63,7 @@ uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint64_t result = 0;
-	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
+	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 8);
 	result =
 		((uint64_t)pInfo->bytes[pInfo->length + 7] << 56) | 
 		((uint64_t)pInfo->bytes[pInfo->length + 6] << 48) | 
