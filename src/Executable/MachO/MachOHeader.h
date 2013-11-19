@@ -13,6 +13,10 @@
 #ifndef __MACHOHEADER_H__
 #define __MACHOHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { MachOHeaderCountCommands = 16 };
 
 static const SDFElement MachOHeader[] =
@@ -27,5 +31,9 @@ static const SDFElement MachOHeader[] =
 	{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOHEADER_H__ */

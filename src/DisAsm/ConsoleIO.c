@@ -11,7 +11,7 @@
 
 #include "DisAsm"
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 
 uint8_t g_isConsoleStdOut = 0;
 uint8_t g_isConsoleStdErr = 0;
@@ -19,7 +19,7 @@ uint8_t g_isConsoleStdErr = 0;
 HANDLE g_hStdOut = NULL;
 HANDLE g_hStdErr = NULL;
 
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 
 uint32_t xstrlen(const char * str)
 {
@@ -43,17 +43,17 @@ void xstrcat(char * dst, uint32_t size, const char * src)
 
 void ConsoleIOInit()
 {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	uint32_t mode = 0;
 
 	g_isConsoleStdOut = 0 != GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode);
 	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 }
 
 void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, uint8_t error)
 {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	DWORD written = 0;
 	HANDLE hConsole = error ? g_hStdErr : g_hStdOut;
 	/* check, do we have actual console or redirection to file buffer? */
@@ -85,9 +85,9 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	{
 		WriteFile(hConsole, str, length, &written, NULL);
 	}
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 	write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 }
 
 void ConsoleIOPrint(const char * str)
@@ -96,9 +96,9 @@ void ConsoleIOPrint(const char * str)
 	if (length >= 7 && 0 == memcmp(str, "[ERROR]", 7))
 	{
 		ConsoleIOPrintInternal(str, xstrlen(str), kRed, 1);
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 		OutputDebugString(str);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	}
 	ConsoleIOPrintInternal(str, length, kDefaultColor, 0);
 }

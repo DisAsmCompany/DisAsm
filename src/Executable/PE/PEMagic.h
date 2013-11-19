@@ -13,6 +13,10 @@
 #ifndef __PEMAGIC_H__
 #define __PEMAGIC_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum PEMagic_t
 {
 	kPEMagic32  = 0x010B,
@@ -28,5 +32,9 @@ static const SDFEnum _PEMagic[] =
 	{"IMAGE_ROM_OPTIONAL_HDR_MAGIC",  kPEMagicROM},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEMAGIC_H__ */

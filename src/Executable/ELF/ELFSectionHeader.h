@@ -13,6 +13,10 @@
 #ifndef __ELFSECTIONHEADER_H__
 #define __ELFSECTIONHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { ELFSectionHeaderName    = 0  };
 enum { ELFSectionHeaderType    = 4  };
 enum { ELFSectionHeaderAddress = 12 };
@@ -34,5 +38,9 @@ static const SDFElement ELFSectionHeader[] =
 	{"Size Of Entries", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFSECTIONHEADER_H__ */

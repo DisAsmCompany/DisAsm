@@ -13,6 +13,9 @@
 #ifndef __PESECTIONCHARACTERISTICS_H__
 #define __PESECTIONCHARACTERISTICS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 static const SDFEnum PESectionCharacteristics[] =
 {
@@ -61,5 +64,9 @@ static const SDFEnum PESectionCharacteristics[] =
     {"IMAGE_SCN_MEM_WRITE",              0x80000000UL, 0x80000000UL},
     {NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PESECTIONCHARACTERISTICS_H__ */

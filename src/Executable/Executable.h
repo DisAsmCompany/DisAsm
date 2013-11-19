@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __EXECUTABLE_H__
-#define __EXECUTABLE_H__
+#ifndef __EXECUTABLE_H__F3182934_358E_4AF8_AD6F_D13B18EEC2E5__
+#define __EXECUTABLE_H__F3182934_358E_4AF8_AD6F_D13B18EEC2E5__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #define CHECK_CALL(x) for (;;) { if (0 == (x)) return 0; break; }
 #define CHECK_ALLOC(x) for (;;) { if (NULL == (x)) return 0; break; }
@@ -89,4 +93,8 @@ uint32_t ExecutableSetCurrentObject(HEXECUTABLE hExecutable, uint32_t index);
 address_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, address_t RVA);
 char * FetchString(ExecutableContext * pContext, address_t address);
 
-#endif /* __EXECUTABLE_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __EXECUTABLE_H__F3182934_358E_4AF8_AD6F_D13B18EEC2E5__ */

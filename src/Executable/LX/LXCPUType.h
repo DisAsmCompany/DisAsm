@@ -13,6 +13,10 @@
 #ifndef __LXCPUTYPE_H__
 #define __LXCPUTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum LXCPUType[] =
 {
 	{"80286", 0x00},
@@ -20,5 +24,9 @@ static const SDFEnum LXCPUType[] =
 	{"80486", 0x02},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __LXCPUTYPE_H__ */

@@ -13,6 +13,14 @@
 #ifndef __NEFILE_H__
 #define __NEFILE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 int NEFileCreate(ExecutableContext * pContext);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __NEFILE_H__ */

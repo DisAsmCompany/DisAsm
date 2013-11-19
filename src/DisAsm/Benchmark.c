@@ -25,13 +25,13 @@ BenchmarkContext;
 HBENCHMARK BenchmarkCreate()
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) calloc(1, sizeof(BenchmarkContext));
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
 	pContext->frequency = li.QuadPart;
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 	pContext->frequency = 1000;
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	pContext->count = 0;
 	pContext->total = 0;
 	pContext->_max = 0;
@@ -42,29 +42,29 @@ HBENCHMARK BenchmarkCreate()
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	pContext->sample = li.QuadPart;
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
 	pContext->sample = 1000000 * t.tv_sec + t.tv_usec;
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 }
 
 void BenchmarkSampleEnd(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	LARGE_INTEGER li;
 	QueryPerformanceCounter(&li);
 	pContext->sample = li.QuadPart - pContext->sample;
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
 	pContext->sample = (1000000 * t.tv_sec + t.tv_usec) - pContext->sample;
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	pContext->total += pContext->sample;
 	++pContext->count;
 	pContext->_max = (pContext->_max < pContext->sample) ? pContext->sample : pContext->_max;

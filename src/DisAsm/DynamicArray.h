@@ -10,8 +10,12 @@
  */
 
 #pragma once
-#ifndef __DYNAMICARRAY_H__
-#define __DYNAMICARRAY_H__
+#ifndef __DYNAMICARRAY_H__32942D11_0BA1_4000_8CAA_C74E4149A978__
+#define __DYNAMICARRAY_H__32942D11_0BA1_4000_8CAA_C74E4149A978__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct DynamicArray_t
 {
@@ -27,4 +31,8 @@ uint32_t DynamicArraySize(DynamicArray * array);
 void DynamicArrayAdd(DynamicArray * array, uint64_t value);
 uint64_t DynamicArrayGet(DynamicArray * array, uint64_t index);
 
-#endif /* __DYNAMICARRAY_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __DYNAMICARRAY_H__32942D11_0BA1_4000_8CAA_C74E4149A978__ */

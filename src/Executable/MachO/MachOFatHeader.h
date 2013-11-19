@@ -13,6 +13,10 @@
 #ifndef __MACHOFATHEADER_H__
 #define __MACHOFATHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { MachOFatHeaderCpuType = 0 };
 enum { MachOFatHeaderOffset  = 8 };
 
@@ -26,5 +30,9 @@ static const SDFElement MachOFatHeader[] =
 	{"Align     ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOFATHEADER_H__ */

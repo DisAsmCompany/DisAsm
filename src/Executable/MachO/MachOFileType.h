@@ -13,6 +13,9 @@
 #ifndef __MACHOFILETYPE_H__
 #define __MACHOFILETYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 static const SDFEnum MachOFileType[] =
 {
@@ -29,5 +32,9 @@ static const SDFEnum MachOFileType[] =
 	{"MH_KEXT_BUNDLE", 0x0000000BUL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOFILETYPE_H__ */

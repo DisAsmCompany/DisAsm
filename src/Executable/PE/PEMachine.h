@@ -13,9 +13,13 @@
 #ifndef __PEMACHINE_H__
 #define __PEMACHINE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum PEMachine_t
 {
-	kPEMachineX86   = 0x014C,
+	kPEMachineX86 = 0x014C,
 	kPEMachineX64 = 0x8664
 }
 PEMachine;
@@ -51,5 +55,9 @@ static const SDFEnum _PEMachine[] =
 	{"IMAGE_FILE_MACHINE_CEE",       0xC0EE},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEMACHINE_H__ */

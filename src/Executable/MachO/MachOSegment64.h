@@ -13,6 +13,10 @@
 #ifndef __MACHOSEGMENT64_H__
 #define __MACHOSEGMENT64_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kMachOSegment64NumberOfSections = 56 };
 
 static const SDFElement MachOSegment64[] =
@@ -29,5 +33,9 @@ static const SDFElement MachOSegment64[] =
 	{"Flags           ", kUnsigned, 4, 1, MachOSegmentAttributes},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOSEGMENT64_H__ */

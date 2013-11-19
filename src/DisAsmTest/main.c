@@ -16,7 +16,7 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
-void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
+void VerifyInstruction(uint32_t opcode, Mnemonic mnemonic)
 {
 	InstructionInfo info = {0};
 	uint8_t * buffer = (uint8_t*) &opcode;
@@ -26,7 +26,7 @@ void VerifyInstruction(OpCode opcode, Mnemonic mnemonic)
 	TestAssert(mnemonic == info.mnemonic);
 }
 
-void VerifyInstructionWithModRM(OpCode opcode, Mnemonic mnemonic)
+void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 {
 	uint8_t i = 0x00;
 	do

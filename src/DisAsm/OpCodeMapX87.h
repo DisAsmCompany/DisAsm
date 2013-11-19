@@ -9,6 +9,14 @@
 *
 */
 
+#pragma once
+#ifndef __OPCODEMAPX87_H__580E988D_A898_426A_9D94_11E020268472__
+#define __OPCODEMAPX87_H__580E988D_A898_426A_9D94_11E020268472__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /* x87 FPU Opcode Map (OpCodes D8h - DFh) */
 
 /*
@@ -133,10 +141,6 @@ DF
   0 1 2 3 4 5 6 7
 
 */
-
-#pragma once
-#ifndef __OPCODEMAPX87_H__
-#define __OPCODEMAPX87_H__
 
 #define X87ELEMENT1(X, Y) {X, OP1(Y)}
 #define X87ELEMENT2(X, Y, Z) {X, OP2(Y, Z)}
@@ -265,4 +269,8 @@ OpCodeMapElement OpCodeMapX87[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 };
 
-#endif /* __OPCODEMAPX87_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPX87_H__580E988D_A898_426A_9D94_11E020268472__ */

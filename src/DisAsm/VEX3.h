@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __VEX3_H__
-#define __VEX3_H__
+#ifndef __VEX3_H__C7EDFABA_5654_418E_AE41_C111C3A4CB60__
+#define __VEX3_H__C7EDFABA_5654_418E_AE41_C111C3A4CB60__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct VEX3s_t
 {
@@ -33,4 +37,8 @@ typedef union VEX3u_t
 }
 VEX3u;
 
-#endif /* __VEX3_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __VEX3_H__C7EDFABA_5654_418E_AE41_C111C3A4CB60__ */

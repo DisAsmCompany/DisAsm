@@ -13,6 +13,10 @@
 #ifndef __MACHOCPUTYPE_H__
 #define __MACHOCPUTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum MachOCPUType_t
 {
 	kMachOCPUType64  = 0x01000000UL,
@@ -31,5 +35,9 @@ static const SDFEnum _MachOCPUType[] =
 	{"CPU_TYPE_POWERPC64", 0x01000012UL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOCPUTYPE_H__ */

@@ -13,6 +13,10 @@
 #ifndef __ELFPROGRAMTYPE_H__
 #define __ELFPROGRAMTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum ELFProgramType[] =
 {
 	{"PT_NULL",         0x00000000UL},
@@ -26,5 +30,9 @@ static const SDFEnum ELFProgramType[] =
 	{"PT_GNU_STACK",    0x6474e551UL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFPROGRAMTYPE_H__ */

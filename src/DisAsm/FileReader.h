@@ -10,9 +10,17 @@
 */
 
 #pragma once
-#ifndef __FILEREADER_H__
-#define __FILEREADER_H__
+#ifndef __FILEREADER_H__7700367B_788D_478B_AA69_2FA6E8851CA5__
+#define __FILEREADER_H__7700367B_788D_478B_AA69_2FA6E8851CA5__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 HREADER FileReaderCreate(const char * path);
 
-#endif /* __FILEREADER_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __FILEREADER_H__7700367B_788D_478B_AA69_2FA6E8851CA5__ */

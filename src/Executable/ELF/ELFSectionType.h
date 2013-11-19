@@ -13,6 +13,10 @@
 #ifndef __ELFSECTIONTYPE_H__
 #define __ELFSECTIONTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum ELFSectionType_t
 {
 	kELFSectionSymTab = 0x00000002UL,
@@ -43,5 +47,9 @@ static const SDFEnum _ELFSectionType[] =
 	{"SHT_GNU_VERSYM",     0x6FFFFFFFUL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFSECTIONTYPE_H__ */

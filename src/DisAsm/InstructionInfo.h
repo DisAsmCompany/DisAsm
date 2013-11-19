@@ -10,13 +10,17 @@
 */
 
 #pragma once
-#ifndef __INSTRUCTIONINFO_H__
-#define __INSTRUCTIONINFO_H__
+#ifndef __INSTRUCTIONINFO_H__A31D14F8_8717_4166_8F0A_0891FDE3DCD9__
+#define __INSTRUCTIONINFO_H__A31D14F8_8717_4166_8F0A_0891FDE3DCD9__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct InstructionInfo_t
 {
 	uint8_t length;
-	OpCode opcode;
+	uint32_t opcode;
 	Mnemonic mnemonic;
 	uint8_t hasModRM : 1;
 	uint8_t hasSIB   : 1;
@@ -47,4 +51,8 @@ typedef struct InstructionInfo_t
 }
 InstructionInfo;
 
-#endif /* __INSTRUCTIONINFO_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __INSTRUCTIONINFO_H__A31D14F8_8717_4166_8F0A_0891FDE3DCD9__ */

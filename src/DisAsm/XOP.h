@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __XOP_H__
-#define __XOP_H__
+#ifndef __XOP_H__5251957B_A29E_49BC_8FAF_1330D403A0FA__
+#define __XOP_H__5251957B_A29E_49BC_8FAF_1330D403A0FA__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct XOPs_t
 {
@@ -33,4 +37,8 @@ typedef union XOPu_t
 }
 XOPu;
 
-#endif /* __XOP_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __XOP_H__5251957B_A29E_49BC_8FAF_1330D403A0FA__ */

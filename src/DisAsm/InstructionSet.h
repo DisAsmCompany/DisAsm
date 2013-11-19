@@ -9,9 +9,13 @@
 *
 */
 
-#pragma once
-#ifndef __INSTRUCTIONSET_H__
-#define __INSTRUCTIONSET_H__
+/* no "pragma once" - header is tricky and supposed to be included twice by design */
+#ifndef __INSTRUCTIONSET_H__00822A17_6A19_422B_B627_D10602DAEB62__
+#define __INSTRUCTIONSET_H__00822A17_6A19_422B_B627_D10602DAEB62__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 _ENUM_START(InstructionSet, 0)
 _ENUM_ELEMENT(GP)         /* General-Purpose */
@@ -39,4 +43,8 @@ _ENUM_ELEMENT(SHA)        /* Secure Hash Algorithm */
 _ENUM_ELEMENT(MPX)        /* Memory-Protection eXtensions */
 _ENUM_STOP(InstructionSet, 0)
 
-#endif /* __INSTRUCTIONSET_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __INSTRUCTIONSET_H__00822A17_6A19_422B_B627_D10602DAEB62__ */

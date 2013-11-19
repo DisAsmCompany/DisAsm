@@ -13,6 +13,14 @@
 #ifndef __PEFILE_H__
 #define __PEFILE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 int PEFileCreate(ExecutableContext * pContext);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEFILE_H__ */

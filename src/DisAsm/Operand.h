@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __OPERAND_H__
-#define __OPERAND_H__
+#ifndef __OPERAND_H__A660D542_5B99_4A1D_8607_2D239E8B8888__
+#define __OPERAND_H__A660D542_5B99_4A1D_8607_2D239E8B8888__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef union uOperand_t
 {
@@ -32,4 +36,8 @@ typedef struct Operand_t
 }
 Operand;
 
-#endif /* __OPERAND_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPERAND_H__A660D542_5B99_4A1D_8607_2D239E8B8888__ */

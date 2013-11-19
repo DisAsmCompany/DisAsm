@@ -13,6 +13,10 @@
 #ifndef __MACHOHEADER64_H__
 #define __MACHOHEADER64_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement MachOHeader64[] =
 {
 	{"Mach-O Header 64"},
@@ -26,5 +30,9 @@ static const SDFElement MachOHeader64[] =
 	{"Reserved     ", kReserved, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOHEADER64_H__ */

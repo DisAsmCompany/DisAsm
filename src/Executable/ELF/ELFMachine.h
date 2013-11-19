@@ -13,6 +13,10 @@
 #ifndef __ELFMACHINE_H__
 #define __ELFMACHINE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum ELFMachine_t
 {
 	kELFMachine386   = 0x0003,
@@ -43,5 +47,9 @@ static const SDFEnum _ELFMachine[] =
 	{"EM_X8664",       kELFMachineX8664},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFMACHINE_H__ */

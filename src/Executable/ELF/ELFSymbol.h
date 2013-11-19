@@ -13,6 +13,10 @@
 #ifndef __ELFSYMBOL_H__
 #define __ELFSYMBOL_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { ELFSymbolName  = 0 };
 enum { ELFSymbolValue = 4 };
 enum { ELFSymbolIndex = 14 };
@@ -28,5 +32,9 @@ static const SDFElement ELFSymbol[] =
 	{"Index", kUnsigned, 2, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFSYMBOL_H__ */

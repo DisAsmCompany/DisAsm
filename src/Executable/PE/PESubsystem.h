@@ -13,6 +13,10 @@
 #ifndef __PESUBSYSTEM_H__
 #define __PESUBSYSTEM_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum PESubsystem[] =
 {
 	{"IMAGE_SUBSYSTEM_UNKNOWN",                  0x0000},
@@ -31,5 +35,9 @@ static const SDFEnum PESubsystem[] =
 	{"IMAGE_SUBSYSTEM_WINDOWS_BOOT_APPLICATION", 0x0010},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PESUBSYSTEM_H__ */

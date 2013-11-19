@@ -13,6 +13,10 @@
 #ifndef __PESECTIONHEADER_H__
 #define __PESECTIONHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { PESectionHeaderVirtualAddress   = 12 };
 enum { PESectionHeaderSizeOfRawData    = 16 };
 enum { PESectionHeaderPointerToRawData = 20 };
@@ -32,5 +36,9 @@ static const SDFElement PESectionHeader[] =
 	{"Characteristics     ", kUnsigned, 4, 1, PESectionCharacteristics},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PESECTIONHEADER_H__ */

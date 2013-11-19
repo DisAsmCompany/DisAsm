@@ -13,6 +13,9 @@
 #ifndef __MACHOHEADERFLAGS_H__
 #define __MACHOHEADERFLAGS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 static const SDFEnum MachOHeaderFlags[] =
 {
@@ -43,5 +46,9 @@ static const SDFEnum MachOHeaderFlags[] =
 	{"MH_NO_HEAP_EXECUTION",       0x01000000UL, 0x01000000UL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOHEADERFLAGS_H__ */

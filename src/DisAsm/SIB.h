@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __SIB_H__
-#define __SIB_H__
+#ifndef __SIB_H__6D324994_5477_465F_9546_E1916E818D2F__
+#define __SIB_H__6D324994_5477_465F_9546_E1916E818D2F__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct SIBs_t
 {
@@ -28,4 +32,8 @@ typedef union SIBu_t
 }
 SIBu;
 
-#endif /* __SIB_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __SIB_H__6D324994_5477_465F_9546_E1916E818D2F__ */

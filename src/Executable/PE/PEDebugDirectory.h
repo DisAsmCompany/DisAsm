@@ -13,6 +13,10 @@
 #ifndef __PEDEBUGDIRECTORY_H__
 #define __PEDEBUGDIRECTORY_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement PEDebugDirectory[] =
 {
 	{"PE Debug Directory"},
@@ -26,5 +30,9 @@ static const SDFElement PEDebugDirectory[] =
 	{"PointerToRawData", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEDEBUGDIRECTORY_H__ */

@@ -13,6 +13,10 @@
 #ifndef __PEDLLCHARACTERISTICS_H__
 #define __PEDLLCHARACTERISTICS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum PEDllCharacteristics[] =
 {
     {"IMAGE_LIBRARY_PROCESS_INIT",                     0x0001, 0x0001},
@@ -33,5 +37,9 @@ static const SDFEnum PEDllCharacteristics[] =
     {"IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE", 0x8000, 0x8000},
     {NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEDLLCHARACTERISTICS_H__ */

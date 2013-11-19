@@ -13,6 +13,10 @@
 #ifndef __PECHARACTERISTICS_H__
 #define __PECHARACTERISTICS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum PECharacteristics[] =
 {
     {"IMAGE_FILE_RELOCS_STRIPPED",         0x0001, 0x0001},
@@ -33,5 +37,9 @@ static const SDFEnum PECharacteristics[] =
     {"IMAGE_FILE_BYTES_REVERSED_HI",       0x8000, 0x8000},
     {NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PECHARACTERISTICS_H__ */

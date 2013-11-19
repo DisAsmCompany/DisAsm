@@ -13,6 +13,10 @@
 #ifndef __MACHOSECTION_H__
 #define __MACHOSECTION_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { MachOSectionAddress = 32 };
 enum { MachOSectionSize    = 36 };
 enum { MachOSectionOffset  = 40 };
@@ -33,5 +37,9 @@ static const SDFElement MachOSection[] =
 	{"Reserved        ", kReserved, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOSECTION_H__ */

@@ -9,6 +9,10 @@
 *
 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #ifdef _STR_ENUM
 #undef _ENUM_START
 #undef _ENUM_ELEMENT
@@ -27,3 +31,7 @@
 #define _ENUM_ELEMENT_VALUE_SKIP(name, value) name = (value),
 #define _ENUM_STOP(name, base) name##dummy} name;
 #endif /* _STR_ENUM */
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */

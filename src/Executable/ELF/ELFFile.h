@@ -13,6 +13,14 @@
 #ifndef __ELFFILE_H__
 #define __ELFFILE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 int ELFFileCreate(ExecutableContext * pContext);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFFILE_H__ */

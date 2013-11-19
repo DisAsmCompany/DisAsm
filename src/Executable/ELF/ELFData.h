@@ -13,6 +13,10 @@
 #ifndef __ELFDATA_H__
 #define __ELFDATA_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum ELFData[] =
 {
 	{"ELFDATANONE", 0},
@@ -20,5 +24,9 @@ static const SDFEnum ELFData[] =
 	{"ELFDATA2MSB", 2},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFDATA_H__ */

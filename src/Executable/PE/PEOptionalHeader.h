@@ -13,6 +13,10 @@
 #ifndef __PEOPTIONALHEADER_H__
 #define __PEOPTIONALHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { PEOptionalHeaderMagic               = 0  };
 enum { PEOptionalHeaderAddressOfEntryPoint = 16 };
 
@@ -29,5 +33,9 @@ static const SDFElement PEOptionalHeader[] =
 	{"BaseOfCode                 ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEOPTIONALHEADER_H__ */

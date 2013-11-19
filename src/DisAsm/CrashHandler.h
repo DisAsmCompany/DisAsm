@@ -10,9 +10,17 @@
  */
 
 #pragma once
-#ifndef __CRASHHANDLER_H__
-#define __CRASHHANDLER_H__
+#ifndef __CRASHHANDLER_H__954791B8_C8EA_4A12_8B6C_D9914F96D24C__
+#define __CRASHHANDLER_H__954791B8_C8EA_4A12_8B6C_D9914F96D24C__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void CrashHandlerInstall();
 
-#endif /* __CRASHHANDLER_H__ */
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __CRASHHANDLER_H__954791B8_C8EA_4A12_8B6C_D9914F96D24C__ */

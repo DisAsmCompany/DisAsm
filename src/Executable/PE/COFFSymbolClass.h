@@ -13,6 +13,10 @@
 #ifndef __COFFSYMBOLCLASS_H__
 #define __COFFSYMBOLCLASS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum _COFFSymbolClass_t
 {
 	kCOFFSymbolClassExternal = 0x02,
@@ -52,5 +56,9 @@ static const SDFEnum _COFFSymbolClass[] =
 	{"IMAGE_SYM_CLASS_END_OF_FUNCTION",  0xFF},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __COFFSYMBOLCLASS_H__ */

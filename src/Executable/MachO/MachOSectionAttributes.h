@@ -13,6 +13,10 @@
 #ifndef __MACHOSECTIONATTRIBUTES_H__
 #define __MACHOSECTIONATTRIBUTES_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum MachOSectionAttributes[] =
 {
 	/* types */
@@ -52,5 +56,9 @@ static const SDFEnum MachOSectionAttributes[] =
 	{"S_ATTR_PURE_INSTRUCTIONS",              0x80000000UL, 0x80000000UL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOSECTIONATTRIBUTES_H__ */

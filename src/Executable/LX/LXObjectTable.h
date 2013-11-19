@@ -13,6 +13,10 @@
 #ifndef __LXOBJECTABLE_H__
 #define __LXOBJECTABLE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement LXObjectTable[] =
 {
 	{"LX Object Table"},
@@ -24,6 +28,10 @@ static const SDFElement LXObjectTable[] =
 	{"Reserved               ", kReserved, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __LXOBJECTABLE_H__ */
 

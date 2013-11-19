@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __DISASM_H__
-#define __DISASM_H__
+#ifndef __DISASM_H__38936F9A_D7E6_4F01_B769_C319321BE325__
+#define __DISASM_H__38936F9A_D7E6_4F01_B769_C319321BE325__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 void DisAsmPrintOpCodeMap();
 uint8_t DisAsmInstructionDecode(uint8_t size, HREADER hReaders, InstructionInfo * pInfo);
@@ -21,6 +25,10 @@ char * DisAsmRegisterToString(Register reg);
 
 /* for tests */
 
-OpCode _ChooseOpCode(uint8_t * buffer);
+uint32_t _ChooseOpCode(uint8_t * buffer);
 
-#endif /* __DISASM_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __DISASM_H__38936F9A_D7E6_4F01_B769_C319321BE325__ */

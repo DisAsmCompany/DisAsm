@@ -10,8 +10,12 @@
  */
 
 #pragma once
-#ifndef __CONSOLEIO_H__
-#define __CONSOLEIO_H__
+#ifndef __CONSOLEIO_H__0C1DF73B_6BBE_4CDA_8966_C6E31B0A8A8B__
+#define __CONSOLEIO_H__0C1DF73B_6BBE_4CDA_8966_C6E31B0A8A8B__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef enum TextColor_t
 {
@@ -46,4 +50,8 @@ void PrintColoredString(const char * string, TextColor color);
 void PrintByte(uint64_t value);
 void ConsoleIOPrintFormatted(const char * format, ...);
 
-#endif /* __CONSOLEIO_H__ */
+#ifdef __cplusplus
+extern }
+#endif /* __cplusplus */
+
+#endif /* __CONSOLEIO_H__0C1DF73B_6BBE_4CDA_8966_C6E31B0A8A8B__ */

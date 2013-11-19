@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __VEX2_H__
-#define __VEX2_H__
+#ifndef __VEX2_H__B64E0451_CAB7_4243_9DDC_BEC99A6C7EC6__
+#define __VEX2_H__B64E0451_CAB7_4243_9DDC_BEC99A6C7EC6__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct VEX2s_t
 {
@@ -29,4 +33,8 @@ typedef union VEX2u_t
 }
 VEX2u;
 
-#endif /* __VEX2_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __VEX2_H__B64E0451_CAB7_4243_9DDC_BEC99A6C7EC6__ */

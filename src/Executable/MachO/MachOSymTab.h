@@ -13,6 +13,10 @@
 #ifndef __MACHOSYMTAB_H__
 #define __MACHOSYMTAB_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement MachOSymTab[] =
 {
 	{"Mach-O Sym Tab"},
@@ -22,5 +26,9 @@ static const SDFElement MachOSymTab[] =
 	{"StringTableSize  ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOSYMTAB_H__ */

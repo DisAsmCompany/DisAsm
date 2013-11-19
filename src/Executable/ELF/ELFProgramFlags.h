@@ -13,6 +13,10 @@
 #ifndef __ELFPROGRAMFLAGS_H__
 #define __ELFPROGRAMFLAGS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum ELFProgramFlags[] =
 {
 	{"PF_X", 0x0001, 0x0001},
@@ -20,5 +24,9 @@ static const SDFEnum ELFProgramFlags[] =
 	{"PF_R", 0x0004, 0x0004},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFPROGRAMFLAGS_H__ */

@@ -14,6 +14,10 @@
 #ifndef __MACHOTHREADSTTUSX64_H__
 #define __MACHOTHREADSTTUSX64_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { MachOThreadStatusX64EIP = 128 };
 
 static const SDFElement MachOThreadStatusX64[] =
@@ -42,5 +46,9 @@ static const SDFElement MachOThreadStatusX64[] =
 	{"GS    ", kUnsigned, 8, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOTHREADSTTUSX64_H__ */

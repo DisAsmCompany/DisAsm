@@ -10,8 +10,12 @@
  */
 
 #pragma once
-#ifndef __ARCHITECTURE_H__
-#define __ARCHITECTURE_H__
+#ifndef __ARCHITECTURE_H__FFBB9EF6_2F39_4609_85F4_9662823E76C6__
+#define __ARCHITECTURE_H__FFBB9EF6_2F39_4609_85F4_9662823E76C6__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef enum Architecture_t
 {
@@ -21,4 +25,8 @@ typedef enum Architecture_t
 }
 Architecture;
 
-#endif /* __ARCHITECTURE_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __ARCHITECTURE_H__FFBB9EF6_2F39_4609_85F4_9662823E76C6__ */

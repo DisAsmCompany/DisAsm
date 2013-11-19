@@ -10,8 +10,12 @@
  */
 
 #pragma once
-#ifndef __STACKWALKER_H__
-#define __STACKWALKER_H__
+#ifndef __STACKWALKER_H__A9274B9A_D96D_41dd_93B9_4C26058A595D__
+#define __STACKWALKER_H__A9274B9A_D96D_41dd_93B9_4C26058A595D__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct Context_t
 {
@@ -28,4 +32,8 @@ void StackWalkCleanup();
 void StackWalk(address_t * callstack, Context * context);
 void StackWalkSymbol(address_t address);
 
-#endif /* __STACKWALKER_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __STACKWALKER_H__A9274B9A_D96D_41dd_93B9_4C26058A595D__ */

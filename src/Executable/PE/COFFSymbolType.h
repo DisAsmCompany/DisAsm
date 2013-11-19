@@ -13,6 +13,10 @@
 #ifndef __COFFSYMBOLTYPE_H__
 #define __COFFSYMBOLTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum COFFSymbolType[] =
 {
 	{"IMAGE_SYM_TYPE_NULL",   0x0000},
@@ -35,5 +39,9 @@ static const SDFEnum COFFSymbolType[] =
 	{"IMAGE_SYM_TYPE_PCODE",  0x8000},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __COFFSYMBOLTYPE_H__ */

@@ -13,6 +13,10 @@
 #ifndef __MACHOMEMORYPROTECTION_H__
 #define __MACHOMEMORYPROTECTION_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum MachOMemoryProtection[] =
 {
 	{"VM_PROT_NONE",      0x00000000UL, 0x00000007UL},
@@ -24,5 +28,9 @@ static const SDFEnum MachOMemoryProtection[] =
 	{"VM_PROT_TRUSTED",   0x00000020UL, 0x00000020UL},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOMEMORYPROTECTION_H__ */

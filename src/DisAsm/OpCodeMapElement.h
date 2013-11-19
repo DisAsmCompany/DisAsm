@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __OPCODEMAPELEMENT_H__
-#define __OPCODEMAPELEMENT_H__
+#ifndef __OPCODEMAPELEMENT_H__21A1E58B_A822_4325_B021_06D4E111347B__
+#define __OPCODEMAPELEMENT_H__21A1E58B_A822_4325_B021_06D4E111347B__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct OpCodeMapElement_t
 {
@@ -21,4 +25,8 @@ typedef struct OpCodeMapElement_t
 }
 OpCodeMapElement;
 
-#endif /* __OPCODEMAPELEMENT_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPELEMENT_H__21A1E58B_A822_4325_B021_06D4E111347B__ */

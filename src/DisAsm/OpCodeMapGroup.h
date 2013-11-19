@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __OPCODEMAPGROUP_H__
-#define __OPCODEMAPGROUP_H__
+#ifndef __OPCODEMAPGROUP_H__72610EBD_86E1_43E0_817F_90F132DAFD69__
+#define __OPCODEMAPGROUP_H__72610EBD_86E1_43E0_817F_90F132DAFD69__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 OpCodeMapElement OpCodeMapGroup[] =
 {
@@ -54,7 +58,7 @@ OpCodeMapElement OpCodeMapGroup[] =
 	/* GROUP14 */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP15 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {LDMXCSR, OP1(Md)}, {STMXCSR, OP1(Md)}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP16 */
 	/*
 	according to AMD manual, /4 - /7 forms are defines as valid instructions (NOPs)
@@ -71,4 +75,8 @@ OpCodeMapElement OpCodeMapGroup[] =
 	{PREFETCHW}, {PREFETCHW}, {PREFETCHW}, {PREFETCHW}, {PREFETCHW}, {PREFETCHW}, {PREFETCHW}, {PREFETCHW},
 };
 
-#endif /* __OPCODEMAPGROUP_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPGROUP_H__72610EBD_86E1_43E0_817F_90F132DAFD69__ */

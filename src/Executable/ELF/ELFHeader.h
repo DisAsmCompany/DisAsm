@@ -13,6 +13,10 @@
 #ifndef __ELFHEADER_H__
 #define __ELFHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kELFMagic = 0x464C457FUL };
 
 enum { ELFHeaderMagic               = 0  };
@@ -51,5 +55,9 @@ static const SDFElement ELFHeader[] =
 	{"Section Header Index     ", kUnsigned, 2, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFHEADER_H__ */

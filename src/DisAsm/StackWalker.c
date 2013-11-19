@@ -11,7 +11,7 @@
 
 #include "DisAsm"
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 
 typedef enum
 {
@@ -381,7 +381,7 @@ void StackWalkCleanup()
 }
 
 #ifndef GETCONTEXT
-#ifdef _M_IX86
+#ifdef CPU_X86
 #define GETCONTEXT(c) \
 	do \
 { \
@@ -392,9 +392,9 @@ void StackWalkCleanup()
 	__asm    mov c.Esp, esp \
 } \
 	while(0);
-#else /* _M_IX86 */
+#else /* CPU_X86 */
 #define GETCONTEXT(c) do { RtlCaptureContext(&context); } while (0);
-#endif /* _M_IX86 */
+#endif /* CPU_X86 */
 #endif /* GETCONTEXT */
 
 void StackWalk(address_t * callstack, Context * pContext)
@@ -412,19 +412,19 @@ void StackWalk(address_t * callstack, Context * pContext)
 	}
 	else
 	{
-#ifdef _M_IX86
+#ifdef CPU_X86
 		context.Eip = (uint32_t) pContext->InstructionPointer;
 		context.Esp = (uint32_t) pContext->StackFramePointer;
 		context.Ebp = (uint32_t) pContext->StackBasePointer;
-#endif /* _M_IX86 */
-#ifdef _M_X64
+#endif /* CPU_X86 */
+#ifdef CPU_X64
 		context.Rip = (uint32_t) pContext->InstructionPointer;
 		context.Rsp = (uint32_t) pContext->StackFramePointer;
 		context.Rbp = (uint32_t) pContext->StackBasePointer;
-#endif /* _M_X64 */
+#endif /* CPU_X64 */
 	}
 	context.ContextFlags = CONTEXT_FULL;
-#ifdef _M_IX86
+#ifdef CPU_X86
 	machine = IMAGE_FILE_MACHINE_I386;
 	frame.AddrPC.Offset    = context.Eip;
 	frame.AddrPC.Mode      = AddrModeFlat;
@@ -432,8 +432,8 @@ void StackWalk(address_t * callstack, Context * pContext)
 	frame.AddrFrame.Mode   = AddrModeFlat;
 	frame.AddrStack.Offset = context.Esp;
 	frame.AddrStack.Mode   = AddrModeFlat;
-#endif /* _M_IX86 */
-#ifdef _M_X64
+#endif /* CPU_X86 */
+#ifdef CPU_X64
 	machine = IMAGE_FILE_MACHINE_AMD64;
 	frame.AddrPC.Offset    = context.Rip;
 	frame.AddrPC.Mode      = AddrModeFlat;
@@ -441,11 +441,10 @@ void StackWalk(address_t * callstack, Context * pContext)
 	frame.AddrFrame.Mode   = AddrModeFlat;
 	frame.AddrStack.Offset = context.Rsp;
 	frame.AddrStack.Mode   = AddrModeFlat;
-#endif /* _M_IA64 */
-#ifdef _M_X64
+#endif /* CPU_X64 */
+#ifdef CPU_IA64
 	machine = IMAGE_FILE_MACHINE_IA64;
-#endif /* _M_IA64 */
-
+#endif /* CPU_IA64 */
 	memset(callstack, 0, sizeof(address_t) * MaxCallStack);
 	for (i = 0; i < MaxCallStack; ++i)
 	{
@@ -464,7 +463,7 @@ void StackWalk(address_t * callstack, Context * pContext)
 	}
 }
 
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 
 void StackWalkInit() {}
 void StackWalkCleanup() {}
@@ -498,4 +497,4 @@ void StackWalkSymbol(address_t address)
 	}
 }
 
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */

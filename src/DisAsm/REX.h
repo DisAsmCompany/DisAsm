@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __REX_H__
-#define __REX_H__
+#ifndef __REX_H__1779C43F_B028_48CA_BAA7_5AF9807DCFA9__
+#define __REX_H__1779C43F_B028_48CA_BAA7_5AF9807DCFA9__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct REXs_t
 {
@@ -30,4 +34,8 @@ typedef union REXu_t
 }
 REXu;
 
-#endif /* __REX_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __REX_H__1779C43F_B028_48CA_BAA7_5AF9807DCFA9__ */

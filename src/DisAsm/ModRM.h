@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __MODRM_H__
-#define __MODRM_H__
+#ifndef __MODRM_H__68524C1D_613C_4C88_8910_3D1F65CD553E__
+#define __MODRM_H__68524C1D_613C_4C88_8910_3D1F65CD553E__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef struct ModRMs_t
 {
@@ -28,4 +32,8 @@ typedef union ModRMu_t
 }
 ModRMu;
 
-#endif /* __MODRM_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __MODRM_H__68524C1D_613C_4C88_8910_3D1F65CD553E__ */

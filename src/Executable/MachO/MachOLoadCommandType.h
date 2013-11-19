@@ -13,6 +13,10 @@
 #ifndef __MACHOLOADCOMMANDTYPE_H__
 #define __MACHOLOADCOMMANDTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 typedef enum MachOLoadCommandType_t
 {
 	kMachOLoadCommandSegment32     = 0x00000001UL,
@@ -40,5 +44,9 @@ static const SDFEnum _MachOLoadCommandType[] =
 	{"LC_UUID",           kMachOLoadCommandUUID},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOLOADCOMMANDTYPE_H__ */

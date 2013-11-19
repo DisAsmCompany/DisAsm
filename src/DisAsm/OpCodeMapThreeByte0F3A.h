@@ -9,8 +9,12 @@
 *
 */
 
-#ifndef __OPCODEMAPTHREEBYTE0F3A_H__
-#define __OPCODEMAPTHREEBYTE0F3A_H__
+#ifndef __OPCODEMAPTHREEBYTE0F3A_H__99B82404_53A0_44f7_8611_8C35670D6F0C__
+#define __OPCODEMAPTHREEBYTE0F3A_H__99B82404_53A0_44f7_8611_8C35670D6F0C__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
 
@@ -248,4 +252,8 @@ OpCodeMapElement OpCodeMapThreeByte0F3A[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 };
 
-#endif /* __OPCODEMAPTHREEBYTE0F3A_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPTHREEBYTE0F3A_H__99B82404_53A0_44f7_8611_8C35670D6F0C__ */

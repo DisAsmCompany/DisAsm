@@ -13,6 +13,10 @@
 #ifndef __PELOADCONFIGDIRECTORY_H__
 #define __PELOADCONFIGDIRECTORY_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement PELoadConfigDirectory[] =
 {
 	{"PE Load Config Directory"},
@@ -38,5 +42,9 @@ static const SDFElement PELoadConfigDirectory[] =
 	{"SEHandlerCount               ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PELOADCONFIGDIRECTORY_H__ */

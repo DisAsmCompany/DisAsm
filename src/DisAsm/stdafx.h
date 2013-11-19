@@ -10,8 +10,34 @@
  */
 
 #pragma once
-#ifndef __STDAFX_H__
-#define __STDAFX_H__
+#ifndef __STDAFX_H__7D97CBFD_DF43_4024_A628_1CA89E65AB83__
+#define __STDAFX_H__7D97CBFD_DF43_4024_A628_1CA89E65AB83__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+#ifdef _WIN32
+#define OS_WINDOWS
+
+#ifdef _M_IX86
+#define CPU_X86
+enum { kBitnessNative = 32 };
+#endif /* _M_IX86 */
+#ifdef _M_X64
+#define CPU_X64
+enum { kBitnessNative = 64 };
+#endif /* _M_X64 */
+#ifdef _M_IA64
+#define CPU_IA64
+enum { kBitnessNative = 64 };
+#endif /* _M_IA64 */
+
+#endif /* _WIN32 */
+
+#ifdef __APPLE__
+#define OS_MACOSX
+#endif /* __APPLE__ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,23 +45,23 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 #include <unistd.h>
 #include <signal.h>
 #include <dlfcn.h>
-#ifdef __APPLE__
+#ifdef OS_MACOSX
 #include <mach-o/dyld.h>
-#endif /* __APPLE__ */
+#endif /* OS_MACOSX */
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/mman.h>
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
@@ -44,4 +70,8 @@
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif /* MAX */
 
-#endif /* __STDAFX_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __STDAFX_H__7D97CBFD_DF43_4024_A628_1CA89E65AB83__ */

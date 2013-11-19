@@ -13,6 +13,10 @@
 #ifndef __LXFILEHEADER_H__
 #define __LXFILEHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kLESignature = 0x454C }; /* LE */
 enum { kLXSignature = 0x584C }; /* LX */
 
@@ -71,5 +75,9 @@ static const SDFElement LXFileHeader[] =
 	{"Heap Size                         ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __LXFILEHEADER_H__ */

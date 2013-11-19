@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __SUPPORTBOOL_H__
-#define __SUPPORTBOOL_H__
+#ifndef __SUPPORTBOOL_H__9A21ED55_C65E_4606_8B34_CA7E463F767E__
+#define __SUPPORTBOOL_H__9A21ED55_C65E_4606_8B34_CA7E463F767E__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #ifndef __C99__
 #define __C99__ 199901L
@@ -33,4 +37,8 @@ typedef int _Bool;
 
 #endif /* defined(__STDC_VERSION__) && (__STDC_VERSION__ >= __C99__) */
 
-#endif /* __SUPPORTBOOL_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __SUPPORTBOOL_H__9A21ED55_C65E_4606_8B34_CA7E463F767E__ */

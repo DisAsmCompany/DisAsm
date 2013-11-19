@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __READER_H__
-#define __READER_H__
+#ifndef __READER_H__8BC98649_9F3A_4B24_B656_5B6E41194AC2__
+#define __READER_H__8BC98649_9F3A_4B24_B656_5B6E41194AC2__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef void * HREADER;
 
@@ -37,4 +41,8 @@ int ReaderSeek(HREADER hReader, uint64_t pos);
 int ReaderSkip(HREADER hReader, uint64_t count);
 void ReaderDestroy(HREADER hReader);
 
-#endif /* __READER_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __READER_H__8BC98649_9F3A_4B24_B656_5B6E41194AC2__ */

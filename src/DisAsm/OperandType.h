@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __OPERANDTYPE_H__
-#define __OPERANDTYPE_H__
+#ifndef __OPERANDTYPE_H__938CCA62_C5BE_43C5_8A74_6C9E8E580418__
+#define __OPERANDTYPE_H__938CCA62_C5BE_43C5_8A74_6C9E8E580418__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef enum OperandType_t
 {
@@ -136,4 +140,8 @@ calculate operands count : how many non-zero bytes are in packed type definition
 
 #define HASMODRM(x) (0 != (x & MaskModRM))
 
-#endif /* __OPERANDTYPE_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPERANDTYPE_H__938CCA62_C5BE_43C5_8A74_6C9E8E580418__ */

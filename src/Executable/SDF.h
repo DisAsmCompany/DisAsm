@@ -10,8 +10,12 @@
  */
 
 #pragma once
-#ifndef __SDF_H__
-#define __SDF_H__
+#ifndef __SDF_H__3C52F878_0BF8_4371_B9E3_E153B9F9487D__
+#define __SDF_H__3C52F878_0BF8_4371_B9E3_E153B9F9487D__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef enum SDFType_t
 {
@@ -60,4 +64,8 @@ void SDFSetEndian(HSDF hSDF, uint8_t endian);
 
 void SDFDestroy(HSDF hSDF);
 
-#endif /* __SDF_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __SDF_H__3C52F878_0BF8_4371_B9E3_E153B9F9487D__ */

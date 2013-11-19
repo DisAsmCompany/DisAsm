@@ -11,7 +11,7 @@
 
 #include "DisAsm"
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 
 #ifndef VER_SUITE_WH_SERVER
 #define VER_SUITE_WH_SERVER 0x00008000
@@ -115,16 +115,16 @@ LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExcepti
 	InfoOperationSystem();
 	InfoEnvironment();
 
-#ifdef _M_IX86
+#ifdef CPU_X86
 	context.InstructionPointer = pExceptionInfo->ContextRecord->Eip;
 	context.StackBasePointer   = pExceptionInfo->ContextRecord->Ebp;
 	context.StackFramePointer  = pExceptionInfo->ContextRecord->Esp;
-#endif /* _M_IX86 */
-#ifdef _M_X64
+#endif /* CPU_X86 */
+#ifdef CPU_X64
 	context.InstructionPointer = pExceptionInfo->ContextRecord->Rip;
 	context.StackBasePointer   = pExceptionInfo->ContextRecord->Rbp;
 	context.StackFramePointer  = pExceptionInfo->ContextRecord->Rsp;
-#endif /* _M_X64 */
+#endif /* CPU_X64 */
 	StackWalk(callstack, &context);
 	for (i = 0; i < MaxCallStack; ++i)
 	{
@@ -166,8 +166,8 @@ BOOL __stdcall CrashHandlerRoutine(uint32_t CtrlType)
 	return true;
 }
 
-#endif /* _WIN32 */
-#ifdef __APPLE__
+#endif /* OS_WINDOWS */
+#ifdef OS_MACOSX
 
 typedef struct SignalRecord_t
 {
@@ -229,15 +229,15 @@ void CrashHandler(int signum, siginfo_t * info, void * ucontext)
 	_exit(EXIT_FAILURE);
 }
 
-#endif /* __APPLE__ */
+#endif /* OS_MACOSX */
 
 void CrashHandlerInstall()
 {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
-#endif /* _WIN32 */
-#ifdef __APPLE__
+#endif /* OS_WINDOWS */
+#ifdef OS_MACOSX
 	size_t i;
 	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
 	{
@@ -249,5 +249,5 @@ void CrashHandlerInstall()
 			ConsoleIOPrintFormatted("[ERROR] cannot install signal handler for signal %s\n", signals[i].message);
 		}
 	}
-#endif /* __APPLE__ */
+#endif /* OS_MACOSX */
 }

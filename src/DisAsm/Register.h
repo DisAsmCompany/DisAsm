@@ -9,8 +9,13 @@
 *
 */
 
-#ifndef __REGISTER_H__
-#define __REGISTER_H__
+/* no "pragma once" - header is tricky and supposed to be included twice by design */
+#ifndef __REGISTER_H__8C8FA516_AFA4_402d_B1A2_8040D9312A78__
+#define __REGISTER_H__8C8FA516_AFA4_402d_B1A2_8040D9312A78__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /*
 for each group we have 8 registers : 0 1 2 3 4 5 6 7
@@ -86,4 +91,8 @@ DefineRegisters16(ZMM, RegAVX512, 0x0D)
 
 _ENUM_STOP(Register, REGISTERBASE)
 
-#endif /* __REGISTER_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __REGISTER_H__8C8FA516_AFA4_402d_B1A2_8040D9312A78__ */

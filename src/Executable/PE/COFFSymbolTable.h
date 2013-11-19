@@ -13,6 +13,10 @@
 #ifndef __COFFSYMBOLTABLE_H__
 #define __COFFSYMBOLTABLE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { COFFSymbolTableSectionNumber            = 4 };
 enum { COFFSymbolTableType                     = 6 };
 enum { COFFSymbolTableStorageClass             = 8 };
@@ -46,5 +50,9 @@ static const SDFElement COFFSymbolTableAuxiliaryFormatFiles[] =
 	{"File Name", kStringASCII, 18, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __COFFSYMBOLTABLE_H__ */

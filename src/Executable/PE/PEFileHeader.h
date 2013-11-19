@@ -13,6 +13,10 @@
 #ifndef __PEFILEHEADER_H__
 #define __PEFILEHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kPESignature = 0x00004550UL }; /* PE */
 
 enum { PEFileHeaderMachine              = 0  };
@@ -33,5 +37,9 @@ static const SDFElement PEFileHeader[] =
 	{"Characteristics     ", kUnsigned, 2, 1, PECharacteristics},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEFILEHEADER_H__ */

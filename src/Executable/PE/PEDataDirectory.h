@@ -13,6 +13,10 @@
 #ifndef __PEDATADIRECTORY_H__
 #define __PEDATADIRECTORY_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kPEDataDirectoryCount = 0x10 };
 
 enum { kPEDataDirectoryExport         =  0 }; /* Export Directory                  */
@@ -37,5 +41,9 @@ typedef struct PEDataDirectory_t
 	uint32_t Size;
 }
 PEDataDirectory;
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEDATADIRECTORY_H__ */

@@ -14,6 +14,10 @@
 #ifndef __MACHOTHREADSTTUSX_H__
 #define __MACHOTHREADSTTUSX_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement MachOThreadStatus[] =
 {
 	{"Mach-O Thread Status"},
@@ -21,5 +25,9 @@ static const SDFElement MachOThreadStatus[] =
 	{"Count ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHOTHREADSTTUSX_H__ */

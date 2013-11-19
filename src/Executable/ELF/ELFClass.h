@@ -13,6 +13,10 @@
 #ifndef __ELFCLASS_H__
 #define __ELFCLASS_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum ELFClass[] =
 {
 	{"ELFCLASSNONE", 0},
@@ -20,5 +24,9 @@ static const SDFEnum ELFClass[] =
 	{"ELFCLASS64",   2},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFCLASS_H__ */

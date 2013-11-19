@@ -94,12 +94,12 @@ void xAddAllocation(void * address, void * heap, uint32_t size, uint8_t freed)
 			}
 			if (!g_Allocations)
 		    {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 			    DebugBreak();
-#endif /* _WIN32 */
-#ifdef __APPLE__
+#endif /* OS_WINDOWS */
+#ifdef OS_MACOSX
 				__asm { int 3 };
-#endif /* __APPLE__ */
+#endif /* OS_MACOSX */
 		    }
 	    }
 	    g_Allocations[g_nTotalAllocations - 1].address = address;
@@ -178,11 +178,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 	
 	while (total < required)
 	{
-#ifdef _M_X64
-        uint32_t length = DisAsmInstructionDecode(64, &reader, NULL);
-#else /* _M_X64 */
-        uint32_t length = DisAsmInstructionDecode(32, &reader, NULL);
-#endif /* _M_X64 */
+        uint32_t length = DisAsmInstructionDecode(kBitnessNative, &reader, NULL);
 		if (0 == length)
 		{
 			return 0;
@@ -210,7 +206,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 	return total;
 }
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 
 typedef void * (__stdcall * pfnHeapAlloc)(void * hHeap, uint32_t flags, uint32_t size);
 typedef void * (__stdcall * pfnHeapReAlloc)(void * hHeap, uint32_t flags, void * memory, uint32_t size);
@@ -323,7 +319,7 @@ void xFree(void * address)
 	pOriginalHeapFree(GetProcessHeap(), 0, address);
 }
 
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 
 typedef void * (*pfnmalloc)(size_t);
 typedef void * (*pfnrealloc)(void *, size_t);
@@ -429,7 +425,7 @@ void xFree(void * address)
 	pOriginalFree(address);
 }
 
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 
 typedef enum ProtectType_t
 {
@@ -441,7 +437,7 @@ ProtectType;
 
 void Protect(address_t address, ProtectType type)
 {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	DWORD protect = 0;
     switch (type)
     {
@@ -455,14 +451,14 @@ void Protect(address_t address, ProtectType type)
     case ProtectTypeExecute | ProtectTypeWrite | ProtectTypeRead: protect = PAGE_EXECUTE_READWRITE; break;
     default: break;
     }
-	VirtualProtect(address - address % PAGE_SIZE, PAGE_SIZE, protect, &protect);
-#else /* _WIN32 */
+	VirtualProtect((void*)(address - address % PAGE_SIZE), PAGE_SIZE, protect, &protect);
+#else /* OS_WINDOWS */
 	int protect = 0;
 	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
 	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
 	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
 	mprotect(address - address % PAGE_SIZE, PAGE_SIZE, PROT_WRITE);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 }
 
 
@@ -490,16 +486,16 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 
 void LeakTrackerInstall(uint8_t install)
 {
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	uint32_t protect = 0;
 
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
     void * RtlFreeHeap = GetProcAddress(hModule, "RtlFreeHeap");
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 
 	if (install)
 	{
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 		g_Allocations = (Allocation*)HeapAlloc(GetProcessHeap(), 0, sizeof(Allocation));
 
 		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
@@ -522,7 +518,7 @@ void LeakTrackerInstall(uint8_t install)
 		{
 			PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
 		}
-#else /* _WIN32 */
+#else /* OS_WINDOWS */
 		g_Allocations = (Allocation*) malloc(sizeof(Allocation));
 		
 		pOriginalMalloc = (pfnmalloc) (&xThunkMalloc);
@@ -534,14 +530,14 @@ void LeakTrackerInstall(uint8_t install)
 		PatchFunction((uint8_t*) realloc, (uint8_t*) xrealloc, xThunkRealloc);
 		PatchFunction((uint8_t*) calloc,  (uint8_t*) xcalloc,  xThunkCalloc);
 		PatchFunction((uint8_t*) free,    (uint8_t*) xfree,    xThunkFree);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	}
 	else
 	{
 		uint32_t i = 0;
 		uint32_t j = 0;
 		uint32_t total = 0;
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 		RestoreFunction((uint8_t*)HeapAlloc,   xThunkHeapAlloc);
 		RestoreFunction((uint8_t*)HeapReAlloc, xThunkHeapReAlloc);
 		RestoreFunction((uint8_t*)HeapFree,    xThunkHeapFree);
@@ -549,7 +545,7 @@ void LeakTrackerInstall(uint8_t install)
 		{
 			RestoreFunction((uint8_t*)RtlFreeHeap, xThunkRtlFreeHeap);
 		}
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 		for (i = 0; i < g_nTotalAllocations; ++i)
 		{
 			if (0 == g_Allocations[i].freed)

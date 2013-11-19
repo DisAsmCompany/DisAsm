@@ -13,6 +13,10 @@
 #ifndef __ELFABI_H__
 #define __ELFABI_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum ELFABI[] =
 {
 	{"ELFOSABI_SYSV",       0x00},
@@ -36,5 +40,9 @@ static const SDFEnum ELFABI[] =
 	{"ELFOSABI_STANDALONE", 0xFF},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFABI_H__ */

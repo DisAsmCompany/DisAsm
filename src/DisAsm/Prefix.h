@@ -9,8 +9,12 @@
 *
 */
 
-#ifndef __PREFIX_H__
-#define __PREFIX_H__
+#ifndef __PREFIX_H__1C4E9DF6_A838_4FF4_AD2C_390BD658E0E8__
+#define __PREFIX_H__1C4E9DF6_A838_4FF4_AD2C_390BD658E0E8__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #ifndef MAX_PREFIXES
 #define MAX_PREFIXES 4
@@ -19,8 +23,12 @@
 typedef struct Prefix_t
 {
 	Mnemonic mnemonic;
-	OpCode opcode;
+	uint32_t opcode;
 }
 Prefix;
 
-#endif /* __PREFIX_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __PREFIX_H__1C4E9DF6_A838_4FF4_AD2C_390BD658E0E8__ */

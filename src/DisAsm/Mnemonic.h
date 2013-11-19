@@ -9,8 +9,13 @@
 *
 */
 
-#ifndef __MNEMONIC_H__
-#define __MNEMONIC_H__
+/* no "pragma once" - header is tricky and supposed to be included twice by design */
+#ifndef __MNEMONIC_H__20CAFD53_E4D1_49A5_88DC_47A54ADFD022__
+#define __MNEMONIC_H__20CAFD53_E4D1_49A5_88DC_47A54ADFD022__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 _ENUM_START(Mnemonic, 0)
 _ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
@@ -474,6 +479,8 @@ _ENUM_ELEMENT(COMISD)   /* Compare Scalar Ordered Double-Precision Floating Poin
 _ENUM_ELEMENT(UCOMISD)  /* Compare Scalar Unordered Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPPD)    /* Compare Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPSD)    /* Compare Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(LDMXCSR)  /* Load MXCSR Register */
+_ENUM_ELEMENT(STMXCSR)  /* Store MXCSR Register */
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */
@@ -491,4 +498,8 @@ _ENUM_ELEMENT(OperandSize)
 _ENUM_ELEMENT(AddressSize)
 _ENUM_STOP(Mnemonic, 0)
 
-#endif /* __MNEMONIC_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __MNEMONIC_H__20CAFD53_E4D1_49A5_88DC_47A54ADFD022__ */

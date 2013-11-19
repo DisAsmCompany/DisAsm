@@ -10,9 +10,17 @@
  */
 
 #pragma once
-#ifndef __LEAKTRACKER_H__
-#define __LEAKTRACKER_H__
+#ifndef __LEAKTRACKER_H__9E01C3D3_A206_42E1_8173_A0546029311A__
+#define __LEAKTRACKER_H__9E01C3D3_A206_42E1_8173_A0546029311A__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 void LeakTrackerInstall(uint8_t install);
 
-#endif /* __LEAKTRACKER_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __LEAKTRACKER_H__9E01C3D3_A206_42E1_8173_A0546029311A__ */

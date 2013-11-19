@@ -11,11 +11,19 @@
 
 #include "DisAsm"
 #include "OpCodeMap.h"
-#include "DisAsmContext.h"
 #define _STR_ENUM
-#undef  __MNEMONIC_H__
-#undef  __REGISTER_H__
-#include "../DisAsm/DisAsm"
+#undef  __MNEMONIC_H__20CAFD53_E4D1_49A5_88DC_47A54ADFD022__
+#undef  __REGISTER_H__8C8FA516_AFA4_402d_B1A2_8040D9312A78__
+#include "DisAsm"
+
+typedef struct DisAsmContext_t
+{
+    HREADER hReader;
+    uint8_t size;
+    uint8_t currentSize;
+    uint8_t error;
+}
+DisAsmContext;
 
 char * DisAsmMnemonicToString(Mnemonic mnemonic)
 {
@@ -108,7 +116,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	OpCodeMapElement * element = NULL;
 
 	uint8_t byte = Fetch1(pContext, pInfo);
-	OpCode opcode = 0;
+	uint32_t opcode = 0;
 
 	if (8 == pContext->size)
 	{
@@ -831,7 +839,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 
 /* for tests */
 
-OpCode _ChooseOpCode(uint8_t * buffer)
+uint32_t _ChooseOpCode(uint8_t * buffer)
 {
 	InstructionInfo info = {0};
 	DisAsmContext context;

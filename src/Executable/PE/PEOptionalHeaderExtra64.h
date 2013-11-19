@@ -13,6 +13,10 @@
 #ifndef __PEOPTIONALHEADEREXTRA64_H__
 #define __PEOPTIONALHEADEREXTRA64_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { PEOptionalHeaderExtra64ImageBase           = 0  };
 enum { PEOptionalHeaderExtra64NumberOfRvaAndSizes = 84 };
 
@@ -42,5 +46,9 @@ static const SDFElement PEOptionalHeaderExtra64[] =
     {"NumberOfRvaAndSizes        ", kUnsigned, 4, 1},
     {NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEOPTIONALHEADEREXTRA64_H__ */

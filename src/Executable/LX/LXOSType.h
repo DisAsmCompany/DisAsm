@@ -13,6 +13,10 @@
 #ifndef __LXOSTYPE_H__
 #define __LXOSTYPE_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFEnum LXOSType[] =
 {
 	{"Unknown",     0x00},
@@ -22,5 +26,9 @@ static const SDFEnum LXOSType[] =
 	{"Windows 386", 0x04},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __LXOSTYPE_H__ */

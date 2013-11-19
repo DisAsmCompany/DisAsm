@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __SUPPORTINT_H__
-#define __SUPPORTINT_H__
+#ifndef __SUPPORTINT_H__46E0AD0F_E016_4B9C_8358_9D525CD4347E__
+#define __SUPPORTINT_H__46E0AD0F_E016_4B9C_8358_9D525CD4347E__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #ifndef __C99__
 #define __C99__ 199901L
@@ -45,4 +49,8 @@ typedef unsigned long long uint64_t;
 typedef uint64_t address_t;
 typedef uint64_t offset_t;
 
-#endif /* __SUPPORTINT_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __SUPPORTINT_H__46E0AD0F_E016_4B9C_8358_9D525CD4347E__ */

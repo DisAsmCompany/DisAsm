@@ -9,8 +9,12 @@
 *
 */
 
-#ifndef __OPCODEMAPTWOBYTE0F_H__
-#define __OPCODEMAPTWOBYTE0F_H__
+#ifndef __OPCODEMAPTWOBYTE0F_H__B448F901_0C8F_47E3_9D68_533F72EA7B3B__
+#define __OPCODEMAPTWOBYTE0F_H__B448F901_0C8F_47E3_9D68_533F72EA7B3B__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
 
@@ -248,4 +252,8 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 };
 
-#endif /* __OPCODEMAPTWOBYTE0F_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPTWOBYTE0F_H__B448F901_0C8F_47E3_9D68_533F72EA7B3B__ */

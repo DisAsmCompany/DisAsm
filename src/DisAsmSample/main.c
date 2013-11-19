@@ -16,45 +16,24 @@
 address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 {
 	address_t destination = address;
+    offset_t mask = 0;
+    offset_t inverse = 0;
 	switch (size)
 	{
-		case 1:
-			if (0x80UL & offset)
-			{
-				offset = 0xFFUL - offset + 1;
-				destination = (destination > offset) ? (destination - offset) : 0;
-			}
-			else
-			{
-				destination += offset;
-			}
-			break;
-		case 2:
-			if (0x8000UL & offset)
-			{
-				offset = 0xFFUL - offset + 1;
-				destination = (destination > offset) ? (destination - offset) : 0;
-			}
-			else
-			{
-				destination += offset;
-			}
-			break;
-		case 4:
-			if (0x80000000UL & offset)
-			{
-				offset = 0xFFUL - offset + 1;
-				destination = (destination > offset) ? (destination - offset) : 0;
-			}
-			else
-			{
-				destination += offset;
-			}
-			break;
-		case 8:
-			break;
-		default:
-			break;
+		case 1: mask = 0x80; inverse = 0xFF; break;
+        case 2: mask = 0x8000; inverse = 0xFFFF; break;
+        case 4: mask = 0x80000000UL; inverse = 0xFFFFFFFFUL; break;
+        case 8: mask = 0x8000000000000000ULL; inverse = 0xFFFFFFFFFFFFFFFFULL; break;
+        default: break;
+    }
+	if (mask & offset)
+	{
+		offset = inverse - offset + 1;
+		destination = (destination > offset) ? (destination - offset) : 0;
+	}
+	else
+	{
+		destination += offset;
 	}
 	return destination;
 }
@@ -256,9 +235,9 @@ int main(int argc, char * const argv[])
 	uint32_t count = 0;
 	uint8_t memory = 0;
 
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	StackWalkInit();
 	CrashHandlerInstall();
 	LeakTrackerInstall(1);
@@ -283,12 +262,12 @@ int main(int argc, char * const argv[])
 	}
 	if (memory)
 	{
-#ifdef _WIN32
+#ifdef OS_WINDOWS
 		MODULEINFO info = {0};
 		base = (uint32_t) LoadLibraryA(argv[1]);
 		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
 		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);
-#endif /* _WIN32 */
+#endif /* OS_WINDOWS */
 	}
 	else
 	{

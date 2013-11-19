@@ -13,6 +13,10 @@
 #ifndef __NESEGMENTEDHEADER_H__
 #define __NESEGMENTEDHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { kNESignature = 0x454E }; /* NE */
 
 enum { NESegmentedHeaderEntryTableOffset            = 0x02 };
@@ -49,4 +53,9 @@ static const SDFElement NESegmentedHeader[] =
 	{"Reserved                       ", kReserved, 1, 9},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
 #endif /* __NESEGMENTEDHEADER_H__ */

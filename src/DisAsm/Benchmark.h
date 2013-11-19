@@ -10,8 +10,12 @@
 */
 
 #pragma once
-#ifndef __BENCHMARK_H__
-#define __BENCHMARK_H__
+#ifndef __BENCHMARK_H__CD0D1B20_8A57_4C47_AAC6_6FC68CBEC1F5__
+#define __BENCHMARK_H__CD0D1B20_8A57_4C47_AAC6_6FC68CBEC1F5__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 typedef void * HBENCHMARK;
 
@@ -21,4 +25,8 @@ void BenchmarkSampleEnd(HBENCHMARK hBenchmark);
 void BenchmarkPrintData(HBENCHMARK hBenchmark);
 void BenchmarkDestroy(HBENCHMARK hBenchmark);
 
-#endif /* __BENCHMARK_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __BENCHMARK_H__CD0D1B20_8A57_4C47_AAC6_6FC68CBEC1F5__ */

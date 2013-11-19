@@ -13,6 +13,10 @@
 #ifndef __PEEXPORTDIRECTORY_H__
 #define __PEEXPORTDIRECTORY_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { PEExportDirectoryNumberOfFunctions     = 20 };
 enum { PEExportDirectoryNumberOfNames         = 24 };
 enum { PEExportDirectoryAddressOfFunctions    = 28 };
@@ -35,5 +39,9 @@ static const SDFElement PEExportDirectory[] =
 	{"AddressOfNameOrdinals", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEEXPORTDIRECTORY_H__ */

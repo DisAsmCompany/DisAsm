@@ -13,6 +13,10 @@
 #ifndef __COFFLIBRARYHEADER_H__
 #define __COFFLIBRARYHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const char kCOFFLibrarySignatureSize = 8;
 static const char kCOFFLibrarySignature[] = "!<arch>\n";
 
@@ -28,5 +32,9 @@ static const SDFElement COFFLibraryHeader[] =
 	{"End Of Header", kStringASCII, 2, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __COFFLIBRARYHEADER_H__ */

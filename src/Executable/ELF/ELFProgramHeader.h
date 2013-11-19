@@ -13,6 +13,10 @@
 #ifndef __ELFPROGRAMHEADER_H__
 #define __ELFPROGRAMHEADER_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement ELFProgramHeader[] =
 {
 	{"ELF Program Header"},
@@ -26,5 +30,9 @@ static const SDFElement ELFProgramHeader[] =
 	{"Align           ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __ELFPROGRAMHEADER_H__ */

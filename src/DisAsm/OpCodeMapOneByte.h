@@ -9,8 +9,12 @@
 *
 */
 
-#ifndef __OPCODEMAPONEBYTE_H__
-#define __OPCODEMAPONEBYTE_H__
+#ifndef __OPCODEMAPONEBYTE_H__80A207DC_B1E3_4D0D_A639_17C536AFD27B__
+#define __OPCODEMAPONEBYTE_H__80A207DC_B1E3_4D0D_A639_17C536AFD27B__
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 /* One-Byte Opcode Map (OpCodes 00h - FFh) */
 
@@ -104,4 +108,8 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	{CLC}, {STC}, {CLI}, {STI}, {CLD}, {STD}, {GROUP4}, {GROUP5},
 };
 
-#endif /* __OPCODEMAPONEBYTE_H__ */
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* __OPCODEMAPONEBYTE_H__80A207DC_B1E3_4D0D_A639_17C536AFD27B__ */

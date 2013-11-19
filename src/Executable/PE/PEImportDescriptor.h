@@ -13,6 +13,10 @@
 #ifndef __PEIMPORTDESCRIPTOR_H__
 #define __PEIMPORTDESCRIPTOR_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 enum { PEImportDescriptorOriginalFirstThunk = 0  };
 enum { PEImportDescriptorName               = 12 };
 
@@ -26,5 +30,9 @@ static const SDFElement PEImportDescriptor[] =
 	{"FirstThunk        ", kUnsigned, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PEIMPORTDESCRIPTOR_H__ */

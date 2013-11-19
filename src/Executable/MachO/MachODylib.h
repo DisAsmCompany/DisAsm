@@ -13,6 +13,10 @@
 #ifndef __MACHODYLIB_H__
 #define __MACHODYLIB_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 static const SDFElement MachODylib[] =
 {
 	{"Mach-O Dylib"},
@@ -22,5 +26,9 @@ static const SDFElement MachODylib[] =
 	{"CompatibilityVersion", kVersion, 4, 1},
 	{NULL}
 };
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MACHODYLIB_H__ */
