@@ -47,10 +47,6 @@ enum { kBitnessNative = 64 };
 #include <assert.h>
 #ifdef OS_WINDOWS
 #include <windows.h>
-#include <tchar.h>
-#include <strsafe.h>
-#include <psapi.h>
-#pragma comment(lib, "psapi.lib")
 #else /* OS_WINDOWS */
 #include <unistd.h>
 #include <signal.h>

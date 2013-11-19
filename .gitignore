@@ -18,5 +18,7 @@ asm/
 out/
 windows32/
 windows64/
+windows32-bcc/
+windows32-wcc/
 macosx/
 unix/

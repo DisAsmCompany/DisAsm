@@ -37,7 +37,7 @@ static size_t g_nCapacity = 0;
 
 Allocation * g_Allocations = NULL;
 
-static bool xHeapCalled = false;
+static uint8_t xHeapCalled = false;
 
 void * xAlloc(uint32_t size);
 void * xReAlloc(void * address, uint32_t size);
@@ -295,15 +295,6 @@ int __stdcall xRtlFreeHeap(void * heap, uint32_t flags, void * address)
     return result;
 }
 
-void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
-{
-	uint32_t protect = 0;
-
-	VirtualProtect(pOriginal, PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
-	PatchLength(pThunk, pOriginal, 5);
-	VirtualProtect(pOriginal, PAGE_SIZE, protect, &protect);
-}
-
 void * xAlloc(uint32_t size)
 {
 	return pOriginalHeapAlloc(GetProcessHeap(), 0, size);
@@ -461,7 +452,6 @@ void Protect(address_t address, ProtectType type)
 #endif /* OS_WINDOWS */
 }
 
-
 void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 {
 	uint32_t length = 0;
@@ -473,6 +463,7 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
+	Protect((address_t)xThunkHeapAlloc, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
 	Protect((address_t) pOriginal, ProtectTypeWrite);
 	pOriginal[0] = jmp;
 	memcpy(pOriginal + 1, &offset, 4);
@@ -484,11 +475,16 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 	memcpy(pThunk + THUNK_SIZE + 1, &offset, 4);
 }
 
+void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
+{
+	Protect((address_t) pOriginal, ProtectTypeWrite);
+	PatchLength(pThunk, pOriginal, 5);
+	Protect((address_t) pOriginal, ProtectTypeExecute);
+}
+
 void LeakTrackerInstall(uint8_t install)
 {
 #ifdef OS_WINDOWS
-	uint32_t protect = 0;
-
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
     void * RtlFreeHeap = GetProcAddress(hModule, "RtlFreeHeap");
 #endif /* OS_WINDOWS */
@@ -505,11 +501,6 @@ void LeakTrackerInstall(uint8_t install)
 		/* need to capture RtlFreeHeap, because sometimes memory allocated by HeapAlloc
 		is being freed directly by this function instead of HeapFree
 		but if RtlFreeHeap is the same function as HeapFree, no need to patch twice */
-
-		VirtualProtect(xThunkHeapAlloc,   PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
-		VirtualProtect(xThunkHeapReAlloc, PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
-		VirtualProtect(xThunkHeapFree,    PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
-		VirtualProtect(xThunkRtlFreeHeap, PAGE_SIZE, PAGE_EXECUTE_READWRITE, &protect);
 
 		PatchFunction((uint8_t*)HeapReAlloc, (uint8_t*)xHeapReAlloc, xThunkHeapReAlloc);
 		PatchFunction((uint8_t*)HeapAlloc,   (uint8_t*)xHeapAlloc,   xThunkHeapAlloc);

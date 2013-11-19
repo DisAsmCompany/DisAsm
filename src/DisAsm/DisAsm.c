@@ -38,62 +38,97 @@ char * DisAsmRegisterToString(Register reg)
 uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint8_t result = 0;
-	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 1);
-	result = pInfo->bytes[pInfo->length];
-	++pInfo->length;
+	if (pInfo->length + 1 <= kMaxInstruction)
+	{
+		pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 1);
+		result = pInfo->bytes[pInfo->length];
+		++pInfo->length;
+	}
+	else
+	{
+		pContext->error = 1;
+	}
 	return result;
 }
 
 uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint16_t result = 0;
-	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 2);
-	result = 
-		(pInfo->bytes[pInfo->length + 1] << 8) | 
-		(pInfo->bytes[pInfo->length]);
-	pInfo->length += 2;
+	if (pInfo->length + 2 <= kMaxInstruction)
+	{
+		pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 2);
+		result = 
+			(pInfo->bytes[pInfo->length + 1] << 8) | 
+			(pInfo->bytes[pInfo->length]);
+		pInfo->length += 2;
+	}
+	else
+	{
+		pContext->error = 1;
+	}
 	return result;
 }
 
 uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint32_t result = 0;
-	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
-	result =
-		(pInfo->bytes[pInfo->length + 3] << 24) | 
-		(pInfo->bytes[pInfo->length + 2] << 16) | 
-		(pInfo->bytes[pInfo->length + 1] << 8) | 
-		(pInfo->bytes[pInfo->length]);
-	pInfo->length += 4;
+	if (pInfo->length + 4 <= kMaxInstruction)
+	{
+		pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 4);
+		result =
+			(pInfo->bytes[pInfo->length + 3] << 24) | 
+			(pInfo->bytes[pInfo->length + 2] << 16) | 
+			(pInfo->bytes[pInfo->length + 1] << 8) | 
+			(pInfo->bytes[pInfo->length]);
+		pInfo->length += 4;
+	}
+	else
+	{
+		pContext->error = 1;
+	}
 	return result;
 }
 
 uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint64_t result = 0;
-	pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 8);
-	result =
-		((uint64_t)pInfo->bytes[pInfo->length + 7] << 56) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 6] << 48) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 5] << 40) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 4] << 32) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 3] << 24) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 2] << 16) | 
-		((uint64_t)pInfo->bytes[pInfo->length + 1] << 8) | 
-		((uint64_t)pInfo->bytes[pInfo->length]);
-	pInfo->length += 8;
+	if (pInfo->length +  8 <= kMaxInstruction)
+	{
+		pContext->error = 0 == ReaderRead(pContext->hReader, pInfo->bytes + pInfo->length, 8);
+		result =
+			((uint64_t)pInfo->bytes[pInfo->length + 7] << 56) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 6] << 48) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 5] << 40) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 4] << 32) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 3] << 24) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 2] << 16) | 
+			((uint64_t)pInfo->bytes[pInfo->length + 1] << 8) | 
+			((uint64_t)pInfo->bytes[pInfo->length]);
+		pInfo->length += 8;
+	}
+	else
+	{
+		pContext->error = 1;
+	}
 	return result;
 }
 
 uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 {
 	uint64_t result = 0;
-	uint8_t i = 0;
-	for (i = 0; i < N; ++i)
+	if (pInfo->length + N <= kMaxInstruction)
 	{
-		result = (result << 8) + Fetch1(pContext, pInfo);
+		uint8_t i;
+		for (i = 0; i < N; ++i)
+		{
+			result = (result << 8) + Fetch1(pContext, pInfo);
+		}
+		pInfo->length += N;
 	}
-	pInfo->length += N;
+	else
+	{
+		pContext->error = 1;
+	}
 	return result;
 }
 

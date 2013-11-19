@@ -44,7 +44,7 @@ void xstrcat(char * dst, uint32_t size, const char * src)
 void ConsoleIOInit()
 {
 #ifdef OS_WINDOWS
-	uint32_t mode = 0;
+	DWORD mode = 0;
 
 	g_isConsoleStdOut = 0 != GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode);
 	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);

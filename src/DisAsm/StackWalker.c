@@ -220,28 +220,45 @@ char * ShortName(char * name)
 	return name;
 }
 
+typedef struct _MODULEINFO
+{
+	LPVOID lpBaseOfDll;
+	DWORD SizeOfImage;
+	LPVOID EntryPoint;
+}
+MODULEINFO, *LPMODULEINFO;
+
+typedef BOOL (__stdcall *pfnEnumProcessModules)(HANDLE hProcess, HMODULE *lphModule, DWORD cb, LPDWORD lpcbNeeded);
+typedef BOOL (__stdcall *pfnGetModuleInformation)(HANDLE hProcess, HMODULE hModule, LPMODULEINFO lpmodinfo, DWORD cb);
+pfnEnumProcessModules pEnumProcessModules = NULL;
+pfnGetModuleInformation pGetModuleInformation = NULL;
+
 void LoadModules(HANDLE hProcess)
 {
-	HMODULE * modules = NULL;
+	HMODULE * modules;
 	DWORD needed = 0;
 	char exe[NtfsMaxPath];
+	HMODULE hPSAPI = LoadLibraryA("psapi.dll");
+
+	pEnumProcessModules = (pfnEnumProcessModules) GetProcAddress(hPSAPI, "EnumProcessModules");
+	pGetModuleInformation = (pfnGetModuleInformation) GetProcAddress(hPSAPI, "GetModuleInformation");
 
 	GetModuleFileNameA(NULL, exe, NtfsMaxPath);
-	EnumProcessModules(hProcess, NULL, 0, &needed);
+	pEnumProcessModules(hProcess, NULL, 0, &needed);
 	g_nModules = needed / 4;
 	g_Modules = (ModuleInfo*) calloc(1, g_nModules * sizeof(ModuleInfo));
 	modules = (HMODULE*) calloc(1, g_nModules * sizeof(HMODULE));
 	if (NULL != modules && NULL != g_Modules)
 	{
-		DWORD i = 0;
-		EnumProcessModules(hProcess, modules, needed, &needed);
+		DWORD i;
+		pEnumProcessModules(hProcess, modules, needed, &needed);
 
 		for (i = 0; i < g_nModules; ++i)
 		{
 			MODULEINFO info = {0};
 			IMAGEHLP_MODULE64_V3 info3 = {0};
 			info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V3);
-			GetModuleInformation(hProcess, modules[i], &info, sizeof(MODULEINFO));
+			pGetModuleInformation(hProcess, modules[i], &info, sizeof(MODULEINFO));
 			GetModuleFileNameA(modules[i], g_Modules[i].path, NtfsMaxPath);
 			g_Modules[i].address = (address_t) info.lpBaseOfDll;
 			g_Modules[i].size = info.SizeOfImage;
@@ -268,7 +285,7 @@ HMODULE hDbgHelp = NULL;
 void StackWalkInit()
 {
 	HANDLE hProcess = GetCurrentProcess();
-	hDbgHelp = LoadLibrary(_T("dbghelp.dll"));
+	hDbgHelp = LoadLibraryA("dbghelp.dll");
 
 	if (NULL != hDbgHelp)
 	{
@@ -344,7 +361,7 @@ void StackWalkInit()
 
 void StackWalkSymbol(address_t address)
 {
-	DWORD i = 0;
+	DWORD i;
 	DWORD64 disp;
 	enum { MaxNameLength = 1024 }; 
 	char buffer[sizeof(IMAGEHLP_SYMBOL64) + MaxNameLength];
@@ -382,8 +399,9 @@ void StackWalkCleanup()
 
 #ifndef GETCONTEXT
 #ifdef CPU_X86
+#ifdef _MSC_VER
 #define GETCONTEXT(c) \
-	do \
+do \
 { \
 	__asm    call x \
 	__asm x: pop eax \
@@ -391,7 +409,10 @@ void StackWalkCleanup()
 	__asm    mov c.Ebp, ebp \
 	__asm    mov c.Esp, esp \
 } \
-	while(0);
+while(0);
+#else /* _MSC_VER */
+#define GETCONTEXT(c)
+#endif /* _MSC_VER */
 #else /* CPU_X86 */
 #define GETCONTEXT(c) do { RtlCaptureContext(&context); } while (0);
 #endif /* CPU_X86 */

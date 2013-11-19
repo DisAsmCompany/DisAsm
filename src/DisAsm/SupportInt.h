@@ -39,8 +39,18 @@ typedef signed short       int16_t;
 typedef unsigned short     uint16_t;
 typedef signed long        int32_t;
 typedef unsigned long      uint32_t;
+
+#if defined(__BORLANDC__) || defined(__CODEGEARC__)
+
+typedef __int64            int64_t;
+typedef unsigned __int64   uint64_t;
+
+#else /* defined(__BORLANDC__) || defined(__CODEGEARC__) */
+
 typedef signed long long   int64_t;
 typedef unsigned long long uint64_t;
+
+#endif /* defined(__BORLANDC__) || defined(__CODEGEARC__) */
 
 #endif /* defined(__GNUC__) */
 
@@ -48,6 +58,18 @@ typedef unsigned long long uint64_t;
 
 typedef uint64_t address_t;
 typedef uint64_t offset_t;
+
+#if defined(__BORLANDC__) || defined(__CODEGEARC__)
+
+#define  I64(x) (x)
+#define  U64(x) (x)
+
+#else /*  defined(__BORLANDC__) || defined(__CODEGEARC__) */
+
+#define  I64(x) (x##LL)
+#define  U64(x) (x##ULL)
+
+#endif /*  defined(__BORLANDC__) || defined(__CODEGEARC__) */
 
 #ifdef __cplusplus
 }

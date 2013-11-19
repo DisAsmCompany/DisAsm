@@ -21,19 +21,19 @@ uint64_t Inverse(uint64_t value, uint8_t size)
 {
 	if (size == 8)
 	{
-		value = 0xFFFFFFFFFFFFFFFFULL - value;
+		value = U64(0xFFFFFFFFFFFFFFFF) - value;
 	}
 	if (size == 4)
 	{
-		value = 0xFFFFFFFFULL - value;
+		value = 0xFFFFFFFFUL - value;
 	}
 	if (size == 2)
 	{
-		value = 0xFFFFULL - value;
+		value = 0xFFFFUL - value;
 	}
 	if (size == 1)
 	{
-		value = 0xFFULL - value;
+		value = 0xFFUL - value;
 	}
 	return value + 1;
 }

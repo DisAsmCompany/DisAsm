@@ -24,14 +24,14 @@ SDFContext;
 uint64_t LE2BE64(uint64_t value)
 {
     return 
-        ((value & 0x00000000000000FFULL) << 56) |
-        ((value & 0x000000000000FF00ULL) << 40) |
-        ((value & 0x0000000000FF0000ULL) >> 24) |
-        ((value & 0x00000000FF000000ULL) >> 8)  |
-        ((value & 0x000000FF00000000ULL) << 8)  |
-        ((value & 0x0000FF0000000000ULL) << 24) |
-        ((value & 0x00FF000000000000ULL) >> 40) |
-        ((value & 0xFF00000000000000ULL) >> 56);
+        ((value & U64(0x00000000000000FF)) << 56) |
+        ((value & U64(0x000000000000FF00)) << 40) |
+        ((value & U64(0x0000000000FF0000)) >> 24) |
+        ((value & U64(0x00000000FF000000)) >> 8)  |
+        ((value & U64(0x000000FF00000000)) << 8)  |
+        ((value & U64(0x0000FF0000000000)) << 24) |
+        ((value & U64(0x00FF000000000000)) >> 40) |
+        ((value & U64(0xFF00000000000000)) >> 56);
 }
 
 uint32_t LE2BE32(uint32_t value)
@@ -53,7 +53,7 @@ uint16_t LE2BE16(uint16_t value)
 uint32_t SDFSizeInBytes(const SDFElement * definition)
 {
 	uint32_t bytes = 0;
-	uint32_t i = 0;
+	uint32_t i;
 	for (i = 0; ; ++i)
 	{
 		if (NULL == definition[i].name)
@@ -67,9 +67,8 @@ uint32_t SDFSizeInBytes(const SDFElement * definition)
 
 HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 {
-	SDFContext * pContext = NULL;
+	SDFContext * pContext = (SDFContext*) calloc(1, sizeof(SDFContext));
 	uint32_t bytes = SDFSizeInBytes(definition);
-	pContext = (SDFContext*) calloc(1, sizeof(SDFContext));
 	if (NULL == pContext)
 	{
 		return NULL;
@@ -92,7 +91,7 @@ HSDF SDFCreate(const SDFElement * definition, HREADER hReader)
 }
 
 #define LEAPYEAR(year) (!((year) % 4) && (((year) % 100) || !((year) % 400)))
-#define YEARSIZE(year) (LEAPYEAR(year) ? 366ULL : 365ULL)
+#define YEARSIZE(year) (LEAPYEAR(year) ? U64(366) : U64(365))
 
 static const uint8_t MonthSizes[2][12] = 
 {
@@ -110,10 +109,10 @@ static const char * Months[] =
 	"January", "February", "March",	"April", "May", "June",	"July", "August", "September",	"October", "November", "December"
 };
 
+enum { SecondsInDay = U64(24) * U64(60) * U64(60) };
+
 void UTC(uint64_t TimeStamp)
 {
-	enum { SecondsInDay = 24ULL * 60ULL * 60ULL };
-
 	uint64_t clock = TimeStamp % SecondsInDay;
 	uint64_t day = TimeStamp / SecondsInDay;
 	uint64_t seconds = clock % 60;

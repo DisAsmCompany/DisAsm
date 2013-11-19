@@ -23,7 +23,7 @@ address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 		case 1: mask = 0x80; inverse = 0xFF; break;
         case 2: mask = 0x8000; inverse = 0xFFFF; break;
         case 4: mask = 0x80000000UL; inverse = 0xFFFFFFFFUL; break;
-        case 8: mask = 0x8000000000000000ULL; inverse = 0xFFFFFFFFFFFFFFFFULL; break;
+        case 8: mask = U64(0x8000000000000000); inverse = U64(0xFFFFFFFFFFFFFFFF); break;
         default: break;
     }
 	if (mask & offset)
@@ -46,7 +46,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 	address_t start = address + base;
 	for (;;)
 	{
-		uint8_t length = 0;
+		uint8_t length;
 		BenchmarkSampleBegin(hBenchmark);
 		length = DisAsmInstructionDecode(bitness, hReader, &info);
 		BenchmarkSampleEnd(hBenchmark);
@@ -70,7 +70,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		/* non-conditional jump instructions (JMP) */
 		if (JMP == info.mnemonic && 1 == info.nOperands)
 		{
-			address_t destination = 0;
+			address_t destination;
 			/* explicit jump offset */
 			if (J == HITYPE(info.operands[0].type))
 			{
@@ -144,11 +144,11 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t base)
 {
     uint8_t bitness = 0;
-	address_t entry = 0;
-	uint32_t i = 0;
-	uint32_t count = 0;
+	address_t entry;
+	uint32_t i;
+	uint32_t count;
 	HBENCHMARK hBenchmark = BenchmarkCreate();
-	DynamicArray * array = NULL;
+	DynamicArray * array;
 	Architecture architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
@@ -230,9 +230,9 @@ int main(int argc, char * const argv[])
 {
 	uint32_t base = 0;
 	HREADER hReader = NULL;
-	HEXECUTABLE hExecutable = NULL;
-	uint32_t i = 0;
-	uint32_t count = 0;
+	HEXECUTABLE hExecutable;
+	uint32_t i;
+	uint32_t count;
 	uint8_t memory = 0;
 
 #ifdef OS_WINDOWS
@@ -263,10 +263,10 @@ int main(int argc, char * const argv[])
 	if (memory)
 	{
 #ifdef OS_WINDOWS
-		MODULEINFO info = {0};
+		/*MODULEINFO info = {0};
 		base = (uint32_t) LoadLibraryA(argv[1]);
 		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
-		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);
+		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);*/
 #endif /* OS_WINDOWS */
 	}
 	else

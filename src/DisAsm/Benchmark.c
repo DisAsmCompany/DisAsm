@@ -35,7 +35,7 @@ HBENCHMARK BenchmarkCreate()
 	pContext->count = 0;
 	pContext->total = 0;
 	pContext->_max = 0;
-	pContext->_min = 0xFFFFFFFFFFFFFFFFULL;
+	pContext->_min = U64(0xFFFFFFFFFFFFFFFF);
 	return (HBENCHMARK) pContext;
 }
 

@@ -17,6 +17,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
+enum { kMaxOperands = 4 };
+enum { kMaxInstruction = 15 };
+enum { kMaxPrefixes = 4 };
+
 typedef struct InstructionInfo_t
 {
 	uint8_t length;
@@ -41,12 +45,12 @@ typedef struct InstructionInfo_t
 	VEX3u VEX3;
 	XOPu XOP;
 	uint8_t nOperands;
-	Operand operands[4];
+	Operand operands[kMaxOperands];
 	uint64_t disp;
 	uint64_t imm;
 	uint8_t nPrefixes;
-	Prefix prefixes[MAX_PREFIXES];
-	uint8_t bytes[16];
+	Prefix prefixes[kMaxPrefixes];
+	uint8_t bytes[kMaxInstruction];
 	InstructionSet set;
 }
 InstructionInfo;

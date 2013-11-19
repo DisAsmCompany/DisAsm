@@ -53,12 +53,15 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext)
 	{
-        uint32_t i = 0;
-        for (i = 0; i < pContext->nObjects; ++i)
-        {
-            free(pContext->pObjects[i].pSections);
-            free(pContext->pObjects[i].pExports);
-        }
+		if (NULL != pContext->pObjects)
+		{
+			uint32_t i;
+			for (i = 0; i < pContext->nObjects; ++i)
+			{
+				free(pContext->pObjects[i].pSections);
+				free(pContext->pObjects[i].pExports);
+			}
+		}
         free(pContext->pObjects);
         if (NULL != pContext->pDestroy)
         {
@@ -71,31 +74,31 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
+	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
 }
 
 address_t ExecutableGetBase(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->pObjects[pContext->iObject].Base : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].Base : 0;
 }
 
 address_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->pObjects[pContext->iObject].EntryPoint : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].EntryPoint : 0;
 }
 
 address_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->pObjects[pContext->iObject].StubEntryPoint : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].StubEntryPoint : 0;
 }
 
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return NULL != pContext ? pContext->pObjects[pContext->iObject].nExports : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].nExports : 0;
 }
 
 address_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
