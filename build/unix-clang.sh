@@ -1,2 +1,2 @@
 #!/bin/sh
-./unix-clang unix-clang clang
+./unix-clang.sh unix-clang clang

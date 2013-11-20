@@ -1,2 +1,2 @@
 #!/bin/sh
-./unix-generic unix-gcc gcc
+./unix-generic.sh unix-gcc gcc
