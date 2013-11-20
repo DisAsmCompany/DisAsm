@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(DisAsm)
 
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" INTERNAL CACHE STRING "limited configs" FORCE)
-set(SRC ../../../src)
+set(SRC ../../src)
 
 file(GLOB SOURCES ${SRC}/DisAsm/*.c)
 file(GLOB HEADERS ${SRC}/DisAsm/*.h)
