@@ -1,2 +1,3 @@
 #!/bin/sh
-./unix-clang.sh unix-clang clang
+chmod +x unix-generic.sh
+./unix-generic.sh unix-clang clang
