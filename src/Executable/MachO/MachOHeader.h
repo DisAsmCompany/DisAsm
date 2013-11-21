@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOHEADER_H__
-#define __MACHOHEADER_H__
+#ifndef __MACHOHEADER_H__83FABB59_D17C_4DFA_AFCC_3005BD6B0A25__
+#define __MACHOHEADER_H__83FABB59_D17C_4DFA_AFCC_3005BD6B0A25__
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,4 +36,4 @@ static const SDFElement MachOHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOHEADER_H__ */
+#endif /* __MACHOHEADER_H__83FABB59_D17C_4DFA_AFCC_3005BD6B0A25__ */

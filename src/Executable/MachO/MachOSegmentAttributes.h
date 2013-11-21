@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOSEGMENTATTRIBUTES_H__
-#define __MACHOSEGMENTATTRIBUTES_H__
+#ifndef __MACHOSEGMENTATTRIBUTES_H__62E26EC5_DE5C_40CD_AAE3_A309947474FB__
+#define __MACHOSEGMENTATTRIBUTES_H__62E26EC5_DE5C_40CD_AAE3_A309947474FB__
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,4 +30,4 @@ static const SDFEnum MachOSegmentAttributes[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOSEGMENTATTRIBUTES_H__ */
+#endif /* __MACHOSEGMENTATTRIBUTES_H__62E26EC5_DE5C_40CD_AAE3_A309947474FB__ */

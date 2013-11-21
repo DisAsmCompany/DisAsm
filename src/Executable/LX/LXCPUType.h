@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __LXCPUTYPE_H__
-#define __LXCPUTYPE_H__
+#ifndef __LXCPUTYPE_H__4319686D_1518_40DF_BE4C_B208D2051CC5__
+#define __LXCPUTYPE_H__4319686D_1518_40DF_BE4C_B208D2051CC5__
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,4 +29,4 @@ static const SDFEnum LXCPUType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __LXCPUTYPE_H__ */
+#endif /* __LXCPUTYPE_H__4319686D_1518_40DF_BE4C_B208D2051CC5__ */

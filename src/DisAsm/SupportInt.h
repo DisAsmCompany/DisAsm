@@ -27,11 +27,11 @@ extern "C" {
 
 #else /* defined(__STDC_VERSION__) && (__STDC_VERSION__ >= __C99__) */
 
-#if defined(__GNUC__)
+#ifdef COMP_GNUC
 
 #include <stdint.h>
 
-#else /* defined(__GNUC__) */
+#else /* COMP_GNUC */
 
 typedef signed char        int8_t;
 typedef unsigned char      uint8_t;
@@ -40,36 +40,36 @@ typedef unsigned short     uint16_t;
 typedef signed long        int32_t;
 typedef unsigned long      uint32_t;
 
-#if defined(__BORLANDC__) || defined(__CODEGEARC__)
+#ifdef COMP_BORLANDC
 
 typedef __int64            int64_t;
 typedef unsigned __int64   uint64_t;
 
-#else /* defined(__BORLANDC__) || defined(__CODEGEARC__) */
+#else /* COMP_BORLANDC */
 
 typedef signed long long   int64_t;
 typedef unsigned long long uint64_t;
 
-#endif /* defined(__BORLANDC__) || defined(__CODEGEARC__) */
+#endif /* COMP_BORLANDC */
 
-#endif /* defined(__GNUC__) */
+#endif /* COMP_GNUC */
 
 #endif /* defined(__STDC_VERSION__) && (__STDC_VERSION__ >= __C99__) */
 
 typedef uint64_t address_t;
 typedef uint64_t offset_t;
 
-#if defined(__BORLANDC__) || defined(__CODEGEARC__)
+#if COMP_BORLANDC
 
 #define  I64(x) (x)
 #define  U64(x) (x)
 
-#else /*  defined(__BORLANDC__) || defined(__CODEGEARC__) */
+#else /*  COMP_BORLANDC */
 
 #define  I64(x) (x##LL)
 #define  U64(x) (x##ULL)
 
-#endif /*  defined(__BORLANDC__) || defined(__CODEGEARC__) */
+#endif /* COMP_BORLANDC */
 
 #ifdef __cplusplus
 }

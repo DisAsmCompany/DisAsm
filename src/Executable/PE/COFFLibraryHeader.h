@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __COFFLIBRARYHEADER_H__
-#define __COFFLIBRARYHEADER_H__
+#ifndef __COFFLIBRARYHEADER_H__E5C823A1_444D_4E5C_BAE6_234E0070CBB5__
+#define __COFFLIBRARYHEADER_H__E5C823A1_444D_4E5C_BAE6_234E0070CBB5__
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +37,4 @@ static const SDFElement COFFLibraryHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __COFFLIBRARYHEADER_H__ */
+#endif /* __COFFLIBRARYHEADER_H__E5C823A1_444D_4E5C_BAE6_234E0070CBB5__ */

@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __COFFSYMBOLTABLE_H__
-#define __COFFSYMBOLTABLE_H__
+#ifndef __COFFSYMBOLTABLE_H__068A299D_B584_4CE6_AA3B_3BA630C39900__
+#define __COFFSYMBOLTABLE_H__068A299D_B584_4CE6_AA3B_3BA630C39900__
 
 #ifdef __cplusplus
 extern "C" {
@@ -55,4 +55,4 @@ static const SDFElement COFFSymbolTableAuxiliaryFormatFiles[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __COFFSYMBOLTABLE_H__ */
+#endif /* __COFFSYMBOLTABLE_H__068A299D_B584_4CE6_AA3B_3BA630C39900__ */

@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEOPTIONALHEADER_H__
-#define __PEOPTIONALHEADER_H__
+#ifndef __PEOPTIONALHEADER_H__3EE5214B_CF69_4498_95E4_B3EE80EE7680__
+#define __PEOPTIONALHEADER_H__3EE5214B_CF69_4498_95E4_B3EE80EE7680__
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,4 +38,4 @@ static const SDFElement PEOptionalHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEOPTIONALHEADER_H__ */
+#endif /* __PEOPTIONALHEADER_H__3EE5214B_CF69_4498_95E4_B3EE80EE7680__ */

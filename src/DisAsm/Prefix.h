@@ -16,10 +16,6 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifndef MAX_PREFIXES
-#define MAX_PREFIXES 4
-#endif /* MAX_PREFIXES */
-
 typedef struct Prefix_t
 {
 	Mnemonic mnemonic;

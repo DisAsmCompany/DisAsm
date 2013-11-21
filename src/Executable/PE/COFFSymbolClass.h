@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __COFFSYMBOLCLASS_H__
-#define __COFFSYMBOLCLASS_H__
+#ifndef __COFFSYMBOLCLASS_H__72DD5405_5B8A_4421_9D7E_34383FE76E21__
+#define __COFFSYMBOLCLASS_H__72DD5405_5B8A_4421_9D7E_34383FE76E21__
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,4 +61,4 @@ static const SDFEnum _COFFSymbolClass[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __COFFSYMBOLCLASS_H__ */
+#endif /* __COFFSYMBOLCLASS_H__72DD5405_5B8A_4421_9D7E_34383FE76E21__ */

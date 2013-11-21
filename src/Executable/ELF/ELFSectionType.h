@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFSECTIONTYPE_H__
-#define __ELFSECTIONTYPE_H__
+#ifndef __ELFSECTIONTYPE_H__FA1A44DE_BD8E_4A1A_AFDA_7906771011E3__
+#define __ELFSECTIONTYPE_H__FA1A44DE_BD8E_4A1A_AFDA_7906771011E3__
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,4 +52,4 @@ static const SDFEnum _ELFSectionType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSECTIONTYPE_H__ */
+#endif /* __ELFSECTIONTYPE_H__FA1A44DE_BD8E_4A1A_AFDA_7906771011E3__ */

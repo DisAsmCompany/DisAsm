@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __COFFSECTIONNUMBER_H__
-#define __COFFSECTIONNUMBER_H__
+#ifndef __COFFSECTIONNUMBER_H__A1C70231_5408_4C3B_80BD_9E5A3CCB5A32__
+#define __COFFSECTIONNUMBER_H__A1C70231_5408_4C3B_80BD_9E5A3CCB5A32__
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,4 +29,4 @@ static const SDFEnum COFFSectionNumber[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __COFFSECTIONNUMBER_H__ */
+#endif /* __COFFSECTIONNUMBER_H__A1C70231_5408_4C3B_80BD_9E5A3CCB5A32__ */

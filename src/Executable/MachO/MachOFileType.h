@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOFILETYPE_H__
-#define __MACHOFILETYPE_H__
+#ifndef __MACHOFILETYPE_H__A374D1F4_CFEA_460D_8189_00DC6CC32E40__
+#define __MACHOFILETYPE_H__A374D1F4_CFEA_460D_8189_00DC6CC32E40__
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +37,4 @@ static const SDFEnum MachOFileType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOFILETYPE_H__ */
+#endif /* __MACHOFILETYPE_H__A374D1F4_CFEA_460D_8189_00DC6CC32E40__ */

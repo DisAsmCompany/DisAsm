@@ -59,6 +59,30 @@ enum { kBitnessNative = 64 };
 #define OS_MACOSX
 #endif /* __APPLE__ */
 
+#if defined(_MSC_VER)
+#define COMP_MICOROSOFTC
+#endif /* defined(_MSC_VER) */
+
+#if defined(__BORLANDC__) || defined(__CODEGEARC__)
+#define COMP_BORLANDC
+#endif /* defined(__BORLANDC__) || defined(__CODEGEARC__) */
+
+#if defined(__GNUC__)
+#define COMP_GNUC
+#endif /* defined(__GNUC__) */
+
+#if defined(__clang__)
+#define COMP_CLANG
+#endif /* defined(__clang__) */
+
+#if defined(__WATCOMC__)
+#define COMP_WATCOMC
+#endif /* defined(__WATCOMC__) */
+
+#if defined(__INTEL_COMPILER) || defined(__ICC) || defined(__ECL) || defined(__ICL)
+#define COMP_INTELC
+#endif /* defined(__INTEL_COMPILER) || defined(__ICC) || defined(__ECL) || defined(__ICL) */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

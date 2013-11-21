@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __LXFILEHEADER_H__
-#define __LXFILEHEADER_H__
+#ifndef __LXFILEHEADER_H__3887EC12_ECA8_4630_B46B_3585C839A510__
+#define __LXFILEHEADER_H__3887EC12_ECA8_4630_B46B_3585C839A510__
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,4 +80,4 @@ static const SDFElement LXFileHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __LXFILEHEADER_H__ */
+#endif /* __LXFILEHEADER_H__3887EC12_ECA8_4630_B46B_3585C839A510__ */

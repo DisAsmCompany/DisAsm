@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOSYMTAB_H__
-#define __MACHOSYMTAB_H__
+#ifndef __MACHOSYMTAB_H__6697381C_3637_4901_BAAC_66A2D9C9A85C__
+#define __MACHOSYMTAB_H__6697381C_3637_4901_BAAC_66A2D9C9A85C__
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,4 +31,4 @@ static const SDFElement MachOSymTab[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOSYMTAB_H__ */
+#endif /* __MACHOSYMTAB_H__6697381C_3637_4901_BAAC_66A2D9C9A85C__ */

@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFPROGRAMHEADER_H__
-#define __ELFPROGRAMHEADER_H__
+#ifndef __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
+#define __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +35,4 @@ static const SDFElement ELFProgramHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFPROGRAMHEADER_H__ */
+#endif /* __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__ */

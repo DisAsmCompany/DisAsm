@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFDATA_H__
-#define __ELFDATA_H__
+#ifndef __ELFDATA_H__1D362BF8_5FCF_48F9_A087_0B94E3DE0C4E__
+#define __ELFDATA_H__1D362BF8_5FCF_48F9_A087_0B94E3DE0C4E__
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,4 +29,4 @@ static const SDFEnum ELFData[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFDATA_H__ */
+#endif /* __ELFDATA_H__1D362BF8_5FCF_48F9_A087_0B94E3DE0C4E__ */

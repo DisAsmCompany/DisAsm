@@ -399,7 +399,7 @@ void StackWalkCleanup()
 
 #ifndef GETCONTEXT
 #ifdef CPU_X86
-#ifdef _MSC_VER
+#ifdef COMP_MICROSOFTC
 #define GETCONTEXT(c) \
 do \
 { \
@@ -410,9 +410,9 @@ do \
 	__asm    mov c.Esp, esp \
 } \
 while(0);
-#else /* _MSC_VER */
+#else /* COMP_MICROSOFTC */
 #define GETCONTEXT(c)
-#endif /* _MSC_VER */
+#endif /* COMP_MICROSOFTC */
 #else /* CPU_X86 */
 #define GETCONTEXT(c) do { RtlCaptureContext(&context); } while (0);
 #endif /* CPU_X86 */

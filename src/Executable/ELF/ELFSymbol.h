@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFSYMBOL_H__
-#define __ELFSYMBOL_H__
+#ifndef __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
+#define __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +37,4 @@ static const SDFElement ELFSymbol[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSYMBOL_H__ */
+#endif /* __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__ */

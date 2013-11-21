@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFABI_H__
-#define __ELFABI_H__
+#ifndef __ELFABI_H__1CA347C4_28B8_4B0F_9BB5_2FFF713B76BA__
+#define __ELFABI_H__1CA347C4_28B8_4B0F_9BB5_2FFF713B76BA__
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,4 +45,4 @@ static const SDFEnum ELFABI[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFABI_H__ */
+#endif /* __ELFABI_H__1CA347C4_28B8_4B0F_9BB5_2FFF713B76BA__ */

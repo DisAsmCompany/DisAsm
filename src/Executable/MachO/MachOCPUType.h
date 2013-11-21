@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOCPUTYPE_H__
-#define __MACHOCPUTYPE_H__
+#ifndef __MACHOCPUTYPE_H__24F728A8_B1A2_4076_A123_02002AA955DF__
+#define __MACHOCPUTYPE_H__24F728A8_B1A2_4076_A123_02002AA955DF__
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,4 +40,4 @@ static const SDFEnum _MachOCPUType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOCPUTYPE_H__ */
+#endif /* __MACHOCPUTYPE_H__24F728A8_B1A2_4076_A123_02002AA955DF__ */

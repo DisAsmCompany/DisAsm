@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFSECTIONFLAGS_H__
-#define __ELFSECTIONFLAGS_H__
+#ifndef __ELFSECTIONFLAGS_H__70636818_EE51_4C1C_9DE7_168DF75F38E7__
+#define __ELFSECTIONFLAGS_H__70636818_EE51_4C1C_9DE7_168DF75F38E7__
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,4 +29,4 @@ static const SDFEnum ELFSectionFlags[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSECTIONFLAGS_H__ */
+#endif /* __ELFSECTIONFLAGS_H__70636818_EE51_4C1C_9DE7_168DF75F38E7__ */

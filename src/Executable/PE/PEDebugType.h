@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEDEBUGTYPE_H__
-#define __PEDEBUGTYPE_H__
+#ifndef __PEDEBUGTYPE_H__9E1CEE16_E524_45D8_910F_11154E2D560C__
+#define __PEDEBUGTYPE_H__9E1CEE16_E524_45D8_910F_11154E2D560C__
 
 static const SDFEnum PEDebugType[] =
 {
@@ -30,4 +30,4 @@ static const SDFEnum PEDebugType[] =
 	{NULL}
 };
 
-#endif /* __PEDEBUGTYPE_H__ */
+#endif /* __PEDEBUGTYPE_H__9E1CEE16_E524_45D8_910F_11154E2D560C__ */

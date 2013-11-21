@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFFILE_H__
-#define __ELFFILE_H__
+#ifndef __ELFFILE_H__4784C47F_1AE8_4534_9F26_97590996B09E__
+#define __ELFFILE_H__4784C47F_1AE8_4534_9F26_97590996B09E__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +23,4 @@ int ELFFileCreate(ExecutableContext * pContext);
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFFILE_H__ */
+#endif /* __ELFFILE_H__4784C47F_1AE8_4534_9F26_97590996B09E__ */

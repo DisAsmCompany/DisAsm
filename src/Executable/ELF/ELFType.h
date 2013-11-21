@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFTYPE_H__
-#define __ELFTYPE_H__
+#ifndef __ELFTYPE_H__F626A937_9701_42EA_ADA2_61F31C7BF3C2__
+#define __ELFTYPE_H__F626A937_9701_42EA_ADA2_61F31C7BF3C2__
 
 static const SDFEnum ELFType[] =
 {
@@ -23,4 +23,4 @@ static const SDFEnum ELFType[] =
 	{NULL}
 };
 
-#endif /* __ELFTYPE_H__ */
+#endif /* __ELFTYPE_H__F626A937_9701_42EA_ADA2_61F31C7BF3C2__ */

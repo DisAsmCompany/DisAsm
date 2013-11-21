@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFPROGRAMTYPE_H__
-#define __ELFPROGRAMTYPE_H__
+#ifndef __ELFPROGRAMTYPE_H__354C9025_C753_4747_9743_3EE88B4D7F38__
+#define __ELFPROGRAMTYPE_H__354C9025_C753_4747_9743_3EE88B4D7F38__
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +35,4 @@ static const SDFEnum ELFProgramType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFPROGRAMTYPE_H__ */
+#endif /* __ELFPROGRAMTYPE_H__354C9025_C753_4747_9743_3EE88B4D7F38__ */

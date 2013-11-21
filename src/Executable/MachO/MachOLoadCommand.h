@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOLOADCOMMAND_H__
-#define __MACHOLOADCOMMAND_H__
+#ifndef __MACHOLOADCOMMAND_H__C5A38933_6266_4B68_A14B_0AB31F26160F__
+#define __MACHOLOADCOMMAND_H__C5A38933_6266_4B68_A14B_0AB31F26160F__
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,4 +32,4 @@ static const SDFElement MachOLoadCommand[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOLOADCOMMAND_H__ */
+#endif /* __MACHOLOADCOMMAND_H__C5A38933_6266_4B68_A14B_0AB31F26160F__ */

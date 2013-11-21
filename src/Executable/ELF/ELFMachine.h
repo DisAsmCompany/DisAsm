@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFMACHINE_H__
-#define __ELFMACHINE_H__
+#ifndef __ELFMACHINE_H__69A6BCF3_022C_49E3_BE36_731CE1DABCB6__
+#define __ELFMACHINE_H__69A6BCF3_022C_49E3_BE36_731CE1DABCB6__
 
 #ifdef __cplusplus
 extern "C" {
@@ -52,4 +52,4 @@ static const SDFEnum _ELFMachine[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFMACHINE_H__ */
+#endif /* __ELFMACHINE_H__69A6BCF3_022C_49E3_BE36_731CE1DABCB6__ */

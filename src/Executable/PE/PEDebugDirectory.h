@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEDEBUGDIRECTORY_H__
-#define __PEDEBUGDIRECTORY_H__
+#ifndef __PEDEBUGDIRECTORY_H__B9D454F1_BABD_43E0_A433_ED7B20513AA3__
+#define __PEDEBUGDIRECTORY_H__B9D454F1_BABD_43E0_A433_ED7B20513AA3__
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +35,4 @@ static const SDFElement PEDebugDirectory[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEDEBUGDIRECTORY_H__ */
+#endif /* __PEDEBUGDIRECTORY_H__B9D454F1_BABD_43E0_A433_ED7B20513AA3__ */

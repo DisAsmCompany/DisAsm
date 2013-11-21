@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PESUBSYSTEM_H__
-#define __PESUBSYSTEM_H__
+#ifndef __PESUBSYSTEM_H__4B2BEA35_A4B5_4DEC_8C66_E5791FDD7381__
+#define __PESUBSYSTEM_H__4B2BEA35_A4B5_4DEC_8C66_E5791FDD7381__
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,4 +40,4 @@ static const SDFEnum PESubsystem[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PESUBSYSTEM_H__ */
+#endif /* __PESUBSYSTEM_H__4B2BEA35_A4B5_4DEC_8C66_E5791FDD7381__ */

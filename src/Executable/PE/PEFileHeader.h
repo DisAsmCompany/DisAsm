@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEFILEHEADER_H__
-#define __PEFILEHEADER_H__
+#ifndef __PEFILEHEADER_H__01113985_FC76_4F04_BA9E_979FCDA182E0__
+#define __PEFILEHEADER_H__01113985_FC76_4F04_BA9E_979FCDA182E0__
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,4 +42,4 @@ static const SDFElement PEFileHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEFILEHEADER_H__ */
+#endif /* __PEFILEHEADER_H__01113985_FC76_4F04_BA9E_979FCDA182E0__ */

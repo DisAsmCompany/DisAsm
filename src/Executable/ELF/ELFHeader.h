@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFHEADER_H__
-#define __ELFHEADER_H__
+#ifndef __ELFHEADER_H__9B7AE5DE_8EA4_474F_9E5E_1E405118EE8B__
+#define __ELFHEADER_H__9B7AE5DE_8EA4_474F_9E5E_1E405118EE8B__
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +60,4 @@ static const SDFElement ELFHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFHEADER_H__ */
+#endif /* __ELFHEADER_H__9B7AE5DE_8EA4_474F_9E5E_1E405118EE8B__ */

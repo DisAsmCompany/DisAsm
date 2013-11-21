@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEMAGIC_H__
-#define __PEMAGIC_H__
+#ifndef __PEMAGIC_H__7374E7D6_DD90_44D6_ACDE_159E3B9946CB__
+#define __PEMAGIC_H__7374E7D6_DD90_44D6_ACDE_159E3B9946CB__
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,4 +37,4 @@ static const SDFEnum _PEMagic[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEMAGIC_H__ */
+#endif /* __PEMAGIC_H__7374E7D6_DD90_44D6_ACDE_159E3B9946CB__ */

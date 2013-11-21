@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PELOADCONFIGDIRECTORY_H__
-#define __PELOADCONFIGDIRECTORY_H__
+#ifndef __PELOADCONFIGDIRECTORY_H__20900772_8DCF_4D0D_8760_3D5B89ADB466__
+#define __PELOADCONFIGDIRECTORY_H__20900772_8DCF_4D0D_8760_3D5B89ADB466__
 
 #ifdef __cplusplus
 extern "C" {
@@ -47,4 +47,4 @@ static const SDFElement PELoadConfigDirectory[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PELOADCONFIGDIRECTORY_H__ */
+#endif /* __PELOADCONFIGDIRECTORY_H__20900772_8DCF_4D0D_8760_3D5B89ADB466__ */

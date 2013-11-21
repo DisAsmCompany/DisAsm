@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PESECTIONCHARACTERISTICS_H__
-#define __PESECTIONCHARACTERISTICS_H__
+#ifndef __PESECTIONCHARACTERISTICS_H__98649E36_9B34_4A81_82AC_DB2B3A326DA2__
+#define __PESECTIONCHARACTERISTICS_H__98649E36_9B34_4A81_82AC_DB2B3A326DA2__
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,4 +69,4 @@ static const SDFEnum PESectionCharacteristics[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PESECTIONCHARACTERISTICS_H__ */
+#endif /* __PESECTIONCHARACTERISTICS_H__98649E36_9B34_4A81_82AC_DB2B3A326DA2__ */

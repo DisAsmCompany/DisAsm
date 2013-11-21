@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __PEFILE_H__
-#define __PEFILE_H__
+#ifndef __PEFILE_H__605B915B_0D7C_4254_92DC_A15ABAB9175E__
+#define __PEFILE_H__605B915B_0D7C_4254_92DC_A15ABAB9175E__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +23,4 @@ int PEFileCreate(ExecutableContext * pContext);
 }
 #endif /* __cplusplus */
 
-#endif /* __PEFILE_H__ */
+#endif /* __PEFILE_H__605B915B_0D7C_4254_92DC_A15ABAB9175E__ */

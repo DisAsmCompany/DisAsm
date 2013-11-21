@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEIMPORTDESCRIPTOR_H__
-#define __PEIMPORTDESCRIPTOR_H__
+#ifndef __PEIMPORTDESCRIPTOR_H__F01E52DB_CE66_4963_9442_414DB5549FA5__
+#define __PEIMPORTDESCRIPTOR_H__F01E52DB_CE66_4963_9442_414DB5549FA5__
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,4 +35,4 @@ static const SDFElement PEImportDescriptor[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEIMPORTDESCRIPTOR_H__ */
+#endif /* __PEIMPORTDESCRIPTOR_H__F01E52DB_CE66_4963_9442_414DB5549FA5__ */

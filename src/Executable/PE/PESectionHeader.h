@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PESECTIONHEADER_H__
-#define __PESECTIONHEADER_H__
+#ifndef __PESECTIONHEADER_H__D327031D_4668_43CE_8A7B_31DE64A3F176__
+#define __PESECTIONHEADER_H__D327031D_4668_43CE_8A7B_31DE64A3F176__
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,4 +41,4 @@ static const SDFElement PESectionHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PESECTIONHEADER_H__ */
+#endif /* __PESECTIONHEADER_H__D327031D_4668_43CE_8A7B_31DE64A3F176__ */

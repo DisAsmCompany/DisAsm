@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFSYMBOLTYPE_H__
-#define __ELFSYMBOLTYPE_H__
+#ifndef __ELFSYMBOLTYPE_H__349063AE_BB81_4121_AE3B_83BB23C22844__
+#define __ELFSYMBOLTYPE_H__349063AE_BB81_4121_AE3B_83BB23C22844__
 
 static const SDFEnum ELFSymbolType[] =
 {
@@ -26,4 +26,4 @@ static const SDFEnum ELFSymbolType[] =
 	{NULL}
 };
 
-#endif /* __ELFSYMBOLTYPE_H__ */
+#endif /* __ELFSYMBOLTYPE_H__349063AE_BB81_4121_AE3B_83BB23C22844__ */

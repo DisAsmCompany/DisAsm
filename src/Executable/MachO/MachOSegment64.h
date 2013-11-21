@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOSEGMENT64_H__
-#define __MACHOSEGMENT64_H__
+#ifndef __MACHOSEGMENT64_H__02ECB341_C0C8_4F77_9AE9_A35BBC4E51CB__
+#define __MACHOSEGMENT64_H__02ECB341_C0C8_4F77_9AE9_A35BBC4E51CB__
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,4 +38,4 @@ static const SDFElement MachOSegment64[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOSEGMENT64_H__ */
+#endif /* __MACHOSEGMENT64_H__02ECB341_C0C8_4F77_9AE9_A35BBC4E51CB__ */

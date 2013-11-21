@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __STRASM_H__
-#define __STRASM_H__
+#ifndef __STRASM_H__4C07E198_3DCB_4C25_8D7D_DB4057ED98B2__
+#define __STRASM_H__4C07E198_3DCB_4C25_8D7D_DB4057ED98B2__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +23,4 @@ void StrAsmPrintInstruction(InstructionInfo * info);
 }
 #endif /* __cplusplus */
 
-#endif /* __STRASM_H__ */
+#endif /* __STRASM_H__4C07E198_3DCB_4C25_8D7D_DB4057ED98B2__ */

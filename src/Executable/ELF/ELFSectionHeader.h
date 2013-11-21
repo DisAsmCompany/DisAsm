@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFSECTIONHEADER_H__
-#define __ELFSECTIONHEADER_H__
+#ifndef __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
+#define __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,4 +43,4 @@ static const SDFElement ELFSectionHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSECTIONHEADER_H__ */
+#endif /* __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__ */

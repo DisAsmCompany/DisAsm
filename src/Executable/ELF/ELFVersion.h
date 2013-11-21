@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __ELFVERSION_H__
-#define __ELFVERSION_H__
+#ifndef __ELFVERSION_H__1A9E211B_28A1_4CC3_8CDF_8967E216F51D__
+#define __ELFVERSION_H__1A9E211B_28A1_4CC3_8CDF_8967E216F51D__
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,4 +28,4 @@ static const SDFEnum ELFVersion[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFVERSION_H__ */
+#endif /* __ELFVERSION_H__1A9E211B_28A1_4CC3_8CDF_8967E216F51D__ */

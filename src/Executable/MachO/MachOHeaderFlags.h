@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOHEADERFLAGS_H__
-#define __MACHOHEADERFLAGS_H__
+#ifndef __MACHOHEADERFLAGS_H__170EEF2F_7722_4618_9ACA_4D4834AF80AF__
+#define __MACHOHEADERFLAGS_H__170EEF2F_7722_4618_9ACA_4D4834AF80AF__
 
 #ifdef __cplusplus
 extern "C" {
@@ -51,4 +51,4 @@ static const SDFEnum MachOHeaderFlags[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOHEADERFLAGS_H__ */
+#endif /* __MACHOHEADERFLAGS_H__170EEF2F_7722_4618_9ACA_4D4834AF80AF__ */

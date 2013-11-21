@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __LXOBJECTABLE_H__
-#define __LXOBJECTABLE_H__
+#ifndef __LXOBJECTABLE_H__82D953CB_353E_448F_AE3E_86972801B49E__
+#define __LXOBJECTABLE_H__82D953CB_353E_448F_AE3E_86972801B49E__
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,6 +33,6 @@ static const SDFElement LXObjectTable[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __LXOBJECTABLE_H__ */
+#endif /* __LXOBJECTABLE_H__82D953CB_353E_448F_AE3E_86972801B49E__ */
 
 

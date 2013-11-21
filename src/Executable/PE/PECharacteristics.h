@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PECHARACTERISTICS_H__
-#define __PECHARACTERISTICS_H__
+#ifndef __PECHARACTERISTICS_H__AF1E84B2_9E19_4986_AC36_A1E2DD7F02BD__
+#define __PECHARACTERISTICS_H__AF1E84B2_9E19_4986_AC36_A1E2DD7F02BD__
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,4 +42,4 @@ static const SDFEnum PECharacteristics[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PECHARACTERISTICS_H__ */
+#endif /* __PECHARACTERISTICS_H__AF1E84B2_9E19_4986_AC36_A1E2DD7F02BD__ */

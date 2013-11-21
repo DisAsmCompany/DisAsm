@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOMEMORYPROTECTION_H__
-#define __MACHOMEMORYPROTECTION_H__
+#ifndef __MACHOMEMORYPROTECTION_H__6B86794A_BD31_4C38_A432_E53B2D6CEAAF__
+#define __MACHOMEMORYPROTECTION_H__6B86794A_BD31_4C38_A432_E53B2D6CEAAF__
 
 #ifdef __cplusplus
 extern "C" {
@@ -33,4 +33,4 @@ static const SDFEnum MachOMemoryProtection[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOMEMORYPROTECTION_H__ */
+#endif /* __MACHOMEMORYPROTECTION_H__6B86794A_BD31_4C38_A432_E53B2D6CEAAF__ */

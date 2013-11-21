@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __NESEGMENTEDHEADER_H__
-#define __NESEGMENTEDHEADER_H__
+#ifndef __NESEGMENTEDHEADER_H__9C9953A8_D82A_45E2_BAE5_4376AB937241__
+#define __NESEGMENTEDHEADER_H__9C9953A8_D82A_45E2_BAE5_4376AB937241__
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,4 +58,4 @@ static const SDFElement NESegmentedHeader[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __NESEGMENTEDHEADER_H__ */
+#endif /* __NESEGMENTEDHEADER_H__9C9953A8_D82A_45E2_BAE5_4376AB937241__ */

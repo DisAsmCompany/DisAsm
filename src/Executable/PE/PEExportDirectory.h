@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEEXPORTDIRECTORY_H__
-#define __PEEXPORTDIRECTORY_H__
+#ifndef __PEEXPORTDIRECTORY_H__06AD55F0_A581_4FE9_8286_55EF04C81B5C__
+#define __PEEXPORTDIRECTORY_H__06AD55F0_A581_4FE9_8286_55EF04C81B5C__
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,4 +44,4 @@ static const SDFElement PEExportDirectory[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEEXPORTDIRECTORY_H__ */
+#endif /* __PEEXPORTDIRECTORY_H__06AD55F0_A581_4FE9_8286_55EF04C81B5C__ */

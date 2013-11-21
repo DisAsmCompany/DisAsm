@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOMAGIC_H__
-#define __MACHOMAGIC_H__
+#ifndef __MACHOMAGIC_H__20B77221_A0EE_4C59_8B5F_2A894C5DA391__
+#define __MACHOMAGIC_H__20B77221_A0EE_4C59_8B5F_2A894C5DA391__
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,4 +26,4 @@ enum { kMachOFatMagicBE = 0xBEBAFECAUL };
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOMAGIC_H__ */
+#endif /* __MACHOMAGIC_H__20B77221_A0EE_4C59_8B5F_2A894C5DA391__ */

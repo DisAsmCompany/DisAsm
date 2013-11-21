@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __LXORDERING_H__
-#define __LXORDERING_H__
+#ifndef __LXORDERING_H__02691875_16B9_4377_AF79_DF4FFCAFCC47__
+#define __LXORDERING_H__02691875_16B9_4377_AF79_DF4FFCAFCC47__
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,4 +28,4 @@ static const SDFEnum LXOrdering[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __LXORDERING_H__ */
+#endif /* __LXORDERING_H__02691875_16B9_4377_AF79_DF4FFCAFCC47__ */

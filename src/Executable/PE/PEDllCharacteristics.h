@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEDLLCHARACTERISTICS_H__
-#define __PEDLLCHARACTERISTICS_H__
+#ifndef __PEDLLCHARACTERISTICS_H__3CC516E9_4225_400B_B450_95AD555B59EC__
+#define __PEDLLCHARACTERISTICS_H__3CC516E9_4225_400B_B450_95AD555B59EC__
 
 #ifdef __cplusplus
 extern "C" {
@@ -42,4 +42,4 @@ static const SDFEnum PEDllCharacteristics[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEDLLCHARACTERISTICS_H__ */
+#endif /* __PEDLLCHARACTERISTICS_H__3CC516E9_4225_400B_B450_95AD555B59EC__ */

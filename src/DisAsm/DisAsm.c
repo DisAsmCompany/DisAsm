@@ -303,7 +303,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case PrefixGS:
 		case OperandSize:
 		case AddressSize:
-			if (pInfo->nPrefixes < MAX_PREFIXES)
+			if (pInfo->nPrefixes < kMaxPrefixes)
 			{
 				if (OperandSize == element->mnemonic)
 				{

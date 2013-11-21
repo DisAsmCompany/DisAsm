@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __NEFILE_H__
-#define __NEFILE_H__
+#ifndef __NEFILE_H__966808F0_CB14_4B15_A720_1FA6AFF5DAD4__
+#define __NEFILE_H__966808F0_CB14_4B15_A720_1FA6AFF5DAD4__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +23,4 @@ int NEFileCreate(ExecutableContext * pContext);
 }
 #endif /* __cplusplus */
 
-#endif /* __NEFILE_H__ */
+#endif /* __NEFILE_H__966808F0_CB14_4B15_A720_1FA6AFF5DAD4__ */

@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEMACHINE_H__
-#define __PEMACHINE_H__
+#ifndef __PEMACHINE_H__12274349_8110_4E36_B8D1_DC0D7BAE4BD5__
+#define __PEMACHINE_H__12274349_8110_4E36_B8D1_DC0D7BAE4BD5__
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,4 +60,4 @@ static const SDFEnum _PEMachine[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __PEMACHINE_H__ */
+#endif /* __PEMACHINE_H__12274349_8110_4E36_B8D1_DC0D7BAE4BD5__ */

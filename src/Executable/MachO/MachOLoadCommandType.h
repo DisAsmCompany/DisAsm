@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOLOADCOMMANDTYPE_H__
-#define __MACHOLOADCOMMANDTYPE_H__
+#ifndef __MACHOLOADCOMMANDTYPE_H__FF6C1168_5812_4852_ACCD_EA70A74AEDB4__
+#define __MACHOLOADCOMMANDTYPE_H__FF6C1168_5812_4852_ACCD_EA70A74AEDB4__
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,4 +49,4 @@ static const SDFEnum _MachOLoadCommandType[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOLOADCOMMANDTYPE_H__ */
+#endif /* __MACHOLOADCOMMANDTYPE_H__FF6C1168_5812_4852_ACCD_EA70A74AEDB4__ */

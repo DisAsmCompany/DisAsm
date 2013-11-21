@@ -11,8 +11,8 @@
  */
 
 #pragma once
-#ifndef __MACHOTHREADSTTUSX_H__
-#define __MACHOTHREADSTTUSX_H__
+#ifndef __MACHOTHREADSTTUSX_H__53C00FD8_5E35_4869_AAC7_B7DCC437EF9D__
+#define __MACHOTHREADSTTUSX_H__53C00FD8_5E35_4869_AAC7_B7DCC437EF9D__
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,4 +30,4 @@ static const SDFElement MachOThreadStatus[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOTHREADSTTUSX_H__ */
+#endif /* __MACHOTHREADSTTUSX_H__53C00FD8_5E35_4869_AAC7_B7DCC437EF9D__ */

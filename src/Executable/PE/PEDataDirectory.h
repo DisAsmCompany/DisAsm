@@ -10,8 +10,8 @@
 */
 
 #pragma once
-#ifndef __PEDATADIRECTORY_H__
-#define __PEDATADIRECTORY_H__
+#ifndef __PEDATADIRECTORY_H__5913DA85_6469_43CC_AB8E_9BF43AAC0B10__
+#define __PEDATADIRECTORY_H__5913DA85_6469_43CC_AB8E_9BF43AAC0B10__
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,4 +46,4 @@ PEDataDirectory;
 }
 #endif /* __cplusplus */
 
-#endif /* __PEDATADIRECTORY_H__ */
+#endif /* __PEDATADIRECTORY_H__5913DA85_6469_43CC_AB8E_9BF43AAC0B10__ */

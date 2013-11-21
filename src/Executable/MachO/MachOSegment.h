@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHOSEGMENT_H__
-#define __MACHOSEGMENT_H__
+#ifndef __MACHOSEGMENT_H__775B491F_0466_413A_AB30_EB2453142367__
+#define __MACHOSEGMENT_H__775B491F_0466_413A_AB30_EB2453142367__
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,4 +38,4 @@ static const SDFElement MachOSegment[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHOSEGMENT_H__ */
+#endif /* __MACHOSEGMENT_H__775B491F_0466_413A_AB30_EB2453142367__ */

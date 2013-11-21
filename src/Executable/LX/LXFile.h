@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __LXFILE_H__
-#define __LXFILE_H__
+#ifndef __LXFILE_H__67B21B5F_0F37_46DF_99EF_6E760BC82972__
+#define __LXFILE_H__67B21B5F_0F37_46DF_99EF_6E760BC82972__
 
 #ifdef __cplusplus
 extern "C" {
@@ -23,4 +23,4 @@ int LXFileCreate(ExecutableContext * pContext);
 }
 #endif /* __cplusplus */
 
-#endif /* __LXFILE_H__ */
+#endif /* __LXFILE_H__67B21B5F_0F37_46DF_99EF_6E760BC82972__ */

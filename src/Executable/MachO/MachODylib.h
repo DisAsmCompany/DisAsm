@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#ifndef __MACHODYLIB_H__
-#define __MACHODYLIB_H__
+#ifndef __MACHODYLIB_H__0AD2B98B_C18B_4A25_B1EB_9D2BD7C01E1E__
+#define __MACHODYLIB_H__0AD2B98B_C18B_4A25_B1EB_9D2BD7C01E1E__
 
 #ifdef __cplusplus
 extern "C" {
@@ -31,4 +31,4 @@ static const SDFElement MachODylib[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __MACHODYLIB_H__ */
+#endif /* __MACHODYLIB_H__0AD2B98B_C18B_4A25_B1EB_9D2BD7C01E1E__ */
