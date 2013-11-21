@@ -497,7 +497,7 @@ void StackWalk(address_t * callstack, Context * context)
 	int i;
 	for (i = 0; bp && ip && i < MaxCallStack; ++i)
 	{
-		callstack[i] = ip;
+		callstack[i] = (address_t)ip;
 		ip = bp[1];
 		bp = (void**)(bp[0]);
 	}
@@ -508,7 +508,7 @@ void StackWalkSymbol(address_t address)
 	Dl_info info = {0};
 	
 	ConsoleIOPrintFormatted("%08X", address);
-	if (0 != dladdr(address, &info))
+	if (0 != dladdr((void*)address, &info))
 	{
 		if (NULL != info.dli_sname)
 		{

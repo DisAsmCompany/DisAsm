@@ -87,7 +87,6 @@ enum { kBitnessNative = 64 };
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <ctype.h>
 #include <assert.h>
 #ifdef OS_WINDOWS
 #include <windows.h>
