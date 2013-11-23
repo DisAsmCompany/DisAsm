@@ -75,6 +75,7 @@ uint32_t ModuleEnum(ModuleInfo ** info)
 	uint32_t count = 0;
 	if (NULL != info)
 	{
+#ifdef OS_WINDOWS
 		HMODULE hPSAPI = LoadLibraryA("psapi.dll");
 		if (NULL != hPSAPI)
 		{
@@ -99,6 +100,7 @@ uint32_t ModuleEnum(ModuleInfo ** info)
 			}
 			FreeLibrary(hPSAPI);
 		}
+#endif /* OS_WINDOWS */
 	}
 	return count;
 }
