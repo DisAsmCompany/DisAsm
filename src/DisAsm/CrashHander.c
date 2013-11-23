@@ -191,7 +191,7 @@ BOOL __stdcall CrashHandlerRoutine(DWORD CtrlType)
 }
 
 #endif /* OS_WINDOWS */
-#ifdef OS_MACOSX
+#ifdef OS_UNIX
 
 typedef struct SignalRecord_t
 {
@@ -253,7 +253,7 @@ void CrashHandler(int signum, siginfo_t * info, void * ucontext)
 	_exit(EXIT_FAILURE);
 }
 
-#endif /* OS_MACOSX */
+#endif /* OS_UNIX */
 
 void CrashHandlerInstall()
 {
@@ -261,7 +261,7 @@ void CrashHandlerInstall()
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
 #endif /* OS_WINDOWS */
-#ifdef OS_MACOSX
+#ifdef OS_UNIX
 	size_t i;
 	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
 	{
@@ -273,5 +273,5 @@ void CrashHandlerInstall()
 			ConsoleIOPrintFormatted("[ERROR] cannot install signal handler for signal %s\n", signals[i].message);
 		}
 	}
-#endif /* OS_MACOSX */
+#endif /* OS_UNIX */
 }
