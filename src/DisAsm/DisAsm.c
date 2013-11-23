@@ -804,7 +804,6 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pInfo->hasREX = 0;
 
 	pInfo->mnemonic = DB;
-	pInfo->length = 0;
 
 	pElement = ChooseOpCode(&context, pInfo);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == context.error)

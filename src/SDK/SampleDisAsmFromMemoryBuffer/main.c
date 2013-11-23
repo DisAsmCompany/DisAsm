@@ -26,8 +26,6 @@ int main()
 {
 	/* initialize callback reader */
 	CallbackReader reader = {0};
-	InstructionInfo info;
-	uint8_t length;
 	reader.context.pRead    = CallbackRead;
 	reader.context.pPrivate = &reader;
 	reader.buffer = (uint8_t*) buffer;
@@ -38,7 +36,8 @@ int main()
 
 	for (;;)
 	{
-		length = DisAsmInstructionDecode(32, &reader, &info);
+		InstructionInfo info;
+		uint8_t length = DisAsmInstructionDecode(32, &reader, &info);
 		if (0 == length) break;
 		StrAsmPrintInstruction(&info);
 		ConsoleIOPrint("\n");

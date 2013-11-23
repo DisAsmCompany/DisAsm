@@ -414,7 +414,7 @@ void Protect(native_t address, ProtectType type)
 	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
 	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
 	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
-	mprotect((void*)(address - address % PAGE_SIZE), PAGE_SIZE, PROT_WRITE);
+	mprotect((void*)(address - address % PAGE_SIZE), PAGE_SIZE, protect);
 #endif /* OS_WINDOWS */
 }
 
