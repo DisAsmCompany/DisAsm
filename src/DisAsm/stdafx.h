@@ -22,15 +22,12 @@ extern "C" {
 
 #ifdef _M_IX86
 #define CPU_X86
-enum { kBitnessNative = 32 };
 #endif /* _M_IX86 */
 #ifdef _M_X64
 #define CPU_X64
-enum { kBitnessNative = 64 };
 #endif /* _M_X64 */
 #ifdef _M_IA64
 #define CPU_IA64
-enum { kBitnessNative = 64 };
 #endif /* _M_IA64 */
 
 #endif /* _WIN32 */
@@ -40,17 +37,14 @@ enum { kBitnessNative = 64 };
 
 #if defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__)
 #define CPU_X86
-enum { kBitnessNative = 32 };
 #endif /* defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) */
 
 #if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64)
 #define CPU_X64
-enum { kBitnessNative = 64 };
 #endif /* defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) */
 
 #if defined(__ia64__) || defined(_IA64) || defined(__IA64__)
 #define CPU_IA64
-enum { kBitnessNative = 64 };
 #endif /* defined(__ia64__) || defined(_IA64) || defined(__IA64__) */
 
 #endif /* defined(__unix__) || defined(__unix) */

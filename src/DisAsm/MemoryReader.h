@@ -17,7 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-HREADER MemoryReaderCreate(void * buffer, uint32_t size);
+HREADER MemoryReaderCreate(native_t buffer, uint32_t size);
 
 #ifdef __cplusplus
 }

@@ -21,9 +21,9 @@ typedef void * HREADER;
 
 struct ReaderContext_t;
 
-typedef int  (*pfnRead)(struct ReaderContext_t * hReader, void * buffer, uint32_t size);
-typedef int  (*pfnSeek)(struct ReaderContext_t * hReader, uint64_t pos);
-typedef int  (*pfnSkip)(struct ReaderContext_t * hReader, uint64_t count);
+typedef uint8_t (*pfnRead)(struct ReaderContext_t * hReader, void * buffer, uint32_t size);
+typedef uint8_t (*pfnSeek)(struct ReaderContext_t * hReader, uint64_t pos);
+typedef uint8_t (*pfnSkip)(struct ReaderContext_t * hReader, uint64_t count);
 typedef void (*pfnDestroy)(struct ReaderContext_t * hReader);
 
 typedef struct ReaderContext_t
@@ -36,9 +36,9 @@ typedef struct ReaderContext_t
 }
 ReaderContext;
 
-int ReaderRead(HREADER hReader, void * buffer, uint32_t size);
-int ReaderSeek(HREADER hReader, uint64_t pos);
-int ReaderSkip(HREADER hReader, uint64_t count);
+uint8_t ReaderRead(HREADER hReader, void * buffer, uint32_t size);
+uint8_t ReaderSeek(HREADER hReader, uint64_t pos);
+uint8_t ReaderSkip(HREADER hReader, uint64_t count);
 void ReaderDestroy(HREADER hReader);
 
 typedef struct CallbackReader_t
@@ -50,7 +50,7 @@ typedef struct CallbackReader_t
 }
 CallbackReader;
 
-int CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size);
+uint8_t CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size);
 
 #ifdef __cplusplus
 }

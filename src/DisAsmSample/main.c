@@ -263,9 +263,9 @@ int main(int argc, char * const argv[])
 	if (memory)
 	{
 		ModuleInfo info = {0};
-		address_t address = ModuleLoad(argv[1]);
+		native_t address = ModuleLoad(argv[1]);
 		ModuleGetInfo(address, &info);
-		hReader = MemoryReaderCreate((void*) address, info.size);
+		hReader = MemoryReaderCreate(address, info.size);
 		base = (uint32_t) address;
 	}
 	else

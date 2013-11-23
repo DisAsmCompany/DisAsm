@@ -11,19 +11,19 @@
 
 #include "DisAsm"
 
-int ReaderRead(HREADER hReader, void * buffer, uint32_t size)
+uint8_t ReaderRead(HREADER hReader, void * buffer, uint32_t size)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pRead(hReader, buffer, size);
 }
 
-int ReaderSeek(HREADER hReader, uint64_t pos)
+uint8_t ReaderSeek(HREADER hReader, uint64_t pos)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pSeek(hReader, pos);
 }
 
-int ReaderSkip(HREADER hReader, uint64_t count)
+uint8_t ReaderSkip(HREADER hReader, uint64_t count)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pSkip(hReader, count);
@@ -35,7 +35,7 @@ void ReaderDestroy(HREADER hReader)
 	pContext->pDestroy(hReader);
 }
 
-int CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
+uint8_t CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
 	CallbackReader * pData = (CallbackReader*) pContext->pPrivate;
 	if ((pData->offset + size <= pData->length) || 0 == pData->length)

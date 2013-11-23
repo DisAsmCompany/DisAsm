@@ -880,14 +880,3 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pInfo->imm  = pInfo->hasImm  ? FetchN(&context, pInfo, pInfo->sizeImm)  : 0;
 	return pInfo->length;
 }
-
-/* for tests */
-
-uint32_t _ChooseOpCode(uint8_t * buffer)
-{
-	InstructionInfo info = {0};
-	DisAsmContext context;
-	context.size = context.currentSize = 4;
-	ChooseOpCode(&context, &info);
-	return info.opcode;
-}

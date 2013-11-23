@@ -25,7 +25,7 @@ FileReaderContext;
 
 #define AccessPrivateData(x) ((FileReaderContext*)(x->pPrivate))
 
-int FileReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
+uint8_t FileReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
 #ifdef OS_WINDOWS
 	uint32_t offset = 0;
@@ -45,7 +45,7 @@ int FileReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 #endif /* OS_WINDOWS */
 }
 
-int FileReaderSeek(ReaderContext * pContext, uint64_t pos)
+uint8_t FileReaderSeek(ReaderContext * pContext, uint64_t pos)
 {
 #ifdef OS_WINDOWS
 	if (pos < AccessPrivateData(pContext)->size)
@@ -64,7 +64,7 @@ int FileReaderSeek(ReaderContext * pContext, uint64_t pos)
 #endif /* OS_WINDOWS */
 }
 
-int FileReaderSkip(ReaderContext * pContext, uint64_t count)
+uint8_t FileReaderSkip(ReaderContext * pContext, uint64_t count)
 {
 #ifdef OS_WINDOWS
 	if (AccessPrivateData(pContext)->offset + count < AccessPrivateData(pContext)->size)

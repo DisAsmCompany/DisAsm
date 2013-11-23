@@ -127,7 +127,7 @@ void xUpdateAllocation(void * address, void * heap, uint32_t size, uint8_t freed
 	}
 }
 
-address_t CalculateOffsetForJMP(address_t from, address_t to)
+native_t CalculateOffsetForJMP(native_t from, native_t to)
 {
 	/* 5 is size of JMP instruction itself */
 	return to - from - 5;
@@ -136,7 +136,7 @@ address_t CalculateOffsetForJMP(address_t from, address_t to)
 uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
     uint32_t total = 0;
-    CallbackReader reader = {0};
+	CallbackReader reader = {{0}, 0, 0};
     reader.context.pRead    = CallbackRead;
     reader.context.pPrivate = &reader;
     reader.buffer = pData;
@@ -392,7 +392,7 @@ typedef enum ProtectType_t
 }
 ProtectType;
 
-void Protect(address_t address, ProtectType type)
+void Protect(native_t address, ProtectType type)
 {
 #ifdef OS_WINDOWS
 	DWORD protect = 0;
@@ -421,7 +421,7 @@ void Protect(address_t address, ProtectType type)
 void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 {
 	uint32_t length = 0;
-	address_t offset = CalculateOffsetForJMP((address_t)pOriginal, (address_t)pHook);
+	native_t offset = CalculateOffsetForJMP((native_t)pOriginal, (native_t)pHook);
 	
 	memset(pThunk, nop, 2 * THUNK_SIZE);
 	
@@ -429,30 +429,30 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
-	Protect((address_t)xThunkHeapAlloc, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
-	Protect((address_t) pOriginal, ProtectTypeWrite);
+	Protect((native_t)xThunkHeapAlloc, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+	Protect((native_t) pOriginal, ProtectTypeWrite);
 	pOriginal[0] = jmp;
 	memcpy(pOriginal + 1, &offset, 4);
 	memset(pOriginal + 5, nop, length - 5);
-	Protect((address_t) pOriginal, ProtectTypeExecute);
+	Protect((native_t) pOriginal, ProtectTypeExecute);
 	
-	offset = CalculateOffsetForJMP((address_t)(pThunk + THUNK_SIZE), (address_t)(pOriginal + length));
+	offset = CalculateOffsetForJMP((native_t)(pThunk + THUNK_SIZE), (native_t)(pOriginal + length));
 	pThunk[THUNK_SIZE] = jmp;
 	memcpy(pThunk + THUNK_SIZE + 1, &offset, 4);
 }
 
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 {
-	Protect((address_t) pOriginal, ProtectTypeWrite);
+	Protect((native_t) pOriginal, ProtectTypeWrite);
 	PatchLength(pThunk, pOriginal, 5);
-	Protect((address_t) pOriginal, ProtectTypeExecute);
+	Protect((native_t) pOriginal, ProtectTypeExecute);
 }
 
 void LeakTrackerInstall(uint8_t install)
 {
 #ifdef OS_WINDOWS
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
-    void * RtlFreeHeap = GetProcAddress(hModule, "RtlFreeHeap");
+    void * RtlFreeHeap = (void*) GetProcAddress(hModule, "RtlFreeHeap");
 #endif /* OS_WINDOWS */
 
 	if (install)

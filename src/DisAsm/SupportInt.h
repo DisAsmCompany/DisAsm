@@ -71,6 +71,19 @@ typedef uint64_t offset_t;
 
 #endif /* COMP_BORLANDC */
 
+#ifdef CPU_X86
+enum { kBitnessNative = 32 };
+typedef uint32_t native_t;
+#endif /* CPU_X86 */
+#ifdef CPU_X64
+enum { kBitnessNative = 64 };
+typedef uint64_t native_t;
+#endif /* CPU_X64 */
+#ifdef CPU_IA64
+enum { kBitnessNative = 64 };
+typedef uint64_t native_t;
+#endif /* CPU_IA64 */
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

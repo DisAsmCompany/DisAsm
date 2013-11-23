@@ -23,10 +23,6 @@ uint8_t DisAsmInstructionDecode(uint8_t size, HREADER hReaders, InstructionInfo 
 char * DisAsmMnemonicToString(Mnemonic mnemonic);
 char * DisAsmRegisterToString(Register reg);
 
-/* for tests */
-
-uint32_t _ChooseOpCode(uint8_t * buffer);
-
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

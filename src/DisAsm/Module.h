@@ -21,16 +21,16 @@ enum {NtfsMaxPath = 32768};
 
 typedef struct ModuleInfo_t
 {
-	address_t address;
+	native_t address;
 	uint32_t size;
 	char path[NtfsMaxPath];
 	char name[NtfsMaxPath];
 }
 ModuleInfo;
 
-address_t ModuleLoad(const char * name);
-void ModuleUnload(address_t address);
-void ModuleGetInfo(address_t address, ModuleInfo * info);
+native_t ModuleLoad(const char * name);
+void ModuleUnload(native_t address);
+void ModuleGetInfo(native_t address, ModuleInfo * info);
 uint32_t ModuleEnum(ModuleInfo ** info);
 
 #ifdef __cplusplus

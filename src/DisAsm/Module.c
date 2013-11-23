@@ -28,21 +28,23 @@ pfnGetModuleInformation pGetModuleInformation = NULL;
 
 #endif /* OS_WINDOWS */
 
-address_t ModuleLoad(const char * name)
+native_t ModuleLoad(const char * name)
 {
 #ifdef OS_WINDOWS
-	return (address_t) LoadLibraryA(name);
+	return (native_t) LoadLibraryA(name);
+#else /* OS_WINDOWS */
+	return 0;
 #endif /* OS_WINDOWS */
 }
 
-void ModuleUnload(address_t address)
+void ModuleUnload(native_t address)
 {
 #ifdef OS_WINDOWS
 	FreeLibrary((HMODULE) address);
 #endif /* OS_WINDOWS */
 }
 
-void ModuleGetInfo(address_t address, ModuleInfo * info)
+void ModuleGetInfo(native_t address, ModuleInfo * info)
 {
 	if (NULL != info)
 	{
@@ -56,7 +58,7 @@ void ModuleGetInfo(address_t address, ModuleInfo * info)
 			{
 				if (pGetModuleInformation(GetCurrentProcess(), (HMODULE) address, &mi, sizeof(MODULEINFO)))
 				{
-					info->address = (address_t) mi.lpBaseOfDll;
+					info->address = (native_t) mi.lpBaseOfDll;
 					info->size    = (uint32_t) mi.SizeOfImage;
 					if (GetModuleFileNameA((HMODULE) address, info->path, NtfsMaxPath))
 					{
@@ -93,7 +95,7 @@ uint32_t ModuleEnum(ModuleInfo ** info)
 				array = (ModuleInfo*) calloc(1, count * sizeof(ModuleInfo));
 				for (i = 0; i < count; ++i)
 				{
-					ModuleGetInfo((address_t) modules[i], &array[i]);
+					ModuleGetInfo((native_t) modules[i], &array[i]);
 				}
 				*info = array;
 				free(modules);
