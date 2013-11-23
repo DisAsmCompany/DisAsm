@@ -375,6 +375,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pOperand->type = Reg;
 		pOperand->memory = pInfo->ModRM.fields.Mod != 3;
 		pOperand->scale = pOperand->hasBase = pOperand->hasIndex = 0;
+		pOperand->size = pContext->currentSize;
 		if (pInfo->hasSIB)
 		{
 			pOperand->hasBase = 1;
@@ -509,7 +510,14 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pOperand->value.reg = pInfo->ModRM.fields.Reg;
 		if (LoType == v)
 		{
-			pOperand->value.reg |= Reg32;
+			switch (pContext->currentSize)
+			{
+			case 1: pOperand->value.reg |= Reg8;  break;
+			case 2: pOperand->value.reg |= Reg16; break;
+			case 4: pOperand->value.reg |= Reg32; break;
+			case 8: pOperand->value.reg |= Reg64; break;
+			default: break;
+			}
 		}
 		else if (LoType == w)
 		{
@@ -540,6 +548,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
             switch (pContext->currentSize)
             {
+			case 1: pInfo->sizeImm = 1; break;
             case 2: pInfo->sizeImm = 2; break;
             case 4: pInfo->sizeImm = 4; break;
             case 8: pInfo->sizeImm = 4; break;

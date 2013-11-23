@@ -77,6 +77,13 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 	{
 		if (pOperand->memory)
 		{
+			switch (pOperand->size)
+			{
+			case 1: ConsoleIOPrint("BYTE PTR "); break;
+			case 2: ConsoleIOPrint("WORD PTR "); break;
+			case 4: ConsoleIOPrint("DWORD PTR "); break;
+			case 8: ConsoleIOPrint("QWORD PTR "); break;
+			}
 			PrintSegment(pInfo);
 			ConsoleIOPrint("[");
 

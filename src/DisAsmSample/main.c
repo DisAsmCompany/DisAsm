@@ -262,12 +262,11 @@ int main(int argc, char * const argv[])
 	}
 	if (memory)
 	{
-#ifdef OS_WINDOWS
-		/*MODULEINFO info = {0};
-		base = (uint32_t) LoadLibraryA(argv[1]);
-		GetModuleInformation(GetCurrentProcess(), (HMODULE) base, &info, sizeof(MODULEINFO));
-		hReader = MemoryReaderCreate((void*)base, info.SizeOfImage);*/
-#endif /* OS_WINDOWS */
+		ModuleInfo info = {0};
+		address_t address = ModuleLoad(argv[1]);
+		ModuleGetInfo(address, &info);
+		hReader = MemoryReaderCreate((void*) address, info.size);
+		base = (uint32_t) address;
 	}
 	else
 	{

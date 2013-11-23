@@ -41,6 +41,17 @@ int ReaderSeek(HREADER hReader, uint64_t pos);
 int ReaderSkip(HREADER hReader, uint64_t count);
 void ReaderDestroy(HREADER hReader);
 
+typedef struct CallbackReader_t
+{
+	ReaderContext context;
+	uint8_t * buffer;
+	uint64_t offset;
+	uint64_t length;
+}
+CallbackReader;
+
+int CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

@@ -133,48 +133,14 @@ address_t CalculateOffsetForJMP(address_t from, address_t to)
 	return to - from - 5;
 }
 
-typedef struct CallbackData_t
-{
-    uint8_t * pBuffer;
-    uint64_t offset;
-}
-CallbackData;
-
-int CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
-{
-    CallbackData * pData = (CallbackData*) pContext->pPrivate;
-    memcpy(buffer, pData->pBuffer + pData->offset, size);
-    pData->offset += size;
-    return 1;
-}
-
-int CallbackSeek(ReaderContext * pContext, uint64_t pos)
-{
-    CallbackData * pData = (CallbackData*) pContext->pPrivate;
-    pData->offset = pos;
-    return 1;
-}
-
-int CallbackSkip(ReaderContext * pContext, uint64_t count)
-{
-    CallbackData * pData = (CallbackData*) pContext->pPrivate;
-    pData->offset += count;
-    return 1;
-}
-
 uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
     uint32_t total = 0;
-    CallbackData data;
-    ReaderContext reader;
-    reader.pRead    = CallbackRead;
-    reader.pSkip    = CallbackSkip;
-    reader.pSeek    = CallbackSeek;
-    reader.pPrivate = &data;
-    reader.pDestroy = NULL;
-	
-    data.pBuffer = pData;
-    data.offset = 0;
+    CallbackReader reader = {0};
+    reader.context.pRead    = CallbackRead;
+    reader.context.pPrivate = &reader;
+    reader.buffer = pData;
+    reader.offset = 0;
 	
 	while (total < required)
 	{

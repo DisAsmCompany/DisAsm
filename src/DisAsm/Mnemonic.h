@@ -52,6 +52,7 @@ _ENUM_ELEMENT(CMP)    /* Compare Two Operands */
 _ENUM_ELEMENT(INC)    /* Increment by One */
 _ENUM_ELEMENT(DEC)    /* Decrement by One */
 _ENUM_ELEMENT(JMP)    /* Jump */
+_ENUM_ELEMENT(JMPE)   /* Reserved for emulator on IPF */
 _ENUM_ELEMENT(CALL)   /* Call Procedure */
 _ENUM_ELEMENT(TEST)   /* Logical Compare */
 _ENUM_ELEMENT(XCHG)   /* Exchange Register/Memory with Register */
@@ -107,11 +108,19 @@ _ENUM_ELEMENT(BT)     /* Bit Test */
 _ENUM_ELEMENT(BTS)    /* Bit Test and Set */
 _ENUM_ELEMENT(BTR)    /* Bit Test and Reset */
 _ENUM_ELEMENT(BTC)    /* Bit Test and Complement */
+_ENUM_ELEMENT(BSF)    /* Bit Scan Forward */
+_ENUM_ELEMENT(BSR)    /* Bit Scan Reverse */
+_ENUM_ELEMENT(LZCNT)  /* Count the Number of Leading Zero Bits */
+_ENUM_ELEMENT(POPCNT) /* Return the Count of Bits Set to One */
 _ENUM_ELEMENT(ARPL)   /* Adjust RPL Field of Segment Selector */
 _ENUM_ELEMENT(BOUND)  /* Check Array Index Against Bounds */
 _ENUM_ELEMENT(LOADALL)/* [Undocummented] Load All */
-_ENUM_ELEMENT(LDS)    /* Load Far Pointer */
-_ENUM_ELEMENT(LES)    /* Load Far Pointer */
+_ENUM_ELEMENT(LDS)    /* Load Far Pointer into segment DS */
+_ENUM_ELEMENT(LES)    /* Load Far Pointer into segment ES */
+_ENUM_ELEMENT(LFS)    /* Load Far Pointer into segment FS */
+_ENUM_ELEMENT(LGS)    /* Load Far Pointer into segment GS */
+_ENUM_ELEMENT(LSS)    /* Load Far Pointer into segment SS */
+_ENUM_ELEMENT(MOVNTI) /* Store Double-Word using Non-Temporal Hint */
 /* Undefined Instruction */
 _ENUM_ELEMENT(UD0)    /* Undefined Instruction */
 _ENUM_ELEMENT(UD1)    /* Undefined Instruction */
@@ -416,6 +425,23 @@ _ENUM_ELEMENT(PAND)     /* Bitwise Logical AND */
 _ENUM_ELEMENT(PANDN)    /* Bitwise Logical AND-NOT */
 _ENUM_ELEMENT(POR)      /* Bitwise Logical OR */
 _ENUM_ELEMENT(PXOR)     /* Bitwise Logical XOR */
+_ENUM_ELEMENT(PSLLW)    /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(PSLLD)    /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(PSLLQ)    /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(PSRLW)    /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(PSRLD)    /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(PSRLQ)    /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(PSRAW)    /* Shift Packed Data Right Arithmetic */
+_ENUM_ELEMENT(PSRAD)    /* Shift Packed Data Right Arithmetic */
+_ENUM_ELEMENT(PMULLW)   /* Multiply Packed Signed Integers and Store Low Result */
+_ENUM_ELEMENT(PADDQ)    /* Add Packed Quad-Word Integers */
+_ENUM_ELEMENT(PAVGB)    /* Average Packed Integers */
+_ENUM_ELEMENT(PAVGW)    /* Average Packed Integers */
+_ENUM_ELEMENT(PMULHW)   /* Multiply Packed Signed Integers and Store High Result */
+_ENUM_ELEMENT(PMULHUW)  /* Multiply Packed Unsigned Integers and Store High Result */
+_ENUM_ELEMENT(PMULUDQ)  /* Multiply Packed Unsigned Integers */
+_ENUM_ELEMENT(PSADDBW)  /* Compute Sum of Absolute Differences */
+_ENUM_ELEMENT(PMADDWD)  /* Multiply and Add Packed Integers */
 _ENUM_ELEMENT(MOVQ)     /* Move Quadword */
 _ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
 _ENUM_ELEMENT(MOVDQU)   /* Move Unaligned Double-Quadword */
@@ -451,6 +477,8 @@ _ENUM_ELEMENT(COMISS)   /* Compare Scalar Ordered Single-Precision Floating Poin
 _ENUM_ELEMENT(UCOMISS)  /* Compare Scalar Unordered Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPPS)    /* Compare Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPSS)    /* Compare Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(UNPCKLPS) /* Unpack and Interleave Low Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(UNPCKHPS) /* Unpack and Interleave High Packed Single-Precision Floating Point Values */
 /* SSE2 */
 _ENUM_ELEMENT(MOVUPD)   /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPD)   /* Move Aligned Packed Double-Precision Floating Point Values */
@@ -479,8 +507,21 @@ _ENUM_ELEMENT(COMISD)   /* Compare Scalar Ordered Double-Precision Floating Poin
 _ENUM_ELEMENT(UCOMISD)  /* Compare Scalar Unordered Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPPD)    /* Compare Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPSD)    /* Compare Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(UNPCKLPD) /* Unpack and Interleave Low Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(UNPCKHPD) /* Unpack and Interleave High Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(LDMXCSR)  /* Load MXCSR Register */
 _ENUM_ELEMENT(STMXCSR)  /* Store MXCSR Register */
+_ENUM_ELEMENT(CVTPS2PD) /* Converter Packed Packed Single-Precision Floating Point Values to Double Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPD2PS) /* Converter Packed Packed Double-Precision Floating Point Values to Single Precision Floating Point Values */
+_ENUM_ELEMENT(CVTSS2SD) /* Converter Packed Scalar Single-Precision Floating Point Values to Double Precision Floating Point Values */
+_ENUM_ELEMENT(CVTSD2SS) /* Converter Packed Scalar Double-Precision Floating Point Values to Single Precision Floating Point Values */
+/* SSE3 */
+_ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
+_ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */
+_ENUM_ELEMENT(ADDSUBPS) /* Packed Single-Precision Floating Point Values Add/Subtract */
+_ENUM_ELEMENT(ADDSUBPD) /* Packed Double-Precision Floating Point Values Add/Subtract */
+/* SMX */
+_ENUM_ELEMENT(GETSEC)   /* Safer Mode Extensions */
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */

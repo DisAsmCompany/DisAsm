@@ -41,6 +41,19 @@ void xstrcat(char * dst, uint32_t size, const char * src)
 	memcpy(dst + sizedst, src, copy);
 }
 
+char * ShortName(char * name)
+{
+	char * ptr = name + xstrlen(name) - 1;
+	for (; ptr != name; --ptr)
+	{
+		if (*ptr == '\\' || *ptr == '/' || *ptr == ':')
+		{
+			return ptr;
+		}
+	}
+	return name;
+}
+
 void ConsoleIOInit()
 {
 #ifdef OS_WINDOWS

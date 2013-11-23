@@ -33,6 +33,7 @@ typedef struct Operand_t
 	uint8_t hasBase;
 	uint8_t hasIndex;
 	Register index;
+	uint8_t size;
 }
 Operand;
 

@@ -44,6 +44,8 @@ TextColor;
 uint32_t xstrlen(const char * str);
 void xstrcat(char * dst, uint32_t size, const char * src);
 
+char * ShortName(char * name);
+
 void ConsoleIOInit();
 void ConsoleIOPrint(const char * string);
 void PrintColoredString(const char * string, TextColor color);

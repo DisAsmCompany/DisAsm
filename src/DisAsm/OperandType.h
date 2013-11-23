@@ -56,6 +56,7 @@ typedef enum OperandType_t
 	sd = 0x0C, /* 128-bit or 256-bit scalar double-precision floating-point data */
 	a  = 0x0D, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
 	_  = 0x0E, /* no type */
+	y  = 0x0F, /* double-word or quad-word, depending on operand-size attribute */
 
 #define DEFINE_TYPE(T) \
 	T##b  = 0x1000 | T | b, \
@@ -72,6 +73,7 @@ typedef enum OperandType_t
 	T##sd = 0x1000 | T | sd, \
 	T##a  = 0x1000 | T | a, \
 	T##_  = 0x1000 | T | _, \
+	T##y  = 0x1000 | T | y, \
 
 	DEFINE_TYPE(E)
 	DEFINE_TYPE(G)

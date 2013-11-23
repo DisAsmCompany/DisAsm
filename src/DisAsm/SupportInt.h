@@ -59,7 +59,7 @@ typedef unsigned long long uint64_t;
 typedef uint64_t address_t;
 typedef uint64_t offset_t;
 
-#if COMP_BORLANDC
+#ifdef COMP_BORLANDC
 
 #define  I64(x) (x)
 #define  U64(x) (x)

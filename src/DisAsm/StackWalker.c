@@ -193,91 +193,35 @@ pfnSymGetModuleBase64       pSymGetModuleBase64       = NULL;
 pfnSymGetModuleInfo64       pSymGetModuleInfo64       = NULL;
 pfnSymLoadModule64          pSymLoadModule64          = NULL;
 
-enum {NtfsMaxPath = 32768};
-
-typedef struct ModuleInfo_t
-{
-	address_t address;
-	uint32_t size;
-	char path[NtfsMaxPath];
-	char name[NtfsMaxPath];
-}
-ModuleInfo;
-
 ModuleInfo * g_Modules = NULL;
 uint32_t g_nModules = 0;
 
-char * ShortName(char * name)
-{
-	char * ptr = name + xstrlen(name) - 1;
-	for (; ptr != name; --ptr)
-	{
-		if (*ptr == '\\' || *ptr == '/' || *ptr == ':')
-		{
-			return ptr;
-		}
-	}
-	return name;
-}
-
-typedef struct _MODULEINFO
-{
-	LPVOID lpBaseOfDll;
-	DWORD SizeOfImage;
-	LPVOID EntryPoint;
-}
-MODULEINFO, *LPMODULEINFO;
-
-typedef BOOL (__stdcall *pfnEnumProcessModules)(HANDLE hProcess, HMODULE *lphModule, DWORD cb, LPDWORD lpcbNeeded);
-typedef BOOL (__stdcall *pfnGetModuleInformation)(HANDLE hProcess, HMODULE hModule, LPMODULEINFO lpmodinfo, DWORD cb);
-pfnEnumProcessModules pEnumProcessModules = NULL;
-pfnGetModuleInformation pGetModuleInformation = NULL;
-
 void LoadModules(HANDLE hProcess)
 {
-	HMODULE * modules;
-	DWORD needed = 0;
+	uint32_t i;
 	char exe[NtfsMaxPath];
-	HMODULE hPSAPI = LoadLibraryA("psapi.dll");
-
-	pEnumProcessModules = (pfnEnumProcessModules) GetProcAddress(hPSAPI, "EnumProcessModules");
-	pGetModuleInformation = (pfnGetModuleInformation) GetProcAddress(hPSAPI, "GetModuleInformation");
 
 	GetModuleFileNameA(NULL, exe, NtfsMaxPath);
-	pEnumProcessModules(hProcess, NULL, 0, &needed);
-	g_nModules = needed / 4;
-	g_Modules = (ModuleInfo*) calloc(1, g_nModules * sizeof(ModuleInfo));
-	modules = (HMODULE*) calloc(1, g_nModules * sizeof(HMODULE));
-	if (NULL != modules && NULL != g_Modules)
-	{
-		DWORD i;
-		pEnumProcessModules(hProcess, modules, needed, &needed);
+	g_nModules = ModuleEnum(&g_Modules);
 
-		for (i = 0; i < g_nModules; ++i)
+	for (i = 0; i < g_nModules; ++i)
+	{
+		IMAGEHLP_MODULE64_V3 info3 = {0};
+		info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V3);
+		if (!pSymLoadModule64(hProcess, NULL, exe, g_Modules[i].path, g_Modules[i].address, g_Modules[i].size))
 		{
-			MODULEINFO info = {0};
-			IMAGEHLP_MODULE64_V3 info3 = {0};
-			info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V3);
-			pGetModuleInformation(hProcess, modules[i], &info, sizeof(MODULEINFO));
-			GetModuleFileNameA(modules[i], g_Modules[i].path, NtfsMaxPath);
-			g_Modules[i].address = (address_t) info.lpBaseOfDll;
-			g_Modules[i].size = info.SizeOfImage;
-			if (!pSymLoadModule64(hProcess, NULL, exe, g_Modules[i].path, g_Modules[i].address, g_Modules[i].size))
-			{
-				ConsoleIOPrintFormatted("SymLoadModule64 failed for \"%s\"\n", g_Modules[i].path);
-			}
+			ConsoleIOPrintFormatted("SymLoadModule64 failed for \"%s\"\n", g_Modules[i].path);
+		}
+		if (!pSymGetModuleInfo64(hProcess, g_Modules[i].address, &info3))
+		{
+			info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V2);
 			if (!pSymGetModuleInfo64(hProcess, g_Modules[i].address, &info3))
 			{
-				info3.SizeOfStruct = sizeof(IMAGEHLP_MODULE64_V2);
-				if (!pSymGetModuleInfo64(hProcess, g_Modules[i].address, &info3))
-				{
-					ConsoleIOPrintFormatted("SymGetModuleInfo64 failed for \"%s\"\n", g_Modules[i].path);
-				}
+				ConsoleIOPrintFormatted("SymGetModuleInfo64 failed for \"%s\"\n", g_Modules[i].path);
 			}
-			xstrcat(g_Modules[i].name, NtfsMaxPath, ShortName(g_Modules[i].path) + 1);
 		}
+		xstrcat(g_Modules[i].name, NtfsMaxPath, ShortName(g_Modules[i].path) + 1);
 	}
-	free(modules);
 }
 
 HMODULE hDbgHelp = NULL;

@@ -34,6 +34,7 @@
 #include "DynamicArray.h"
 #include "DisAsm.h"
 #include "ConsoleIO.h"
+#include "Module.h"
 #include "StackWalker.h"
 #include "LeakTracker.h"
 #include "CrashHandler.h"

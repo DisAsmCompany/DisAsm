@@ -19,8 +19,15 @@
 void VerifyInstruction(uint32_t opcode, Mnemonic mnemonic)
 {
 	InstructionInfo info = {0};
-	uint8_t * buffer = (uint8_t*) &opcode;
-	uint8_t length = DisAsmInstructionDecode(32, buffer, &info);
+	CallbackReader reader = {0};
+	uint8_t length;
+
+	reader.context.pRead    = CallbackRead;
+	reader.context.pPrivate = &reader;
+	reader.buffer = (uint8_t*) &opcode;
+	reader.offset = 0;
+	
+	length = DisAsmInstructionDecode(32, &reader.context, &info);
 	TestAssert(1 == length);
 	TestAssert(1 == info.length);
 	TestAssert(mnemonic == info.mnemonic);
@@ -31,34 +38,48 @@ void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 	uint8_t i = 0x00;
 	do
 	{
+		CallbackReader reader = {0};
 		InstructionInfo info = {0};
 		ModRMu ModRM;
 		uint8_t hasSIB;
 		uint8_t buffer[7];
 		uint8_t SIB = 0;
-		uint8_t hasDisp;
+		uint8_t hasDisp = 0;
+		uint8_t sizeDisp = 0;
 		uint8_t length = 0;
 		uint8_t expected = 2;
+
+		reader.context.pRead    = CallbackRead;
+		reader.context.pPrivate = &reader;
+		reader.buffer = (uint8_t*) buffer;
+		reader.offset = 0;
+
 		ModRM.value = i;
-		hasSIB = (ModRM.fields.Mod != 3) && (ModRM.fields.RM == 4);
+		hasSIB = (3 != ModRM.fields.Mod) && (4 == ModRM.fields.RM);
 		if (hasSIB)
 		{
 			++expected;
 		}
-		if (ModRM.fields.Mod == 1)
+		if (0 == ModRM.fields.Mod && 5 == ModRM.fields.RM)
 		{
 			hasDisp = 1;
-			expected += 1;
+			sizeDisp = 4;
 		}
-		if (ModRM.fields.Mod == 2)
+		if (1 == ModRM.fields.Mod)
 		{
 			hasDisp = 1;
-			expected += 4;
+			sizeDisp = 1;
 		}
+		if (2 == ModRM.fields.Mod)
+		{
+			hasDisp = 1;
+			sizeDisp = 4;
+		}
+		expected += sizeDisp;
 		buffer[0] = (uint8_t) opcode;
 		buffer[1] = ModRM.value;
 		buffer[2] = SIB;
-		length = DisAsmInstructionDecode(32, buffer, &info);
+		length = DisAsmInstructionDecode(32, &reader, &info);
 		TestAssert(expected == length);
 		TestAssert(expected == info.length);
 		TestAssert(mnemonic == info.mnemonic);
@@ -67,6 +88,7 @@ void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 		TestAssert(hasSIB == info.hasSIB);
 		TestAssert(SIB == info.SIB.value);
 		TestAssert(hasDisp == info.hasDisp);
+		TestAssert(sizeDisp == info.sizeDisp);
 		++i;
 	}
 	while (i != 0);
