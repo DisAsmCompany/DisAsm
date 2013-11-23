@@ -434,7 +434,7 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 	pOriginal[0] = jmp;
 	memcpy(pOriginal + 1, &offset, 4);
 	memset(pOriginal + 5, nop, length - 5);
-	Protect((native_t) pOriginal, ProtectTypeExecute);
+	Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
 	
 	offset = CalculateOffsetForJMP((native_t)(pThunk + THUNK_SIZE), (native_t)(pOriginal + length));
 	pThunk[THUNK_SIZE] = jmp;
