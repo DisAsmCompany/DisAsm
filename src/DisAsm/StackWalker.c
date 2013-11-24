@@ -449,6 +449,8 @@ void StackWalk(address_t * callstack, Context * context)
 
 void StackWalkSymbol(address_t address)
 {
+/* cygwin doesn't have Dl_info and dladdr */
+#ifndef OS_CYGWIN
 	Dl_info info = {0};
 	
 	ConsoleIOPrintFormatted("%08X", address);
@@ -460,6 +462,7 @@ void StackWalkSymbol(address_t address)
 			ConsoleIOPrintFormatted(" %s", symbol);
 		}
 	}
+#endif /* OS_CYGWIN */
 }
 
 #endif /* OS_WINDOWS */

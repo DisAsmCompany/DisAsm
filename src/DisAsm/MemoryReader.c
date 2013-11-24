@@ -19,14 +19,15 @@ typedef struct MemoryReaderContext_t
 }
 MemoryReaderContext;
 
-#define AccessPrivateData(x) ((MemoryReaderContext*)(x->pPrivate))
+#undef THIS
+#define THIS ((MemoryReaderContext*)(pContext->pPrivate))
 
 uint8_t MemoryReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
-	if (AccessPrivateData(pContext)->offset + size <= AccessPrivateData(pContext)->size)
+	if (THIS->offset + size <= THIS->size)
 	{
-		memcpy(buffer, AccessPrivateData(pContext)->buffer + AccessPrivateData(pContext)->offset, size);
-		AccessPrivateData(pContext)->offset += size;
+		memcpy(buffer, THIS->buffer + THIS->offset, size);
+		THIS->offset += size;
 		return 1;
 	}
 	return 0;
@@ -34,9 +35,9 @@ uint8_t MemoryReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 
 uint8_t MemoryReaderSeek(ReaderContext * pContext, uint64_t pos)
 {
-	if (pos < AccessPrivateData(pContext)->size)
+	if (pos < THIS->size)
 	{
-		AccessPrivateData(pContext)->offset = pos;
+		THIS->offset = pos;
 		return 1;
 	}
 	return 0;
@@ -44,9 +45,9 @@ uint8_t MemoryReaderSeek(ReaderContext * pContext, uint64_t pos)
 
 uint8_t MemoryReaderSkip(ReaderContext * pContext, uint64_t count)
 {
-	if (AccessPrivateData(pContext)->offset + count < AccessPrivateData(pContext)->size)
+	if (THIS->offset + count < THIS->size)
 	{
-		AccessPrivateData(pContext)->offset += count;
+		THIS->offset += count;
 		return 1;
 	}
 	return 0;

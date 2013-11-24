@@ -15,85 +15,85 @@ typedef struct FileReaderContext_t
 {
 #ifdef OS_WINDOWS
 	HANDLE hFile;
+#else /* OS_WINDOWS */
+	int hFile;
+#endif /* OS_WINDOWS */
 	uint64_t size;
 	uint64_t offset;
-#else /* OS_WINDOWS */
-	FILE * f;
-#endif /* OS_WINDOWS */
 }
 FileReaderContext;
 
-#define AccessPrivateData(x) ((FileReaderContext*)(x->pPrivate))
+#undef THIS
+#define THIS ((FileReaderContext*)(pContext->pPrivate))
 
 uint8_t FileReaderRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {
-#ifdef OS_WINDOWS
 	uint32_t offset = 0;
 	while (offset < size)
 	{
-		DWORD read = 0;
-		if (!ReadFile(AccessPrivateData(pContext)->hFile, (uint8_t*)buffer + offset, size - offset, &read, NULL) || 0 == read)
+#ifdef OS_WINDOWS
+		DWORD count = 0;
+		if (!ReadFile(THIS->hFile, (uint8_t*)buffer + offset, size - offset, &count, NULL) || 0 == count)
+#else /* OS_WINDOWS */
+		uint32_t count = 0;
+		if (-1 == (count = read(THIS->hFile, (uint8_t*)buffer + offset, size - offset)))
+#endif /* OS_WINDOWS */
 		{
 			return 0;
 		}
-		offset += read;
+		offset += count;
 	}
-	AccessPrivateData(pContext)->offset += size;
+	THIS->offset += size;
 	return 1;
-#else /* OS_WINDOWS */
-	return (size == fread(buffer, 1, size, AccessPrivateData(pContext)->f));
-#endif /* OS_WINDOWS */
 }
 
 uint8_t FileReaderSeek(ReaderContext * pContext, uint64_t pos)
 {
-#ifdef OS_WINDOWS
-	if (pos < AccessPrivateData(pContext)->size)
+	if (pos < THIS->size)
 	{
+#ifdef OS_WINDOWS
 		LARGE_INTEGER from = {0}, to = {0};
 		from.QuadPart = pos;
-		if (SetFilePointerEx(AccessPrivateData(pContext)->hFile, from, &to, FILE_BEGIN))
+		if (SetFilePointerEx(THIS->hFile, from, &to, FILE_BEGIN))
+#else /* OS_WINDOWS */
+		if (-1 != lseek(THIS->hFile, pos, SEEK_SET))
+#endif /* OS_WINDOWS */
 		{
-			AccessPrivateData(pContext)->offset = pos;
+			THIS->offset = pos;
 			return 1;
 		}
 	}
 	return 0;
-#else /* OS_WINDOWS */
-	return (0 == fseek(AccessPrivateData(pContext)->f, pos, SEEK_SET));
-#endif /* OS_WINDOWS */
 }
 
 uint8_t FileReaderSkip(ReaderContext * pContext, uint64_t count)
 {
-#ifdef OS_WINDOWS
-	if (AccessPrivateData(pContext)->offset + count < AccessPrivateData(pContext)->size)
+	if (THIS->offset + count < THIS->size)
 	{
+#ifdef OS_WINDOWS
 		LARGE_INTEGER from = {0}, to = {0};
 		from.QuadPart = count;
-		if (SetFilePointerEx(AccessPrivateData(pContext)->hFile, from, &to, FILE_CURRENT))
+		if (SetFilePointerEx(THIS->hFile, from, &to, FILE_CURRENT))
+#else /* OS_WINDOWS */
+		if (-1 != lseek(THIS->hFile, count, SEEK_CUR))
+#endif /* OS_WINDOWS */
 		{
-			AccessPrivateData(pContext)->offset += count;
+			THIS->offset += count;
 			return 1;
 		}
 	}
 	return 0;
-#else /* OS_WINDOWS */
-	return (0 == fseek(AccessPrivateData(pContext)->f, count, SEEK_CUR));
-#endif /* OS_WINDOWS */
 }
 
-void FileReaderDestroy(ReaderContext * hReader)
+void FileReaderDestroy(ReaderContext * pContext)
 {
-	ReaderContext * pContext = (ReaderContext*) hReader;
-	FileReaderContext * pPrivate = (FileReaderContext*) pContext->pPrivate;
 #ifdef OS_WINDOWS
-	CloseHandle(pPrivate->hFile);
+	CloseHandle(THIS->hFile);
 #else /* OS_WINDOWS */
-	fclose(pPrivate->f);
+	close(THIS->hFile);
 #endif /* OS_WINDOWS */
+	free(THIS);
 	free(pContext);
-	free(pPrivate);
 }
 
 HREADER FileReaderCreate(const char * path)
@@ -102,25 +102,25 @@ HREADER FileReaderCreate(const char * path)
 	LARGE_INTEGER li = {0};
 	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 #else /* OS_WINDOWS */
-	FILE * f = fopen(path, "rb");
+	int hFile = open(path, O_RDONLY);
 #endif /* OS_WINDOWS */
 	ReaderContext * pContext = NULL;
 	FileReaderContext * pPrivate = NULL;
 #ifdef OS_WINDOWS
 	if (INVALID_HANDLE_VALUE == hFile)
 #else /* OS_WINDOWS */
-	if (NULL == f)
+	if (-1 == hFile)
 #endif /* OS_WINDOWS */
 	{
-		char fullpath[32768] = {0};
-		xstrcat(fullpath, 32768, "C:\\Windows\\System32\\");
-		xstrcat(fullpath, 32768, path);
+		char fullpath[NtfsMaxPath] = {0};
+		xstrcat(fullpath, NtfsMaxPath, "C:\\Windows\\System32\\");
+		xstrcat(fullpath, NtfsMaxPath, path);
 #ifdef OS_WINDOWS
 		hFile = CreateFileA(fullpath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		if (INVALID_HANDLE_VALUE == hFile)
 #else /* OS_WINDOWS */
-		f = fopen(fullpath, "rb");
-		if (NULL == f)
+		hFile = open(fullpath, O_RDONLY);
+		if (-1 == hFile)
 #endif /* OS_WINDOWS */
 		{
 			return NULL;
@@ -128,14 +128,17 @@ HREADER FileReaderCreate(const char * path)
 	}
 	pContext = (ReaderContext*) calloc(1, sizeof(ReaderContext));
 	pPrivate = (FileReaderContext*) calloc(1, sizeof(FileReaderContext));
-#ifdef OS_WINDOWS
+
 	pPrivate->hFile = hFile;
+#ifdef OS_WINDOWS
 	GetFileSizeEx(hFile, &li);
 	pPrivate->size = li.QuadPart;
-	pPrivate->offset = 0;
 #else /* OS_WINDOWS */
-	pPrivate->f = f;
+	pPrivate->size = lseek(hFile, 0, SEEK_END);
+	lseek(hFile, 0, SEEK_SET);
 #endif /* OS_WINDOWS */
+	pPrivate->offset = 0;
+
 	pContext->pRead    = FileReaderRead;
 	pContext->pSeek    = FileReaderSeek;
 	pContext->pSkip    = FileReaderSkip;

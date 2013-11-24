@@ -49,9 +49,13 @@ extern "C" {
 
 #endif /* defined(__unix__) || defined(__unix) */
 
-#ifdef __APPLE__
+#if defined(__APPLE__)
 #define OS_MACOSX
-#endif /* __APPLE__ */
+#endif /* defined(__APPLE__) */
+
+#if defined(__CYGWIN__)
+#define OS_CYGWIN
+#endif /* defined(__CYGWIN__) */
 
 #if defined(_MSC_VER)
 #define COMP_MICOROSOFTC
@@ -88,6 +92,7 @@ extern "C" {
 #include <unistd.h>
 #include <signal.h>
 #include <dlfcn.h>
+#include <fcntl.h>
 #ifdef OS_MACOSX
 #include <mach-o/dyld.h>
 #endif /* OS_MACOSX */

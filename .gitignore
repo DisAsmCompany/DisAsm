@@ -22,3 +22,8 @@ windows32-bcc/
 windows32-wcc/
 macosx/
 unix/
+unix-clang/
+unix-gcc/
+unix-nwcc/
+unix-tcc/
+unix-pcc/
