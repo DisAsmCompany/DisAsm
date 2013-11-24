@@ -88,6 +88,27 @@ NONE F   X X X X X X   F X X X X X X X X F
        0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
 
+/* each bit indicates does opcode has extensions for prefixes 0x66, 0xF2 or 0xF3 */
+uint32_t OpCodeMapTwoByte0FExt[] =
+{
+	/* 0F00h - 0F1Fh */
+	0x0000FF00UL,
+	/* 0F20h - 0F3Fh */
+	0x0000FF00UL,
+	/* 0F40h - 0F5Fh */
+	0xFFFF0000UL,
+	/* 0F60h - 0F7Fh */
+	0xFF79FFFFUL,
+	/* 0F80h - 0F9Fh */
+	0x00000000UL,
+	/* 0FA0h - 0FBFh */
+	0x39000000UL,
+	/* 0FC0h - 0FDFh */
+	0xFFFF0080UL,
+	/* 0FE0h - 0FFFh */
+	0xFFFFFFFFUL
+};
+
 OpCodeMapElement OpCodeMapTwoByte0F[] =
 {
 	/* 0F00h - 0F07h */

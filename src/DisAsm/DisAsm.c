@@ -146,6 +146,36 @@ uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 	return result;
 }
 
+OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t opcode, OpCodeMapElement * map, uint32_t * ext)
+{
+	uint32_t index = opcode & 0xFF;
+	uint32_t offset = 0;
+	/* check, if opcode has extensions for prefixes 0x66, 0xF2, 0xF3 */
+	if (1 == pInfo->nPrefixes)
+	{
+		uint32_t mask = ext[index >> 5];
+		if (mask & (1 << (index & 0x1F)))
+		{
+			uint32_t prefix = pInfo->prefixes[0].opcode;
+			switch (prefix)
+			{
+			case 0x66: offset =  8; break;
+			case 0xF2: offset = 16; break;
+			case 0xF3: offset = 24; break;
+			default: break;
+			}
+			if (offset > 0)
+			{
+				/* in that case, prefix is not a prefix actually, but part of unique opcode */
+				opcode = opcode | ((opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16));
+				--pInfo->nPrefixes;
+			}
+		}
+	}
+	index = offset + ((index >> 3) << 5) + (index & 0x07);
+	return &map[index];
+}
+
 OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	OpCodeMapElement * element = NULL;
@@ -210,79 +240,17 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		{
 		case 0x0F38:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
-#if 0
-			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix 66h */
-				element = &OpCodeMapThreeByte0F38Prefix66[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix F2h */
-				element = &OpCodeMapThreeByte0F38PrefixF2[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh), Prefix F3h */
-				element = &OpCodeMapThreeByte0F38PrefixF3[opcode & 0xFF];
-			}
-			else
-#endif /* 0 */
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh) */
-				element = &OpCodeMapThreeByte0F38[opcode & 0xFF];
-			}
+			/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh) */
+			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapThreeByte0F38, OpCodeMapThreeByte0F38Ext);
 			break;
 		case 0x0F3A:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
-#if 0
-			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix 66h */
-				element = &OpCodeMapThreeByte0F3APrefix66[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix F2h */
-				element = &OpCodeMapThreeByte0F3APrefixF2[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh), Prefix F3h */
-				element = &OpCodeMapThreeByte0F3APrefixF3[opcode & 0xFF];
-			}
-			else
-#endif /* 0 */
-			{
-				/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
-				element = &OpCodeMapThreeByte0F3A[opcode & 0xFF];
-			}
+			/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
+			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapThreeByte0F3A, OpCodeMapThreeByte0F3AExt);
 			break;
 		default:
-#if 0
-			if (1 == pInfo->nPrefixes && 0x66 == pInfo->prefixes[0].opcode)
-			{
-				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix 66h */
-				element = &OpCodeMapTwoByte0FPrefix66[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF2 == pInfo->prefixes[0].opcode)
-			{
-				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix F2h */
-				element = &OpCodeMapTwoByte0FPrefixF2[opcode & 0xFF];
-			}
-			else if (1 == pInfo->nPrefixes && 0xF3 == pInfo->prefixes[0].opcode)
-			{
-				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh), Prefix F3h */
-				element = &OpCodeMapTwoByte0FPrefixF3[opcode & 0xFF];
-			}
-			else
-#endif /* 0 */
-			{
-				/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
-				uint32_t index = opcode & 0xFF;
-				index = ((index >> 3) << 5) + (index & 0x07);
-				element = &OpCodeMapTwoByte0F[index];
-			}
+			/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
+			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapTwoByte0F, OpCodeMapTwoByte0FExt);
 			break;
 		}
 		break;
@@ -327,37 +295,120 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	return element;
 }
 
+uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
+{
+	uint8_t result = 0;
+	switch (LOTYPE(type))
+	{
+	/* byte, regardless of operand size attribute */
+	case b: result = 1; break;
+	/* word, regardless of operand size attribute */
+	case w: result = 2; break;
+	/* double-word (4 bytes), regardless of operand size attribute */
+	case d: result = 4; break;
+	/* quad-word, regardless of operand size attribute */
+	case q: result = 8; break;
+	/* oct-word, regardless of operand size attribute */
+	case o: 
+	case ps:
+	case ss:
+	case pd:
+	case sd: result = 16; break;
+	/* word for 16-bit operand size, or double-word for 32-bit and 64-bit operand size */
+	case z:
+		switch (pContext->currentSize)
+		{
+		case 2: result = 2; break;
+		case 4:
+		case 8: result = 4; break;
+		default: break;
+		}
+		break;
+	/* word, double-word or quad-word (in 64-bit mode), depending on operand size attribute */
+	case v:
+		switch (pContext->currentSize)
+		{
+		case 2: result = 2; break;
+		case 4: result = 4; break;
+		case 8: result = 8; break;
+		default: break;
+		}
+		break;
+	default: break;
+	}
+	return result;
+}
+
+Register registers[][5] =
+{
+	/* E */ {Reg8, Reg16, Reg32, Reg64, 0},
+	/* G */ {Reg8, Reg16, Reg32, Reg64, 0},
+	/* M */ {Reg8, Reg16, Reg32, Reg64, 0},
+	/* S */ {0, RegSeg, 0, 0, 0},
+	/* R */ {Reg8, Reg16, Reg32, Reg64, 0},
+	/* D */ {0, RegDebug, RegDebug, RegDebug, 0},
+	/* C */ {0, RegControl, RegControl, RegControl, 0},
+	/* U */ {0, 0, 0, 0, RegSSE},
+	/* V */ {0, 0, 0, 0, RegSSE},
+	/* W */ {0, 0, 0, 0, RegSSE},
+	/* P */ {0, 0, 0, RegMMX, 0},
+	/* Q */ {0, 0, 0, RegMMX, 0}
+};
+
+Register RegForType(DisAsmContext * pContext, OperandType type)
+{
+	Register reg = 0;
+	OperandType HiType = (HITYPE(type) - E) >> 4;
+
+	switch (SizeForType(pContext, type))
+	{
+	case 1 : reg = registers[HiType][0]; break;
+	case 2 : reg = registers[HiType][1]; break;
+	case 4 : reg = registers[HiType][2]; break;
+	case 8 : reg = registers[HiType][3]; break;
+	case 16: reg = registers[HiType][4]; break;
+	default: reg = registers[HiType][2]; break;
+	}
+	return reg;
+}
+
 void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
 {
-	OperandType HiType = HITYPE(pOperand->type);
-	OperandType LoType = LOTYPE(pOperand->type);
-	pOperand->memory = 0;
-	if (Reg == pOperand->type)
+	OperandType type = pOperand->type;
+	OperandType HiType = HITYPE(type);
+	if (Imm == pOperand->type)
 	{
-		if (rRegister <= pOperand->value.reg && pOperand->value.reg <= rRegister + 7)
-		{
-			pOperand->value.reg = (pOperand->value.reg - rRegister);
-            switch (pContext->currentSize)
-            {
-            case 2: pOperand->value.reg += Reg16; break;
-            case 4: pOperand->value.reg += Reg32; break;
-            case 8: pOperand->value.reg += Reg64; break;
-            default: break;
-            }
-		}
-		if (eRegister <= pOperand->value.reg && pOperand->value.reg <= eRegister + 7)
-		{
-			pOperand->value.reg = (pOperand->value.reg - eRegister);
-            switch (pContext->currentSize)
-            {
-            case 2: pOperand->value.reg += Reg16; break;
-            case 4: pOperand->value.reg += Reg32; break;
-            case 8: pOperand->value.reg += Reg32; break;
-            default: break;
-            }
-		}
+		pInfo->imm = pOperand->reg;
+		pInfo->sizeImm = 1;
+		return;
 	}
-	if (Ap == pOperand->type)
+	else if (Reg == pOperand->type)
+	{
+		if (rRegister <= pOperand->reg && pOperand->reg <= rRegister + 7)
+		{
+			pOperand->reg = (pOperand->reg - rRegister);
+            switch (pContext->currentSize)
+            {
+            case 2: pOperand->reg += Reg16; break;
+            case 4: pOperand->reg += Reg32; break;
+            case 8: pOperand->reg += Reg64; break;
+            default: break;
+            }
+		}
+		if (eRegister <= pOperand->reg && pOperand->reg <= eRegister + 7)
+		{
+			pOperand->reg = (pOperand->reg - eRegister);
+            switch (pContext->currentSize)
+            {
+            case 2: pOperand->reg += Reg16; break;
+            case 4: pOperand->reg += Reg32; break;
+            case 8: pOperand->reg += Reg32; break;
+            default: break;
+            }
+		}
+		return;
+	}
+	else if (Ap == pOperand->type)
 	{
 		pInfo->hasDisp = 1;
 		pInfo->sizeDisp = 4;
@@ -365,17 +416,11 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	}
 	switch (HiType)
 	{
-	case S:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg | RegSeg;
-		break;
-	case M:
-	case R:
-	case E:
-		pOperand->type = Reg;
-		pOperand->memory = pInfo->ModRM.fields.Mod != 3;
+	case M: case R: case E:
+	case Q: case W:
+		pOperand->type = (pInfo->ModRM.fields.Mod != 3) ? Mem : Reg;
 		pOperand->scale = pOperand->hasBase = pOperand->hasIndex = 0;
-		pOperand->size = pContext->currentSize;
+		pOperand->size = SizeForType(pContext, type);
 		if (pInfo->hasSIB)
 		{
 			pOperand->hasBase = 1;
@@ -385,212 +430,52 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			{
 				pOperand->hasIndex = 0;
 			}
-			if (5 == (pOperand->value.reg = pInfo->SIB.fields.Base))
-			{
-				switch (pInfo->ModRM.fields.Mod)
-				{
-				case 0: pInfo->hasDisp = 1; pInfo->sizeDisp = 4; pOperand->hasBase = 0; break;
-				case 1: pInfo->hasDisp = 1; pInfo->sizeDisp = 1; break;
-				case 2: pInfo->hasDisp = 1; pInfo->sizeDisp = 4; break;
-				default:
-					break;
-				}
-			}
-		}
-		else
-		{
-			pOperand->hasBase = 1;
-			pOperand->hasIndex = 0;
-			pOperand->value.reg = pInfo->ModRM.fields.RM;
-			if (5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod)
+			if (5 == (pOperand->reg = pInfo->SIB.fields.Base) && 0 == pInfo->ModRM.fields.Mod)
 			{
 				pOperand->hasBase = 0;
 			}
 		}
-		if (LoType == v)
+		else
 		{
-			pOperand->value.reg |= Reg32;
+			pOperand->hasIndex = 0;
+			pOperand->reg = pInfo->ModRM.fields.RM;
+			pOperand->hasBase = !(5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod);
+		}
+		if (Mem == pOperand->type)
+		{
+			pOperand->reg |= Reg32;
 			pOperand->index |= Reg32;
-		}
-		else if (LoType == q)
-		{
-			pOperand->value.reg |= Reg32;
-			pOperand->index |= Reg32;
-		}
-		else if (LoType == w)
-		{
-			pOperand->value.reg |= Reg16;
-			pOperand->index |= Reg16;
-		}
-		else if (LoType == b)
-		{
-			pOperand->value.reg |= Reg8;
-			pOperand->index |= Reg8;
 		}
 		else
 		{
-			pOperand->value.reg |= Reg32;
-			pOperand->index |= Reg32;
+			pOperand->reg |= RegForType(pContext, type);
 		}
 		break;
-	case P:
+	case P: case S: case V:
+	case C: case D: case G:
 		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		switch (LoType)
-		{
-		case q:
-			pOperand->value.reg |= RegMMX;
-			break;
-		default:
-			break;
-		}
+		pOperand->reg = pInfo->ModRM.fields.Reg;
+		pOperand->reg |= RegForType(pContext, type);
 		break;
-	case Q:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.RM;
-		switch (LoType)
-		{
-		case q:
-			pOperand->value.reg |= RegMMX;
-			break;
-		default:
-			break;
-		}
-		break;
-	case W:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.RM;
-		switch (LoType)
-		{
-		case ps:
-		case ss:
-		case pd:
-		case sd:
-		case o:
-			pOperand->value.reg |= RegSSE;
-			break;
-		default:
-			break;
-		}
-		break;
-	case V:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		switch (LoType)
-		{
-		case ps:
-		case ss:
-		case pd:
-		case sd:
-		case o:
-			pOperand->value.reg |= RegSSE;
-			break;
-		default:
-			break;
-		}
-		break;
-	case C:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		if (LoType == d)
-		{
-			pOperand->value.reg |= RegControl;
-		}
-		break;
-	case D:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		if (LoType == d)
-		{
-			pOperand->value.reg |= RegDebug;
-		}
-		break;
-	case G:
-		pOperand->type = Reg;
-		pOperand->value.reg = pInfo->ModRM.fields.Reg;
-		if (LoType == v)
-		{
-			switch (pContext->currentSize)
-			{
-			case 1: pOperand->value.reg |= Reg8;  break;
-			case 2: pOperand->value.reg |= Reg16; break;
-			case 4: pOperand->value.reg |= Reg32; break;
-			case 8: pOperand->value.reg |= Reg64; break;
-			default: break;
-			}
-		}
-		else if (LoType == w)
-		{
-			pOperand->value.reg |= Reg16;
-		}
-		else if (LoType == b)
-		{
-			pOperand->value.reg |= Reg8;
-		}
-		else
-		{
-			pOperand->value.reg |= Reg32;
-		}
-		break;
-	case I:
-	case J:
-	case O:
+	case I: case J:
+		pOperand->type = Imm;
 		pInfo->hasImm = 1;
-		if (Jb == pOperand->type)
-		{
-			pInfo->sizeImm = 1;
-		}
-		if (Ib == pOperand->type)
-		{
-			pInfo->sizeImm = 1;
-		}
-		if (Ob == pOperand->type)
-		{
-            switch (pContext->currentSize)
-            {
-			case 1: pInfo->sizeImm = 1; break;
-            case 2: pInfo->sizeImm = 2; break;
-            case 4: pInfo->sizeImm = 4; break;
-            case 8: pInfo->sizeImm = 4; break;
-            default:
-                break;
-            }
-		}
-		if (LoType == v)
-		{
-            switch (pContext->currentSize)
-            {
-            case 2: pInfo->sizeImm = 2; break;
-            case 4: pInfo->sizeImm = 4; break;
-            case 8: 
-				if (pInfo->hasREX && 1 == pInfo->REX.fields.W)
-				{
-					pInfo->sizeImm = 8;
-				}
-				else
-				{
-					pInfo->sizeImm = 4;
-				}
-				break;
-            default:
-                break;
-            }
-		}
-		if (LoType == z)
-		{
-            switch (pContext->currentSize)
-            {
-            case 2: pInfo->sizeImm = 2; break;
-            case 4: pInfo->sizeImm = 4; break;
-            case 8: pInfo->sizeImm = 4; break;
-            default:
-                break;
-            }
-		}
-		if (LoType == w)
-		{
-			pInfo->sizeImm = 2;
-		}
+		pInfo->sizeImm = SizeForType(pContext, type);
+		break;
+	case O:
+		pInfo->hasDisp = 1;
+		pOperand->type = Mem;
+		pOperand->hasBase = pOperand->hasIndex = 0;
+		pOperand->size = SizeForType(pContext, type);
+		switch (pContext->currentSize)
+        {
+		case 1: pInfo->sizeDisp = 1; break;
+        case 2: pInfo->sizeDisp = 2; break;
+        case 4: pInfo->sizeDisp = 4; break;
+        case 8: pInfo->sizeDisp = 4; break;
+        default:
+            break;
+        }
 		break;
 	default:
 		break;
@@ -605,10 +490,10 @@ void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 	pInfo->operands[1].type = pElement->type[1];
 	pInfo->operands[2].type = pElement->type[2];
 	pInfo->operands[3].type = pElement->type[3];
-	pInfo->operands[0].value.reg = pElement->reg[0];
-	pInfo->operands[1].value.reg = pElement->reg[1];
-	pInfo->operands[2].value.reg = pElement->reg[2];
-	pInfo->operands[3].value.reg = pElement->reg[3];
+	pInfo->operands[0].reg = pElement->reg[0];
+	pInfo->operands[1].reg = pElement->reg[1];
+	pInfo->operands[2].reg = pElement->reg[2];
+	pInfo->operands[3].reg = pElement->reg[3];
 }
 
 void GroupDecode(InstructionInfo * pInfo)
@@ -794,16 +679,14 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	uint8_t i = 0;
 
 	pInfo = pInfo ? pInfo : &info;
-
 	pInfo->length = 0;
-	context.error = 0;
-	context.hReader = hReader;
-	context.currentSize = context.size = bitness / 8;
-
 	pInfo->nPrefixes = 0;
 	pInfo->hasREX = 0;
-
 	pInfo->mnemonic = DB;
+
+	context.error = 0;
+	context.hReader = hReader;
+	context.currentSize = context.size = bitness >> 3;
 
 	pElement = ChooseOpCode(&context, pInfo);
 	if (NULL == pElement || DB == pElement->mnemonic || 1 == context.error)
@@ -813,12 +696,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pInfo->hasSeg = 0;
 	pInfo->hasModRM = 0;
 	pInfo->set = GP;
-	if (ESCAPEX87 == pElement->mnemonic)
-	{
-		pInfo->hasModRM = 1;
-		pInfo->set = x87;
-	}
-	if (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP)
+	if (ESCAPEX87 == pElement->mnemonic || (GROUP1 <= pElement->mnemonic && pElement->mnemonic <= GROUPP))
 	{
 		pInfo->hasModRM = 1;
 	}
@@ -842,11 +720,11 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 		{
 			return 0;
 		}
-
+		pInfo->SIB.value = pInfo->hasSIB ? Fetch1(&context, pInfo) : 0;
 		switch (pInfo->ModRM.fields.Mod)
 		{
 		case 0:
-			if (pInfo->ModRM.fields.RM == 5)
+			if (5 == pInfo->ModRM.fields.RM || (pInfo->hasSIB && 5 == pInfo->SIB.fields.Base))
 			{
 				pInfo->hasDisp = 1;
 				pInfo->sizeDisp = 4;
@@ -861,16 +739,8 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 			pInfo->sizeDisp = 4;
 			break;
 		}
-
-		if (pInfo->hasSIB)
-		{
-			pInfo->SIB.value = Fetch1(&context, pInfo);
-		}
 	}
-	for (i = 0; i < pInfo->nOperands; ++i)
-	{
-		OperandDecode(&context, pInfo, &pInfo->operands[i]);
-	}
+	for (i = 0; i < pInfo->nOperands; ++i) OperandDecode(&context, pInfo, &pInfo->operands[i]);
 	pInfo->disp = pInfo->hasDisp ? FetchN(&context, pInfo, pInfo->sizeDisp) : 0;
 	pInfo->seg  = pInfo->hasSeg  ? Fetch2(&context, pInfo) : 0;
 	pInfo->imm  = pInfo->hasImm  ? FetchN(&context, pInfo, pInfo->sizeImm)  : 0;

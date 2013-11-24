@@ -73,84 +73,70 @@ void PrintSegment(InstructionInfo * pInfo)
 
 void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 {
-	if (pOperand->type == Reg)
+	if (pOperand->type == Mem)
 	{
-		if (pOperand->memory)
+		switch (pOperand->size)
 		{
-			switch (pOperand->size)
-			{
-			case 1: ConsoleIOPrint("BYTE PTR "); break;
-			case 2: ConsoleIOPrint("WORD PTR "); break;
-			case 4: ConsoleIOPrint("DWORD PTR "); break;
-			case 8: ConsoleIOPrint("QWORD PTR "); break;
-			}
-			PrintSegment(pInfo);
-			ConsoleIOPrint("[");
+		case 1 : ConsoleIOPrint("BYTE PTR "); break;
+		case 2 : ConsoleIOPrint("WORD PTR "); break;
+		case 4 : ConsoleIOPrint("DWORD PTR "); break;
+		case 8 : ConsoleIOPrint("QWORD PTR "); break;
+		case 16: ConsoleIOPrint("XMMWORD PTR "); break;
+		}
+		PrintSegment(pInfo);
+		ConsoleIOPrint("[");
 
+		if (pOperand->hasBase)
+		{
+			ConsoleIOPrint(DisAsmRegisterToString(pOperand->reg));
+		}
+		if (pOperand->hasIndex)
+		{
 			if (pOperand->hasBase)
 			{
-				ConsoleIOPrint(DisAsmRegisterToString(pOperand->value.reg));
+				ConsoleIOPrint(" + ");
 			}
-			if (pOperand->hasIndex)
+			if (pOperand->scale > 1)
 			{
-				if (pOperand->hasBase)
+				ConsoleIOPrintFormatted("%d * ", pOperand->scale);
+			}
+			ConsoleIOPrint(DisAsmRegisterToString(pOperand->index));
+		}
+		if (pInfo->hasDisp)
+		{
+			if (IsNegative(pInfo->disp, pInfo->sizeDisp))
+			{
+				if (pOperand->hasBase || pOperand->hasIndex)
+				{
+					ConsoleIOPrint(" - ");
+				}
+				else 
+				{
+					ConsoleIOPrint("-");
+				}
+
+				PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
+			}
+			else
+			{
+				if (pOperand->hasBase || pOperand->hasIndex)
 				{
 					ConsoleIOPrint(" + ");
 				}
-				if (pOperand->scale > 1)
-				{
-					ConsoleIOPrintFormatted("%d * ", pOperand->scale);
-				}
-				ConsoleIOPrint(DisAsmRegisterToString(pOperand->index));
+				PrintValue(pInfo->disp);
 			}
-			if (pInfo->hasDisp)
-			{
-				if (IsNegative(pInfo->disp, pInfo->sizeDisp))
-				{
-					if (pOperand->hasBase || pOperand->hasIndex)
-					{
-						ConsoleIOPrint(" - ");
-					}
-					else 
-					{
-						ConsoleIOPrint("-");
-					}
-
-					PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
-				}
-				else
-				{
-					if (pOperand->hasBase || pOperand->hasIndex)
-					{
-						ConsoleIOPrint(" + ");
-					}
-					PrintValue(pInfo->disp);
-				}
-			}
-			ConsoleIOPrint("]");
 		}
-		else 
-		{
-			ConsoleIOPrint(DisAsmRegisterToString(pOperand->value.reg));
-		}
-
-	}
-	if (HITYPE(pOperand->type) == J)
-	{
-		PrintValue(pInfo->imm);
-	}
-	if (pOperand->type == Imm)
-	{
-		PrintValue(pOperand->value.imm);
-	}
-	if (HITYPE(pOperand->type) == O)
-	{
-		PrintSegment(pInfo);
-		ConsoleIOPrint("[");
-		PrintValue(pInfo->imm);
 		ConsoleIOPrint("]");
 	}
-	if (HITYPE(pOperand->type) == I)
+	if (pOperand->type == Reg)
+	{
+		ConsoleIOPrint(DisAsmRegisterToString(pOperand->reg));
+	}
+	if (J == HITYPE(pOperand->type))
+	{
+		PrintValue(pInfo->imm);
+	}
+	if (Imm == pOperand->type)
 	{
 		if (IsNegative(pInfo->imm, pInfo->sizeImm))
 		{
@@ -162,11 +148,11 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 			PrintValue(pInfo->imm);
 		}
 	}
-	if (HITYPE(pOperand->type) == X)
+	if (X == HITYPE(pOperand->type))
 	{
 		ConsoleIOPrint("DS:[ESI]");
 	}
-	if (HITYPE(pOperand->type) == Y)
+	if (Y == HITYPE(pOperand->type))
 	{
 		ConsoleIOPrint("ES:[EDI]");
 	}

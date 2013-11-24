@@ -17,18 +17,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef union uOperand_t
-{
-	Register reg;
-	uint8_t imm;
-}
-uOperand;
-
 typedef struct Operand_t
 {
 	OperandType type;
-	uOperand value;
-	uint8_t memory;
+	Register reg;
 	uint8_t scale;
 	uint8_t hasBase;
 	uint8_t hasIndex;

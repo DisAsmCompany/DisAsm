@@ -37,8 +37,7 @@ int main()
 	for (;;)
 	{
 		InstructionInfo info;
-		uint8_t length = DisAsmInstructionDecode(32, &reader, &info);
-		if (0 == length) break;
+		if (0 == DisAsmInstructionDecode(32, &reader, &info)) break;
 		StrAsmPrintInstruction(&info);
 		ConsoleIOPrint("\n");
 	}
