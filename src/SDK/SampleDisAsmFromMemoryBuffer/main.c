@@ -26,8 +26,8 @@ int main()
 {
 	/* initialize callback reader */
 	CallbackReader reader = {0};
-	reader.context.pRead    = CallbackRead;
-	reader.context.pPrivate = &reader;
+	reader.pRead    = CallbackRead;
+	reader.pPrivate = &reader;
 	reader.buffer = (uint8_t*) buffer;
 	reader.offset = 0;
 	reader.length = sizeof(buffer);

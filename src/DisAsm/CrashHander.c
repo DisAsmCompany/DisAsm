@@ -130,7 +130,7 @@ void InfoEnvironment()
 
 LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExceptionInfo)
 {
-	address_t callstack[MaxCallStack] = {0};
+	native_t callstack[MaxCallStack] = {0};
 	uint32_t i = 0;
 	Context context;
 
@@ -164,7 +164,7 @@ LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExcepti
 
 BOOL __stdcall CrashHandlerRoutine(DWORD CtrlType)
 {
-	address_t callstack[MaxCallStack] = {0};
+	native_t callstack[MaxCallStack] = {0};
 	uint32_t i = 0;
 
 	switch (CtrlType)
@@ -236,7 +236,7 @@ static const SignalRecord signals[] =
 
 void CrashHandler(int signum, siginfo_t * info, void * ucontext)
 {
-	address_t callstack[MaxCallStack] = {0};
+	native_t callstack[MaxCallStack] = {0};
 	uint32_t i = 0;
 	
 	ConsoleIOPrint("[ERROR] crash!\n");

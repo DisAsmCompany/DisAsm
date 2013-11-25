@@ -43,7 +43,11 @@ void ReaderDestroy(HREADER hReader);
 
 typedef struct CallbackReader_t
 {
-	ReaderContext context;
+	pfnRead    pRead;
+	pfnSeek    pSeek;
+	pfnSkip    pSkip;
+	pfnDestroy pDestroy;
+	void *     pPrivate;
 	uint8_t * buffer;
 	uint64_t offset;
 	uint64_t length;

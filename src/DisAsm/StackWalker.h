@@ -29,8 +29,8 @@ enum {MaxCallStack = 32};
 
 void StackWalkInit();
 void StackWalkCleanup();
-void StackWalk(address_t * callstack, Context * context);
-void StackWalkSymbol(address_t address);
+void StackWalk(native_t * callstack, Context * context);
+void StackWalkSymbol(native_t address);
 
 #ifdef __cplusplus
 }

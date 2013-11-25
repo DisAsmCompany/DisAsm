@@ -362,7 +362,7 @@ while(0);
 #endif /* CPU_X86 */
 #endif /* GETCONTEXT */
 
-void StackWalk(address_t * callstack, Context * pContext)
+void StackWalk(native_t * callstack, Context * pContext)
 {
 	HANDLE hProcess = GetCurrentProcess();
 	HANDLE hThread  = GetCurrentThread();
@@ -410,7 +410,7 @@ void StackWalk(address_t * callstack, Context * pContext)
 #ifdef CPU_IA64
 	machine = IMAGE_FILE_MACHINE_IA64;
 #endif /* CPU_IA64 */
-	memset(callstack, 0, sizeof(address_t) * MaxCallStack);
+	memset(callstack, 0, sizeof(native_t) * MaxCallStack);
 	for (i = 0; i < MaxCallStack; ++i)
 	{
 		if (!pStackWalk64(machine, hProcess, hThread, &frame, &context, NULL, pSymFunctionTableAccess64, pSymGetModuleBase64, NULL))
@@ -432,7 +432,7 @@ void StackWalk(address_t * callstack, Context * pContext)
 
 void StackWalkInit() {}
 void StackWalkCleanup() {}
-void StackWalk(address_t * callstack, Context * context)
+void StackWalk(native_t * callstack, Context * context)
 {
 	void **frame = (void**) __builtin_frame_address(0);
 	void **bp = (void**) (*frame);
@@ -441,13 +441,13 @@ void StackWalk(address_t * callstack, Context * context)
 	int i;
 	for (i = 0; bp && ip && i < MaxCallStack; ++i)
 	{
-		callstack[i] = (address_t)ip;
+		callstack[i] = (native_t)ip;
 		ip = bp[1];
 		bp = (void**)(bp[0]);
 	}
 }
 
-void StackWalkSymbol(address_t address)
+void StackWalkSymbol(native_t address)
 {
 /* cygwin doesn't have Dl_info and dladdr */
 #ifndef OS_CYGWIN

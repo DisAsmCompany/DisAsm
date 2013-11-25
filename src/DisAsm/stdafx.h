@@ -34,7 +34,18 @@ extern "C" {
 
 #if defined(__unix__) || defined(__unix)
 #define OS_UNIX
+#endif /* defined(__unix__) || defined(__unix) */
 
+#if defined(__APPLE__)
+#define OS_UNIX
+#define OS_MACOSX
+#endif /* defined(__APPLE__) */
+
+#if defined(__CYGWIN__)
+#define OS_CYGWIN
+#endif /* defined(__CYGWIN__) */
+
+#ifdef OS_UNIX
 #if defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__)
 #define CPU_X86
 #endif /* defined(i386) || defined(__i386) || defined(__i386__) || defined(__i486__) || defined(__i586__) || defined(__i686__) */
@@ -46,16 +57,7 @@ extern "C" {
 #if defined(__ia64__) || defined(_IA64) || defined(__IA64__)
 #define CPU_IA64
 #endif /* defined(__ia64__) || defined(_IA64) || defined(__IA64__) */
-
-#endif /* defined(__unix__) || defined(__unix) */
-
-#if defined(__APPLE__)
-#define OS_MACOSX
-#endif /* defined(__APPLE__) */
-
-#if defined(__CYGWIN__)
-#define OS_CYGWIN
-#endif /* defined(__CYGWIN__) */
+#endif /* OS_UNIX */
 
 #if defined(_MSC_VER)
 #define COMP_MICOROSOFTC

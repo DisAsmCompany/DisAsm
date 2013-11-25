@@ -22,12 +22,12 @@ void VerifyInstruction(uint32_t opcode, Mnemonic mnemonic)
 	CallbackReader reader = {0};
 	uint8_t length;
 
-	reader.context.pRead    = CallbackRead;
-	reader.context.pPrivate = &reader;
+	reader.pRead    = CallbackRead;
+	reader.pPrivate = &reader;
 	reader.buffer = (uint8_t*) &opcode;
 	reader.offset = 0;
 	
-	length = DisAsmInstructionDecode(32, &reader.context, &info);
+	length = DisAsmInstructionDecode(32, &reader, &info);
 	TestAssert(1 == length);
 	TestAssert(1 == info.length);
 	TestAssert(mnemonic == info.mnemonic);
@@ -49,8 +49,8 @@ void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 		uint8_t length = 0;
 		uint8_t expected = 2;
 
-		reader.context.pRead    = CallbackRead;
-		reader.context.pPrivate = &reader;
+		reader.pRead    = CallbackRead;
+		reader.pPrivate = &reader;
 		reader.buffer = (uint8_t*) buffer;
 		reader.offset = 0;
 

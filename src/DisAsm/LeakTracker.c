@@ -16,10 +16,10 @@ static const uint8_t nop = 0x90;
 /* OpCode for JMP (Jump) */
 static const uint8_t jmp = 0xE9;
 
-#define THUNK_SIZE 20
-#define PAGE_SIZE 4096
+enum {ThunkSize = 20 };
+enum {PageSize = 4096 };
 
-uint8_t xThunkHeapAlloc[2 * THUNK_SIZE], xThunkHeapReAlloc[2 * THUNK_SIZE], xThunkHeapFree[2 * THUNK_SIZE], xThunkRtlFreeHeap[2 * THUNK_SIZE];
+uint8_t xThunkHeapAlloc[2 * ThunkSize], xThunkHeapReAlloc[2 * ThunkSize], xThunkHeapFree[2 * ThunkSize], xThunkRtlFreeHeap[2 * ThunkSize];
 
 typedef struct Allocation_t
 {
@@ -27,7 +27,7 @@ typedef struct Allocation_t
     void * heap;
 	uint32_t size;
 	uint8_t freed;
-	address_t callstack[MaxCallStack];
+	native_t callstack[MaxCallStack];
 }
 Allocation;
 
@@ -136,9 +136,9 @@ native_t CalculateOffsetForJMP(native_t from, native_t to)
 uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
     uint32_t total = 0;
-	CallbackReader reader = {{0}, 0, 0};
-    reader.context.pRead    = CallbackRead;
-    reader.context.pPrivate = &reader;
+	CallbackReader reader = {0};
+    reader.pRead    = CallbackRead;
+    reader.pPrivate = &reader;
     reader.buffer = pData;
     reader.offset = 0;
 	
@@ -288,7 +288,7 @@ static pfncalloc  pOriginalCalloc = NULL;
 static pfnrealloc pOriginalRealloc = NULL;
 static pfnfree    pOriginalFree = NULL;
 
-uint8_t xThunkMalloc[2 * THUNK_SIZE], xThunkCalloc[2 * THUNK_SIZE], xThunkRealloc[2 * THUNK_SIZE], xThunkFree[2 * THUNK_SIZE];
+uint8_t xThunkMalloc[2 * ThunkSize], xThunkCalloc[2 * ThunkSize], xThunkRealloc[2 * ThunkSize], xThunkFree[2 * ThunkSize];
 
 void * xmalloc(size_t size)
 {
@@ -408,13 +408,13 @@ void Protect(native_t address, ProtectType type)
     case ProtectTypeExecute | ProtectTypeWrite | ProtectTypeRead: protect = PAGE_EXECUTE_READWRITE; break;
     default: break;
     }
-	VirtualProtect((void*)(address - address % PAGE_SIZE), PAGE_SIZE, protect, &protect);
+	VirtualProtect((void*)(address - address % PageSize), PageSize, protect, &protect);
 #else /* OS_WINDOWS */
 	int protect = 0;
 	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
 	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
 	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
-	mprotect((void*)(address - address % PAGE_SIZE), PAGE_SIZE, protect);
+	mprotect((void*)(address - address % PageSize), PageSize, protect);
 #endif /* OS_WINDOWS */
 }
 
@@ -423,7 +423,7 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 	uint32_t length = 0;
 	native_t offset = CalculateOffsetForJMP((native_t)pOriginal, (native_t)pHook);
 	
-	memset(pThunk, nop, 2 * THUNK_SIZE);
+	memset(pThunk, nop, 2 * ThunkSize);
 	
     if (0 == (length = PatchLength(pOriginal, pThunk, 5)))
     {
@@ -436,9 +436,9 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 	memset(pOriginal + 5, nop, length - 5);
 	Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
 	
-	offset = CalculateOffsetForJMP((native_t)(pThunk + THUNK_SIZE), (native_t)(pOriginal + length));
-	pThunk[THUNK_SIZE] = jmp;
-	memcpy(pThunk + THUNK_SIZE + 1, &offset, 4);
+	offset = CalculateOffsetForJMP((native_t)(pThunk + ThunkSize), (native_t)(pOriginal + length));
+	pThunk[ThunkSize] = jmp;
+	memcpy(pThunk + ThunkSize + 1, &offset, 4);
 }
 
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
