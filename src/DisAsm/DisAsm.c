@@ -146,9 +146,9 @@ uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 	return result;
 }
 
-OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t opcode, OpCodeMapElement * map, uint32_t * ext)
+OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t * opcode, OpCodeMapElement * map, uint32_t * ext)
 {
-	uint32_t index = opcode & 0xFF;
+	uint32_t index = *opcode & 0xFF;
 	uint32_t offset = 0;
 	/* check, if opcode has extensions for prefixes 0x66, 0xF2, 0xF3 */
 	if (1 == pInfo->nPrefixes)
@@ -167,7 +167,7 @@ OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t opcode, OpC
 			if (offset > 0)
 			{
 				/* in that case, prefix is not a prefix actually, but part of unique opcode */
-				opcode = opcode | ((opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16));
+				*opcode |= (*opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16);
 				--pInfo->nPrefixes;
 			}
 		}
@@ -241,16 +241,16 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0x0F38:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh) */
-			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapThreeByte0F38, OpCodeMapThreeByte0F38Ext);
+			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapThreeByte0F38, OpCodeMapThreeByte0F38Ext);
 			break;
 		case 0x0F3A:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
-			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapThreeByte0F3A, OpCodeMapThreeByte0F3AExt);
+			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapThreeByte0F3A, OpCodeMapThreeByte0F3AExt);
 			break;
 		default:
 			/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
-			element = ChooseOpCodeExt(pInfo, opcode, OpCodeMapTwoByte0F, OpCodeMapTwoByte0FExt);
+			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapTwoByte0F, OpCodeMapTwoByte0FExt);
 			break;
 		}
 		break;
