@@ -28,10 +28,10 @@ NONE 1 X X     X X     1 X X X X X X X X 1
 0x66 1 X X     X X     1 X X X X X X X X 1
 0xF2 1 X X   U U U   U 1 X X X X X X X X 1
 0xF3 1 X X X U U U X U 1 X X X X X X X X 1
-NONE 2 X X X X U U U U 2 X X         X X 2
-0x66 2 X X X X U U U U 2 X X         X X 2
-0xF2 2 X X X X U U U U 2 U U         U U 2
-0xF3 2 X X X X U U U U 2 U U         U U 2
+NONE 2 X X X X U U U U 2 X X X   X X X X 2
+0x66 2 X X X X U U U U 2 X X X   X X X X 2
+0xF2 2 X X X X U U U U 2 U U X   X X U U 2
+0xF3 2 X X X X U U U U 2 U U X   X X U U 2
 NONE 3 X X X X X X U X 3 + U + U U U U U 3
 0x66 3 X X X X X X U X 3 + U + U U U U U 3
 0xF2 3 X X X X X X U X 3 + U + U U U U U 3
@@ -44,10 +44,10 @@ NONE 5   X X X X X X X 5 X X X   X X X X 5
 0x66 5   X U U X X X X 5 X X X   X X X X 5
 0xF2 5   X U U U U U U 5 X X X   X X X X 5
 0xF3 5   X X X U U U U 5 X X X   X X X X 5
-NONE 6                 6               X 6
-0x66 6                 6               X 6
-0xF2 6                 6                 6
-0xF3 6                 6               X 6
+NONE 6                 6             X X 6
+0x66 6                 6             X X 6
+0xF2 6                 6             U   6
+0xF3 6                 6             U X 6
 NONE 7   X X X       X 7               X 7
 0x66 7                 7               X 7
 0xF2 7                 7                 7
@@ -77,10 +77,10 @@ NONE D U X X X X X     D X X X X X X X X D
 0x66 D X X X X X X     D X X X X X X X X D
 0xF2 D X U U U U U     D U U U U U U U U D
 0xF3 D U U U U U U     D U U U U U U U U D
-NONE E X X X X X X     E X X X X X X X X E
-0x66 E X X X X X X     E X X X X X X X X E
-0xF2 E U U U U U U     E U U U U U U U U E
-0xF3 E U U U U U U     E U U U U U U U U E
+NONE E X X X X X X U   E X X X X X X X X E
+0x66 E X X X X X X X   E X X X X X X X X E
+0xF2 E U U U U U U X   E U U U U U U U U E
+0xF3 E U U U U U U X   E U U U U U U U U E
 NONE F   X X X X X X   F X X X X X X X X F
 0x66 F                 F X X X X X X X X F
 0xF2 F                 F U U U U U U U X F
@@ -92,7 +92,7 @@ NONE F   X X X X X X   F X X X X X X X X F
 uint32_t OpCodeMapTwoByte0FExt[] =
 {
 	/* 0F00h - 0F1Fh */
-	0x0000FF00UL,
+	0x00FF0000UL,
 	/* 0F20h - 0F3Fh */
 	0x0000FF00UL,
 	/* 0F40h - 0F5Fh */
@@ -137,10 +137,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F28h - 0F2Fh */
-	{MOVAPS, OP2(Vps, Wps)}, {MOVAPS, OP2(Wps, Vps)}, {DB}, {DB}, {DB}, {DB}, {UCOMISS, OP2(Vss, Wss)}, {COMISS, OP2(Vss, Wss)},
-	{MOVAPD, OP2(Vpd, Wpd)}, {MOVAPD, OP2(Wpd, Vpd)}, {DB}, {DB}, {DB}, {DB}, {UCOMISD, OP2(Vsd, Wsd)}, {COMISD, OP2(Vsd, Wsd)},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{MOVAPS, OP2(Vps, Wps)}, {MOVAPS, OP2(Wps, Vps)}, {CVTPI2PS, OP2(Vps, Qpi)}, {DB}, {CVTTPS2PI, OP2(Ppi, Wps)}, {CVTPS2PI, OP2(Ppi, Wps)}, {UCOMISS, OP2(Vss, Wss)}, {COMISS, OP2(Vss, Wss)},
+	{MOVAPD, OP2(Vpd, Wpd)}, {MOVAPD, OP2(Wpd, Vpd)}, {CVTPI2PD, OP2(Vpd, Qpi)}, {DB}, {CVTTPD2PI, OP2(Ppi, Wpd)}, {CVTPD2PI, OP2(Ppi, Wpd)}, {UCOMISD, OP2(Vsd, Wsd)}, {COMISD, OP2(Vsd, Wsd)},
+	{DB},                    {DB},                    {CVTSI2SD, OP2(Vsd, Ey)},  {DB}, {CVTTSD2SI, OP2(Ey, Wsd)},  {CVTSD2SI, OP2(Ey, Wsd)},  {DB}, {DB},
+	{DB},                    {DB},                    {CVTSI2SS, OP2(Vss, Ey)},  {DB}, {CVTTSS2SI, OP2(Ey, Wss)},  {CVTSS2SI, OP2(Ey, Wss)},  {DB}, {DB},
 	/* 0F30h - 0F37h */
 	{WRMSR}, {RDTSC}, {RDMSR}, {RDPMC}, {SYSENTER}, {SYSEXIT}, {DB}, {GETSEC},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
@@ -177,10 +177,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F68h - 0F6Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVQ, OP2(Pq, Qq)},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVDQA, OP2(Vo, Wo)},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVDQU, OP2(Vo, Wo)},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVD, OP2(Py, Ey)}, {MOVQ, OP2(Pq, Qq)},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {MOVD, OP2(Vy, Ey)}, {MOVDQA, OP2(Vo, Wo)},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},                {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},                {MOVDQU, OP2(Vo, Wo)},
 	/* 0F70h - 0F77h */
 	{DB}, {GROUP12}, {GROUP13}, {GROUP14}, {DB}, {DB}, {DB}, {EMMS},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
@@ -252,10 +252,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FE0h - 0FE7h */
-	{PAVGB, OP2(Pq, Qq)}, {PSRAW, OP2(Pq, Qq)}, {PSRAD, OP2(Pq, Qq)}, {PAVGW, OP2(Pq, Qq)}, {PMULHUW, OP2(Pq, Qq)}, {PMULHW, OP2(Pq, Qq)}, {DB}, {DB},
-	{PAVGB, OP2(Vo, Wo)}, {PSRAW, OP2(Vo, Wo)}, {PSRAD, OP2(Vo, Wo)}, {PAVGW, OP2(Vo, Wo)}, {PMULHUW, OP2(Vo, Wo)}, {PMULHW, OP2(Vo, Wo)}, {DB}, {DB},
-	{DB},                 {DB},                 {DB},                 {DB},                 {DB},                   {DB},                  {DB}, {DB},
-	{DB},                 {DB},                 {DB},                 {DB},                 {DB},                   {DB},                  {DB}, {DB},
+	{PAVGB, OP2(Pq, Qq)}, {PSRAW, OP2(Pq, Qq)}, {PSRAD, OP2(Pq, Qq)}, {PAVGW, OP2(Pq, Qq)}, {PMULHUW, OP2(Pq, Qq)}, {PMULHW, OP2(Pq, Qq)}, {DB},                       {DB},
+	{PAVGB, OP2(Vo, Wo)}, {PSRAW, OP2(Vo, Wo)}, {PSRAD, OP2(Vo, Wo)}, {PAVGW, OP2(Vo, Wo)}, {PMULHUW, OP2(Vo, Wo)}, {PMULHW, OP2(Vo, Wo)}, {CVTTPD2DQ, OP2(Vpi, Wpd)}, {DB},
+	{DB},                 {DB},                 {DB},                 {DB},                 {DB},                   {DB},                  {CVTPD2DQ, OP2(Vpi, Wps)},  {DB},
+	{DB},                 {DB},                 {DB},                 {DB},                 {DB},                   {DB},                  {CVTDQ2PD, OP2(Vpd, Wpi)},  {DB},
 	/* 0FE8h - 0FEFh */
 	{PSUBSB, OP2(Pq, Qq)}, {PSUBSW, OP2(Pq, Qq)}, {PMINSW, OP2(Pq, Qq)}, {POR, OP2(Pq, Qq)}, {PADDSB, OP2(Pq, Qq)}, {PADDSW, OP2(Pq, Qq)}, {PMAXSW, OP2(Pq, Qq)}, {PXOR, OP2(Pq, Qq)},
 	{PSUBSB, OP2(Vo, Wo)}, {PSUBSW, OP2(Vo, Wo)}, {PMINSW, OP2(Vo, Wo)}, {POR, OP2(Vo, Wo)}, {PADDSB, OP2(Vo, Wo)}, {PADDSW, OP2(Vo, Wo)}, {PMAXSW, OP2(Vo, Wo)}, {PXOR, OP2(Vo, Wo)},

@@ -43,6 +43,7 @@ typedef enum OperandType_t
 	P = 0x0120 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
 	Q = 0x0130 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
 
+    _  = 0x00, /* no type */
 	b  = 0x01, /* byte, regardless of operand size attribute*/
 	v  = 0x02, /* word, double-word or quad-word, depending on operand-size attribute */
 	z  = 0x03, /* word for 16-bit operand size, double-word for 32-bit or 64-bit operand-size */
@@ -55,8 +56,8 @@ typedef enum OperandType_t
 	ss = 0x0A, /* 128-bit or 256-bit scalar single-precision floating-point data */
 	pd = 0x0B, /* 128-bit or 256-bit packed double-precision floating-point data */
 	sd = 0x0C, /* 128-bit or 256-bit scalar double-precision floating-point data */
-	a  = 0x0D, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
-	_  = 0x0E, /* no type */
+    pi = 0x0D, /* quadword MMX register */
+	a  = 0x0E, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
 	y  = 0x0F, /* double-word or quad-word, depending on operand-size attribute */
 
 #define DEFINE_TYPE(T) \
@@ -72,6 +73,7 @@ typedef enum OperandType_t
 	T##ss = 0x1000 | T | ss, \
 	T##pd = 0x1000 | T | pd, \
 	T##sd = 0x1000 | T | sd, \
+    T##pi = 0x1000 | T | pi, \
 	T##a  = 0x1000 | T | a, \
 	T##_  = 0x1000 | T | _, \
 	T##y  = 0x1000 | T | y, \

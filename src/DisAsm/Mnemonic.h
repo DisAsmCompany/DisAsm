@@ -442,7 +442,8 @@ _ENUM_ELEMENT(PMULHUW)  /* Multiply Packed Unsigned Integers and Store High Resu
 _ENUM_ELEMENT(PMULUDQ)  /* Multiply Packed Unsigned Integers */
 _ENUM_ELEMENT(PSADDBW)  /* Compute Sum of Absolute Differences */
 _ENUM_ELEMENT(PMADDWD)  /* Multiply and Add Packed Integers */
-_ENUM_ELEMENT(MOVQ)     /* Move Quadword */
+_ENUM_ELEMENT(MOVQ)     /* Move Quad Word */
+_ENUM_ELEMENT(MOVD)     /* Move Double Word */
 _ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
 _ENUM_ELEMENT(MOVDQU)   /* Move Unaligned Double-Quadword */
 /* 3DNow! */
@@ -479,6 +480,12 @@ _ENUM_ELEMENT(CMPPS)    /* Compare Packed Single-Precision Floating Point Values
 _ENUM_ELEMENT(CMPSS)    /* Compare Scalar Single-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKLPS) /* Unpack and Interleave Low Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKHPS) /* Unpack and Interleave High Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPI2PS) /* Convert Packed Double Word Integers to Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPS2PI) /* Convert Packed Single-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTTPS2PI)/* Convert with Truncation Packed Single-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTSI2SS) /* Convert Scalar Double Word Integers to Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTSS2SI) /* Convert Scalar Single-Precision Floating Point Values to Scalar Double Word Integers */
+_ENUM_ELEMENT(CVTTSS2SI)/* Convert with Truncation Scalar Single-Precision Floating Point Values to Scalar Double Word Integers */
 /* SSE2 */
 _ENUM_ELEMENT(MOVUPD)   /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPD)   /* Move Aligned Packed Double-Precision Floating Point Values */
@@ -515,6 +522,15 @@ _ENUM_ELEMENT(CVTPS2PD) /* Converter Packed Packed Single-Precision Floating Poi
 _ENUM_ELEMENT(CVTPD2PS) /* Converter Packed Packed Double-Precision Floating Point Values to Single Precision Floating Point Values */
 _ENUM_ELEMENT(CVTSS2SD) /* Converter Packed Scalar Single-Precision Floating Point Values to Double Precision Floating Point Values */
 _ENUM_ELEMENT(CVTSD2SS) /* Converter Packed Scalar Double-Precision Floating Point Values to Single Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPI2PD) /* Convert Packed Double Word Integers to Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPD2PI) /* Convert Packed Single-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTTPD2PI)/* Convert with Truncation Packed Double-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTSI2SD) /* Convert Scalar Double Word Integers to Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTSD2SI) /* Convert Scalar Double-Precision Floating Point Values to Scalar Double Word Integers */
+_ENUM_ELEMENT(CVTTSD2SI)/* Convert with Truncation Scalar Double-Precision Floating Point Values to Scalar Double Word Integers */
+_ENUM_ELEMENT(CVTDQ2PD) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTPD2DQ) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTTPD2DQ)/* Convert with Truncation Packed Double-Precision Floating Point Values to Packed Double Word Integers */
 /* SSE3 */
 _ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
 _ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */

@@ -310,6 +310,7 @@ uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 	case q: result = 8; break;
 	/* oct-word, regardless of operand size attribute */
 	case o: 
+    case pi:
 	case ps:
 	case ss:
 	case pd:
@@ -334,6 +335,9 @@ uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 		default: break;
 		}
 		break;
+    /* double-word or quad-word, depending on operand size attribute */
+    case y: result = 8; break;
+        break;
 	default: break;
 	}
 	return result;
@@ -348,9 +352,9 @@ Register registers[][5] =
 	/* R */ {Reg8, Reg16, Reg32, Reg64, 0},
 	/* D */ {0, RegDebug, RegDebug, RegDebug, 0},
 	/* C */ {0, RegControl, RegControl, RegControl, 0},
-	/* U */ {0, 0, 0, 0, RegSSE},
-	/* V */ {0, 0, 0, 0, RegSSE},
-	/* W */ {0, 0, 0, 0, RegSSE},
+	/* U */ {0, 0, 0, RegSSE, RegSSE},
+	/* V */ {0, 0, 0, RegSSE, RegSSE},
+	/* W */ {0, 0, 0, RegSSE, RegSSE},
 	/* P */ {0, 0, 0, RegMMX, 0},
 	/* Q */ {0, 0, 0, RegMMX, 0}
 };
