@@ -337,7 +337,6 @@ uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 		break;
     /* double-word or quad-word, depending on operand size attribute */
     case y: result = 8; break;
-        break;
 	default: break;
 	}
 	return result;
