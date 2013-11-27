@@ -61,7 +61,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 
 		address += length;
 
-		if (CALL == info.mnemonic && 1 == info.nOperands && J == HITYPE(info.operands[0].type))
+		if (CALL == info.mnemonic && 1 == info.nOperands && Imm == info.operands[0].type)
 		{
 			address_t offset = AddressAdjust(address, info.imm, info.sizeImm);
 			ConsoleIOPrintFormatted("; call to %08LX", offset);
@@ -72,7 +72,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		{
 			address_t destination;
 			/* explicit jump offset */
-			if (J == HITYPE(info.operands[0].type))
+			if (Imm == info.operands[0].type)
 			{
 				destination = AddressAdjust(address, info.imm, info.sizeImm);
 				

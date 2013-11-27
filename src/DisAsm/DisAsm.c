@@ -275,7 +275,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			{
 				if (OperandSize == element->mnemonic)
 				{
-					pContext->currentSize = 2;
+					pContext->currentSize = pContext->size / 2;
 				}
 				pInfo->prefixes[pInfo->nPrefixes].opcode = opcode;
 				pInfo->prefixes[pInfo->nPrefixes].mnemonic = element->mnemonic;
@@ -413,6 +413,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		pInfo->hasDisp = 1;
 		pInfo->sizeDisp = 4;
 		pInfo->hasSeg = 1;
+        return;
 	}
 	switch (HiType)
 	{
@@ -439,12 +440,33 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->hasIndex = 0;
 			pOperand->reg = pInfo->ModRM.fields.RM;
+            if (pInfo->hasREX && pInfo->REX.fields.B)
+            {
+                pOperand->reg += 8;
+            }
 			pOperand->hasBase = !(5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod);
 		}
 		if (Mem == pOperand->type)
 		{
-			pOperand->reg |= Reg32;
-			pOperand->index |= Reg32;
+            switch (pContext->currentSize)
+            {
+            case 2:
+                pOperand->reg |= Reg16;
+                pOperand->index |= Reg16;
+                break;
+            case 4:
+                pOperand->reg |= Reg32;
+			    pOperand->index |= Reg32;
+                break;
+            case 8:
+                pOperand->reg |= Reg64;
+                pOperand->index |= Reg64;
+                break;
+            default:
+                pOperand->reg |= Reg32;
+                pOperand->index |= Reg32;
+                break;
+            }
 		}
 		else
 		{
@@ -455,6 +477,10 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	case C: case D: case G:
 		pOperand->type = Reg;
 		pOperand->reg = pInfo->ModRM.fields.Reg;
+        if (pInfo->hasREX && pInfo->REX.fields.R)
+        {
+            pOperand->reg += 8;
+        }
 		pOperand->reg |= RegForType(pContext, type);
 		break;
 	case I: case J:
@@ -693,6 +719,10 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	{
 		return 0;
 	}
+    if (8 == context.currentSize)
+    {
+        context.currentSize = (pInfo->hasREX && pInfo->REX.fields.W) ? 8 : 4;
+    }
 	pInfo->hasSeg = 0;
 	pInfo->hasModRM = 0;
 	pInfo->set = GP;

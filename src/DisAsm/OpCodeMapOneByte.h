@@ -91,7 +91,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* B8h - BFh */
 	{MOV, OP2(rAX, Iv)}, {MOV, OP2(rCX, Iv)}, {MOV, OP2(rBX, Iv)}, {MOV, OP2(rDX, Iv)}, {MOV, OP2(rSP, Iv)}, {MOV, OP2(rBP, Iv)}, {MOV, OP2(rSI, Iv)}, {MOV, OP2(rDI, Iv)},
 	/* C0h - C7h */
-	{GROUP2, OP2(Eb, Ib)}, {GROUP2, OP2(Ev, Ib)}, {RET, OP1(Iw)}, {RET}, {LES, OP2(Gz, Mp)}, {LDS, OP2(Gz, Mp)}, {GROUP11, OP2(Eb, Ib)}, {GROUP11, OP2(Ev, Iv)},
+	{GROUP2, OP2(Eb, Ib)}, {GROUP2, OP2(Ev, Ib)}, {RET, OP1(Iw)}, {RET}, {LES, OP2(Gz, Mp)}, {LDS, OP2(Gz, Mp)}, {GROUP11, OP2(Eb, Ib)}, {GROUP11, OP2(Ev, Iz)},
 	/* C8h - CFh */
 	{ENTER, OP2(Iw, Ib)}, {LEAVE}, {RET, OP1(Iw)}, {RET}, {_INT, OP1(3)}, {_INT, OP1(Ib)}, {INTO}, {IRET},
 	/* D0h - D7h */

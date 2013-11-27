@@ -303,7 +303,7 @@ void StackWalkInit()
 	}
 }
 
-void StackWalkSymbol(address_t address)
+void StackWalkSymbol(native_t address)
 {
 	DWORD i;
 	DWORD64 disp;
@@ -423,7 +423,7 @@ void StackWalk(native_t * callstack, Context * pContext)
 		}
 		if (0 != frame.AddrPC.Offset)
 		{
-			callstack[i] = frame.AddrPC.Offset;
+			callstack[i] = (native_t) frame.AddrPC.Offset;
 		}
 	}
 }

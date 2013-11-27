@@ -450,6 +450,7 @@ void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 
 void LeakTrackerInstall(uint8_t install)
 {
+#ifdef CPU_X86
 #ifdef OS_WINDOWS
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
     void * RtlFreeHeap = (void*) GetProcAddress(hModule, "RtlFreeHeap");
@@ -528,4 +529,5 @@ void LeakTrackerInstall(uint8_t install)
 			ConsoleIOPrintFormatted("[ERROR] total leaked %d bytes\n", total);
 		}
 	}
+#endif /* CPU_X86 */
 }
