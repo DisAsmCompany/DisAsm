@@ -33,28 +33,15 @@ typedef struct ReaderContext_t
 	pfnSkip    pSkip;
 	pfnDestroy pDestroy;
 	void *     pPrivate;
+	uint64_t   base;
 }
 ReaderContext;
 
 uint8_t ReaderRead(HREADER hReader, void * buffer, uint32_t size);
 uint8_t ReaderSeek(HREADER hReader, uint64_t pos);
 uint8_t ReaderSkip(HREADER hReader, uint64_t count);
+uint8_t ReaderSetBase(HREADER hReader, uint64_t base);
 void ReaderDestroy(HREADER hReader);
-
-typedef struct CallbackReader_t
-{
-	pfnRead    pRead;
-	pfnSeek    pSeek;
-	pfnSkip    pSkip;
-	pfnDestroy pDestroy;
-	void *     pPrivate;
-	uint8_t * buffer;
-	uint64_t offset;
-	uint64_t length;
-}
-CallbackReader;
-
-uint8_t CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size);
 
 #ifdef __cplusplus
 }

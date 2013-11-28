@@ -33,18 +33,21 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
 	{
 		return NULL;
 	}
-	CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
-	pContext->memory = memory;
-	pContext->hReader = hReader;
 	while (NULL != Registry[i])
 	{
+		CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
+		pContext->memory = memory;
+		pContext->hReader = hReader;
 		if (0 != Registry[i](pContext))
 		{
 			return (HEXECUTABLE) pContext;
 		}
+		else
+		{
+			ExecutableDestroy(pContext);
+		}
 		++i;
 	}
-	free(pContext);
 	return 0;
 }
 
@@ -67,6 +70,7 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
         {
             pContext->pDestroy(hExecutable);
         }
+		pContext->nObjects = 0;
 	}
 	free(hExecutable);
 }
@@ -74,39 +78,39 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].Arch : ArchUnknown;
+	return (NULL != pContext && NULL != pContext->pObjects) ? OBJ.Arch : ArchUnknown;
 }
 
 address_t ExecutableGetBase(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].Base : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? OBJ.Base : 0;
 }
 
 address_t ExecutableGetEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].EntryPoint : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? OBJ.EntryPoint : 0;
 }
 
 address_t ExecutableGetStubEntryPoint(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].StubEntryPoint : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? OBJ.StubEntryPoint : 0;
 }
 
 uint32_t ExecutableGetExportCount(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	return (NULL != pContext && NULL != pContext->pObjects) ? pContext->pObjects[pContext->iObject].nExports : 0;
+	return (NULL != pContext && NULL != pContext->pObjects) ? OBJ.nExports : 0;
 }
 
 address_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
+	if (NULL != pContext && NULL != pContext->pObjects && index < OBJ.nExports)
 	{
-		return pContext->pObjects[pContext->iObject].pExports[index].Address;
+		return OBJ.pExports[index].Address;
 	}
 	return 0;
 }
@@ -114,9 +118,9 @@ address_t ExecutableGetExportAddress(HEXECUTABLE hExecutable, uint32_t index)
 char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
+	if (NULL != pContext && NULL != pContext->pObjects && index < OBJ.nExports)
 	{
-		address_t address = pContext->pObjects[pContext->iObject].pExports[index].Name;
+		address_t address = OBJ.pExports[index].Name;
 		if (0 != address)
 		{
 			return FetchString(pContext, address);
@@ -128,9 +132,9 @@ char * ExecutableGetExportName(HEXECUTABLE hExecutable, uint32_t index)
 char * ExecutableGetExportForwarderName(HEXECUTABLE hExecutable, uint32_t index)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
-	if (NULL != pContext && NULL != pContext->pObjects && index < pContext->pObjects[pContext->iObject].nExports)
+	if (NULL != pContext && NULL != pContext->pObjects && index < OBJ.nExports)
 	{
-		address_t address = pContext->pObjects[pContext->iObject].pExports[index].Forwarder;
+		address_t address = OBJ.pExports[index].Forwarder;
 		if (0 != address)
 		{
 			return FetchString(pContext, address);
@@ -176,18 +180,18 @@ address_t ExecutableRVAToOffset(HEXECUTABLE hExecutable, address_t RVA)
 	if (NULL != pContext && NULL != pContext->pObjects)
 	{
 		uint16_t i = 0;
-		if (pContext->memory)
+		if (pContext->memory || OBJ.Object)
 		{
 			return RVA;
 		}
-		for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
+		for (i = 0; i < OBJ.nSections; ++i)
 		{
-			address_t Address = pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress;
-			address_t Size    = pContext->pObjects[pContext->iObject].pSections[i].VirtualSize;
-			address_t Data    = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
+			address_t Address = OBJ.pSections[i].VirtualAddress;
+			address_t Size    = OBJ.pSections[i].VirtualSize;
+			address_t Data    = OBJ.pSections[i].FileAddress;
 			if (Address <= RVA && RVA <= Address + Size)
 			{
-				offset = pContext->pObjects[pContext->iObject].Offset + Data + RVA - Address;
+				offset = OBJ.Offset + Data + RVA - Address;
 				break;
 			}
 		}

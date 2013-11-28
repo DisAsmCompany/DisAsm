@@ -17,6 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
+#define OBJ (pContext->pObjects[pContext->iObject])
 #define CHECK_CALL(x) for (;;) { if (0 == (x)) return 0; break; }
 #define CHECK_ALLOC(x) for (;;) { if (NULL == (x)) return 0; break; }
 
@@ -59,6 +60,8 @@ typedef struct ExecutableObject_t
 
 	uint32_t nExports;
 	ExecutableSymbol * pExports;
+
+	uint8_t Object;
 }
 ExecutableObject;
 

@@ -51,8 +51,8 @@ int ELFProcessExport(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	CHECK_ALLOC(pContext->pObjects[pContext->iObject].pExports = calloc(1, sizeof(ExecutableSymbol) * count));
-	pContext->pObjects[pContext->iObject].nExports = count;
+	CHECK_ALLOC(OBJ.pExports = calloc(1, sizeof(ExecutableSymbol) * count));
+	OBJ.nExports = count;
 
 	for (i = 0; i < count; ++i)
 	{
@@ -64,11 +64,11 @@ int ELFProcessExport(ExecutableContext * pContext)
 
 		if (0 != (address = SDFReadUInt32(hSymbol, ELFSymbolValue)))
 		{
-			pContext->pObjects[pContext->iObject].pExports[i].Address = ExecutableRVAToOffset(pContext, address);
+			OBJ.pExports[i].Address = ExecutableRVAToOffset(pContext, address);
 		}
 		if (0 != (name = SDFReadUInt32(hSymbol, ELFSymbolName)))
 		{
-			pContext->pObjects[pContext->iObject].pExports[i].Name = THIS->NamesAddress + name;
+			OBJ.pExports[i].Name = THIS->NamesAddress + name;
 		}
 #ifdef VERBOSE
 		/* too much to print */
@@ -105,21 +105,21 @@ int ELFFileOpen(ExecutableContext * pContext)
 	Machine = SDFReadUInt16(THIS->hHeader, ELFHeaderMachine);
 	switch (Machine)
 	{
-	case kELFMachine386:   pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
-	case kELFMachine486:   pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
-	case kELFMachineX8664: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
-	default:               pContext->pObjects[pContext->iObject].Arch = ArchUnknown; break;
+	case kELFMachine386:   OBJ.Arch = ArchX86; break;
+	case kELFMachine486:   OBJ.Arch = ArchX86; break;
+	case kELFMachineX8664: OBJ.Arch = ArchX64; break;
+	default:               OBJ.Arch = ArchUnknown; break;
 	}
 
 	IndexNames = SDFReadUInt16(THIS->hHeader, ELFHeaderSectionHeaderIndex);
 	OffsetSections   = SDFReadUInt32(THIS->hHeader, ELFHeaderOffsetSections);
-	pContext->pObjects[pContext->iObject].nSections = SDFReadUInt16(THIS->hHeader, ELFHeaderNumberOfSections);
+	OBJ.nSections = SDFReadUInt16(THIS->hHeader, ELFHeaderNumberOfSections);
 	SizeOfSection    = SDFReadUInt16(THIS->hHeader, ELFHeaderSizeOfSection);
 	if (SizeOfSection < SDFSizeInBytes(ELFSectionHeader))
 	{
 		return 0;
 	}
-	CHECK_ALLOC(pContext->pObjects[pContext->iObject].pSections = calloc(1, sizeof(ExecutableSection) * pContext->pObjects[pContext->iObject].nSections));
+	CHECK_ALLOC(OBJ.pSections = calloc(1, sizeof(ExecutableSection) * OBJ.nSections));
 
 	/* first off, lookup section names */
 	{
@@ -129,7 +129,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 		OffsetNames = SDFReadUInt32(hSectionHeader, ELFSectionHeaderOffset);
 		SDFDestroy(hSectionHeader);
 	}
-	for (i = 0; i < pContext->pObjects[pContext->iObject].nSections; ++i)
+	for (i = 0; i < OBJ.nSections; ++i)
 	{
 		HSDF hSectionHeader = NULL;
 		uint32_t type = 0;
@@ -139,10 +139,10 @@ int ELFFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(hSectionHeader = SDFCreate(ELFSectionHeader, pContext->hReader));
 
 		Name = SDFReadUInt32(hSectionHeader, ELFSectionHeaderName);
-		pContext->pObjects[pContext->iObject].pSections[i].VirtualAddress = SDFReadUInt32(hSectionHeader, ELFSectionHeaderAddress);
-		pContext->pObjects[pContext->iObject].pSections[i].FileAddress    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderOffset);
-		pContext->pObjects[pContext->iObject].pSections[i].FileSize       =
-		pContext->pObjects[pContext->iObject].pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderSize);
+		OBJ.pSections[i].VirtualAddress = SDFReadUInt32(hSectionHeader, ELFSectionHeaderAddress);
+		OBJ.pSections[i].FileAddress    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderOffset);
+		OBJ.pSections[i].FileSize       =
+		OBJ.pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, ELFSectionHeaderSize);
 
 		if (0 != Name)
 		{
@@ -151,7 +151,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 			{
 				if (0 == strcmp(value, ".dynstr"))
 				{
-					THIS->NamesAddress = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
+					THIS->NamesAddress = OBJ.pSections[i].FileAddress;
 				}
 				ConsoleIOPrintFormatted("section %s\n", value);
 			}
@@ -161,8 +161,8 @@ int ELFFileOpen(ExecutableContext * pContext)
 		type = SDFReadUInt32(hSectionHeader, ELFSectionHeaderType);
 		if (kELFSectionDynSym == type)
 		{
-			THIS->ExportAddress = pContext->pObjects[pContext->iObject].pSections[i].FileAddress;
-			THIS->ExportSize = pContext->pObjects[pContext->iObject].pSections[i].FileSize;
+			THIS->ExportAddress = OBJ.pSections[i].FileAddress;
+			THIS->ExportSize = OBJ.pSections[i].FileSize;
 		}
 		SDFPrint(hSectionHeader);
 		SDFDestroy(hSectionHeader);
@@ -181,8 +181,8 @@ int ELFFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(THIS->phProgramHeaders[i] = SDFCreate(ELFProgramHeader, pContext->hReader));
 		SDFPrint(THIS->phProgramHeaders[i]);
 	}
-	pContext->pObjects[pContext->iObject].EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
-	pContext->pObjects[pContext->iObject].StubEntryPoint = 0;
+	OBJ.EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
+	OBJ.StubEntryPoint = 0;
 
 	ELFProcessExport(pContext);
 	return 1;

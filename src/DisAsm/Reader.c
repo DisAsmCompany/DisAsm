@@ -20,7 +20,7 @@ uint8_t ReaderRead(HREADER hReader, void * buffer, uint32_t size)
 uint8_t ReaderSeek(HREADER hReader, uint64_t pos)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
-	return pContext->pSeek(hReader, pos);
+	return pContext->pSeek(hReader, pContext->base + pos);
 }
 
 uint8_t ReaderSkip(HREADER hReader, uint64_t count)
@@ -29,20 +29,15 @@ uint8_t ReaderSkip(HREADER hReader, uint64_t count)
 	return pContext->pSkip(hReader, count);
 }
 
+uint8_t ReaderSetBase(HREADER hReader, uint64_t base)
+{
+	ReaderContext * pContext = (ReaderContext*) hReader;
+	pContext->base = base;
+	return 1;
+}
+
 void ReaderDestroy(HREADER hReader)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	pContext->pDestroy(hReader);
-}
-
-uint8_t CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
-{
-	CallbackReader * pData = (CallbackReader*) pContext->pPrivate;
-	if ((pData->offset + size <= pData->length) || 0 == pData->length)
-	{
-		memcpy(buffer, pData->buffer + pData->offset, size);
-		pData->offset += size;
-		return 1;
-	}
-	return 0;
 }

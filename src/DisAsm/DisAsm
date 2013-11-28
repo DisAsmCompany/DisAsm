@@ -16,6 +16,7 @@
 #include "Reader.h"
 #include "MemoryReader.h"
 #include "FileReader.h"
+#include "CallbackReader.h"
 #include "Benchmark.h"
 #include "StrEnum.h"
 #include "ModRM.h"

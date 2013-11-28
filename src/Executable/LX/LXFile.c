@@ -77,7 +77,7 @@ int LXFileOpen(ExecutableContext * pContext)
 
 		SDFPrint(THIS->phObjectTable[i]);
 	}
-	pContext->pObjects[pContext->iObject].Arch = ArchX86;
+	OBJ.Arch = ArchX86;
 	return 1;
 }
 

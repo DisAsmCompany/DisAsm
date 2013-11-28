@@ -88,8 +88,8 @@ int NEFileOpen(ExecutableContext * pContext)
 	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
 	pContext->iObject  = 0;
 	pContext->nObjects = 1;
-	pContext->pObjects[pContext->iObject].Arch = ArchX86;
-	pContext->pObjects[pContext->iObject].StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
+	OBJ.Arch = ArchX86;
+	OBJ.StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
 }
 
