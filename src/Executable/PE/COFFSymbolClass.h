@@ -20,6 +20,7 @@ extern "C" {
 typedef enum _COFFSymbolClass_t
 {
 	kCOFFSymbolClassExternal = 0x02,
+    kCOFFSymbolClassStatic   = 0x03,
 	kCOFFSymbolClassFile     = 0x67
 }
 COFFSymbolClass;
@@ -29,7 +30,7 @@ static const SDFEnum _COFFSymbolClass[] =
 	{"IMAGE_SYM_CLASS_NULL",             0x00},
 	{"IMAGE_SYM_CLASS_AUTOMATIC",        0x01},
 	{"IMAGE_SYM_CLASS_EXTERNAL",         kCOFFSymbolClassExternal},
-	{"IMAGE_SYM_CLASS_STATIC",           0x03},
+	{"IMAGE_SYM_CLASS_STATIC",           kCOFFSymbolClassStatic},
 	{"IMAGE_SYM_CLASS_REGISTER",         0x04},
 	{"IMAGE_SYM_CLASS_EXTERNAL_DEF",     0x05},
 	{"IMAGE_SYM_CLASS_LABEL",            0x06},

@@ -17,6 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
+enum { COFFSymbolTableValue                    = 0 };
 enum { COFFSymbolTableSectionNumber            = 4 };
 enum { COFFSymbolTableType                     = 6 };
 enum { COFFSymbolTableStorageClass             = 8 };
@@ -27,7 +28,7 @@ static const SDFElement COFFSymbolTable[] =
 	{"COFF Symbol Table"},
 	{"Value                      ", kUnsigned, 4, 1},
 	{"Section Number             ", kUnsigned, 2, 1, COFFSectionNumber},
-	{"Type                       ", kUnsigned, 2, 1, COFFSymbolType},
+	{"Type                       ", kUnsigned, 2, 1, _COFFSymbolType},
 	{"Storage Class              ", kUnsigned, 1, 1, _COFFSymbolClass},
 	{"Number Of Auxiliary Symbols", kUnsigned, 1, 1},
 	{NULL}

@@ -26,6 +26,6 @@ for root, dirs, files in os.walk(sysroot):
 		for ext in extensions:
 			if file.endswith(ext):
 				print(file);
-				print(file, file=sys.stderr);
+				sys.stderr.write(file);
 				sys.stderr.flush();
 				os.system(disasm + ' ' + file + ' > ' + 'out\\' + file + '.txt')

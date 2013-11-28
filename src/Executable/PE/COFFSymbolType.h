@@ -17,7 +17,13 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFEnum COFFSymbolType[] =
+typedef enum COFFSymbolType_t
+{
+    kCOFFSymbolTypeFunction = 0x0020
+}
+COFFSymbolType;
+
+static const SDFEnum _COFFSymbolType[] =
 {
 	{"IMAGE_SYM_TYPE_NULL",   0x0000},
 	{"IMAGE_SYM_TYPE_VOID",   0x0001},
@@ -35,7 +41,7 @@ static const SDFEnum COFFSymbolType[] =
 	{"IMAGE_SYM_TYPE_WORD",   0x000D},
 	{"IMAGE_SYM_TYPE_UINT",   0x000E},
 	{"IMAGE_SYM_TYPE_DWORD",  0x000F},
-	{"IMAGE_SYM_TYPE_FUNC",   0x0020},
+	{"IMAGE_SYM_TYPE_FUNC",   kCOFFSymbolTypeFunction},
 	{"IMAGE_SYM_TYPE_PCODE",  0x8000},
 	{NULL}
 };

@@ -54,7 +54,6 @@ typedef struct PEFileContext_t
 	uint32_t SizeExport;
 	uint32_t AddressPE;
 	uint32_t PointerToSymbolTable;
-	uint32_t NumberOfSymbols;
 	uint8_t PE64;
 	uint8_t Object;
 	uint32_t * ExportFunctions;
@@ -375,18 +374,22 @@ int OBJFileOpen(ExecutableContext * pContext)
 	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
 	if (kPEMachineX86 == Machine || kPEMachineX64 == Machine)
 	{
+        uint32_t NumberOfSymbols = 0;
 		SDFPrint(THIS->hFileHeader);
 		CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
 		pContext->iObject = 0;
 		pContext->nObjects = 1;
 		THIS->PointerToSymbolTable = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderPointerToSymbolTable);
-		THIS->NumberOfSymbols = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderNumberOfSymbols);
+        NumberOfSymbols = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderNumberOfSymbols);
+        CHECK_ALLOC(pContext->pObjects[pContext->iObject].pExports = calloc(1, sizeof(ExecutableSymbol) * NumberOfSymbols));
+		pContext->pObjects[pContext->iObject].nExports = NumberOfSymbols;
 		switch (Machine)
 		{
 		case kPEMachineX86: pContext->pObjects[pContext->iObject].Arch = ArchX86; break;
 		case kPEMachineX64: pContext->pObjects[pContext->iObject].Arch = ArchX64; break;
 		default: pContext->pObjects[pContext->iObject].Arch = ArchUnknown; break;
 		}
+        THIS->Object = 1;
 		return 1;
 	}
 	return 0;
@@ -400,7 +403,8 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		uint32_t j = 0;
 		char * buffer = NULL;
 		uint32_t size = 0;
-		CHECK_CALL(ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable + THIS->NumberOfSymbols * 18));
+        uint32_t OffsetNames = THIS->PointerToSymbolTable + pContext->pObjects[pContext->iObject].nExports * 18;
+		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetNames));
 		CHECK_CALL(ReaderRead(pContext->hReader, &size, sizeof(uint32_t)));
 		if (size < sizeof(uint32_t))
 		{
@@ -425,8 +429,11 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			free(buffer);
 			return 0;
 		}
-		for (i = 0; i < THIS->NumberOfSymbols; ++i)
+		for (i = 0; i < pContext->pObjects[pContext->iObject].nExports; ++i)
 		{
+            uint32_t Value = 0;
+            uint16_t Section = 0;
+            uint16_t Type = 0;
 			uint8_t Aux = 0;
 			uint8_t Class = 0;
 			uint32_t Symbol[2] = {0};
@@ -436,19 +443,37 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			if (0 == Symbol[0])
 			{
 				ConsoleIOPrintFormatted("%s\n", buffer + Symbol[1] - 4);
+                pContext->pObjects[pContext->iObject].pExports[i].Name = OffsetNames + Symbol[1];
 			}
 			else
 			{
 				char name[9] = {0};
 				memcpy(name, &Symbol, 8);
 				ConsoleIOPrintFormatted("%s\n", name);
+                pContext->pObjects[pContext->iObject].pExports[i].Name = OffsetNames + i * 18;
 			}
 			
 			hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
 			SDFPrint(hSymbols);
 
+            Value = SDFReadUInt32(hSymbols, COFFSymbolTableValue);
+            Section = SDFReadUInt16(hSymbols, COFFSymbolTableSectionNumber);
+            Type = SDFReadUInt16(hSymbols, COFFSymbolTableType);
 			Class = SDFReadUInt8(hSymbols, COFFSymbolTableStorageClass);
 			Aux = SDFReadUInt8(hSymbols, COFFSymbolTableNumberOfAuxiliarySymbols);
+
+            if (kCOFFSymbolTypeFunction == Type)
+            {
+                if ((kCOFFSymbolClassExternal == Class || kCOFFSymbolClassStatic == Class) && 0 != Value)
+                {
+                    /* IMAGE_SYM_CLASS_STATIC : the value field specifies the offset of the symbol within the section
+                    if the Value is 0, then symbol represents a section name */
+                    if (Section > 0 && --Section < pContext->pObjects[pContext->iObject].nSections)
+                    {
+                        pContext->pObjects[pContext->iObject].pExports[i].Address = pContext->pObjects[pContext->iObject].pSections[Section].FileAddress + Value;
+                    }
+                }
+            }
 
 			for (j = 0; j < Aux; ++j)
 			{
