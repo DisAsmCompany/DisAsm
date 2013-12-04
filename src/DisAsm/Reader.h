@@ -23,7 +23,7 @@ struct ReaderContext_t;
 
 typedef uint8_t (*pfnRead)(struct ReaderContext_t * hReader, void * buffer, uint32_t size);
 typedef uint8_t (*pfnSeek)(struct ReaderContext_t * hReader, uint64_t pos);
-typedef uint8_t (*pfnSkip)(struct ReaderContext_t * hReader, uint64_t count);
+typedef uint8_t (*pfnSkip)(struct ReaderContext_t * hReader, int64_t count);
 typedef void (*pfnDestroy)(struct ReaderContext_t * hReader);
 
 typedef struct ReaderContext_t

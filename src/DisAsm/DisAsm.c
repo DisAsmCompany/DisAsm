@@ -354,8 +354,9 @@ Register registers[][5] =
 	/* U */ {0, 0, 0, RegSSE, RegSSE},
 	/* V */ {0, 0, 0, RegSSE, RegSSE},
 	/* W */ {0, 0, 0, RegSSE, RegSSE},
-	/* P */ {0, 0, 0, RegMMX, 0},
-	/* Q */ {0, 0, 0, RegMMX, 0}
+	/* P */ {0, 0, 0, RegMMX, RegMMX},
+	/* Q */ {0, 0, 0, RegMMX, RegMMX},
+	/* N */ {0, 0, 0, RegMMX, RegMMX}
 };
 
 Register RegForType(DisAsmContext * pContext, OperandType type)
@@ -478,6 +479,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		break;
 	case P: case S: case V:
 	case C: case D: case G:
+	case N:
 		pOperand->type = Reg;
 		pOperand->reg = pInfo->ModRM.fields.Reg;
         if (pInfo->hasREX && pInfo->REX.fields.R)

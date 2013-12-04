@@ -458,7 +458,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			}
 			
 			hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
-			SDFPrint(hSymbols);
+			/* SDFPrint(hSymbols); */
 
             Value = SDFReadUInt32(hSymbols, COFFSymbolTableValue);
             Section = SDFReadUInt16(hSymbols, COFFSymbolTableSectionNumber);
@@ -644,7 +644,6 @@ int LIBFileOpen(ExecutableContext * pContext)
 		{
 			uint32_t Offset = 0;
 			CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
-			ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
 		}
 		for (i = 0; i < NumberOfSymbols; ++i)
 		{
@@ -666,17 +665,10 @@ int LIBFileOpen(ExecutableContext * pContext)
 		{
 			uint32_t Offset = 0;
 			CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
-			ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
 			pContext->pObjects[i].Offset = Offset + SDFSizeInBytes(COFFLibraryHeader);
 		}
 		CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)));
-		for (i = 0; i < NumberOfSymbols; ++i)
-		{
-			uint8_t Index1 = 0;
-			uint8_t Index2 = 0;
-			CHECK_CALL(ReaderRead(pContext->hReader, &Index1, sizeof(uint8_t)));
-			CHECK_CALL(ReaderRead(pContext->hReader, &Index2, sizeof(uint8_t)));
-		}
+		ReaderSkip(pContext->hReader, 2 * NumberOfSymbols);
 		for (i = 0; i < NumberOfSymbols; ++i)
 		{
 			CHECK_CALL(GetString(pContext->hReader));

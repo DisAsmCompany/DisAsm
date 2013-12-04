@@ -164,11 +164,11 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	uint8_t i;
 	for (i = 0; i < pInfo->length; ++i)
 	{
-		ConsoleIOPrintFormatted("%02X ", pInfo->bytes[i]);
+		ConsoleIOPrintFormatted("%02X", pInfo->bytes[i]);
 	}
 	for (i = pInfo->length; i < 15; ++i)
 	{
-		ConsoleIOPrint("   ");
+		ConsoleIOPrint("  ");
 	}
 	for (i = 0; i < pInfo->nPrefixes; ++i)
 	{

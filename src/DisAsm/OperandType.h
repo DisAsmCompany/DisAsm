@@ -42,6 +42,7 @@ typedef enum OperandType_t
 	W = 0x0110 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
 	P = 0x0120 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
 	Q = 0x0130 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
+	N = 0x0140 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field (packed quadword) */
 
     _  = 0x00, /* no type */
 	b  = 0x01, /* byte, regardless of operand size attribute*/
@@ -97,6 +98,7 @@ typedef enum OperandType_t
 	DEFINE_TYPE(P)
 	DEFINE_TYPE(Q)
 	DEFINE_TYPE(A)
+	DEFINE_TYPE(N)
 }
 OperandType;
 

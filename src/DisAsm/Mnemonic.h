@@ -442,6 +442,10 @@ _ENUM_ELEMENT(PMULHUW)  /* Multiply Packed Unsigned Integers and Store High Resu
 _ENUM_ELEMENT(PMULUDQ)  /* Multiply Packed Unsigned Integers */
 _ENUM_ELEMENT(PSADDBW)  /* Compute Sum of Absolute Differences */
 _ENUM_ELEMENT(PMADDWD)  /* Multiply and Add Packed Integers */
+_ENUM_ELEMENT(PSHUFW)   /* Shuffle Packed Words */
+_ENUM_ELEMENT(PSHUFD)   /* Shuffle Packed Double-Words */
+_ENUM_ELEMENT(PSHUFHW)  /* Shuffle Packed High Words */ 
+_ENUM_ELEMENT(PSHUFLW)  /* Shuffle Packed Low Words */
 _ENUM_ELEMENT(MOVQ)     /* Move Quad Word */
 _ENUM_ELEMENT(MOVD)     /* Move Double Word */
 _ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
@@ -478,6 +482,7 @@ _ENUM_ELEMENT(COMISS)   /* Compare Scalar Ordered Single-Precision Floating Poin
 _ENUM_ELEMENT(UCOMISS)  /* Compare Scalar Unordered Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPPS)    /* Compare Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPSS)    /* Compare Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(SHUFPS)   /* Shuffle Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKLPS) /* Unpack and Interleave Low Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKHPS) /* Unpack and Interleave High Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CVTPI2PS) /* Convert Packed Double Word Integers to Packed Single-Precision Floating Point Values */
@@ -514,6 +519,7 @@ _ENUM_ELEMENT(COMISD)   /* Compare Scalar Ordered Double-Precision Floating Poin
 _ENUM_ELEMENT(UCOMISD)  /* Compare Scalar Unordered Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPPD)    /* Compare Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(CMPSD)    /* Compare Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(SHUFPD)   /* Shuffle Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKLPD) /* Unpack and Interleave Low Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(UNPCKHPD) /* Unpack and Interleave High Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(LDMXCSR)  /* Load MXCSR Register */
@@ -531,11 +537,17 @@ _ENUM_ELEMENT(CVTTSD2SI)/* Convert with Truncation Scalar Double-Precision Float
 _ENUM_ELEMENT(CVTDQ2PD) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
 _ENUM_ELEMENT(CVTPD2DQ) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
 _ENUM_ELEMENT(CVTTPD2DQ)/* Convert with Truncation Packed Double-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(MOVQ2DQ)  /* Move Quad-Word from XMM to MMX Register */
+_ENUM_ELEMENT(MOVDQ2Q)  /* Move Quad-Word from MMX to XMM Register */
 /* SSE3 */
 _ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
 _ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */
 _ENUM_ELEMENT(ADDSUBPS) /* Packed Single-Precision Floating Point Values Add/Subtract */
 _ENUM_ELEMENT(ADDSUBPD) /* Packed Double-Precision Floating Point Values Add/Subtract */
+_ENUM_ELEMENT(HADDPS)   /* Horizontal Add Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(HADDPD)   /* Horizontal Add Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(HSUBPS)   /* Horizontal Subtract Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(HSUBPD)   /* Horizontal Subtract Packed Double-Precision Floating Point Values */
 /* SMX */
 _ENUM_ELEMENT(GETSEC)   /* Safer Mode Extensions */
 /* prefixes */
