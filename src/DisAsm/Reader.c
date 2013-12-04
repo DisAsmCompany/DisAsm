@@ -23,7 +23,7 @@ uint8_t ReaderSeek(HREADER hReader, uint64_t pos)
 	return pContext->pSeek(hReader, pContext->base + pos);
 }
 
-uint8_t ReaderSkip(HREADER hReader, uint64_t count)
+uint8_t ReaderSkip(HREADER hReader, int64_t count)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;
 	return pContext->pSkip(hReader, count);

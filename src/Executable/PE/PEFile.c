@@ -605,12 +605,25 @@ int GetString(HREADER hReader)
 	return 1;
 }
 
+uint8_t CheckEOL(HREADER hReader)
+{
+	uint8_t eol = 0;
+	CHECK_CALL(ReaderRead(hReader, &eol, sizeof(uint8_t)));
+	if ('\n' != eol)
+	{
+		CHECK_CALL(ReaderSkip(hReader, -1));
+	}
+	return 1;
+}
+
 int LIBFileOpen(ExecutableContext * pContext)
 {
 	HSDF hHeader = NULL;
 	uint32_t NumberOfMembers = 0;
 	uint32_t NumberOfSymbols = 0;
 	uint32_t i = 0;
+	uint64_t Name;
+	
 	char Signature[8] = {0};
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(ReaderRead(pContext->hReader, Signature, kCOFFLibrarySignatureSize));
@@ -620,61 +633,78 @@ int LIBFileOpen(ExecutableContext * pContext)
 	}
 	hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader);
 	SDFPrint(hHeader);
+	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* first linker member */
-	CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)));
-	NumberOfSymbols = LE2BE32(NumberOfSymbols);
-	for (i = 0; i < NumberOfSymbols; ++i)
+	if (0 == memcmp(&Name, kCOFFMemberLinker, kCOFFLibrarySignatureSize))
 	{
-		uint32_t Offset = 0;
-		CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
-		ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
-	}
-	for (i = 0; i < NumberOfSymbols; ++i)
-	{
-		CHECK_CALL(GetString(pContext->hReader));
+		CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)));
+		NumberOfSymbols = LE2BE32(NumberOfSymbols);
+		for (i = 0; i < NumberOfSymbols; ++i)
+		{
+			uint32_t Offset = 0;
+			CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
+			ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
+		}
+		for (i = 0; i < NumberOfSymbols; ++i)
+		{
+			CHECK_CALL(GetString(pContext->hReader));
+		}
+		CHECK_CALL(CheckEOL(pContext->hReader));
 	}
 	CHECK_CALL(hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader));
 	SDFPrint(hHeader);
+	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* second linker member */
-	CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfMembers, sizeof(uint32_t)));
-	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject) * NumberOfMembers));
-	pContext->nObjects = NumberOfMembers;
-	for (i = 0; i < NumberOfMembers; ++i)
+	if (0 == memcmp(&Name, kCOFFMemberLinker, kCOFFLibrarySignatureSize))
 	{
-		uint32_t Offset = 0;
-		CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
-		ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
-		pContext->pObjects[i].Offset = Offset + SDFSizeInBytes(COFFLibraryHeader);
-	}
-	CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)));
-	for (i = 0; i < NumberOfSymbols; ++i)
-	{
-		uint8_t Index1 = 0;
-		uint8_t Index2 = 0;
-		CHECK_CALL(ReaderRead(pContext->hReader, &Index1, sizeof(uint8_t)));
-		CHECK_CALL(ReaderRead(pContext->hReader, &Index2, sizeof(uint8_t)));
-		ConsoleIOPrintFormatted("0x%02X 0x%02X\n", Index1, Index2);
-	}
-	for (i = 0; i < NumberOfSymbols; ++i)
-	{
-		CHECK_CALL(GetString(pContext->hReader));
+		CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfMembers, sizeof(uint32_t)));
+		CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject) * NumberOfMembers));
+		pContext->nObjects = NumberOfMembers;
+		for (i = 0; i < NumberOfMembers; ++i)
+		{
+			uint32_t Offset = 0;
+			CHECK_CALL(ReaderRead(pContext->hReader, &Offset, sizeof(uint32_t)));
+			ConsoleIOPrintFormatted("Offset : 0x%08X\n", Offset);
+			pContext->pObjects[i].Offset = Offset + SDFSizeInBytes(COFFLibraryHeader);
+		}
+		CHECK_CALL(ReaderRead(pContext->hReader, &NumberOfSymbols, sizeof(uint32_t)));
+		for (i = 0; i < NumberOfSymbols; ++i)
+		{
+			uint8_t Index1 = 0;
+			uint8_t Index2 = 0;
+			CHECK_CALL(ReaderRead(pContext->hReader, &Index1, sizeof(uint8_t)));
+			CHECK_CALL(ReaderRead(pContext->hReader, &Index2, sizeof(uint8_t)));
+		}
+		for (i = 0; i < NumberOfSymbols; ++i)
+		{
+			CHECK_CALL(GetString(pContext->hReader));
+		}
+		CHECK_CALL(CheckEOL(pContext->hReader));
 	}
 	CHECK_CALL(hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader));
 	SDFPrint(hHeader);
+	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* long names member */
-	for (i = 0; i < NumberOfMembers; ++i)
+	if (0 == memcmp(&Name, kCOFFMemberLinker, kCOFFLibrarySignatureSize))
 	{
-		CHECK_CALL(GetString(pContext->hReader));
+		for (i = 0; i < NumberOfMembers; ++i)
+		{
+			CHECK_CALL(GetString(pContext->hReader));
+		}
+		CHECK_CALL(CheckEOL(pContext->hReader));
 	}
 	for (i = 0; i < NumberOfMembers; ++i)
 	{
 		CHECK_CALL(ReaderSeek(pContext->hReader, pContext->pObjects[pContext->iObject = i].Offset));
+		
 		ReaderSetBase(pContext->hReader, pContext->pObjects[pContext->iObject = i].Offset);
-		CHECK_CALL(OBJInit(pContext));
-		CHECK_CALL(PEFileInit(pContext));
+ 		if (1 == OBJInit(pContext))
+		{
+			CHECK_CALL(PEFileInit(pContext));
+		}
 		ReaderSetBase(pContext->hReader, 0);
 	}
 	pContext->iObject = 0;
@@ -685,16 +715,19 @@ int PEFileCreate(ExecutableContext * pContext)
 {
 	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(PEFileContext)));
 
-	if (0 == PEFileOpen(pContext) && 0 == OBJFileOpen(pContext) && 0 == LIBFileOpen(pContext))
+	if (0 == LIBFileOpen(pContext))
 	{
-		PEFileDestroy(pContext);
-		return 0;
+		if (0 == PEFileOpen(pContext) && 0 == OBJFileOpen(pContext))
+		{
+			PEFileDestroy(pContext);
+			return 0;
+		}
+		if (0 == PEFileInit(pContext))
+		{
+			PEFileDestroy(pContext);
+			return 0;
+		}
 	}
-	if (0 == PEFileInit(pContext))
-	{
-		PEFileDestroy(pContext);
-		return 0;
-	};
 	pContext->pDestroy = PEFileDestroy;
 	
 	return 1;

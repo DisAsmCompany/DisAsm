@@ -66,7 +66,7 @@ uint8_t FileReaderSeek(ReaderContext * pContext, uint64_t pos)
 	return 0;
 }
 
-uint8_t FileReaderSkip(ReaderContext * pContext, uint64_t count)
+uint8_t FileReaderSkip(ReaderContext * pContext, int64_t count)
 {
 	if (THIS->offset + count < THIS->size)
 	{

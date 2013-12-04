@@ -17,8 +17,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const char kCOFFLibrarySignatureSize = 8;
+enum { kCOFFLibrarySignatureSize = 8 };
+
 static const char kCOFFLibrarySignature[] = "!<arch>\n";
+
+static const char kCOFFMemberLinker[]    = "/       ";
+static const char kCOFFMemberLongNames[] = "//      ";
 
 static const SDFElement COFFLibraryHeader[] =
 {

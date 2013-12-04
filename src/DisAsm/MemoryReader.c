@@ -43,7 +43,7 @@ uint8_t MemoryReaderSeek(ReaderContext * pContext, uint64_t pos)
 	return 0;
 }
 
-uint8_t MemoryReaderSkip(ReaderContext * pContext, uint64_t count)
+uint8_t MemoryReaderSkip(ReaderContext * pContext, int64_t count)
 {
 	if (THIS->offset + count < THIS->size)
 	{
