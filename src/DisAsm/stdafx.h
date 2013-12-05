@@ -17,7 +17,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__)
 #define OS_WINDOWS
 
 #ifdef _M_IX86
@@ -30,16 +30,72 @@ extern "C" {
 #define CPU_IA64
 #endif /* _M_IA64 */
 
-#endif /* _WIN32 */
+#endif /* defined(_WIN32) || defined(__WIN32__) || defined(__WINDOWS__) */
+
+#if defined(_WIN32_WCE)
+#define OS_WINDOWSCE
+#endif /* defined(_WIN32_WCE) */
 
 #if defined(__unix__) || defined(__unix)
 #define OS_UNIX
 #endif /* defined(__unix__) || defined(__unix) */
 
-#if defined(__APPLE__)
+#if defined(macintosh) || defined(Macintosh)
+#define OS_MACOS
+#endif /* defined(macintosh) || defined(Macintosh) */
+
+#if defined(__APPLE__) || defined(__MACH__)
 #define OS_UNIX
 #define OS_MACOSX
-#endif /* defined(__APPLE__) */
+#endif /* defined(__APPLE__) || defined(__MACH__) */
+
+#if defined(__linux__) || defined(linux) || defined(__linux)
+#define OS_LINUX
+#endif /* defined(__linux__) || defined(linux) || defined(__linux) */
+
+#if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
+#define OS_BSD
+#define OS_FREEBSD
+#endif /* defined(__FreeBSD__) || defined(__FreeBSD_kernel__) */
+
+#if defined(__NetBSD__)
+#define OS_BSD
+#define OS_NETBSD
+#endif /* defined(__NetBSD__) */
+
+#if defined(__OpenBSD__)
+#define OS_BSD
+#define OS_OPENBSD
+#endif /* defined(__OpenBSD__) */
+
+#if defined(__DragonFly__)
+#define OS_BSD
+#define OS_DRAGONFLYBSD
+#endif /* defined(__DragonFly__) */
+
+#if defined(sun) || defined(__sun)
+#if defined(__SVR4) || defined(__svr4__)
+#define OS_SOLARIS
+#else /* defined(__SVR4) || defined(__svr4__) */
+#define OS_SUNOS
+#endif /* defined(__SVR4) || defined(__svr4__) */
+#endif /* defined(sun) || defined(__sun) */
+
+#if defined(MSDOS) || defined(__MSDOS__) || defined(_MSDOS) || defined(__DOS__)
+#define OS_MSDOS
+#endif /* defined(MSDOS) || defined(__MSDOS__) || defined(_MSDOS) || defined(__DOS__) */
+
+#if defined(OS2) || defined(_OS2) || defined(__OS2__) || defined(__TOS_OS2__)
+#define OS_OS2
+#endif /* defined(OS2) || defined(_OS2) || defined(__OS2__) || defined(__TOS_OS2__) */
+
+#if defined(AMIGA) || defined(__amigaos__)
+#define OS_AMIGA
+#endif /* defined(AMIGA) || defined(__amigaos__) */
+
+#if defined(__BEOS__)
+#define OS_BEOS
+#endif /* defined(__BEOS__)
 
 #if defined(__CYGWIN__)
 #define OS_CYGWIN
@@ -82,6 +138,18 @@ extern "C" {
 #if defined(__INTEL_COMPILER) || defined(__ICC) || defined(__ECL) || defined(__ICL)
 #define COMP_INTELC
 #endif /* defined(__INTEL_COMPILER) || defined(__ICC) || defined(__ECL) || defined(__ICL) */
+
+#if defined (__NWCC__)
+#define COMP_NWCC
+#endif /* defined(__NWCC__)
+
+#if defined (__TINYC__)
+#define COMP_TINYC
+#endif /* defined(__TINYC__)
+
+#if defined(_OPENMP)
+#define HAS_OPENMP
+#endif /* defined(_OPENMP) */
 
 #include <stdio.h>
 #include <stdlib.h>

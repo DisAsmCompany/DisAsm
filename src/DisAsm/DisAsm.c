@@ -307,14 +307,13 @@ uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 	/* double-word (4 bytes), regardless of operand size attribute */
 	case d: result = 4; break;
 	/* quad-word, regardless of operand size attribute */
-	case q: result = 8; break;
+	case q:
+	case oq: result = 8; break;
 	/* oct-word, regardless of operand size attribute */
 	case o: 
-    case pi:
-	case ps:
-	case ss:
-	case pd:
-	case sd: result = 16; break;
+	case pk: case pi: case pj:
+	case ps: case ss: case pd: case sd:
+		result = 16; break;
 	/* word for 16-bit operand size, or double-word for 32-bit and 64-bit operand size */
 	case z:
 		switch (pContext->currentSize)
@@ -362,7 +361,7 @@ Register registers[][5] =
 Register RegForType(DisAsmContext * pContext, OperandType type)
 {
 	Register reg = 0;
-	OperandType HiType = (HITYPE(type) - E) >> 4;
+	OperandType HiType = (HITYPE(type) - E) >> 8;
 
 	switch (SizeForType(pContext, type))
 	{

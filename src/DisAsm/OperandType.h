@@ -17,32 +17,35 @@
 extern "C" {
 #endif /* __cplusplus */
 
+enum { OperandBase  = 0x00004000UL };
+enum { RegisterBase = 0x00010000UL };
+
 typedef enum OperandType_t
 {
-	MaskModRM = 0x0800,
-	Reg = 0x10FF, /* operand is register (explicitly specified) */
-	Imm = 0x10FE, /* operand is immediate (explicitly specified) */
-	Mem = 0x10FD, /* operand is memory */
-	I = 0x0010, /* immediate data */
-	J = 0x0020, /* relative offset */
-	O = 0x0030, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
-	X = 0x0040, /* Memory addressed by the DS:rSI register pair */
-	Y = 0x0050, /* Memory addressed by the ES:rDI register pair */
-	F = 0x0060, /* FLAGS/EFLAGS/RFLAGS */
-	A = 0x0070, /* instruction has no ModR/M byte, direct address */
-	E = 0x0080 | MaskModRM, /* instruction has ModR/M byte, general-purpose register operand is defined in R/M field */
-	G = 0x0090 | MaskModRM, /* instruction has ModR/M byte, general-purpose register operand is defined in Reg field */
-	M = 0x00A0 | MaskModRM, /* instruction has ModR/M byte, but it may refer to memory only */
-	S = 0x00B0 | MaskModRM, /* instruction has ModR/M byte, segment register operand is defined in Reg field */
-	R = 0x00C0 | MaskModRM, /* instruction has ModR/M byte, R/M field may refer only to general register */
-	D = 0x00D0 | MaskModRM, /* instruction has ModR/M byte, debug register operand is defined in Reg field */
-	C = 0x00E0 | MaskModRM, /* instruction has ModR/M byte, control register operand is defined in Reg field */
-	U = 0x00F0 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
-	V = 0x0100 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in Reg field */
-	W = 0x0110 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
-	P = 0x0120 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
-	Q = 0x0130 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
-	N = 0x0140 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field (packed quadword) */
+	MaskModRM = 0x2000,
+	Reg = OperandBase | 0xFF, /* operand is register (explicitly specified) */
+	Imm = OperandBase | 0xFE, /* operand is immediate (explicitly specified) */
+	Mem = OperandBase | 0xFD, /* operand is memory */
+	I = 0x0100, /* immediate data */
+	J = 0x0200, /* relative offset */
+	O = 0x0300, /* instruction has no ModR/M byte, offset of operand is coded as word or double-word depending on operand-size attribute */
+	X = 0x0400, /* Memory addressed by the DS:rSI register pair */
+	Y = 0x0500, /* Memory addressed by the ES:rDI register pair */
+	F = 0x0600, /* FLAGS/EFLAGS/RFLAGS */
+	A = 0x0700, /* instruction has no ModR/M byte, direct address */
+	E = 0x0800 | MaskModRM, /* instruction has ModR/M byte, general-purpose register operand is defined in R/M field */
+	G = 0x0900 | MaskModRM, /* instruction has ModR/M byte, general-purpose register operand is defined in Reg field */
+	M = 0x0A00 | MaskModRM, /* instruction has ModR/M byte, but it may refer to memory only */
+	S = 0x0B00 | MaskModRM, /* instruction has ModR/M byte, segment register operand is defined in Reg field */
+	R = 0x0C00 | MaskModRM, /* instruction has ModR/M byte, R/M field may refer only to general register */
+	D = 0x0D00 | MaskModRM, /* instruction has ModR/M byte, debug register operand is defined in Reg field */
+	C = 0x0E00 | MaskModRM, /* instruction has ModR/M byte, control register operand is defined in Reg field */
+	U = 0x0F00 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
+	V = 0x1000 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in Reg field */
+	W = 0x1100 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
+	P = 0x1200 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
+	Q = 0x1300 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
+	N = 0x1400 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field (packed quadword) */
 
     _  = 0x00, /* no type */
 	b  = 0x01, /* byte, regardless of operand size attribute*/
@@ -57,27 +60,33 @@ typedef enum OperandType_t
 	ss = 0x0A, /* 128-bit or 256-bit scalar single-precision floating-point data */
 	pd = 0x0B, /* 128-bit or 256-bit packed double-precision floating-point data */
 	sd = 0x0C, /* 128-bit or 256-bit scalar double-precision floating-point data */
-    pi = 0x0D, /* quadword MMX register */
-	a  = 0x0E, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
-	y  = 0x0F, /* double-word or quad-word, depending on operand-size attribute */
+    pk = 0x0D, /* quadword MMX register (vector composed of 8-bit integers) */
+	pi = 0x0E, /* quadword MMX register (vector composed of 16-bit integers) */
+	pj = 0x0F, /* quadword MMX register (vector composed of 32-bit integers) */
+	a  = 0x10, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
+	y  = 0x11, /* double-word or quad-word, depending on operand-size attribute */
+	oq = 0x12, /* operand is either the upper or lower half of 128-bit value */
 
 #define DEFINE_TYPE(T) \
-	T##b  = 0x1000 | T | b, \
-	T##v  = 0x1000 | T | v, \
-	T##z  = 0x1000 | T | z, \
-	T##p  = 0x1000 | T | p, \
-	T##w  = 0x1000 | T | w, \
-	T##q  = 0x1000 | T | q, \
-	T##d  = 0x1000 | T | d, \
-	T##o  = 0x1000 | T | o, \
-	T##ps = 0x1000 | T | ps, \
-	T##ss = 0x1000 | T | ss, \
-	T##pd = 0x1000 | T | pd, \
-	T##sd = 0x1000 | T | sd, \
-    T##pi = 0x1000 | T | pi, \
-	T##a  = 0x1000 | T | a, \
-	T##_  = 0x1000 | T | _, \
-	T##y  = 0x1000 | T | y, \
+	T##b  = OperandBase | T | b, \
+	T##v  = OperandBase | T | v, \
+	T##z  = OperandBase | T | z, \
+	T##p  = OperandBase | T | p, \
+	T##w  = OperandBase | T | w, \
+	T##q  = OperandBase | T | q, \
+	T##d  = OperandBase | T | d, \
+	T##o  = OperandBase | T | o, \
+	T##ps = OperandBase | T | ps, \
+	T##ss = OperandBase | T | ss, \
+	T##pd = OperandBase | T | pd, \
+	T##sd = OperandBase | T | sd, \
+	T##pk = OperandBase | T | pk, \
+	T##pi = OperandBase | T | pi, \
+	T##pj = OperandBase | T | pj, \
+	T##a  = OperandBase | T | a, \
+	T##_  = OperandBase | T | _, \
+	T##y  = OperandBase | T | y, \
+	T##oq = OperandBase | T | oq, \
 
 	DEFINE_TYPE(E)
 	DEFINE_TYPE(G)
@@ -119,14 +128,14 @@ operand type is defined in range 0100h - 01FFh
 calculate operands count : how many non-zero bytes are in packed type definition
 */
 
-/* explicit register - range REGISTERBASE and higher */
-#define EXTRACT_REG(x) (((x) >= REGISTERBASE) ? (x) : 0)
-/* explicit immediate - range 00h - 0FFh */
-#define EXTRACT_IMM(x) ((0 < (x) && (x) < 0x1000) ? (x) : 0)
+/* explicit register - range RegisterBase and higher */
+#define EXTRACT_REG(x) (((x) >= RegisterBase) ? (x) : 0)
+/* explicit immediate - range 00h - OperandBase */
+#define EXTRACT_IMM(x) ((0 < (x) && (x) < OperandBase) ? (x) : 0)
 
 /* other type */
 #define EXTRACT_TYPE(x) (EXTRACT_REG(x) ? Reg : (EXTRACT_IMM(x) ? Imm : (x)))
-#define PACK_TYPE(x) (OperandType)((EXTRACT_TYPE(x) > 0x1000) ? (EXTRACT_TYPE(x)) : 0)
+#define PACK_TYPE(x) (OperandType)((EXTRACT_TYPE(x) > OperandBase) ? (EXTRACT_TYPE(x)) : 0)
 
 #define OP4(x, y, z, w) \
 	{(PACK_TYPE(x)), \
@@ -142,8 +151,8 @@ calculate operands count : how many non-zero bytes are in packed type definition
 
 #define OPCOUNT(x) (!!(x)[0] + !!(x)[1] + !!(x)[2] + !!(x)[3])
 
-#define LOTYPE(x) (OperandType)((x - 0x1000) & 0x000F)
-#define HITYPE(x) (OperandType)((x - 0x1000) & 0x0FF0)
+#define LOTYPE(x) (OperandType)((x - OperandBase) & 0x00FF)
+#define HITYPE(x) (OperandType)((x - OperandBase) & 0xFF00)
 
 #define HASMODRM(x) (0 != (x & MaskModRM))
 

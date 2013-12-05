@@ -66,7 +66,8 @@ OpCodeMapElement OpCodeMapGroup[] =
 	*/
 	{PREFETCHT0}, {PREFETCHT1}, {PREFETCHT2}, {PREFETCHNTA}, {NOP}, {NOP}, {NOP}, {NOP},
 	/* GROUP17 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	/* SSE4A - appears in AMD manual but not in Intel */
+	{EXTRQ, OP3(Voq, Ib, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUPP */
 	/*
 	Intel defines just /0 for PREFETCHW

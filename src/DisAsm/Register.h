@@ -27,9 +27,7 @@ in order to allow coding of Operand Type / Register in single word field
 (see also OperandType.h for details on coding)
 */
 
-#define REGISTERBASE 0x00010000UL
-
-#define SHIFT4(x) (REGISTERBASE + ((x) << 4))
+#define SHIFT4(x) (RegisterBase + ((x) << 4))
 
 #ifndef DefineRegisters
 #define DefineRegisters(name0, name1, name2, name3, name4, name5, name6, name7, name8, name9, name10, name11, name12, name13, name14, name15, value, base) \
@@ -73,7 +71,7 @@ _ENUM_ELEMENT_VALUE(name##14, value | 14) \
 _ENUM_ELEMENT_VALUE(name##15, value | 15)
 #endif /* DefineRegisters16 */
 
-_ENUM_START(Register, REGISTERBASE)
+_ENUM_START(Register, RegisterBase)
 DefineRegisters(rAX, rCX, rDX, rBX, rSP, rBP, rSI, rDI, r8,  r9,  r10,  r11,  r12,  r13,  r14,  r15,  rRegister, 0x00)
 DefineRegisters(eAX, eCX, eDX, eBX, eSP, eBP, eSI, eDI, e8,  e9,  e10,  e11,  e12,  e13,  e14,  e15,  eRegister, 0x01)
 DefineRegisters(AL,  CL,  DL,  BL,  AH,  CH,  DH,  BH,  R8B, R9B, R10B, R11B, R12B, R13B, R14B, R15B, Reg8,  0x02)
@@ -89,7 +87,7 @@ DefineRegisters16(XMM, RegSSE, 0x0B)
 DefineRegisters16(YMM, RegAVX, 0x0C)
 DefineRegisters16(ZMM, RegAVX512, 0x0D)
 
-_ENUM_STOP(Register, REGISTERBASE)
+_ENUM_STOP(Register, RegisterBase)
 
 #ifdef __cplusplus
 }

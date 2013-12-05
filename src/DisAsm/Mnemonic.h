@@ -446,6 +446,23 @@ _ENUM_ELEMENT(PSHUFW)   /* Shuffle Packed Words */
 _ENUM_ELEMENT(PSHUFD)   /* Shuffle Packed Double-Words */
 _ENUM_ELEMENT(PSHUFHW)  /* Shuffle Packed High Words */ 
 _ENUM_ELEMENT(PSHUFLW)  /* Shuffle Packed Low Words */
+_ENUM_ELEMENT(PUNPCKLBW)/* Unpack and Interleave Low-Order Bytes */
+_ENUM_ELEMENT(PUNPCKLWD)/* Unpack and Interleave Low-Order Words */
+_ENUM_ELEMENT(PUNPCKLDQ)/* Unpack and Interleave Low-Order Double-Words */
+_ENUM_ELEMENT(PUNPCKLQDQ)/* Unpack and Interleave Low-Order Quad-Words */
+_ENUM_ELEMENT(PUNPCKHBW)/* Unpack and Interleave High-Order Bytes */
+_ENUM_ELEMENT(PUNPCKHWD)/* Unpack and Interleave High-Order Words */
+_ENUM_ELEMENT(PUNPCKHDQ)/* Unpack and Interleave High-Order Double-Words */
+_ENUM_ELEMENT(PUNPCKHQDQ)/* Unpack and Interleave High-Order Quad-Words */
+_ENUM_ELEMENT(PCMPEQB)  /* Compare Packed Bytes */
+_ENUM_ELEMENT(PCMPEQW)  /* Compare Packed Words */
+_ENUM_ELEMENT(PCMPEQD)  /* Compare Packed Double-Words */
+_ENUM_ELEMENT(PCMPGTB)  /* Compare Packed Bytes for Greater Than */
+_ENUM_ELEMENT(PCMPGTW)  /* Compare Packed Words for Greater Than */
+_ENUM_ELEMENT(PCMPGTD)  /* Compare Packed Double-Words for Greater Than */
+_ENUM_ELEMENT(PACKSSWB) /* Pack with Signed Saturation */
+_ENUM_ELEMENT(PACKUSWB) /* Pack with Unsigned Saturation */
+_ENUM_ELEMENT(PACKSSDW) /* Pack with Signed Saturation */
 _ENUM_ELEMENT(MOVQ)     /* Move Quad Word */
 _ENUM_ELEMENT(MOVD)     /* Move Double Word */
 _ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
@@ -456,6 +473,10 @@ _ENUM_ELEMENT(FEMMS)
 _ENUM_ELEMENT(MOVUPS)   /* Move Unaligned Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPS)   /* Move Aligned Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVSS)    /* Move Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVLPS)   /* Move Low Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVHPS)   /* Move High Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVNTPS)  /* Store Packed Single-Precision Floating Point Values Using Non-Temporal Hint */
+_ENUM_ELEMENT(MOVMSKPS) /* Extract Packed Single-Precision Floating Point Sing-Mask */
 _ENUM_ELEMENT(SQRTPS)   /* Square Root of Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(SQRTSS)   /* Square Root of Scalar Single-Precision Floating Point Values */
 _ENUM_ELEMENT(RSQRTPS)  /* Reciprocal of Square Root of Packed Single-Precision Floating Point Values */
@@ -491,10 +512,17 @@ _ENUM_ELEMENT(CVTTPS2PI)/* Convert with Truncation Packed Single-Precision Float
 _ENUM_ELEMENT(CVTSI2SS) /* Convert Scalar Double Word Integers to Scalar Single-Precision Floating Point Values */
 _ENUM_ELEMENT(CVTSS2SI) /* Convert Scalar Single-Precision Floating Point Values to Scalar Double Word Integers */
 _ENUM_ELEMENT(CVTTSS2SI)/* Convert with Truncation Scalar Single-Precision Floating Point Values to Scalar Double Word Integers */
+_ENUM_ELEMENT(PINSRW)   /* Insert Word */
+_ENUM_ELEMENT(PEXTRW)   /* Extract Word */
+_ENUM_ELEMENT(PMOVMSKB) /* Move Byte Mask */
 /* SSE2 */
 _ENUM_ELEMENT(MOVUPD)   /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPD)   /* Move Aligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVSD)    /* Move Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVLPD)   /* Move Low Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVHPD)   /* Move High Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(MOVNTPD)  /* Store Packed Double-Precision Floating Point Values Using Non-Temporal Hint */
+_ENUM_ELEMENT(MOVMSKPD) /* Extract Packed Double-Precision Floating Point Sing-Mask */
 _ENUM_ELEMENT(SQRTPD)   /* Square Root of Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(SQRTSD)   /* Square Root of Scalar Double-Precision Floating Point Values */
 _ENUM_ELEMENT(RSQRTPD)  /* Reciprocal of Square Root of Packed Double-Precision Floating Point Values */
@@ -542,17 +570,29 @@ _ENUM_ELEMENT(CVTPS2DQ) /* Convert Single-Precision Floating Point Values to Pac
 _ENUM_ELEMENT(CVTTPS2DQ)/* Convert with Truncation Single-Precision Floating Point Values to Packed Double-Word Integer Values */
 _ENUM_ELEMENT(MOVQ2DQ)  /* Move Quad-Word from XMM to MMX Register */
 _ENUM_ELEMENT(MOVDQ2Q)  /* Move Quad-Word from MMX to XMM Register */
+_ENUM_ELEMENT(MOVNTQ)   /* Store of Quad-Word using Non-Temporal Hint */
+_ENUM_ELEMENT(MOVNTDQ)  /* Store of Double Quad-Word using Non-Temporal Hint */
 /* SSE3 */
 _ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
 _ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */
+_ENUM_ELEMENT(MOVDDUP)  /* Move One Double-Precision Floating Point Value and Duplicate */
 _ENUM_ELEMENT(ADDSUBPS) /* Packed Single-Precision Floating Point Values Add/Subtract */
 _ENUM_ELEMENT(ADDSUBPD) /* Packed Double-Precision Floating Point Values Add/Subtract */
 _ENUM_ELEMENT(HADDPS)   /* Horizontal Add Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(HADDPD)   /* Horizontal Add Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(HSUBPS)   /* Horizontal Subtract Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(HSUBPD)   /* Horizontal Subtract Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(LDDQU)    /* Load Unaligned Integer 128 bits */
+/* SSE4A */
+_ENUM_ELEMENT(MOVNTSS)  /* Store Scalar Single-Precision Floating Point Values Using Non-Temporal Hint */
+_ENUM_ELEMENT(MOVNTSD)  /* Store Scalar Single-Precision Floating Point Values Using Non-Temporal Hint */
+_ENUM_ELEMENT(EXTRQ)    /* Extract Field From Register */
+_ENUM_ELEMENT(INSERTQ)  /* Insert Field */
 /* SMX */
 _ENUM_ELEMENT(GETSEC)   /* Safer Mode Extensions */
+/* VMX */
+_ENUM_ELEMENT(VMREAD)   /* Read Field from Virtual Machine Control Structure */
+_ENUM_ELEMENT(VMWRITE)  /* Write Field to Virtual Machine Control Structure */
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */

@@ -478,7 +478,7 @@ void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 
     Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
 
-    target = pOriginal + length;
+    target = (native_t) (pOriginal + length);
     pThunk[ThunkSize + 0] = 0xFF;
     pThunk[ThunkSize + 1] = 0x25;
     pThunk[ThunkSize + 2] = 0x00;
