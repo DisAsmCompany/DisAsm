@@ -141,11 +141,11 @@ extern "C" {
 
 #if defined (__NWCC__)
 #define COMP_NWCC
-#endif /* defined(__NWCC__)
+#endif /* defined(__NWCC__) */
 
 #if defined (__TINYC__)
 #define COMP_TINYC
-#endif /* defined(__TINYC__)
+#endif /* defined(__TINYC__) */
 
 #if defined(_OPENMP)
 #define HAS_OPENMP
