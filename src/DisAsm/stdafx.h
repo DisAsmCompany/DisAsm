@@ -95,7 +95,7 @@ extern "C" {
 
 #if defined(__BEOS__)
 #define OS_BEOS
-#endif /* defined(__BEOS__)
+#endif /* defined(__BEOS__) */
 
 #if defined(__CYGWIN__)
 #define OS_CYGWIN
