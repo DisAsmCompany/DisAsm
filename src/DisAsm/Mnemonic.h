@@ -537,6 +537,9 @@ _ENUM_ELEMENT(CVTTSD2SI)/* Convert with Truncation Scalar Double-Precision Float
 _ENUM_ELEMENT(CVTDQ2PD) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
 _ENUM_ELEMENT(CVTPD2DQ) /* Convert Packed Double-Precision Floating Point Values to Packed Double Word Integers */
 _ENUM_ELEMENT(CVTTPD2DQ)/* Convert with Truncation Packed Double-Precision Floating Point Values to Packed Double Word Integers */
+_ENUM_ELEMENT(CVTDQ2PS) /* Convert Packed Double-Word Integer Values to Single-Precision Floating Point Values */
+_ENUM_ELEMENT(CVTPS2DQ) /* Convert Single-Precision Floating Point Values to Packed Double-Word Integer Values */
+_ENUM_ELEMENT(CVTTPS2DQ)/* Convert with Truncation Single-Precision Floating Point Values to Packed Double-Word Integer Values */
 _ENUM_ELEMENT(MOVQ2DQ)  /* Move Quad-Word from XMM to MMX Register */
 _ENUM_ELEMENT(MOVDQ2Q)  /* Move Quad-Word from MMX to XMM Register */
 /* SSE3 */

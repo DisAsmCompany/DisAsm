@@ -40,18 +40,18 @@ NONE 4 X X X X X X X X 4 X X X X X X X X 4
 0x66 4 X X X X X X X X 4 X X X X X X X X 4
 0xF2 4 X X X X X X X X 4 X X X X X X X X 4
 0xF3 4 X X X X X X X X 4 X X X X X X X X 4
-NONE 5   X X X X X X X 5 X X X   X X X X 5
-0x66 5   X U U X X X X 5 X X X   X X X X 5
-0xF2 5   X U U U U U U 5 X X X   X X X X 5
-0xF3 5   X X X U U U U 5 X X X   X X X X 5
+NONE 5   X X X X X X X 5 X X X X X X X X 5
+0x66 5   X U U X X X X 5 X X X X X X X X 5
+0xF2 5   X U U U U U U 5 X X X U X X X X 5
+0xF3 5   X X X U U U U 5 X X X X X X X X 5
 NONE 6                 6             X X 6
 0x66 6                 6             X X 6
 0xF2 6                 6             U   6
 0xF3 6                 6             U X 6
-NONE 7 X X X X       X 7         U U   X 7
-0x66 7 X               7         X X   X 7
-0xF2 7 X               7         X X     7
-0xF3 7 X               7         U U   X 7
+NONE 7 X X X X       X 7     U U U U X X 7
+0x66 7 X               7     U U X X X X 7
+0xF2 7 X               7     U U X X U U 7
+0xF3 7 X               7     U U U U X X 7
        0 1 2 3 4 5 6 7   8 9 A B C D E F
 NONE 8 X X X X X X X X 8 X X X X X X X X 8
 0x66 8 X X X X X X X X 8 X X X X X X X X 8
@@ -167,10 +167,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {SQRTSD, OP2(Vsd, Wsd)}, {DB},                     {DB},                   {DB},                   {DB},                    {DB},                  {DB},
 	{DB}, {SQRTSS, OP2(Vss, Wss)}, {RSQRTSS, OP2(Vss, Wss)}, {RCPSS, OP2(Vss, Wss)}, {DB},                   {DB},                    {DB},                  {DB},
 	/* 0F58h - 0F5Fh */
-	{ADDPS, OP2(Vps, Wps)}, {MULPS, OP2(Vps, Wps)}, {CVTPS2PD, OP2(Vpd, Wps)}, {DB}, {SUBPS, OP2(Vps, Wps)}, {MINPS, OP2(Vps, Wps)}, {DIVPS, OP2(Vps, Wps)}, {MAXPS, OP2(Vps, Wps)},
-	{ADDPD, OP2(Vpd, Wpd)}, {MULPD, OP2(Vpd, Wpd)}, {CVTPD2PS, OP2(Vps, Wpd)}, {DB}, {SUBPD, OP2(Vpd, Wpd)}, {MINPD, OP2(Vpd, Wpd)}, {DIVPD, OP2(Vpd, Wpd)}, {MAXPD, OP2(Vpd, Wpd)},
-	{ADDSD, OP2(Vsd, Wsd)}, {MULSD, OP2(Vsd, Wsd)}, {CVTSD2SS, OP2(Vss, Wsd)}, {DB}, {SUBSD, OP2(Vsd, Wsd)}, {MINSD, OP2(Vsd, Wsd)}, {DIVSD, OP2(Vsd, Wsd)}, {MAXSD, OP2(Vsd, Wsd)},
-	{ADDSS, OP2(Vss, Wss)}, {MULSS, OP2(Vss, Wss)}, {CVTSS2SD, OP2(Vsd, Wss)}, {DB}, {SUBSS, OP2(Vss, Wss)}, {MINSS, OP2(Vss, Wss)}, {DIVSS, OP2(Vss, Wss)}, {MAXSS, OP2(Vss, Wss)},
+	{ADDPS, OP2(Vps, Wps)}, {MULPS, OP2(Vps, Wps)}, {CVTPS2PD, OP2(Vpd, Wps)}, {CVTDQ2PS, OP2(Vps, Wo)},  {SUBPS, OP2(Vps, Wps)}, {MINPS, OP2(Vps, Wps)}, {DIVPS, OP2(Vps, Wps)}, {MAXPS, OP2(Vps, Wps)},
+	{ADDPD, OP2(Vpd, Wpd)}, {MULPD, OP2(Vpd, Wpd)}, {CVTPD2PS, OP2(Vps, Wpd)}, {CVTPS2DQ, OP2(Vo, Wps)},  {SUBPD, OP2(Vpd, Wpd)}, {MINPD, OP2(Vpd, Wpd)}, {DIVPD, OP2(Vpd, Wpd)}, {MAXPD, OP2(Vpd, Wpd)},
+	{ADDSD, OP2(Vsd, Wsd)}, {MULSD, OP2(Vsd, Wsd)}, {CVTSD2SS, OP2(Vss, Wsd)}, {DB},                      {SUBSD, OP2(Vsd, Wsd)}, {MINSD, OP2(Vsd, Wsd)}, {DIVSD, OP2(Vsd, Wsd)}, {MAXSD, OP2(Vsd, Wsd)},
+	{ADDSS, OP2(Vss, Wss)}, {MULSS, OP2(Vss, Wss)}, {CVTSS2SD, OP2(Vsd, Wss)}, {CVTTPS2DQ, OP2(Vo, Wps)}, {SUBSS, OP2(Vss, Wss)}, {MINSS, OP2(Vss, Wss)}, {DIVSS, OP2(Vss, Wss)}, {MAXSS, OP2(Vss, Wss)},
 	/* 0F60h - 0F67h */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
@@ -187,10 +187,10 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{PSHUFLW, OP3(Vq, Wq, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{PSHUFHW, OP3(Vq, Wq, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F78h - 0F7Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB},                    {DB},                    {DB}, {MOVQ, OP2(Qq, Pq)},
-	{DB}, {DB}, {DB}, {DB}, {HADDPD, OP2(Vpd, Wpd)}, {HSUBPD, OP2(Vpd, Wpd)}, {DB}, {MOVDQA, OP2(Wo, Vo)},
-	{DB}, {DB}, {DB}, {DB}, {HADDPS, OP2(Vps, Wps)}, {HSUBPS, OP2(Vps, Wps)}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB},                    {DB},                    {DB}, {MOVDQU, OP2(Wo, Vo)},
+	{DB}, {DB}, {DB}, {DB}, {DB},                    {DB},                    {MOVD, OP2(Ey, Py)}, {MOVQ, OP2(Qq, Pq)},
+	{DB}, {DB}, {DB}, {DB}, {HADDPD, OP2(Vpd, Wpd)}, {HSUBPD, OP2(Vpd, Wpd)}, {MOVD, OP2(Vy, Ey)}, {MOVDQA, OP2(Wo, Vo)},
+	{DB}, {DB}, {DB}, {DB}, {HADDPS, OP2(Vps, Wps)}, {HSUBPS, OP2(Vps, Wps)}, {DB},                {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB},                    {DB},                    {MOVQ, OP2(Vq, Wq)}, {MOVDQU, OP2(Wo, Vo)},
 	/* 0F80h - 0F87h */
 	{JO, OP1(Jz)}, {JNO, OP1(Jz)}, {JB, OP1(Jz)}, {JAE, OP1(Jz)}, {JE, OP1(Jz)}, {JNE, OP1(Jz)}, {JBE, OP1(Jz)}, {JA, OP1(Jz)},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

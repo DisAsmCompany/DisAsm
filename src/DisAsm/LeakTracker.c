@@ -163,6 +163,16 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 			memcpy(pOut + total + 1, &offset, 4);
 			pOut[total] = jmp;
 		}
+        else if (0x0F == pData[total] && 0x80 <= pData[total + 1] && pData[total + 1] <= 0x8F)
+        {
+            /* 0x0F 0x8* Jcc Rel32 */
+            uint32_t offset = 0;
+            memcpy(&offset, pData + total + 2, 4);
+            offset = offset + pData - pOut;
+            memcpy(pOut + total + 2, &offset, 4);
+            pOut[total] = 0x0F;
+            pOut[total + 1] = pData[total + 1];
+        }
 		else
 		{
 			memcpy(pOut + total, pData + total, length);
@@ -252,10 +262,13 @@ int __stdcall xRtlFreeHeap(void * heap, uint32_t flags, void * address)
         return pOriginalRtlFreeHeap(heap, flags, address);
     }
     xHeapCalled = true;
-    result = pOriginalRtlFreeHeap(heap, flags, address);
-    if (result && NULL != address)
+    if (NULL != address)
     {
-        xUpdateAllocation(address, heap, 0, true);
+        result = pOriginalRtlFreeHeap(heap, flags, address);
+        if (result)
+        {
+            xUpdateAllocation(address, heap, 0, true);
+        }
     }
     xHeapCalled = false;
     return result;
@@ -418,7 +431,7 @@ void Protect(native_t address, ProtectType type)
 #endif /* OS_WINDOWS */
 }
 
-void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
+void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 {
 	uint32_t length = 0;
 	native_t offset = CalculateOffsetForJMP((native_t)pOriginal, (native_t)pHook);
@@ -429,7 +442,7 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
-	Protect((native_t)xThunkHeapAlloc, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+	Protect((native_t) pThunk, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
 	Protect((native_t) pOriginal, ProtectTypeWrite);
 	pOriginal[0] = jmp;
 	memcpy(pOriginal + 1, &offset, 4);
@@ -439,6 +452,50 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 	offset = CalculateOffsetForJMP((native_t)(pThunk + ThunkSize), (native_t)(pOriginal + length));
 	pThunk[ThunkSize] = jmp;
 	memcpy(pThunk + ThunkSize + 1, &offset, 4);
+}
+
+void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
+{
+    uint32_t length = 0;
+    native_t target = 0;
+    memset(pThunk, nop, 2 * ThunkSize);
+
+    if (0 == (length = PatchLength(pOriginal, pThunk, 14)))
+    {
+        return;
+    }
+    Protect((native_t) pThunk, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+    Protect((native_t) pOriginal, ProtectTypeWrite);
+
+    target = (native_t) pHook;
+    pOriginal[0] = 0xFF;
+    pOriginal[1] = 0x25;
+    pOriginal[2] = 0x00;
+    pOriginal[3] = 0x00;
+    pOriginal[4] = 0x00;
+    pOriginal[5] = 0x00;
+    memcpy(pOriginal + 6, &target, 8);
+
+    Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
+
+    target = pOriginal + length;
+    pThunk[ThunkSize + 0] = 0xFF;
+    pThunk[ThunkSize + 1] = 0x25;
+    pThunk[ThunkSize + 2] = 0x00;
+    pThunk[ThunkSize + 3] = 0x00;
+    pThunk[ThunkSize + 4] = 0x00;
+    pThunk[ThunkSize + 5] = 0x00;
+    memcpy(pThunk + ThunkSize + 6, &target, 8);
+}
+
+void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
+{
+#ifdef CPU_X86
+    PatchFunctionX86(pOriginal, pHook, pThunk);
+#endif /* CPU_X86 */
+#ifdef CPU_X64
+    PatchFunctionX64(pOriginal, pHook, pThunk);
+#endif /* CPU_X64 */
 }
 
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
