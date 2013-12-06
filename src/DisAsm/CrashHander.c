@@ -128,17 +128,66 @@ void InfoEnvironment()
 	}
 }
 
+uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx);
+
+#if defined(COMP_WATCOMC)
+
+#pragma aux CallCPUID = \
+".586" \
+"push eax" \
+"push ebx" \
+"push ecx" \
+"push edx" \
+"mov eax, esi" \
+"cpuid" \
+"mov esi, [esp]" \
+"test esi, esi" \
+"jmp skip_edx" \
+"mov [esi], edx" \
+"skip_edx: nop" \
+"mov esi, [esp + 4]" \
+"test esi, esi" \
+"jmp skip_ecx" \
+"mov [esi], ecx" \
+"skip_ecx: nop" \
+"mov esi, [esp + 8]" \
+"test esi, esi" \
+"jmp skip_ebx" \
+"mov [esi], ebx" \
+"skip_ebx: nop" \
+"mov esi, [esp + 12]" \
+"test esi, esi" \
+"jmp skip_eax" \
+"mov [esi], eax" \
+"skip_eax: nop" \
+"add esp, 16" \
+parm [esi][eax][ebx][ecx][edx] \
+modify [esi eax ebx ecx edx];
+
+#else /* defined(COMP_WATCOMC) */
+
 uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
 {
     uint32_t _eax, _ebx, _ecx, _edx;
-#ifdef COMP_MICROSOFTC
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
     int info[4];
     __cpuid(info, level);
     _eax = info[0];
     _ebx = info[1];
     _ecx = info[2];
     _edx = info[3];
-#endif /* COMP_MICROSOFTC */
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_BORLANDC)
+	__asm
+	{
+		mov eax, level
+		cpuid
+		mov _eax, eax
+		mov _ebx, ebx
+		mov _ecx, ecx
+		mov _edx, edx
+	}
+#endif /* defined(COMP_BORLANDC) */
     if (outeax) *outeax = _eax;
     if (outebx) *outebx = _ebx;
     if (outecx) *outecx = _ecx;
@@ -146,16 +195,58 @@ uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_
     return _eax;
 }
 
+#endif /* defined(COMP_WATCOMC) */
+
+native_t ReadEFLAGS();
+void WriteEFLAGS(native_t eflags);
+
+#if defined(COMP_WATCOMC)
+
+#pragma aux ReadEFLAGS = \
+	".586" \
+	"pushfd" \
+	"pop eax" \
+	modify [eax];
+
+#pragma aux WriteEFLAGS = \
+	".586" \
+	"push eax" \
+	"popfd" \
+	parm [eax] \
+	modify [eax];
+
+#else /* defined(COMP_WATCOMC) */
+
+native_t ReadEFLAGS()
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	return __readeflags();
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void WriteEFLAGS(native_t eflags)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	__writeeflags(eflags);
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+#endif /* defined(COMP_WATCOMC) */
+
 uint8_t CheckCPUID()
 {
+	/*
+	The ID flag (bit 21) in the EFLAGS register indicates support for the CPUID instruction.
+	If a software procedure can set and clear this flag, 
+	the processor executing the procedure supports the CPUID instruction. 
+	This instruction operates the same in non-64-bit modes and 64-bit mode.
+	*/
     native_t kFlagCPUID = 1 << 21;
     uint8_t supported = 0;
-#ifdef COMP_MICROSOFTC
-    native_t eflags = __readeflags();
-    __writeeflags(eflags ^ kFlagCPUID);
-    supported = (eflags & kFlagCPUID) != (__readeflags() & kFlagCPUID);
-    __writeeflags(eflags);
-#endif /* COMP_MICROSOFTC */
+    native_t eflags = ReadEFLAGS();
+    WriteEFLAGS(eflags ^ kFlagCPUID);
+    supported = (eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID);
+    WriteEFLAGS(eflags);
     return supported;
 }
 
@@ -311,7 +402,7 @@ void InfoCPU()
 
             if (MaxExtendedLevel >= 0x80000004UL)
             {
-                char brand[48] = {0};
+                char brand[49] = {0};
                 CallCPUID(0x80000002UL, (uint32_t*)(brand + 0x00), (uint32_t*)(brand + 0x04), (uint32_t*)(brand + 0x08), (uint32_t*)(brand + 0x0C));
                 CallCPUID(0x80000003UL, (uint32_t*)(brand + 0x10), (uint32_t*)(brand + 0x14), (uint32_t*)(brand + 0x18), (uint32_t*)(brand + 0x1C));
                 CallCPUID(0x80000004UL, (uint32_t*)(brand + 0x20), (uint32_t*)(brand + 0x24), (uint32_t*)(brand + 0x28), (uint32_t*)(brand + 0x2C));
@@ -455,7 +546,6 @@ void CrashHandlerInstall()
 #ifdef OS_WINDOWS
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
-    InfoCPU();
 #endif /* OS_WINDOWS */
 #ifdef OS_UNIX
 	size_t i;
