@@ -116,7 +116,7 @@ extern "C" {
 #endif /* OS_UNIX */
 
 #if defined(_MSC_VER)
-#define COMP_MICOROSOFTC
+#define COMP_MICROSOFTC
 #endif /* defined(_MSC_VER) */
 
 #if defined(__BORLANDC__) || defined(__CODEGEARC__)
