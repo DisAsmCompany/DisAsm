@@ -11,13 +11,15 @@
 
 #include "DisAsm"
 
+#ifdef OS_WINDOWS
+typedef HANDLE FileHandle;
+#else /* OS_WINDOWS */
+typedef int FileHandle;
+#endif /* OS_WINDOWS */
+
 typedef struct FileReaderContext_t
 {
-#ifdef OS_WINDOWS
-	HANDLE hFile;
-#else /* OS_WINDOWS */
-	int hFile;
-#endif /* OS_WINDOWS */
+    FileHandle hFile;
 	uint64_t size;
 	uint64_t offset;
 }
@@ -56,6 +58,7 @@ uint8_t FileReaderSeek(ReaderContext * pContext, uint64_t pos)
 		from.QuadPart = pos;
 		if (SetFilePointerEx(THIS->hFile, from, &to, FILE_BEGIN))
 #else /* OS_WINDOWS */
+        /* TODO : lseek64 */
 		if (-1 != lseek(THIS->hFile, pos, SEEK_SET))
 #endif /* OS_WINDOWS */
 		{
@@ -75,6 +78,7 @@ uint8_t FileReaderSkip(ReaderContext * pContext, int64_t count)
 		from.QuadPart = count;
 		if (SetFilePointerEx(THIS->hFile, from, &to, FILE_CURRENT))
 #else /* OS_WINDOWS */
+        /* TODO : lseek64 */
 		if (-1 != lseek(THIS->hFile, count, SEEK_CUR))
 #endif /* OS_WINDOWS */
 		{
@@ -98,29 +102,25 @@ void FileReaderDestroy(ReaderContext * pContext)
 
 HREADER FileReaderCreate(const char * path)
 {
+    FileHandle hFile;
 #ifdef OS_WINDOWS
 	LARGE_INTEGER li = {0};
-	HANDLE hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-#else /* OS_WINDOWS */
-	int hFile = open(path, O_RDONLY);
 #endif /* OS_WINDOWS */
 	ReaderContext * pContext = NULL;
 	FileReaderContext * pPrivate = NULL;
 #ifdef OS_WINDOWS
-	if (INVALID_HANDLE_VALUE == hFile)
+	if (INVALID_HANDLE_VALUE == (hFile = CreateFileA(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)))
 #else /* OS_WINDOWS */
-	if (-1 == hFile)
+	if (-1 == (hFile = open(path, O_RDONLY)))
 #endif /* OS_WINDOWS */
 	{
 		char fullpath[NtfsMaxPath] = {0};
 		xstrcat(fullpath, NtfsMaxPath, "C:\\Windows\\System32\\");
 		xstrcat(fullpath, NtfsMaxPath, path);
 #ifdef OS_WINDOWS
-		hFile = CreateFileA(fullpath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		if (INVALID_HANDLE_VALUE == hFile)
+		if (INVALID_HANDLE_VALUE == (hFile = CreateFileA(fullpath, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)))
 #else /* OS_WINDOWS */
-		hFile = open(fullpath, O_RDONLY);
-		if (-1 == hFile)
+		if (-1 == (hFile = open(fullpath, O_RDONLY)))
 #endif /* OS_WINDOWS */
 		{
 			return NULL;

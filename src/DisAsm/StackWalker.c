@@ -220,7 +220,6 @@ void LoadModules(HANDLE hProcess)
 				ConsoleIOPrintFormatted("SymGetModuleInfo64 failed for \"%s\"\n", g_Modules[i].path);
 			}
 		}
-		xstrcat(g_Modules[i].name, NtfsMaxPath, ShortName(g_Modules[i].path) + 1);
 	}
 }
 

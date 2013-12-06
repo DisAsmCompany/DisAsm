@@ -128,6 +128,200 @@ void InfoEnvironment()
 	}
 }
 
+uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
+{
+    uint32_t _eax, _ebx, _ecx, _edx;
+#ifdef COMP_MICROSOFTC
+    int info[4];
+    __cpuid(info, level);
+    _eax = info[0];
+    _ebx = info[1];
+    _ecx = info[2];
+    _edx = info[3];
+#endif /* COMP_MICROSOFTC */
+    if (outeax) *outeax = _eax;
+    if (outebx) *outebx = _ebx;
+    if (outecx) *outecx = _ecx;
+    if (outedx) *outedx = _edx;
+    return _eax;
+}
+
+uint8_t CheckCPUID()
+{
+    native_t kFlagCPUID = 1 << 21;
+    uint8_t supported = 0;
+#ifdef COMP_MICROSOFTC
+    native_t eflags = __readeflags();
+    __writeeflags(eflags ^ kFlagCPUID);
+    supported = (eflags & kFlagCPUID) != (__readeflags() & kFlagCPUID);
+    __writeeflags(eflags);
+#endif /* COMP_MICROSOFTC */
+    return supported;
+}
+
+typedef enum CPUIDFeaturesECX_t
+{
+    kCPUIDFeature_SSE3       = 1 << 0,
+    kCPUIDFeature_PCLMULDQ   = 1 << 1,
+    kCPUIDFeature_DTES64     = 1 << 2,
+    kCPUIDFeature_MONITOR    = 1 << 3,
+    kCPUIDFeature_DSCPL      = 1 << 4,
+    kCPUIDFeature_VMX        = 1 << 5,
+    kCPUIDFeature_SMX        = 1 << 6,
+    kCPUIDFeature_EIST       = 1 << 7,
+    kCPUIDFeature_TM2        = 1 << 8,
+    kCPUIDFeature_SSSE3      = 1 << 9,
+    kCPUIDFeature_CNTXID     = 1 << 10,
+    kCPUIDFeature_RESERVED11 = 1 << 11,
+    kCPUIDFeature_FMA        = 1 << 12,
+    kCPUIDFeature_CMPXCHG16B = 1 << 13,
+    kCPUIDFeature_XTPR       = 1 << 14,
+    kCPUIDFeature_PDCM       = 1 << 15,
+    kCPUIDFeature_RESERVED16 = 1 << 16,
+    kCPUIDFeature_PCID       = 1 << 17,
+    kCPUIDFeature_DCA        = 1 << 18,
+    kCPUIDFeature_SSE41      = 1 << 19,
+    kCPUIDFeature_SSE42      = 1 << 20,
+    kCPUIDFeature_X2APIC     = 1 << 21,
+    kCPUIDFeature_MOVBE      = 1 << 22,
+    kCPUIDFeature_POPCNT     = 1 << 23,
+    kCPUIDFeature_TSCD       = 1 << 24,
+    kCPUIDFeature_AESNI      = 1 << 25,
+    kCPUIDFeature_XSAVE      = 1 << 26,
+    kCPUIDFeature_OSXSAVE    = 1 << 27,
+    kCPUIDFeature_AVX        = 1 << 28,
+    kCPUIDFeature_F16C       = 1 << 29,
+    kCPUIDFeature_RDRAND     = 1 << 30,
+    kCPUIDFeature_RESERVED31 = 1 << 31,
+}
+CPUIDFeaturesECX;
+
+typedef enum CPUIDFeaturesEDX_t
+{
+    kCPUIDFeature_X87        = 1 << 0,
+    kCPUIDFeature_VME        = 1 << 1,
+    kCPUIDFeature_DE         = 1 << 2,
+    kCPUIDFeature_PSE        = 1 << 3,
+    kCPUIDFeature_TSC        = 1 << 4,
+    kCPUIDFeature_MSR        = 1 << 5,
+    kCPUIDFeature_PAE        = 1 << 6,
+    kCPUIDFeature_MCE        = 1 << 7,
+    kCPUIDFeature_CMPXCHG8B  = 1 << 8,
+    kCPUIDFeature_APIC       = 1 << 9,
+    kCPUIDFeature_RESERVED10 = 1 << 10,
+    kCPUIDFeature_SEP        = 1 << 11,
+    kCPUIDFeature_MTRR       = 1 << 12,
+    kCPUIDFeature_PGE        = 1 << 13,
+    kCPUIDFeature_MCA        = 1 << 14,
+    kCPUIDFeature_CMOV       = 1 << 15,
+    kCPUIDFeature_PAT        = 1 << 16,
+    kCPUIDFeature_PSE36      = 1 << 17,
+    kCPUIDFeature_PSN        = 1 << 18,
+    kCPUIDFeature_CLFLSH     = 1 << 19,
+    kCPUIDFeature_RESERVED20 = 1 << 20,
+    kCPUIDFeature_DS         = 1 << 21,
+    kCPUIDFeature_ACPI       = 1 << 22,
+    kCPUIDFeature_MMX        = 1 << 23,
+    kCPUIDFeature_FXSR       = 1 << 24,
+    kCPUIDFeature_SSE        = 1 << 25,
+    kCPUIDFeature_SSE2       = 1 << 26,
+    kCPUIDFeature_SS         = 1 << 27,
+    kCPUIDFeature_HTT        = 1 << 28,
+    kCPUIDFeature_TM         = 1 << 29,
+    kCPUIDFeature_RESERVED30 = 1 << 30,
+    kCPUIDFeature_PBE        = 1 << 31,
+}
+CPUIDFeaturesEDX;
+
+typedef enum CPUIDFeaturesEBX_t
+{
+    kCPUIDFeature_AVX2       = 1 << 5,
+}
+CPUIDFeaturesEBX;
+
+typedef enum CPUIDFeaturesExtendedECX_t
+{
+    kCPUIDFeature_LZCNT      = 1 << 5,
+    kCPUIDFeature_SSE4A      = 1 << 6,
+    kCPUIDFeature_MSSE       = 1 << 7,
+    kCPUIDFeature_PREFETCHW  = 1 << 8,
+    kCPUIDFeature_XOP        = 1 << 11,
+    kCPUIDFeature_FMA4       = 1 << 16,
+}
+CPUIDFeaturesExtendedECX;
+
+typedef enum CPUIDFeaturesExtendedEDX_t
+{
+    kCPUIDFeature_EM64T      = 1 << 29,
+    kCPUIDFeature_3DNOW      = 1 << 30,
+    kCPUIDFeature_E3DNOW     = 1 << 31,
+}
+CPUIDFeaturesExtendedEDX;
+
+void InfoCPU()
+{
+    if (CheckCPUID())
+    {
+        char name[13] = {0};
+        uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, (uint32_t*)name, (uint32_t*)(name + 8), (uint32_t*)(name + 4));
+        uint32_t MaxExtendedLevel = CallCPUID(0x80000000UL, NULL, NULL, NULL, NULL);
+
+        ConsoleIOPrint("CPU :\n");
+        ConsoleIOPrintFormatted("CPU name : %s\n", name);
+
+        if (MaxBasicLevel >= 0x00000001UL)
+        {
+            uint32_t featuresECX = 0, featuresEDX = 0;
+            CallCPUID(0x00000001UL, NULL, NULL, &featuresECX, &featuresEDX);
+
+            ConsoleIOPrintFormatted("X87     : %s\n", featuresEDX & kCPUIDFeature_X87   ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("MMX     : %s\n", featuresEDX & kCPUIDFeature_MMX   ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SSE     : %s\n", featuresEDX & kCPUIDFeature_SSE   ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SSE2    : %s\n", featuresEDX & kCPUIDFeature_SSE2  ? "YES" : "NO ");
+
+            ConsoleIOPrintFormatted("SSE3    : %s\n", featuresECX & kCPUIDFeature_SSE3  ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("VMX     : %s\n", featuresECX & kCPUIDFeature_VMX   ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SMX     : %s\n", featuresECX & kCPUIDFeature_SMX   ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SSSE3   : %s\n", featuresECX & kCPUIDFeature_SSSE3 ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SSE4.1  : %s\n", featuresECX & kCPUIDFeature_SSE41 ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("SSE4.2  : %s\n", featuresECX & kCPUIDFeature_SSE42 ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("AESNI   : %s\n", featuresECX & kCPUIDFeature_AESNI ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("AVX     : %s\n", featuresECX & kCPUIDFeature_AVX   ? "YES" : "NO ");
+
+            if (MaxBasicLevel >= 0x00000007UL)
+            {
+                uint32_t featuresEBX = 0;
+                CallCPUID(0x00000007UL, NULL, &featuresEBX, NULL, NULL);
+
+                ConsoleIOPrintFormatted("AVX2    : %s\n", featuresEBX & kCPUIDFeature_AVX2  ? "YES" : "NO ");
+            }
+        }
+        if (MaxExtendedLevel >= 0x80000001UL)
+        {
+            uint32_t featuresECX = 0, featuresEDX = 0;
+            CallCPUID(0x80000001UL, NULL, NULL, &featuresECX, &featuresEDX);
+
+            ConsoleIOPrintFormatted("EM64T   : %s\n", featuresEDX & kCPUIDFeature_EM64T  ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("3DNow!  : %s\n", featuresEDX & kCPUIDFeature_3DNOW  ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("3DNow!+ : %s\n", featuresEDX & kCPUIDFeature_E3DNOW ? "YES" : "NO ");
+
+            ConsoleIOPrintFormatted("SSE4.a  : %s\n", featuresEDX & kCPUIDFeature_SSE4A  ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("XOP     : %s\n", featuresEDX & kCPUIDFeature_XOP    ? "YES" : "NO ");
+            ConsoleIOPrintFormatted("FMA4    : %s\n", featuresEDX & kCPUIDFeature_FMA4   ? "YES" : "NO ");
+
+            if (MaxExtendedLevel >= 0x80000004UL)
+            {
+                char brand[48] = {0};
+                CallCPUID(0x80000002UL, (uint32_t*)(brand + 0x00), (uint32_t*)(brand + 0x04), (uint32_t*)(brand + 0x08), (uint32_t*)(brand + 0x0C));
+                CallCPUID(0x80000003UL, (uint32_t*)(brand + 0x10), (uint32_t*)(brand + 0x14), (uint32_t*)(brand + 0x18), (uint32_t*)(brand + 0x1C));
+                CallCPUID(0x80000004UL, (uint32_t*)(brand + 0x20), (uint32_t*)(brand + 0x24), (uint32_t*)(brand + 0x28), (uint32_t*)(brand + 0x2C));
+                ConsoleIOPrintFormatted("CPU brand : %s\n", brand);
+            }
+        }
+        ConsoleIOPrint("\n");
+    }
+}
+
 LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExceptionInfo)
 {
 	native_t callstack[MaxCallStack] = {0};
@@ -138,6 +332,7 @@ LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExcepti
 
 	InfoOperationSystem();
 	InfoEnvironment();
+    InfoCPU();
 
 #ifdef CPU_X86
 	context.InstructionPointer = pExceptionInfo->ContextRecord->Eip;
@@ -260,6 +455,7 @@ void CrashHandlerInstall()
 #ifdef OS_WINDOWS
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
+    InfoCPU();
 #endif /* OS_WINDOWS */
 #ifdef OS_UNIX
 	size_t i;
