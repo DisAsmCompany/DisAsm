@@ -11,10 +11,10 @@
 
 #include "DisAsm"
 
-#ifdef OS_WINDOWS
-
 uint8_t g_isConsoleStdOut = 0;
 uint8_t g_isConsoleStdErr = 0;
+
+#ifdef OS_WINDOWS
 
 HANDLE g_hStdOut = NULL;
 HANDLE g_hStdErr = NULL;
@@ -61,6 +61,9 @@ void ConsoleIOInit()
 
 	g_isConsoleStdOut = 0 != GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode);
 	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);
+#else /* OS_WINDOWS */
+	g_isConsoleStdOut = isatty(STDOUT_FILENO);
+	g_isConsoleStdErr = isatty(STDERR_FILENO);
 #endif /* OS_WINDOWS */
 }
 
@@ -99,7 +102,50 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 		WriteFile(hConsole, str, length, &written, NULL);
 	}
 #else /* OS_WINDOWS */
-	write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
+	if (error ? g_isConsoleStdErr : g_isConsoleStdOut)
+	{
+		char escape[8];
+		if (kDefaultColor != color)
+		{		
+			escape[0] = '\033';
+			escape[1] = '[';
+			escape[2] = '1';
+			escape[3] = ';';
+			escape[4] = '3';
+			escape[5] = '0' + (color & 7);
+			escape[6] = 'm';
+			escape[7] = 0;
+			
+			write(error ? STDERR_FILENO : STDOUT_FILENO, escape, 8);
+			
+			escape[0] = '\033';
+			escape[1] = '[';
+			escape[2] = '1';
+			escape[3] = ';';
+			escape[4] = '4';
+			escape[5] = '0' + (color >> 8);
+			escape[6] = 'm';
+			escape[7] = 0;
+			
+			write(error ? STDERR_FILENO : STDOUT_FILENO, escape, 8);
+		}
+		write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
+		if (kDefaultColor != color)
+		{
+			escape[0] = '\033';
+			escape[1] = '[';
+			escape[2] = '0';
+			escape[3] = 'm';
+			escape[4] = 0;
+			
+			write(error ? STDERR_FILENO : STDOUT_FILENO, escape, 5);
+		}
+	}
+	else
+	{
+		write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
+	}
+
 #endif /* OS_WINDOWS */
 }
 
