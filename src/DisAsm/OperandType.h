@@ -60,12 +60,15 @@ typedef enum OperandType_t
 	ss = 0x0A, /* 128-bit or 256-bit scalar single-precision floating-point data */
 	pd = 0x0B, /* 128-bit or 256-bit packed double-precision floating-point data */
 	sd = 0x0C, /* 128-bit or 256-bit scalar double-precision floating-point data */
-    pk = 0x0D, /* quadword MMX register (vector composed of 8-bit integers) */
-	pi = 0x0E, /* quadword MMX register (vector composed of 16-bit integers) */
-	pj = 0x0F, /* quadword MMX register (vector composed of 32-bit integers) */
-	a  = 0x10, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
-	y  = 0x11, /* double-word or quad-word, depending on operand-size attribute */
-	oq = 0x12, /* operand is either the upper or lower half of 128-bit value */
+	pb = 0x0D, /* quadword MMX register (vector composed of 8-bit integers) */
+    pk = 0x0E, /* quadword MMX register (vector composed of 8-bit integers) */
+	pi = 0x0F, /* quadword MMX register (vector composed of 16-bit integers) */
+	pw = 0x10, /* quadword MMX register (vector composed of 16-bit integers) */
+	pj = 0x11, /* quadword MMX register (vector composed of 32-bit integers) */
+	pq = 0x12, /* quadword MMX register (vector composed of 64-bit integers) */
+	a  = 0x13, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
+	y  = 0x14, /* double-word or quad-word, depending on operand-size attribute */
+	oq = 0x15, /* operand is either the upper or lower half of 128-bit value */
 
 #define DEFINE_TYPE(T) \
 	T##b  = OperandBase | T | b, \
@@ -80,9 +83,12 @@ typedef enum OperandType_t
 	T##ss = OperandBase | T | ss, \
 	T##pd = OperandBase | T | pd, \
 	T##sd = OperandBase | T | sd, \
+	T##pb = OperandBase | T | pb, \
 	T##pk = OperandBase | T | pk, \
 	T##pi = OperandBase | T | pi, \
+	T##pw = OperandBase | T | pw, \
 	T##pj = OperandBase | T | pj, \
+	T##pq = OperandBase | T | pq, \
 	T##a  = OperandBase | T | a, \
 	T##_  = OperandBase | T | _, \
 	T##y  = OperandBase | T | y, \

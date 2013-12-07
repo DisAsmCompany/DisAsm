@@ -41,6 +41,15 @@ void xstrcat(char * dst, uint32_t size, const char * src)
 	memcpy(dst + sizedst, src, copy);
 }
 
+uint8_t xstrcmp(const char * str1, const char * str2)
+{
+	for (; *str1 == *str2; ++str1, ++str2)
+	{
+		if (0 == *str1) return 0;
+	}
+	return *str1 < *str2 ? -1 : 1;
+}
+
 char * ShortName(char * name)
 {
 	char * ptr = name + xstrlen(name) - 1;

@@ -103,7 +103,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* E8h - EFh */
 	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {JMP, OP1(Ap)}, {JMP, OP1(Jb)}, {_IN, OP2(AL, DX)}, {_IN, OP2(eAX, DX)}, {_OUT, OP2(DL, AL)}, {_OUT, OP2(DX, eAX)},
 	/* F0h - F7h */
-	{LOCK}, {_INT, OP1(1)}, {REPNE}, {REP}, {HLT}, {CMC}, {GROUP3, OP1(Eb)}, {GROUP3, OP1(Ev)},
+	{LOCK}, {_INT, OP1(1)}, {REPNE}, {REP}, {HLT}, {CMC}, {GROUP3_F6, OP1(Eb)}, {GROUP3_F7, OP1(Ev)},
 	/* F8h - FFh */
 	{CLC}, {STC}, {CLI}, {STI}, {CLD}, {STD}, {GROUP4}, {GROUP5},
 };

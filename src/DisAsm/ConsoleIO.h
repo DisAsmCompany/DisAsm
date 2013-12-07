@@ -43,6 +43,7 @@ TextColor;
 
 uint32_t xstrlen(const char * str);
 void xstrcat(char * dst, uint32_t size, const char * src);
+uint8_t xstrcmp(const char * str1, const char * str2);
 
 char * ShortName(char * name);
 

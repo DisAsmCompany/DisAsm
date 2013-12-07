@@ -29,8 +29,10 @@ OpCodeMapElement OpCodeMapGroup[] =
 	AMD defines both /4 and /6 as SHL/SAL (that are essentially same instruction)
 	*/
 	{ROL}, {ROR}, {RCL}, {RCR}, {SHL}, {SHR}, {SAL}, {SAR},
-	/* GROUP3 */
-	{TEST}, {TEST}, {NOT}, {NEG}, {MUL}, {IMUL}, {DIV}, {IDIV},
+	/* GROUP3 (opcode F6) */
+	{TEST, OP2(Eb, Ib)}, {TEST, OP2(Eb, Ib)}, {NOT}, {NEG}, {MUL}, {IMUL}, {DIV}, {IDIV},
+	/* GROUP3 (opcode F7) */
+	{TEST, OP2(Ev, Iz)}, {TEST, OP2(Ev, Iz)}, {NOT}, {NEG}, {MUL}, {IMUL}, {DIV}, {IDIV},
 	/* GROUP4 */
 	{INC, OP1(Eb)}, {DEC, OP1(Eb)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP5 */
@@ -38,7 +40,9 @@ OpCodeMapElement OpCodeMapGroup[] =
 	/* GROUP6 */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP7 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {GROUP7_EXT2}, {DB}, {DB}, {DB}, {DB}, {DB},
+	/* GROUP7 (/2) */
+	{XGETBV}, {XSETBV}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP8 */
 	{DB}, {DB}, {DB}, {DB}, {BT}, {BTS}, {BTR}, {BTC},
 	/* GROUP9 */
@@ -52,19 +56,25 @@ OpCodeMapElement OpCodeMapGroup[] =
 	/* GROUP11 */
 	{MOV}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* GROUP12 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {PSRLW, OP2(Nq, Ib)}, {DB},                  {PSRAW, OP2(Nq, Ib)}, {DB}, {PSLLW, OP2(Nq, Ib)}, {DB},
+	/* GROUP12 (prefix 0x66) */
+	{DB}, {DB}, {PSRLW, OP2(Uo, Ib)}, {DB},                  {PSRAW, OP2(Uo, Ib)}, {DB}, {PSLLW, OP2(Uo, Ib)}, {DB},
 	/* GROUP13 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {PSRLD, OP2(Nq, Ib)}, {DB},                  {PSRAD, OP2(Nq, Ib)}, {DB}, {PSLLD, OP2(Nq, Ib)}, {DB},
+	/* GROUP13 (prefix 0x66) */
+	{DB}, {DB}, {PSRLD, OP2(Uo, Ib)}, {DB},                  {PSRAD, OP2(Uo, Ib)}, {DB}, {PSLLD, OP2(Uo, Ib)}, {DB},
 	/* GROUP14 */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {PSRLQ, OP2(Nq, Ib)}, {DB},                  {DB},                 {DB}, {PSLLQ, OP2(Nq, Ib)}, {DB},
+	/* GROUP14 (prefix 0x66) */
+	{DB}, {DB}, {PSRLQ, OP2(Uo, Ib)}, {PSRLDQ, OP2(Uo, Ib)}, {DB},                 {DB}, {PSLLQ, OP2(Uo, Ib)}, {PSLLDQ, OP2(Uo, Ib)},
 	/* GROUP15 */
-	{DB}, {DB}, {LDMXCSR, OP1(Md)}, {STMXCSR, OP1(Md)}, {DB}, {DB}, {DB}, {DB},
+	{FXSAVE, OP1(M)}, {FXRSTOR, OP1(M)}, {LDMXCSR, OP1(Md)}, {STMXCSR, OP1(Md)}, {DB}, {LFENCE}, {MFENCE}, {SFENCE},
 	/* GROUP16 */
 	/*
 	according to AMD manual, /4 - /7 forms are defines as valid instructions (NOPs)
 	for compatibility with future PREFETCH instructions
 	*/
-	{PREFETCHT0}, {PREFETCHT1}, {PREFETCHT2}, {PREFETCHNTA}, {NOP}, {NOP}, {NOP}, {NOP},
+	{PREFETCHNTA}, {PREFETCHT0}, {PREFETCHT1}, {PREFETCHT2}, {NOP}, {NOP}, {NOP}, {NOP},
 	/* GROUP17 */
 	/* SSE4A - appears in AMD manual but not in Intel */
 	{EXTRQ, OP3(Voq, Ib, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

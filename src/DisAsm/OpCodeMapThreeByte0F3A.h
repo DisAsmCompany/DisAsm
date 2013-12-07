@@ -20,18 +20,18 @@ extern "C" {
 
 /* 
        0 1 2 3 4 5 6 7   8 9 A B C D E F
-NONE 0                 0                 0
-0x66 0                 0                 0
-0xF2 0                 0                 0
-0xF3 0                 0                 0
-NONE 1                 1                 1
-0 66 1                 1                 1
-0xF2 1                 1                 1
-0xF3 1                 1                 1
-NONE 2                 2                 2
-0 66 2                 2                 2
-0xF2 2                 2                 2
-0xF3 2                 2                 2
+NONE 0                 0 U U U U U U U X 0
+0x66 0                 0 X X X X X X X X 0
+0xF2 0                 0 U U U U U U U U 0
+0xF3 0                 0 U U U U U U U U 0
+NONE 1                 1 U U U U U U U   1
+0 66 1                 1 U U U U X X X   1
+0xF2 1                 1 U U U U U U U   1
+0xF3 1                 1 U U U U U U U   1
+NONE 2 U U U U U U U U 2                 2
+0 66 2 X X X U U U U U 2                 2
+0xF2 2 U U U U U U U U 2                 2
+0xF3 2 U U U U U U U U 2                 2
 NONE 3                 3                 3
 0 66 3                 3                 3
 0xF2 3                 3                 3
@@ -44,10 +44,10 @@ NONE 5                 5                 5
 0 66 5                 5                 5
 0xF2 5                 5                 5
 0xF3 5                 5                 5
-NONE 6                 6                 6
-0 66 6                 6                 6
-0xF2 6                 6                 6
-0xF3 6                 6                 6
+NONE 6 U U U U U U U U 6                 6
+0 66 6 X X X X U U U U 6                 6
+0xF2 6 U U U U U U U U 6                 6
+0xF3 6 U U U U U U U U 6                 6
 NONE 7                 7                 7
 0 66 7                 7                 7
 0xF2 7                 7                 7
@@ -92,13 +92,13 @@ NONE F                 F                 F
 uint32_t OpCodeMapThreeByte0F3AExt[] =
 {
 	/* 0F3A00h - 0F3A1Fh */
-	0x00000000UL,
+	0x00FFFF00UL,
 	/* 0F3A20h - 0F3A3Fh */
-	0x00000000UL,
+	0xFF000007UL,
 	/* 0F3A40h - 0F3A5Fh */
 	0x00000000UL,
 	/* 0F3A60h - 0F3A7Fh */
-	0x00000000UL,
+	0x0000000FUL,
 	/* 0F3A80h - 0F3A9Fh */
 	0x00000000UL,
 	/* 0F3AA0h - 0F3ABFh */
@@ -117,25 +117,25 @@ OpCodeMapElement OpCodeMapThreeByte0F3A[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A08h - 0F3A0Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {PALIGNR, OP3(Ppb, Qpb, Ib)},
+	{ROUNDPS, OP3(Vps, Wps, Ib)}, {ROUNDPD, OP3(Vpd, Wpd, Ib)}, {ROUNDSS, OP3(Vss, Wss, Ib)}, {ROUNDSD, OP3(Vsd, Wsd, Ib)}, {BLENDPS, OP3(Vps, Wps, Ib)}, {BLENDPD, OP3(Vpd, Wpd, Ib)}, {PBLENDW, OP3(Vpw, Wpw, Ib)}, {PALIGNR, OP3(Vpb, Wpb, Ib)},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},                         {DB},
 	/* 0F3A10h - 0F3A17h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB},                       {DB},                       {DB},                       {DB},
+	{DB}, {DB}, {DB}, {DB}, {PEXTRB, OP3(Mb, Vpk, Ib)}, {PEXTRW, OP3(Mw, Vpw, Ib)}, {PEXTRD, OP3(Md, Vpj, Ib)}, {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB},                       {DB},                       {DB},                       {DB},
+	{DB}, {DB}, {DB}, {DB}, {DB},                       {DB},                       {DB},                       {DB},
 	/* 0F3A17h - 0F3A1Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A20h - 0F3A27h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                       {DB},                         {DB},                       {DB}, {DB}, {DB}, {DB}, {DB},
+	{PINSRB, OP3(Vpk, Mb, Ib)}, {INSERTPS, OP3(Vps, Md, Ib)}, {PINSRD, OP3(Vpj, Ed, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                       {DB},                         {DB},                       {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                       {DB},                         {DB},                       {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A28h - 0F3A2Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
@@ -172,10 +172,10 @@ OpCodeMapElement OpCodeMapThreeByte0F3A[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A60h - 0F3A67h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB}, {DB}, {DB}, {DB},
+	{PCMPESTRM, OP3(Vo, Wo, Ib)}, {PCMPESTRI, OP3(Vo, Wo, Ib)}, {PCMPISTRM, OP3(Vo, Wo, Ib)}, {PCMPISTRI, OP3(Vo, Wo, Ib)}, {DB}, {DB}, {DB}, {DB},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB}, {DB}, {DB}, {DB},
+	{DB},                         {DB},                         {DB},                         {DB},                         {DB}, {DB}, {DB}, {DB},
 	/* 0F3A68h - 0F3A6Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

@@ -146,7 +146,7 @@ uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 	return result;
 }
 
-OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t * opcode, OpCodeMapElement * map, uint32_t * ext)
+OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * pInfo, uint32_t * opcode, OpCodeMapElement * map, uint32_t * ext)
 {
 	uint32_t index = *opcode & 0xFF;
 	uint32_t offset = 0;
@@ -170,6 +170,7 @@ OpCodeMapElement * ChooseOpCodeExt(InstructionInfo * pInfo, uint32_t * opcode, O
 				*opcode |= (*opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16);
 				--pInfo->nPrefixes;
 			}
+			pContext->currentSize = pContext->size;
 		}
 	}
 	index = offset + ((index >> 3) << 5) + (index & 0x07);
@@ -241,16 +242,16 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0x0F38:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			/* Three-Byte OpCode Map (OpCodes 0F3800h - 0FF38Fh) */
-			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapThreeByte0F38, OpCodeMapThreeByte0F38Ext);
+			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapThreeByte0F38, OpCodeMapThreeByte0F38Ext);
 			break;
 		case 0x0F3A:
 			opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 			/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
-			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapThreeByte0F3A, OpCodeMapThreeByte0F3AExt);
+			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapThreeByte0F3A, OpCodeMapThreeByte0F3AExt);
 			break;
 		default:
 			/* Two-Byte Opcode Map (OpCodes 0F00h - 0FFFh) */
-			element = ChooseOpCodeExt(pInfo, &opcode, OpCodeMapTwoByte0F, OpCodeMapTwoByte0FExt);
+			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapTwoByte0F, OpCodeMapTwoByte0FExt);
 			break;
 		}
 		break;
@@ -311,7 +312,7 @@ uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 	case oq: result = 8; break;
 	/* oct-word, regardless of operand size attribute */
 	case o: 
-	case pk: case pi: case pj:
+	case pb: case pk: case pi: case pj: case pq: case pw:
 	case ps: case ss: case pd: case sd:
 		result = 16; break;
 	/* word for 16-bit operand size, or double-word for 32-bit and 64-bit operand size */
@@ -350,12 +351,12 @@ Register registers[][5] =
 	/* R */ {Reg8, Reg16, Reg32, Reg64, 0},
 	/* D */ {0, RegDebug, RegDebug, RegDebug, 0},
 	/* C */ {0, RegControl, RegControl, RegControl, 0},
-	/* U */ {0, 0, 0, RegSSE, RegSSE},
-	/* V */ {0, 0, 0, RegSSE, RegSSE},
-	/* W */ {0, 0, 0, RegSSE, RegSSE},
-	/* P */ {0, 0, 0, RegMMX, RegMMX},
-	/* Q */ {0, 0, 0, RegMMX, RegMMX},
-	/* N */ {0, 0, 0, RegMMX, RegMMX}
+	/* U */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
+	/* V */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
+	/* W */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
+	/* P */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
+	/* Q */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
+	/* N */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
 };
 
 Register RegForType(DisAsmContext * pContext, OperandType type)
@@ -532,18 +533,17 @@ void GroupDecode(InstructionInfo * pInfo)
 	{
 		uint32_t index = (pInfo->mnemonic - GROUP1) * 8 + pInfo->ModRM.fields.Reg;
 		OpCodeMapElement * pElement = &OpCodeMapGroup[index];
-		/* GROUP3 TEST (/0 and /1) is tricky one */
-		if (GROUP3 == pInfo->mnemonic && TEST == pElement->mnemonic)
-		{
-			pInfo->mnemonic = TEST;
-			pInfo->nOperands = 2;
-			pInfo->operands[1].type = (0xF6 == pInfo->opcode) ? Ib : Iz;
-		}
-		else if (pElement->type[0])
+		if (pElement->type[0])
 		{
 			CopyElementInfo(pInfo, pElement);
 		}
 		pInfo->mnemonic = pElement->mnemonic;
+		if (pElement->mnemonic == GROUP7_EXT2)
+		{
+			index = (pInfo->mnemonic - GROUP1) * 8 + pInfo->ModRM.fields.RM;
+			pElement = &OpCodeMapGroup[index];
+			pInfo->mnemonic = pElement->mnemonic;
+		}
 	}
 }
 

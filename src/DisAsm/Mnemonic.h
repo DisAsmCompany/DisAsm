@@ -296,18 +296,23 @@ _ENUM_ELEMENT(CMOVG)     /* Conditional Move if Greater (same as SETNLE) */
 _ENUM_ELEMENT(GROUP1)
 _ENUM_ELEMENT(GROUP1A)
 _ENUM_ELEMENT(GROUP2)
-_ENUM_ELEMENT(GROUP3)
+_ENUM_ELEMENT(GROUP3_F6)
+_ENUM_ELEMENT(GROUP3_F7)
 _ENUM_ELEMENT(GROUP4)
 _ENUM_ELEMENT(GROUP5)
 _ENUM_ELEMENT(GROUP6)
 _ENUM_ELEMENT(GROUP7)
+_ENUM_ELEMENT(GROUP7_EXT2)
 _ENUM_ELEMENT(GROUP8)
 _ENUM_ELEMENT(GROUP9)
 _ENUM_ELEMENT(GROUP10)
 _ENUM_ELEMENT(GROUP11)
 _ENUM_ELEMENT(GROUP12)
+_ENUM_ELEMENT(GROUP12_66)
 _ENUM_ELEMENT(GROUP13)
+_ENUM_ELEMENT(GROUP13_66)
 _ENUM_ELEMENT(GROUP14)
+_ENUM_ELEMENT(GROUP14_66)
 _ENUM_ELEMENT(GROUP15)
 _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
@@ -428,9 +433,11 @@ _ENUM_ELEMENT(PXOR)     /* Bitwise Logical XOR */
 _ENUM_ELEMENT(PSLLW)    /* Shift Packed Data Left Logical */
 _ENUM_ELEMENT(PSLLD)    /* Shift Packed Data Left Logical */
 _ENUM_ELEMENT(PSLLQ)    /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(PSLLDQ)   /* Shift Packed Data Left Logical */
 _ENUM_ELEMENT(PSRLW)    /* Shift Packed Data Right Logical */
 _ENUM_ELEMENT(PSRLD)    /* Shift Packed Data Right Logical */
 _ENUM_ELEMENT(PSRLQ)    /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(PSRLDQ)   /* Shift Packed Data Right Logical */
 _ENUM_ELEMENT(PSRAW)    /* Shift Packed Data Right Arithmetic */
 _ENUM_ELEMENT(PSRAD)    /* Shift Packed Data Right Arithmetic */
 _ENUM_ELEMENT(PMULLW)   /* Multiply Packed Signed Integers and Store Low Result */
@@ -515,6 +522,7 @@ _ENUM_ELEMENT(CVTTSS2SI)/* Convert with Truncation Scalar Single-Precision Float
 _ENUM_ELEMENT(PINSRW)   /* Insert Word */
 _ENUM_ELEMENT(PEXTRW)   /* Extract Word */
 _ENUM_ELEMENT(PMOVMSKB) /* Move Byte Mask */
+_ENUM_ELEMENT(SFENCE)   /* Store Fence */
 /* SSE2 */
 _ENUM_ELEMENT(MOVUPD)   /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(MOVAPD)   /* Move Aligned Packed Double-Precision Floating Point Values */
@@ -572,6 +580,8 @@ _ENUM_ELEMENT(MOVQ2DQ)  /* Move Quad-Word from XMM to MMX Register */
 _ENUM_ELEMENT(MOVDQ2Q)  /* Move Quad-Word from MMX to XMM Register */
 _ENUM_ELEMENT(MOVNTQ)   /* Store of Quad-Word using Non-Temporal Hint */
 _ENUM_ELEMENT(MOVNTDQ)  /* Store of Double Quad-Word using Non-Temporal Hint */
+_ENUM_ELEMENT(MFENCE)   /* Memory Fence */
+_ENUM_ELEMENT(LFENCE)   /* Load Fence */
 /* SSE3 */
 _ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
 _ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */
@@ -583,16 +593,73 @@ _ENUM_ELEMENT(HADDPD)   /* Horizontal Add Packed Double-Precision Floating Point
 _ENUM_ELEMENT(HSUBPS)   /* Horizontal Subtract Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(HSUBPD)   /* Horizontal Subtract Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(LDDQU)    /* Load Unaligned Integer 128 bits */
+/* SSSE3 */
+_ENUM_ELEMENT(PSHUFB)    /* Packed Shuffle Bytes */
+_ENUM_ELEMENT(PALIGNR)   /* Packed Align Right */
+_ENUM_ELEMENT(PHADDW)    /* Packed Horizontal Add */
+_ENUM_ELEMENT(PHADDD)    /* Packed Horizontal Add */
+_ENUM_ELEMENT(PHADDSW)   /* Packed Horizontal Add and Saturate */
+_ENUM_ELEMENT(PABSB)     /* Packed Absolute Value */
+_ENUM_ELEMENT(PABSW)     /* Packed Absolute Value */
+_ENUM_ELEMENT(PABSD)     /* Packed Absolute Value */
+/* SSE4.1 */
+_ENUM_ELEMENT(PMOVSXBW) /* Sign Extend Packed Signed  8-bit Integers to Packed Signed 16-bit Integers */
+_ENUM_ELEMENT(PMOVSXBD) /* Sign Extend Packed Signed  8-bit Integers to Packed Signed 32-bit Integers */
+_ENUM_ELEMENT(PMOVSXBQ) /* Sign Extend Packed Signed  8-bit Integers to Packed Signed 64-bit Integers */
+_ENUM_ELEMENT(PMOVSXWD) /* Sign Extend Packed Signed 16-bit Integers to Packed Signed 32-bit Integers */
+_ENUM_ELEMENT(PMOVSXWQ) /* Sign Extend Packed Signed 16-bit Integers to Packed Signed 64-bit Integers */
+_ENUM_ELEMENT(PMOVSXDQ) /* Sign Extend Packed Signed 32-bit Integers to Packed Signed 64-bit Integers */
+_ENUM_ELEMENT(PMOVZXBW) /* Zero Extend Packed  8-bit Integers to Packed 16-bit Integers */
+_ENUM_ELEMENT(PMOVZXBD) /* Zero Extend Packed  8-bit Integers to Packed 32-bit Integers */
+_ENUM_ELEMENT(PMOVZXBQ) /* Zero Extend Packed  8-bit Integers to Packed 64-bit Integers */
+_ENUM_ELEMENT(PMOVZXWD) /* Zero Extend Packed 16-bit Integers to Packed 32-bit Integers */
+_ENUM_ELEMENT(PMOVZXWQ) /* Zero Extend Packed 16-bit Integers to Packed 64-bit Integers */
+_ENUM_ELEMENT(PMOVZXDQ) /* Zero Extend Packed 32-bit Integers to Packed 64-bit Integers */
+_ENUM_ELEMENT(BLENDPS)  /* Blend Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(BLENDPD)  /* Blend Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(PBLENDW)  /* Blend Packed Words */
+_ENUM_ELEMENT(ROUNDPS)  /* Round Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(ROUNDPD)  /* Round Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(ROUNDSS)  /* Round Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(ROUNDSD)  /* Round Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(PINSRB)   /* Insert Byte */
+_ENUM_ELEMENT(PINSRD)   /* Insert Double-Word */
+_ENUM_ELEMENT(INSERTPS) /* Insert Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(PACKUSDW) /* Pack with Unsigned Saturation */
+_ENUM_ELEMENT(MOVNTDQA) /* Load Double-Word Non-Temporal Aligned Hint */
+_ENUM_ELEMENT(PMINSB)   /* Minimum of Packed Signed Byte Integers */
+_ENUM_ELEMENT(PMINSD)   /* Minimum of Packed Signed Double-Word Integers */
+_ENUM_ELEMENT(PMINUW)   /* Minimum of Packed Word Integers */
+_ENUM_ELEMENT(PMINUD)   /* Minimum of Packed Double Word Integers */
+_ENUM_ELEMENT(PMAXSB)   /* Maximum of Packed Signed Byte Integers */
+_ENUM_ELEMENT(PMAXSD)   /* Maximum of Packed Signed Double-Word Integers */
+_ENUM_ELEMENT(PMAXUW)   /* Maximum of Packed Word Integers */
+_ENUM_ELEMENT(PMAXUD)   /* Maximum of Packed Double Word Integers */
+_ENUM_ELEMENT(PEXTRB)   /* Extract Byte */
+_ENUM_ELEMENT(PEXTRD)   /* Extract Double-Word */
+/* SSE4.2 */
+_ENUM_ELEMENT(PCMPESTRM)/* Packed Compare Explicit Length Strings and Return Mask */
+_ENUM_ELEMENT(PCMPESTRI)/* Packed Compare Explicit Length Strings and Return Index */
+_ENUM_ELEMENT(PCMPISTRM)/* Packed Compare Implicit Length Strings and Return Mask */
+_ENUM_ELEMENT(PCMPISTRI)/* Packed Compare Implicit Length Strings and Return Index */
 /* SSE4A */
 _ENUM_ELEMENT(MOVNTSS)  /* Store Scalar Single-Precision Floating Point Values Using Non-Temporal Hint */
 _ENUM_ELEMENT(MOVNTSD)  /* Store Scalar Single-Precision Floating Point Values Using Non-Temporal Hint */
 _ENUM_ELEMENT(EXTRQ)    /* Extract Field From Register */
 _ENUM_ELEMENT(INSERTQ)  /* Insert Field */
+
+_ENUM_ELEMENT(MOVBE)    /* Move Data after Swapping Bytes */
+_ENUM_ELEMENT(CRC32)    /* Accumulate CRC32 Value */
 /* SMX */
 _ENUM_ELEMENT(GETSEC)   /* Safer Mode Extensions */
 /* VMX */
 _ENUM_ELEMENT(VMREAD)   /* Read Field from Virtual Machine Control Structure */
 _ENUM_ELEMENT(VMWRITE)  /* Write Field to Virtual Machine Control Structure */
+/* XSAVE */
+_ENUM_ELEMENT(FXSAVE)   /* Save x87 FPU, MMX and MXCSR State */
+_ENUM_ELEMENT(FXRSTOR)  /* Restore x87 FPU, MMX and MXCSR State */ 
+_ENUM_ELEMENT(XGETBV)   /* Get Value of Extended Control Register */
+_ENUM_ELEMENT(XSETBV)   /* Set Value of Extended Control Register */
 /* prefixes */
 _ENUM_ELEMENT(LOCK)        /* Assert #LOCK Signal Prefix */
 _ENUM_ELEMENT(REPNE)       /* Repeat String Operation Prefix */

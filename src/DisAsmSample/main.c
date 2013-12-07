@@ -226,6 +226,36 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 	return 1;
 }
 
+uint8_t map = 0;
+uint8_t leaks = 0;
+uint8_t memory = 0;
+uint8_t help = 0;
+
+void ParseCommandLine(int argc, char * const argv[])
+{
+	int i;
+
+	for (i = 1; i < argc; ++i)
+	{
+		if (0 == xstrcmp("-l", argv[i]) || 0 == xstrcmp("--leaks", argv[i]))
+		{
+			leaks = 1;
+		}
+		if (0 == xstrcmp("-o", argv[i]) || 0 == xstrcmp("--opcodemap", argv[i]))
+		{
+			map = 1;
+		}
+		if (0 == xstrcmp("-m", argv[i]) || 0 == xstrcmp("--memory", argv[i]))
+		{
+			memory = 1;
+		}
+		if (0 == xstrcmp("-h", argv[i]) || 0 == xstrcmp("--help", argv[i]))
+		{
+			help = 1;
+		}
+	}
+}
+
 int main(int argc, char * const argv[])
 {
 	uint32_t base = 0;
@@ -233,44 +263,47 @@ int main(int argc, char * const argv[])
 	HEXECUTABLE hExecutable;
 	uint32_t i;
 	uint32_t count;
-	uint8_t memory = 0;
-
+	
 #ifdef OS_WINDOWS
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 #endif /* OS_WINDOWS */
-	StackWalkInit();
-	CrashHandlerInstall();
-	LeakTrackerInstall(1);
 	ConsoleIOInit();
 
+	ParseCommandLine(argc, argv);
+	if (help)
+	{
+		ConsoleIOPrint("usage : DisAsmSample <options> <file>\n");
+		return EXIT_SUCCESS;
+	}
 	if (argc < 2)
 	{
-		ConsoleIOPrint("[ERROR] usage : DisAsmSample <file>\n");
+		ConsoleIOPrint("[ERROR] usage : DisAsmSample <file> <options>\n");
 		return EXIT_FAILURE;
 	}
-	if (0 == strcmp(argv[1], "map"))
+	if (map)
 	{
 		DisAsmPrintOpCodeMap();
 		return EXIT_SUCCESS;
 	}
-	if (argc >= 3)
+	StackWalkInit();
+	CrashHandlerInstall();
+	if (leaks)
 	{
-		if (0 == strcmp(argv[2], "memory"))
-		{
-			memory = 1;
-		}
+		LeakTrackerInstall(1);
 	}
+
 	if (memory)
 	{
 		ModuleInfo info = {0};
-		native_t address = ModuleLoad(argv[1]);
+		native_t address = ModuleLoad(argv[argc - 1]);
 		ModuleGetInfo(address, &info);
 		hReader = MemoryReaderCreate(address, info.size);
 		base = (uint32_t) address;
+		ConsoleIOPrint("[WARNING] : --memory option specified, will attempt to load executable file\n");
 	}
 	else
 	{
-		hReader = FileReaderCreate(argv[1]);
+		hReader = FileReaderCreate(argv[argc - 1]);
 	}
 	if (NULL == hReader)
 	{
@@ -292,7 +325,9 @@ int main(int argc, char * const argv[])
 	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);
 
-	LeakTrackerInstall(0);
-	
+	if (leaks)
+	{
+		LeakTrackerInstall(0);
+	}
 	return EXIT_SUCCESS;
 }
