@@ -474,6 +474,7 @@ _ENUM_ELEMENT(MOVQ)     /* Move Quad Word */
 _ENUM_ELEMENT(MOVD)     /* Move Double Word */
 _ENUM_ELEMENT(MOVDQA)   /* Move Aligned Double-Quadword */
 _ENUM_ELEMENT(MOVDQU)   /* Move Unaligned Double-Quadword */
+_ENUM_ELEMENT(MASKMOVQ) /* Store Selected Bytes of Quad-Word */
 /* 3DNow! */
 _ENUM_ELEMENT(FEMMS)
 /* SSE */
@@ -582,6 +583,7 @@ _ENUM_ELEMENT(MOVNTQ)   /* Store of Quad-Word using Non-Temporal Hint */
 _ENUM_ELEMENT(MOVNTDQ)  /* Store of Double Quad-Word using Non-Temporal Hint */
 _ENUM_ELEMENT(MFENCE)   /* Memory Fence */
 _ENUM_ELEMENT(LFENCE)   /* Load Fence */
+_ENUM_ELEMENT(MASKMOVDQU) /* Store Selected Bytes of Double-Quad-Word */
 /* SSE3 */
 _ENUM_ELEMENT(MOVSLDUP) /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
 _ENUM_ELEMENT(MOVSHDUP) /* Move Packed Single-Precision Floating Point Values High and Duplicate */
@@ -599,9 +601,17 @@ _ENUM_ELEMENT(PALIGNR)   /* Packed Align Right */
 _ENUM_ELEMENT(PHADDW)    /* Packed Horizontal Add */
 _ENUM_ELEMENT(PHADDD)    /* Packed Horizontal Add */
 _ENUM_ELEMENT(PHADDSW)   /* Packed Horizontal Add and Saturate */
+_ENUM_ELEMENT(PHSUBW)    /* Packed Horizontal Subtract */
+_ENUM_ELEMENT(PHSUBD)    /* Packed Horizontal Subtract */
+_ENUM_ELEMENT(PHSUBSW)   /* Packed Horizontal Subtract and Saturate */
 _ENUM_ELEMENT(PABSB)     /* Packed Absolute Value */
 _ENUM_ELEMENT(PABSW)     /* Packed Absolute Value */
 _ENUM_ELEMENT(PABSD)     /* Packed Absolute Value */
+_ENUM_ELEMENT(PMULHRSW)  /* Packed Multiply High with Round and Scale */
+_ENUM_ELEMENT(PMADDUBSW) /* Multiply and Add Packed Signed and Unsigned Bytes */
+_ENUM_ELEMENT(PSIGNB)    /* Packed Sign */
+_ENUM_ELEMENT(PSIGNW)    /* Packed Sign */
+_ENUM_ELEMENT(PSIGND)    /* Packed Sign */
 /* SSE4.1 */
 _ENUM_ELEMENT(PMOVSXBW) /* Sign Extend Packed Signed  8-bit Integers to Packed Signed 16-bit Integers */
 _ENUM_ELEMENT(PMOVSXBD) /* Sign Extend Packed Signed  8-bit Integers to Packed Signed 32-bit Integers */
@@ -637,6 +647,14 @@ _ENUM_ELEMENT(PMAXUW)   /* Maximum of Packed Word Integers */
 _ENUM_ELEMENT(PMAXUD)   /* Maximum of Packed Double Word Integers */
 _ENUM_ELEMENT(PEXTRB)   /* Extract Byte */
 _ENUM_ELEMENT(PEXTRD)   /* Extract Double-Word */
+_ENUM_ELEMENT(BLENDVPS) /* Variable Blend Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(BLENDVPD) /* Variable Blend Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(PBLENVB)  /* Variable Blend Packed Bytes */
+_ENUM_ELEMENT(PTEST)    /* Logical Compare */
+_ENUM_ELEMENT(PHMINPOSUW) /* Packed Horizontal Word Minimum */
+_ENUM_ELEMENT(DPPS)     /* Dot Product of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(DPPD)     /* Dot Product of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(MPSADBW)  /* Compute Multiple Packd Sums of Absolute Differences */
 /* SSE4.2 */
 _ENUM_ELEMENT(PCMPESTRM)/* Packed Compare Explicit Length Strings and Return Mask */
 _ENUM_ELEMENT(PCMPESTRI)/* Packed Compare Explicit Length Strings and Return Index */

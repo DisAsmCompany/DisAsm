@@ -81,8 +81,8 @@ NONE E X X X X X X U X E X X X X X X X X E
 0x66 E X X X X X X X X E X X X X X X X X E
 0xF2 E U U U U U U X U E U U U U U U U U E
 0xF3 E U U U U U U X U E U U U U U U U U E
-NONE F U X X X X X X   F X X X X X X X X F
-0x66 F U X X X X X X   F X X X X X X X X F
+NONE F U X X X X X X X F X X X X X X X X F
+0x66 F U X X X X X X X F X X X X X X X X F
 0xF2 F X U U U U U U U F U U U U U U U X F
 0xF3 F U U U U U U U U F U U U U U U U X F
        0 1 2 3 4 5 6 7   8 9 A B C D E F
@@ -262,8 +262,8 @@ OpCodeMapElement OpCodeMapTwoByte0F[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0FF0h - 0FF7h */
-	{DB},                 {PSLLW, OP2(Pq, Qq)},   {PSLLD, OP2(Pq, Qq)},   {PSLLQ, OP2(Pq, Qq)},   {PMULUDQ, OP2(Pq, Qq)},   {PMADDWD, OP2(Pq, Qq)},   {PSADDBW, OP2(Pq, Qq)},   {DB},
-	{DB},                 {PSLLW, OP2(Vpq, Wpq)}, {PSLLD, OP2(Vpq, Wpq)}, {PSLLQ, OP2(Vpq, Wpq)}, {PMULUDQ, OP2(Vpj, Wpj)}, {PMADDWD, OP2(Vpi, Wpi)}, {PSADDBW, OP2(Vpk, Wpk)}, {DB},
+	{DB},                 {PSLLW, OP2(Pq, Qq)},   {PSLLD, OP2(Pq, Qq)},   {PSLLQ, OP2(Pq, Qq)},   {PMULUDQ, OP2(Pq, Qq)},   {PMADDWD, OP2(Pq, Qq)},   {PSADDBW, OP2(Pq, Qq)},   {MASKMOVQ, OP2(Pq, Qq)},
+	{DB},                 {PSLLW, OP2(Vpq, Wpq)}, {PSLLD, OP2(Vpq, Wpq)}, {PSLLQ, OP2(Vpq, Wpq)}, {PMULUDQ, OP2(Vpj, Wpj)}, {PMADDWD, OP2(Vpi, Wpi)}, {PSADDBW, OP2(Vpk, Wpk)}, {MASKMOVDQU, OP2(Vpb, Wpb)},
 	{LDDQU, OP2(Vo, Mo)}, {DB},                   {DB},                   {DB},                   {DB},                     {DB},                     {DB},                     {DB},
 	{DB},                 {DB},                   {DB},                   {DB},                   {DB},                     {DB},                     {DB},                     {DB},
 	/* 0FF8h - 0FFFh */

@@ -92,11 +92,11 @@ NONE F X X             F                 F
 uint32_t OpCodeMapThreeByte0F38Ext[] =
 {
 	/* 0F3800h - 0F381Fh */
-	0x700000FFUL,
+	0x70FFFFFFUL,
 	/* 0F3820h - 0F383Fh */
 	0xFFFFFF3FUL,
 	/* 0F3840h - 0F385Fh */
-	0x00000000UL,
+	0x000000FFUL,
 	/* 0F3860h - 0F387Fh */
 	0x00000000UL,
 	/* 0F3880h - 0F389Fh */
@@ -112,20 +112,20 @@ uint32_t OpCodeMapThreeByte0F38Ext[] =
 OpCodeMapElement OpCodeMapThreeByte0F38[] =
 {
 	/* 0F3800h - 0F3807h */
-	{PSHUFB, OP2(Ppb, Qpb)}, {PHADDW, OP2(Ppi, Qpi)}, {PHADDD, OP2(Ppj, Qpj)}, {PHADDSW, OP2(Ppi, Qpi)}, {DB}, {DB}, {DB}, {DB},
-	{PSHUFB, OP2(Vpb, Wpb)}, {PHADDW, OP2(Vpi, Wpi)}, {PHADDD, OP2(Vpj, Wpj)}, {PHADDSW, OP2(Vpi, Wpi)}, {DB}, {DB}, {DB}, {DB},
-	{DB},                    {DB},                    {DB},                    {DB},                     {DB}, {DB}, {DB}, {DB},
-	{DB},                    {DB},                    {DB},                    {DB},                     {DB}, {DB}, {DB}, {DB},
+	{PSHUFB, OP2(Ppb, Qpb)}, {PHADDW, OP2(Ppi, Qpi)}, {PHADDD, OP2(Ppj, Qpj)}, {PHADDSW, OP2(Ppi, Qpi)}, {PMADDUBSW, OP2(Ppk, Qpk)}, {PHSUBW, OP2(Ppi, Qpi)}, {PHSUBD, OP2(Ppj, Qpj)}, {PHSUBSW, OP2(Ppi, Qpi)},
+	{PSHUFB, OP2(Vpb, Wpb)}, {PHADDW, OP2(Vpi, Wpi)}, {PHADDD, OP2(Vpj, Wpj)}, {PHADDSW, OP2(Vpi, Wpi)}, {PMADDUBSW, OP2(Vpk, Wpk)}, {PHSUBW, OP2(Vpi, Wpi)}, {PHSUBD, OP2(Vpj, Wpj)}, {PHSUBSW, OP2(Vpi, Wpi)},
+	{DB},                    {DB},                    {DB},                    {DB},                     {DB},                       {DB},                    {DB},                    {DB},
+	{DB},                    {DB},                    {DB},                    {DB},                     {DB},                       {DB},                    {DB},                    {DB},
 	/* 0F3808h - 0F380Fh */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{PSIGNB, OP2(Qpk, Ppk)}, {PSIGNW, OP2(Ppi, Qpi)}, {PSIGND, OP2(Ppj, Qpk)}, {PMULHRSW, OP2(Ppi, Qpi)}, {DB}, {DB}, {DB}, {DB},
+	{PSIGNB, OP2(Vpk, Wpk)}, {PSIGNW, OP2(Vpi, Wpi)}, {PSIGND, OP2(Vpj, Wpk)}, {PMULHRSW, OP2(Vpi, Qpi)}, {DB}, {DB}, {DB}, {DB},
+	{DB},                    {DB},                    {DB},                    {DB},                      {DB}, {DB}, {DB}, {DB},
+	{DB},                    {DB},                    {DB},                    {DB},                      {DB}, {DB}, {DB}, {DB},
 	/* 0F3810h - 0F3817h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                     {DB}, {DB}, {DB}, {DB},                     {DB},                     {DB}, {DB},
+	{PBLENVB, OP2(Vpb, Wpb)}, {DB}, {DB}, {DB}, {BLENDPS, OP2(Vps, Wps)}, {BLENDPD, OP2(Vpd, Wpd)}, {DB}, {PTEST, OP2(Vo, Wo)},
+	{DB},                     {DB}, {DB}, {DB}, {DB},                     {DB},                     {DB}, {DB},
+	{DB},                     {DB}, {DB}, {DB}, {DB},                     {DB},                     {DB}, {DB},
 	/* 0F3817h - 0F381Fh */
 	{DB}, {DB}, {DB}, {DB}, {PABSB, OP2(Ppk, Qpk)}, {PABSW, OP2(Ppi, Qpi)}, {PABSD, OP2(Ppj, Qpj)}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {PABSB, OP2(Vpk, Wpk)}, {PABSW, OP2(Vpi, Wpi)}, {PABSD, OP2(Vpj, Wpj)}, {DB},
@@ -152,10 +152,10 @@ OpCodeMapElement OpCodeMapThreeByte0F38[] =
 	{DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},
 	{DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},                    {DB},
 	/* 0F3840h - 0F3847h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB},                        {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {PHMINPOSUW, OP2(Vpi, Wpi)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB},                        {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB}, {DB},                        {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3848h - 0F384Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

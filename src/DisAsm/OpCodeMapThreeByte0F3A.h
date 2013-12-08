@@ -96,7 +96,7 @@ uint32_t OpCodeMapThreeByte0F3AExt[] =
 	/* 0F3A20h - 0F3A3Fh */
 	0xFF000007UL,
 	/* 0F3A40h - 0F3A5Fh */
-	0x00000000UL,
+	0x000000FFUL,
 	/* 0F3A60h - 0F3A7Fh */
 	0x0000000FUL,
 	/* 0F3A80h - 0F3A9Fh */
@@ -152,10 +152,10 @@ OpCodeMapElement OpCodeMapThreeByte0F3A[] =
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A40h - 0F3A47h */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                      {DB},                      {DB},                         {DB}, {DB}, {DB}, {DB}, {DB},
+	{DPPS, OP3(Vps, Wps, Ib)}, {DPPD, OP3(Vpd, Wpd, Ib)}, {MPSADBW, OP3(Vpk, Wpk, Ib)}, {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                      {DB},                      {DB},                         {DB}, {DB}, {DB}, {DB}, {DB},
+	{DB},                      {DB},                      {DB},                         {DB}, {DB}, {DB}, {DB}, {DB},
 	/* 0F3A48h - 0F3A4Fh */
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
