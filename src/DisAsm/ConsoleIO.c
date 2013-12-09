@@ -67,7 +67,6 @@ void ConsoleIOInit()
 {
 #ifdef OS_WINDOWS
 	DWORD mode = 0;
-
 	g_isConsoleStdOut = 0 != GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode);
 	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);
 #else /* OS_WINDOWS */
@@ -76,7 +75,7 @@ void ConsoleIOInit()
 #endif /* OS_WINDOWS */
 }
 
-void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, uint8_t error)
+void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, TextColor background, uint8_t error)
 {
 #ifdef OS_WINDOWS
 	DWORD written = 0;
@@ -86,22 +85,31 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	{
 		CONSOLE_SCREEN_BUFFER_INFO info = {0};
 		/* set custom text color, if necessary */
-		if (kDefaultColor != color)
+		if (kDefaultColor != color || kDefaultColor != background)
 		{
 			WORD attributes = 0;
 			GetConsoleScreenBufferInfo(hConsole, &info);
-			attributes |= (color & kRed)   ? FOREGROUND_RED   : 0;
-			attributes |= (color & kGreen) ? FOREGROUND_GREEN : 0;
-			attributes |= (color & kBlue)  ? FOREGROUND_BLUE  : 0;
-			attributes |= FOREGROUND_INTENSITY;
-			attributes |= (color & kBackGroundRed)  ? BACKGROUND_RED   : 0;
-			attributes |= (color & kBackGroundRed)  ? BACKGROUND_GREEN : 0;
-			attributes |= (color & kBackGroundBlue) ? BACKGROUND_BLUE  : 0;
+			attributes = info.attributes;
+			if (kDefaultColor != color)
+			{
+				attributes &= ~(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+				attributes |= (color & kRed)   ? FOREGROUND_RED   : 0;
+				attributes |= (color & kGreen) ? FOREGROUND_GREEN : 0;
+				attributes |= (color & kBlue)  ? FOREGROUND_BLUE  : 0;
+				attributes |= FOREGROUND_INTENSITY;
+			}
+			if (kDefaultColor != background)
+			{
+				attributes &= ~(BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE | BACKGROUND_INTENSITY);
+				attributes |= (color & kRed)   ? BACKGROUND_RED   : 0;
+				attributes |= (color & kGreen) ? BACKGROUND_GREEN : 0;
+				attributes |= (color & kBlue)  ? BACKGROUND_BLUE  : 0;
+			}
 			SetConsoleTextAttribute(hConsole, attributes);
 		}
 		WriteConsole(hConsole, str, length, &written, NULL);
 		/* restore color */
-		if (kDefaultColor != color)
+		if (kDefaultColor != color || kDefaultColor != background)
 		{
 			SetConsoleTextAttribute(hConsole, info.wAttributes);
 		}
@@ -126,20 +134,22 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 			escape[7] = 0;
 			
 			write(error ? STDERR_FILENO : STDOUT_FILENO, escape, 8);
-			
+		}
+		if (kDefaultColor != background)
+		{
 			escape[0] = '\033';
 			escape[1] = '[';
 			escape[2] = '1';
 			escape[3] = ';';
 			escape[4] = '4';
-			escape[5] = '0' + (color >> 8);
+			escape[5] = '0' + (background & 7);
 			escape[6] = 'm';
 			escape[7] = 0;
 			
 			write(error ? STDERR_FILENO : STDOUT_FILENO, escape, 8);
 		}
 		write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
-		if (kDefaultColor != color)
+		if (kDefaultColor != color || kDefaultColor != background)
 		{
 			escape[0] = '\033';
 			escape[1] = '[';
@@ -163,17 +173,17 @@ void ConsoleIOPrint(const char * str)
 	uint32_t length = xstrlen(str);
 	if (length >= 7 && 0 == memcmp(str, "[ERROR]", 7))
 	{
-		ConsoleIOPrintInternal(str, xstrlen(str), kRed, 1);
+		ConsoleIOPrintInternal(str, xstrlen(str), kRed, kDefaultColor, 1);
 #ifdef OS_WINDOWS
 		OutputDebugString(str);
 #endif /* OS_WINDOWS */
 	}
-	ConsoleIOPrintInternal(str, length, kDefaultColor, 0);
+	ConsoleIOPrintInternal(str, length, kDefaultColor, kDefaultColor, 0);
 }
 
-void PrintColoredString(const char * str, TextColor color)
+void PrintColoredString(const char * str, TextColor color, TextColor background)
 {
-	ConsoleIOPrintInternal(str, xstrlen(str), color, 0);
+	ConsoleIOPrintInternal(str, xstrlen(str), color, background, 0);
 }
 
 void PrintByte(uint64_t value)

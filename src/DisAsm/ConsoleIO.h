@@ -28,16 +28,7 @@ typedef enum TextColor_t
 	kCyan    = kGreen | kBlue,
 	kWhite   = kRed | kGreen | kBlue,
 
-	kBackGroundBlack   = kBlack << 8,
-	kBackGroundRed     = kRed << 8,
-	kBackGroundGreen   = kGreen << 8,
-	kBackGroundBlue    = kBlue << 8,
-	kBackGroundYellow  = kYellow << 8,
-	kBackGroundMagenta = kMagenta << 8,
-	kBackGroundCyan    = kCyan << 8,
-	kBackGroundWhite   = kWhite << 8,
-
-	kDefaultColor = kWhite | kBackGroundWhite
+	kDefaultColor = kWhite
 }
 TextColor;
 
@@ -49,7 +40,7 @@ char * ShortName(char * name);
 
 void ConsoleIOInit();
 void ConsoleIOPrint(const char * string);
-void PrintColoredString(const char * string, TextColor color);
+void PrintColoredString(const char * string, TextColor color, TextColor background);
 void PrintByte(uint64_t value);
 void ConsoleIOPrintFormatted(const char * format, ...);
 

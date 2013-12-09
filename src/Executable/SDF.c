@@ -192,7 +192,7 @@ void SDFPrint(HSDF hSDF)
 	{
 		return;
 	}
-	PrintColoredString(pContext->definition[0].name, kYellow);
+	PrintColoredString(pContext->definition[0].name, kYellow, kDefaultColor);
 	ConsoleIOPrint("\n");
 	for (i = 1; ; ++i)
 	{

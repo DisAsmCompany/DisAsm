@@ -181,7 +181,7 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 		case REPE:
 		case REPZ:
 			mnemonic = DisAsmMnemonicToString(pInfo->prefixes[i].mnemonic);
-			PrintColoredString(mnemonic, kGreen);
+			PrintColoredString(mnemonic, kGreen, kDefaultColor);
 			ConsoleIOPrint(" ");
 			break;
 		default:
@@ -190,7 +190,7 @@ void StrAsmPrintInstruction(InstructionInfo * pInfo)
 	}
 	mnemonic = DisAsmMnemonicToString(pInfo->mnemonic);
 	if (mnemonic[0] == '_') ++mnemonic;
-	PrintColoredString(mnemonic, kBlue);
+	PrintColoredString(mnemonic, kBlue, kDefaultColor);
 
 	for (i = 0; i < pInfo->nOperands; ++i)
 	{
