@@ -193,11 +193,10 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0x44: case 0x45: case 0x46: case 0x47:
 		case 0x48: case 0x49: case 0x4A: case 0x4B:
 		case 0x4C: case 0x4D: case 0x4E: case 0x4F:
-			if (pInfo->hasREX)
+			if (pInfo->REX.value)
 			{
 				return NULL;
 			}
-			pInfo->hasREX = 1;
 			pInfo->REX.value = byte;
 			return ChooseOpCode(pContext, pInfo);
 		/* 2-byte VEX prefix */
@@ -226,6 +225,12 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			}
 			pInfo->hasXOP = 1;
 			pInfo->XOP.value = Fetch2(pContext, pInfo);
+			return ChooseOpCode(pContext, pInfo);
+		/* MVEX */
+		case 0x62:
+			return ChooseOpCode(pContext, pInfo);
+		/* L1OM */
+		case 0xD6:
 			return ChooseOpCode(pContext, pInfo);
 		default:
 			break;
@@ -444,10 +449,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 		{
 			pOperand->hasIndex = 0;
 			pOperand->reg = pInfo->ModRM.fields.RM;
-            if (pInfo->hasREX && pInfo->REX.fields.B)
-            {
-                pOperand->reg += 8;
-            }
+            pOperand->reg |= pInfo->REX.fields.B ? 8 : 0;
 			pOperand->hasBase = !(5 == pInfo->ModRM.fields.RM && 0 == pInfo->ModRM.fields.Mod);
 		}
 		if (Mem == pOperand->type)
@@ -482,10 +484,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	case N:
 		pOperand->type = Reg;
 		pOperand->reg = pInfo->ModRM.fields.Reg;
-        if (pInfo->hasREX && pInfo->REX.fields.R)
-        {
-            pOperand->reg += 8;
-        }
+        pOperand->reg |= pInfo->REX.fields.R ? 8 : 0;
 		pOperand->reg |= RegForType(pContext, type);
 		break;
 	case I: case J:
@@ -711,7 +710,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pInfo = pInfo ? pInfo : &info;
 	pInfo->length = 0;
 	pInfo->nPrefixes = 0;
-	pInfo->hasREX = 0;
+	pInfo->REX.value = 0;
 	pInfo->mnemonic = DB;
 
 	context.error = 0;
@@ -725,7 +724,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	}
     if (8 == context.currentSize)
     {
-        context.currentSize = (pInfo->hasREX && pInfo->REX.fields.W) ? 8 : 4;
+        context.currentSize = pInfo->REX.fields.W ? 8 : 4;
     }
 	pInfo->hasSeg = 0;
 	pInfo->hasModRM = 0;

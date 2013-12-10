@@ -89,7 +89,7 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 		{
 			WORD attributes = 0;
 			GetConsoleScreenBufferInfo(hConsole, &info);
-			attributes = info.attributes;
+			attributes = info.wAttributes;
 			if (kDefaultColor != color)
 			{
 				attributes &= ~(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);

@@ -17,7 +17,6 @@ static const uint8_t nop = 0x90;
 static const uint8_t jmp = 0xE9;
 
 enum {ThunkSize = 20 };
-enum {PageSize = 4096 };
 
 uint8_t xThunkHeapAlloc[2 * ThunkSize], xThunkHeapReAlloc[2 * ThunkSize], xThunkHeapFree[2 * ThunkSize], xThunkRtlFreeHeap[2 * ThunkSize];
 
@@ -405,10 +404,14 @@ typedef enum ProtectType_t
 }
 ProtectType;
 
-void Protect(native_t address, ProtectType type)
+void Protect(native_t address, uint32_t size, ProtectType type)
 {
+	native_t base;
+	native_t page = 0;
 #ifdef OS_WINDOWS
 	DWORD protect = 0;
+	DWORD dummy = 0;
+	SYSTEM_INFO si = {0};
     switch (type)
     {
     case 0: protect = PAGE_NOACCESS; break;
@@ -421,13 +424,22 @@ void Protect(native_t address, ProtectType type)
     case ProtectTypeExecute | ProtectTypeWrite | ProtectTypeRead: protect = PAGE_EXECUTE_READWRITE; break;
     default: break;
     }
-	VirtualProtect((void*)(address - address % PageSize), PageSize, protect, &protect);
+	GetSystemInfo(&si);
+	page = si.dwPageSize;
+	for (base = address - address % page; base < address + size; base += page)
+	{
+		VirtualProtect((void*)base, page, protect, &dummy);
+	}
 #else /* OS_WINDOWS */
 	int protect = 0;
 	protect |= (type & ProtectTypeRead) ? PROT_READ : 0;
 	protect |= (type & ProtectTypeWrite) ? PROT_WRITE : 0;
 	protect |= (type & ProtectTypeExecute) ? PROT_EXEC : 0;
-	mprotect((void*)(address - address % PageSize), PageSize, protect);
+	page = sysconf(_SC_PAGE_SIZE);
+	for (base = address - address % page; base < address + size; base += page)
+	{
+		mprotect((void*)base, page, protect);
+	}
 #endif /* OS_WINDOWS */
 }
 
@@ -442,12 +454,12 @@ void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
-	Protect((native_t) pThunk, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
-	Protect((native_t) pOriginal, ProtectTypeWrite);
+	Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+	Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
 	pOriginal[0] = jmp;
 	memcpy(pOriginal + 1, &offset, 4);
 	memset(pOriginal + 5, nop, length - 5);
-	Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
+	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
 	
 	offset = CalculateOffsetForJMP((native_t)(pThunk + ThunkSize), (native_t)(pOriginal + length));
 	pThunk[ThunkSize] = jmp;
@@ -464,8 +476,8 @@ void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
-    Protect((native_t) pThunk, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
-    Protect((native_t) pOriginal, ProtectTypeWrite);
+    Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+    Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
 
     target = (native_t) pHook;
     pOriginal[0] = 0xFF;
@@ -476,7 +488,7 @@ void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     pOriginal[5] = 0x00;
     memcpy(pOriginal + 6, &target, 8);
 
-    Protect((native_t) pOriginal, ProtectTypeExecute | ProtectTypeRead);
+    Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
 
     target = (native_t) (pOriginal + length);
     pThunk[ThunkSize + 0] = 0xFF;
@@ -500,9 +512,9 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 {
-	Protect((native_t) pOriginal, ProtectTypeWrite);
+	Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
 	PatchLength(pThunk, pOriginal, 5);
-	Protect((native_t) pOriginal, ProtectTypeExecute);
+	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute);
 }
 
 void LeakTrackerInstall(uint8_t install)

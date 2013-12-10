@@ -23,6 +23,7 @@ enum { kMaxPrefixes = 4 };
 
 typedef struct InstructionInfo_t
 {
+	/* instruction length, in bytes. currently, maximum allowed length is 15 bytes (kMaxInstruction) */
 	uint8_t length;
 	uint32_t opcode;
 	Mnemonic mnemonic;
@@ -31,7 +32,6 @@ typedef struct InstructionInfo_t
 	uint8_t hasSeg   : 1;
 	uint8_t hasDisp  : 1;
 	uint8_t hasImm   : 1;
-	uint8_t hasREX   : 1;
 	uint8_t hasVEX2  : 1;
 	uint8_t hasVEX3  : 1;
 	uint8_t hasXOP   : 1;
