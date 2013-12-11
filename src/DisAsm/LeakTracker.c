@@ -16,9 +16,9 @@ static const uint8_t nop = 0x90;
 /* OpCode for JMP (Jump) */
 static const uint8_t jmp = 0xE9;
 
-enum {ThunkSize = 20 };
+enum {ThunkSize = 40 };
 
-uint8_t xThunkHeapAlloc[2 * ThunkSize], xThunkHeapReAlloc[2 * ThunkSize], xThunkHeapFree[2 * ThunkSize], xThunkRtlFreeHeap[2 * ThunkSize];
+uint8_t xThunkHeapAlloc[3 * ThunkSize], xThunkHeapReAlloc[3 * ThunkSize], xThunkHeapFree[3 * ThunkSize], xThunkRtlFreeHeap[3 * ThunkSize];
 
 typedef struct Allocation_t
 {
@@ -132,8 +132,33 @@ native_t CalculateOffsetForJMP(native_t from, native_t to)
 	return to - from - 5;
 }
 
+void PlaceJxx32(uint8_t byte1, uint8_t byte2, uint8_t * pData, uint32_t offset)
+{
+    pData[0] = byte1;
+    pData[1] = byte2;
+    memcpy(pData + 2, &offset, 4);
+}
+
+void PlaceJMP32(uint8_t * pData, uint32_t offset)
+{
+    pData[0] = jmp;
+    memcpy(pData + 1, &offset, 4);
+}
+
+void PlaceJMP64(uint8_t * pData, uint64_t destination)
+{
+    pData[0] = 0xFF;
+    pData[1] = 0x25;
+    pData[2] = 0x00;
+    pData[3] = 0x00;
+    pData[4] = 0x00;
+    pData[5] = 0x00;
+    memcpy(pData + 6, &destination, 8);
+}
+
 uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
+    InstructionInfo info;
     uint32_t total = 0;
 	CallbackReader reader = {0};
     reader.pRead    = CallbackRead;
@@ -143,7 +168,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 	
 	while (total < required)
 	{
-        uint32_t length = DisAsmInstructionDecode(kBitnessNative, &reader, NULL);
+        uint32_t length = DisAsmInstructionDecode(kBitnessNative, &reader, &info);
 		if (0 == length)
 		{
 			return 0;
@@ -159,18 +184,32 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 			 new offset = destination - thunk = old offset + original - thunk
 			 */
 			offset = offset + pData - pOut;
-			memcpy(pOut + total + 1, &offset, 4);
-			pOut[total] = jmp;
+            PlaceJMP32(pOut + total, offset);
 		}
         else if (0x0F == pData[total] && 0x80 <= pData[total + 1] && pData[total + 1] <= 0x8F)
         {
             /* 0x0F 0x8* Jcc Rel32 */
             uint32_t offset = 0;
+            native_t destination = 0;
             memcpy(&offset, pData + total + 2, 4);
-            offset = offset + pData - pOut;
-            memcpy(pOut + total + 2, &offset, 4);
-            pOut[total] = 0x0F;
-            pOut[total + 1] = pData[total + 1];
+            destination = pData + total + length + offset;
+            /*
+            Jxx ConditionMet (6 bytes)
+            Jmp ContitionFailed: (5 bytes)
+            ConditionMet:
+            Jmp destination (14 bytes)
+            ConditionFailed:
+            */
+            PlaceJxx32(pData[total], pData[total + 1], pOut + total, 5);
+            PlaceJMP32(pOut + total + 6, 14);
+            PlaceJMP64(pOut + total + 11, destination);
+
+            PrintByte(0);
+        }
+        else if (CALL == info.mnemonic && 0xFF == pData[total])
+        {
+            /* TODO : handle relative call */
+            memcpy(pOut + total, pData + total, length);
         }
 		else
 		{
@@ -454,16 +493,17 @@ void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
+    pThunk[2 * ThunkSize] = length;
+    memcpy(pThunk + 2 * ThunkSize + 1, pOriginal, length);
+
 	Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
-	pOriginal[0] = jmp;
-	memcpy(pOriginal + 1, &offset, 4);
+    PlaceJMP32(pOriginal, offset);
 	memset(pOriginal + 5, nop, length - 5);
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
 	
 	offset = CalculateOffsetForJMP((native_t)(pThunk + ThunkSize), (native_t)(pOriginal + length));
-	pThunk[ThunkSize] = jmp;
-	memcpy(pThunk + ThunkSize + 1, &offset, 4);
+    PlaceJMP32(pThunk + ThunkSize, offset);
 }
 
 void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
@@ -476,28 +516,19 @@ void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     {
         return;
     }
+    pThunk[2 * ThunkSize] = length;
+    memcpy(pThunk + 2 * ThunkSize + 1, pOriginal, length);
+
     Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
     Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
 
     target = (native_t) pHook;
-    pOriginal[0] = 0xFF;
-    pOriginal[1] = 0x25;
-    pOriginal[2] = 0x00;
-    pOriginal[3] = 0x00;
-    pOriginal[4] = 0x00;
-    pOriginal[5] = 0x00;
-    memcpy(pOriginal + 6, &target, 8);
+    PlaceJMP64(pOriginal, target);
 
     Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
 
     target = (native_t) (pOriginal + length);
-    pThunk[ThunkSize + 0] = 0xFF;
-    pThunk[ThunkSize + 1] = 0x25;
-    pThunk[ThunkSize + 2] = 0x00;
-    pThunk[ThunkSize + 3] = 0x00;
-    pThunk[ThunkSize + 4] = 0x00;
-    pThunk[ThunkSize + 5] = 0x00;
-    memcpy(pThunk + ThunkSize + 6, &target, 8);
+    PlaceJMP64(pThunk + ThunkSize, target);
 }
 
 void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
@@ -512,14 +543,15 @@ void PatchFunction(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 
 void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 {
+    uint8_t length = pThunk[2 * ThunkSize];
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
-	PatchLength(pThunk, pOriginal, 5);
+    memcpy(pOriginal, pThunk + 2 * ThunkSize + 1, length);
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute);
 }
 
 void LeakTrackerInstall(uint8_t install)
 {
-#ifdef CPU_X86
+#if defined(CPU_X86) || defined(CPU_X64)
 #ifdef OS_WINDOWS
     HMODULE hModule = GetModuleHandleA("ntdll.dll");
     void * RtlFreeHeap = (void*) GetProcAddress(hModule, "RtlFreeHeap");
@@ -540,7 +572,10 @@ void LeakTrackerInstall(uint8_t install)
 
 		PatchFunction((uint8_t*)HeapReAlloc, (uint8_t*)xHeapReAlloc, xThunkHeapReAlloc);
 		PatchFunction((uint8_t*)HeapAlloc,   (uint8_t*)xHeapAlloc,   xThunkHeapAlloc);
+#if defined(CPU_X86)
+        /* relative CALL is ued in x64 implementation */
 		PatchFunction((uint8_t*)HeapFree,    (uint8_t*)xHeapFree,    xThunkHeapFree);
+#endif /* defined(CPU_X86) */
 		if (RtlFreeHeap != HeapFree)
 		{
 			PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
@@ -598,5 +633,5 @@ void LeakTrackerInstall(uint8_t install)
 			ConsoleIOPrintFormatted("[ERROR] total leaked %d bytes\n", total);
 		}
 	}
-#endif /* CPU_X86 */
+#endif /* defined(CPU_X86) || defined(CPU_X64) */
 }
