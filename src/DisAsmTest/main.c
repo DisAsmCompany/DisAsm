@@ -40,7 +40,7 @@ void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 	{
 		CallbackReader reader = {0};
 		InstructionInfo info = {0};
-		ModRMu ModRM;
+		uint8_t ModRM;
 		uint8_t hasSIB;
 		uint8_t buffer[7];
 		uint8_t SIB = 0;
@@ -54,40 +54,40 @@ void VerifyInstructionWithModRM(uint32_t opcode, Mnemonic mnemonic)
 		reader.buffer = (uint8_t*) buffer;
 		reader.offset = 0;
 
-		ModRM.value = i;
-		hasSIB = (3 != ModRM.fields.Mod) && (4 == ModRM.fields.RM);
+		ModRM = i;
+		hasSIB = (3 != MODRM_MOD(ModRM)) && (4 == MODRM_RM(ModRM));
 		if (hasSIB)
 		{
 			++expected;
 		}
-		if (0 == ModRM.fields.Mod && 5 == ModRM.fields.RM)
+		if (0 == MODRM_MOD(ModRM) && 5 == MODRM_RM(ModRM))
 		{
 			hasDisp = 1;
 			sizeDisp = 4;
 		}
-		if (1 == ModRM.fields.Mod)
+		if (1 == MODRM_MOD(ModRM))
 		{
 			hasDisp = 1;
 			sizeDisp = 1;
 		}
-		if (2 == ModRM.fields.Mod)
+		if (2 == MODRM_MOD(ModRM))
 		{
 			hasDisp = 1;
 			sizeDisp = 4;
 		}
 		expected += sizeDisp;
 		buffer[0] = (uint8_t) opcode;
-		buffer[1] = ModRM.value;
+		buffer[1] = ModRM;
 		buffer[2] = SIB;
 		length = DisAsmInstructionDecode(32, &reader, &info);
 		TestAssert(expected == length);
 		TestAssert(expected == info.length);
 		TestAssert(mnemonic == info.mnemonic);
-		TestAssert(1 == info.hasModRM);
-		TestAssert(i == info.ModRM.value);
-		TestAssert(hasSIB == info.hasSIB);
-		TestAssert(SIB == info.SIB.value);
-		TestAssert(hasDisp == info.hasDisp);
+		TestAssert(info.flags & kHasModRM);
+		TestAssert(i == info.ModRM);
+		TestAssert(hasSIB == (!!(info.flags & kHasSIB)));
+		TestAssert(SIB == info.SIB);
+		TestAssert(hasDisp == (!!(info.flags & kHasDisp)));
 		TestAssert(sizeDisp == info.sizeDisp);
 		++i;
 	}
@@ -178,7 +178,7 @@ void TestSecondaryOpCodeTable()
 
 }
 
-int main(int argc, char * const argv[])
+int main()
 {
 	TestChooseOpCode();
 	TestNOP();

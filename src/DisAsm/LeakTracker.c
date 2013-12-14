@@ -156,10 +156,10 @@ void PlaceJMP64(uint8_t * pData, uint64_t destination)
     memcpy(pData + 6, &destination, 8);
 }
 
-uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
+uint8_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
     InstructionInfo info;
-    uint32_t total = 0;
+    uint8_t total = 0;
 	CallbackReader reader = {0};
     reader.pRead    = CallbackRead;
     reader.pPrivate = &reader;
@@ -168,7 +168,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 	
 	while (total < required)
 	{
-        uint32_t length = DisAsmInstructionDecode(kBitnessNative, &reader, &info);
+        uint8_t length = DisAsmInstructionDecode(kBitnessNative, &reader, &info);
 		if (0 == length)
 		{
 			return 0;
@@ -192,7 +192,7 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
             uint32_t offset = 0;
             native_t destination = 0;
             memcpy(&offset, pData + total + 2, 4);
-            destination = pData + total + length + offset;
+            destination = (native_t)pData + total + length + offset;
             /*
             Jxx ConditionMet (6 bytes)
             Jmp ContitionFailed: (5 bytes)
@@ -203,8 +203,6 @@ uint32_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
             PlaceJxx32(pData[total], pData[total + 1], pOut + total, 5);
             PlaceJMP32(pOut + total + 6, 14);
             PlaceJMP64(pOut + total + 11, destination);
-
-            PrintByte(0);
         }
         else if (CALL == info.mnemonic && 0xFF == pData[total])
         {
@@ -484,7 +482,7 @@ void Protect(native_t address, uint32_t size, ProtectType type)
 
 void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 {
-	uint32_t length = 0;
+	uint8_t length = 0;
 	native_t offset = CalculateOffsetForJMP((native_t)pOriginal, (native_t)pHook);
 	
 	memset(pThunk, nop, 2 * ThunkSize);
@@ -508,7 +506,7 @@ void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 
 void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
 {
-    uint32_t length = 0;
+    uint8_t length = 0;
     native_t target = 0;
     memset(pThunk, nop, 2 * ThunkSize);
 

@@ -17,20 +17,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct ModRMs_t
-{
-	uint8_t RM  : 3;
-	uint8_t Reg : 3;
-	uint8_t Mod : 2;
-}
-ModRMs;
-
-typedef union ModRMu_t
-{
-	ModRMs fields;
-	uint8_t value;
-}
-ModRMu;
+#define MODRM_RM(ModRM)  (((ModRM)     ) & 0x07)
+#define MODRM_REG(ModRM) (((ModRM) >> 3) & 0x07)
+#define MODRM_MOD(ModRM) (((ModRM) >> 6) & 0x03)
 
 #ifdef __cplusplus
 }

@@ -17,22 +17,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct REXs_t
-{
-	uint8_t B : 1;
-	uint8_t X : 1;
-	uint8_t R : 1;
-	uint8_t W : 1;
-	uint8_t _ : 4;
-}
-REXs;
-
-typedef union REXu_t
-{
-	REXs fields;
-	uint8_t value;
-}
-REXu;
+#define REX_B(REX) (((REX)     ) & 0x01)
+#define REX_X(REX) (((REX) >> 1) & 0x01)
+#define REX_R(REX) (((REX) >> 2) & 0x01)
+#define REX_W(REX) (((REX) >> 3) & 0x01)
 
 #ifdef __cplusplus
 }

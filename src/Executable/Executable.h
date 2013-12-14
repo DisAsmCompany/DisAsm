@@ -77,7 +77,7 @@ typedef struct ExecutableContext_t
 }
 ExecutableContext;
 
-HEXECUTABLE ExecutableCreate(HREADER hReader, int memory);
+HEXECUTABLE ExecutableCreate(HREADER hReader, uint8_t memory);
 void ExecutableDestroy(HEXECUTABLE hExecutable);
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable);
 address_t ExecutableGetBase(HEXECUTABLE hExecutable);

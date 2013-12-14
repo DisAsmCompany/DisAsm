@@ -102,7 +102,7 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 			}
 			ConsoleIOPrint(DisAsmRegisterToString(pOperand->index));
 		}
-		if (pInfo->hasDisp)
+		if (pInfo->flags & kHasDisp)
 		{
 			if (IsNegative(pInfo->disp, pInfo->sizeDisp))
 			{

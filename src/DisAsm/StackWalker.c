@@ -344,20 +344,18 @@ void StackWalkCleanup()
 #ifdef CPU_X86
 #ifdef COMP_MICROSOFTC
 #define GETCONTEXT(c) \
-do \
 { \
 	__asm    call x \
 	__asm x: pop eax \
 	__asm    mov c.Eip, eax \
 	__asm    mov c.Ebp, ebp \
 	__asm    mov c.Esp, esp \
-} \
-while(0);
+}
 #else /* COMP_MICROSOFTC */
 #define GETCONTEXT(c)
 #endif /* COMP_MICROSOFTC */
 #else /* CPU_X86 */
-#define GETCONTEXT(c) do { RtlCaptureContext(&context); } while (0);
+#define GETCONTEXT(c) for (;;) { RtlCaptureContext(&context); break; }
 #endif /* CPU_X86 */
 #endif /* GETCONTEXT */
 

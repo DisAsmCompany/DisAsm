@@ -212,7 +212,7 @@ int MachOFileInit(ExecutableContext * pContext)
 	for (i = 0; i < pContext->nObjects; ++i)
 	{
 		CHECK_CALL(THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader));
-		SDFSetEndian(THIS->phFatHeaders[i], kMachOFatMagicBE == magic);
+		SDFSetEndian(THIS->phFatHeaders[i], (kMachOFatMagicBE == magic) ? 1 : 0);
 		SDFPrint(THIS->phFatHeaders[i]);
 	}
 	for (i = 0; i < pContext->nObjects; ++i)

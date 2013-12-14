@@ -17,20 +17,9 @@
 extern "C" {
 #endif /* __cplusplus */
 
-typedef struct SIBs_t
-{
-	uint8_t Base  : 3;
-	uint8_t Index : 3;
-	uint8_t Scale : 2;
-}
-SIBs;
-
-typedef union SIBu_t
-{
-	SIBs fields;
-	uint8_t value;
-}
-SIBu;
+#define SIB_BASE(SIB)  (((SIB)     ) & 0x07)
+#define SIB_INDEX(SIB) (((SIB) >> 3) & 0x07)
+#define SIB_SCALE(SIB) (((SIB) >> 6) & 0x03)
 
 #ifdef __cplusplus
 }

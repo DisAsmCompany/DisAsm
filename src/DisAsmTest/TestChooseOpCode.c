@@ -13,14 +13,11 @@
 #include "../DisAsm/DisAsm"
 #include "../StrAsm/StrAsm"
 
-void TestOpcode(uint32_t input, uint32_t expected)
+void TestOpcode()
 {
-
-	//TestAssert(expected == _ChooseOpCode())
 }
 
 void TestChooseOpCode()
 {
 	
 }
-

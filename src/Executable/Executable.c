@@ -24,7 +24,7 @@ static const pfnCreate Registry[] =
 	NULL
 };
 
-HEXECUTABLE ExecutableCreate(HREADER hReader, int memory)
+HEXECUTABLE ExecutableCreate(HREADER hReader, uint8_t memory)
 {
 	ExecutableContext * pContext = NULL;
 	uint32_t i = 0;
