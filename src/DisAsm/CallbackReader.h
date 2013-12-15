@@ -22,6 +22,7 @@ typedef struct CallbackReader_t
 	pfnRead    pRead;
 	pfnSeek    pSeek;
 	pfnSkip    pSkip;
+	pfnSize    pSize;
 	pfnDestroy pDestroy;
 	void *     pPrivate;
 	uint8_t * buffer;
