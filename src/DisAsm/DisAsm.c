@@ -113,17 +113,17 @@ uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
+uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 {
 	uint64_t result = 0;
-	if (pInfo->length + N <= kMaxInstruction)
+	if (pInfo->length + count <= kMaxInstruction)
 	{
 		uint8_t i;
-		for (i = 0; i < N; ++i)
+		for (i = 0; i < count; ++i)
 		{
 			result = (result << 8) + Fetch1(pContext, pInfo);
 		}
-		pInfo->length += N;
+		pInfo->length += count;
 	}
 	else
 	{
@@ -132,16 +132,16 @@ uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
 	return result;
 }
 
-uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t N)
+uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 {
 	uint64_t result = 0;
-	switch (N)
+	switch (count)
 	{
 	case 1: result = Fetch1(pContext, pInfo); break;
 	case 2: result = Fetch2(pContext, pInfo); break;
 	case 4: result = Fetch4(pContext, pInfo); break;
 	case 8: result = Fetch8(pContext, pInfo); break;
-	default: result = Fetch(pContext, pInfo, N); break;
+	default: result = Fetch(pContext, pInfo, count); break;
 	}
 	return result;
 }
@@ -150,13 +150,20 @@ OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * p
 {
 	uint32_t index = *opcode & 0xFF;
 	uint32_t offset = 0;
+	uint8_t i = 0;
 	/* check, if opcode has extensions for prefixes 0x66, 0xF2, 0xF3 */
-	if (1 == pInfo->nPrefixes)
+	if (pInfo->nPrefixes > 0)
 	{
 		uint32_t mask = ext[index >> 5];
 		if (mask & (1 << (index & 0x1F)))
 		{
 			uint32_t prefix = pInfo->prefixes[0].opcode;
+			for (i = 1; i < pInfo->nPrefixes; ++i)
+			{
+				/* 0xF2 & 0xF3 overrides 0x66 */
+				prefix = (0xF2 == pInfo->prefixes[i].opcode) ? 0xF2 : prefix;
+				prefix = (0xF3 == pInfo->prefixes[i].opcode) ? 0xF3 : prefix;
+			}
 			switch (prefix)
 			{
 			case 0x66: offset =  8; break;
@@ -168,7 +175,7 @@ OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * p
 			{
 				/* in that case, prefix is not a prefix actually, but part of unique opcode */
 				*opcode |= (*opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16);
-				--pInfo->nPrefixes;
+				pInfo->nPrefixes = 0;
 			}
 			pContext->currentSize = pContext->size;
 		}
