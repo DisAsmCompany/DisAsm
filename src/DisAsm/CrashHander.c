@@ -551,7 +551,7 @@ void CrashHandlerInstall()
 	size_t i;
 	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
 	{
-		struct sigaction action;
+		struct sigaction action = {0};
 		action.sa_sigaction = CrashHandler;
 		action.sa_flags = SA_RESTART | SA_SIGINFO;
 		if (0 != sigaction(signals[i].signum, &action, NULL))
