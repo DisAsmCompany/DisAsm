@@ -139,13 +139,24 @@ extern "C" {
 #define COMP_INTELC
 #endif /* defined(__INTEL_COMPILER) || defined(__ICC) || defined(__ECL) || defined(__ICL) */
 
-#if defined (__NWCC__)
+#if defined(__NWCC__)
 #define COMP_NWCC
 #endif /* defined(__NWCC__) */
 
-#if defined (__TINYC__)
+#if defined(__TINYC__)
 #define COMP_TINYC
 #endif /* defined(__TINYC__) */
+
+#if defined (__MINGW32__) || defined(__MINGW64__)
+#define COMP_MINGW
+
+#if defined(__MINGW64__)
+#define CPU_X64
+#else /* defined(__MINGW64__) */
+#define CPU_X86
+#endif /* defined(__MINGW64__) */
+
+#endif /* defined (__MINGW32__) || defined(__MINGW64__) */
 
 #if defined(_OPENMP)
 #define HAS_OPENMP

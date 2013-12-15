@@ -22,6 +22,7 @@ windows32-msvc2005/
 windows64-msvc2005/
 windows32-bcc/
 windows32-wcc/
+windows32-mingw/
 macosx/
 unix/
 unix-clang/
