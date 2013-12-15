@@ -202,6 +202,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0x4C: case 0x4D: case 0x4E: case 0x4F:
 			if (pInfo->REX)
 			{
+				pContext->error = 1;
 				return NULL;
 			}
 			pInfo->REX = byte;
@@ -210,6 +211,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0xC5:
 			if (pInfo->flags & (kHasVEX2 | kHasVEX3 | kHasXOP3))
 			{
+				pContext->error = 1;
 				return NULL;
 			}
 			pInfo->flags |= kHasVEX2;
@@ -219,6 +221,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0xC4:
 			if (pInfo->flags & (kHasVEX2 | kHasVEX3 | kHasXOP3))
 			{
+				pContext->error = 1;
 				return NULL;
 			}
 			pInfo->flags |= kHasVEX3;
@@ -228,6 +231,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		case 0x8F:
 			if (pInfo->flags & (kHasVEX2 | kHasVEX3 | kHasXOP3))
 			{
+				pContext->error = 1;
 				return NULL;
 			}
 			pInfo->flags |= kHasXOP3;
@@ -297,6 +301,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 			}
 			else
 			{
+				pContext->error = 1;
 				return NULL;
 			}
 		default:
@@ -305,6 +310,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 		break;
 	}
 	pInfo->opcode = opcode;
+	pContext->error |= (DB == element->mnemonic) ? 1 : 0;
 	return element;
 }
 
@@ -532,7 +538,7 @@ void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 	pInfo->operands[3].reg = pElement->reg[3];
 }
 
-void GroupDecode(InstructionInfo * pInfo)
+void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
@@ -549,10 +555,11 @@ void GroupDecode(InstructionInfo * pInfo)
 			pElement = &OpCodeMapGroup[index];
 			pInfo->mnemonic = pElement->mnemonic;
 		}
+		pContext->error |= (DB == pInfo->mnemonic) ? 1 : 0;
 	}
 }
 
-void x87Decode(InstructionInfo * pInfo)
+void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
@@ -566,6 +573,7 @@ void x87Decode(InstructionInfo * pInfo)
 			index = MODRM_REG(pInfo->ModRM) + ((pInfo->opcode - 0xD8) << 3);
 		}
 		CopyElementInfo(pInfo, &OpCodeMapX87[index]);
+		pContext->error |= (DB == pInfo->mnemonic) ? 1 : 0;
 	}
 }
 
@@ -724,7 +732,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	context.currentSize = context.size = bitness >> 3;
 
 	pElement = ChooseOpCode(&context, pInfo);
-	if (NULL == pElement || DB == pElement->mnemonic || 1 == context.error)
+	if (1 == context.error)
 	{
 		return 0;
 	}
@@ -747,20 +755,24 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 
 	if (pInfo->flags & kHasModRM)
 	{
+		uint8_t ModRM_Mod, ModRM_RM, ModRM_Reg;
 		pInfo->ModRM = Fetch1(&context, pInfo);
-		pInfo->flags |= ((MODRM_MOD(pInfo->ModRM) != 3) && (MODRM_RM(pInfo->ModRM) == 4)) ? kHasSIB : 0;
+		ModRM_Mod = MODRM_MOD(pInfo->ModRM);
+		ModRM_RM  = MODRM_RM(pInfo->ModRM);
+		ModRM_Reg = MODRM_REG(pInfo->ModRM);
+		pInfo->flags |= ((ModRM_Mod != 3) && (ModRM_RM == 4)) ? kHasSIB : 0;
 
-		GroupDecode(pInfo);
-		x87Decode(pInfo);
-		if (ESCAPEX87 == pInfo->mnemonic || DB == pInfo->mnemonic || (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP))
+		GroupDecode(&context, pInfo);
+		x87Decode(&context, pInfo);
+		if (1 == context.error)
 		{
 			return 0;
 		}
 		pInfo->SIB = (pInfo->flags & kHasSIB) ? Fetch1(&context, pInfo) : 0;
-		switch (MODRM_MOD(pInfo->ModRM))
+		switch (ModRM_Mod)
 		{
 		case 0:
-			if (5 == MODRM_RM(pInfo->ModRM) || ((pInfo->flags & kHasSIB) && 5 == SIB_BASE(pInfo->SIB)))
+			if (5 == ModRM_RM || ((pInfo->flags & kHasSIB) && 5 == SIB_BASE(pInfo->SIB)))
 			{
 				pInfo->flags |= kHasDisp;
 				pInfo->sizeDisp = 4;
