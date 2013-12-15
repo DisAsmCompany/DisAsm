@@ -4,4 +4,5 @@ copy CMakeLists.txt windows32-wcc\CMakeLists.txt
 cd windows32-wcc
 cmake -G "Watcom WMake"
 wmake
+DisAsmTest.exe
 cd ..

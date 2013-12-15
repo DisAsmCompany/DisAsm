@@ -16,8 +16,10 @@ log/
 map/
 asm/
 out/
-windows32/
-windows64/
+windows32-icc12/
+windows64-icc12/
+windows32-msvc2005/
+windows64-msvc2005/
 windows32-bcc/
 windows32-wcc/
 macosx/
