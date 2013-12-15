@@ -353,7 +353,7 @@ int main(int argc, char * const argv[])
 			ReaderDestroy(hFileHeader);
 		}
 	}
-	if (memory)
+	else if (memory)
 	{
 		ModuleInfo info = {0};
 		native_t address = ModuleLoad(argv[argc - 1]);
