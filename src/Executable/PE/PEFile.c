@@ -521,7 +521,7 @@ int PEFileInit(ExecutableContext * pContext)
 		{
 			return 0;
 		}
-		THIS->PE64 = kPEMagic64 == Magic;
+		THIS->PE64 = (kPEMagic64 == Magic) ? 1 : 0;
 		SDFPrint(THIS->hOptionalHeader);
 		Extra = THIS->PE64 ? PEOptionalHeaderExtra64 : PEOptionalHeaderExtra;
 		ExtraSize = SDFSizeInBytes(Extra);

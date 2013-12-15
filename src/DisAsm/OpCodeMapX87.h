@@ -259,7 +259,7 @@ OpCodeMapElement OpCodeMapX87[] =
 	X87LINE2I(FDIVRP)
 	X87LINE2I(FDIVP)
 	/* DF */
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FFREEP)
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},

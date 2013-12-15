@@ -245,7 +245,7 @@ uint8_t CheckCPUID()
     uint8_t supported = 0;
     native_t eflags = ReadEFLAGS();
     WriteEFLAGS(eflags ^ kFlagCPUID);
-    supported = (eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID);
+	supported = ((eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID)) ? 1 : 0;
     WriteEFLAGS(eflags);
     return supported;
 }

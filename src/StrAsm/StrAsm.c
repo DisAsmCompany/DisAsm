@@ -14,7 +14,7 @@
 
 uint8_t IsNegative(uint64_t value, uint8_t size)
 {
-	return !!(value & (0x80 << 8 * (size - 1)));
+	return (value & (0x80 << 8 * (size - 1))) ? 1 : 0;
 }
 
 uint64_t Inverse(uint64_t value, uint8_t size)

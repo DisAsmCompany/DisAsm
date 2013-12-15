@@ -379,6 +379,7 @@ _ENUM_ELEMENT(FLDLN2)   /* Load Constant (ln 2) */
 _ENUM_ELEMENT(FLDZ)     /* Load Constant (0.0) */
 _ENUM_ELEMENT(FNOP)     /* No Operation */
 _ENUM_ELEMENT(FFREE)    /* Free Floating Point Register */
+_ENUM_ELEMENT(FFREEP)   /* Free Floating Point Register and Pop Stack */
 _ENUM_ELEMENT(FNCLEX)   /* Clear Exceptions */
 _ENUM_ELEMENT(FNINIT)   /* Initialize Floating-Point Unit */
 _ENUM_ELEMENT(FCHS)     /* Change Sign */

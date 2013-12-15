@@ -18,7 +18,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 void DisAsmPrintOpCodeMap();
-uint8_t DisAsmInstructionDecode(uint8_t size, HREADER hReaders, InstructionInfo * pInfo);
+uint8_t DisAsmInstructionDecode(uint8_t size, HREADER hReader, InstructionInfo * pInfo);
 
 char * DisAsmMnemonicToString(Mnemonic mnemonic);
 char * DisAsmRegisterToString(Register reg);

@@ -213,7 +213,7 @@ uint8_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 		{
 			memcpy(pOut + total, pData + total, length);
 		}
-		total += length;
+		total = total + length;
 	}
 	return total;
 }

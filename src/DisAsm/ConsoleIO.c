@@ -67,8 +67,8 @@ void ConsoleIOInit()
 {
 #ifdef OS_WINDOWS
 	DWORD mode = 0;
-	g_isConsoleStdOut = 0 != GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode);
-	g_isConsoleStdErr = 0 != GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode);
+	g_isConsoleStdOut = GetConsoleMode(g_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE), &mode) ? 1 : 0;
+	g_isConsoleStdErr = GetConsoleMode(g_hStdErr = GetStdHandle(STD_ERROR_HANDLE), &mode) ? 1 : 0;
 #else /* OS_WINDOWS */
 	g_isConsoleStdOut = isatty(STDOUT_FILENO);
 	g_isConsoleStdErr = isatty(STDERR_FILENO);
@@ -220,6 +220,24 @@ uint32_t AppendDec(char * buffer, uint64_t value, uint32_t width)
 	return width;
 }
 
+uint32_t AppendDouble(char * buffer, double value, uint32_t width, uint32_t precision)
+{
+	uint64_t bytes = *((uint64_t*) &value);
+	//uint8_t sign = (bytes & U64(0x8000000000000000)) ? 1 : 0;
+	//uint64_t exponent = ((bytes >> 52) & U64(0x07FF)) - 1027;
+	uint64_t fraction = bytes & U64(0xFFFFFFFFFFFFF);
+	uint32_t i = 0;
+
+	while (fraction)
+	{
+		buffer[i] = fraction % 10 + '0';
+		fraction /= 10;
+		++i;
+	}
+
+	return i;
+}
+
 uint32_t AppendHex(char * buffer, uint64_t value, uint32_t width)
 {
 	char digits[] = "0123456789ABCDEF";
@@ -277,7 +295,12 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 					break;
 				case '.': period = 1; ++i; stop = 0; break;
 				case '%': message[j] = '%'; ++i; ++j; break;
-				case 'c': message[j] = va_arg(args, int); ++i; ++j; break;
+				case 'c':
+					{
+						/* char is promoted to int */
+						message[j] = va_arg(args, int); ++i; ++j;
+					}
+					break;
 				case 'd':
 					{
 						uint64_t value = large ? va_arg(args, uint64_t) : va_arg(args, uint32_t);
@@ -287,8 +310,11 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 					break;
 				case 'f':
 					{
-						/*float value = va_arg(args, float);*/
+						/* float is promoted to double */
+						double value = va_arg(args, double);
+						j += AppendDouble(message + j, value, width, precision);
 					}
+					break;
 				case 'l':
 				case 'L': stop = 0; large = 1; ++i; break;
 				case 's':

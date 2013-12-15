@@ -155,7 +155,8 @@ calculate operands count : how many non-zero bytes are in packed type definition
 #define OP1(x)       OP4(x, 0, 0, 0)
 #define OP0          OP4(0, 0, 0, 0)
 
-#define OPCOUNT(x) (!!(x)[0] + !!(x)[1] + !!(x)[2] + !!(x)[3])
+#define TOBOOL(x) ((x) ? 1 : 0)
+#define OPCOUNT(x) (TOBOOL((x)[0]) + TOBOOL((x)[1]) + TOBOOL((x)[2]) + TOBOOL((x)[3]))
 
 #define LOTYPE(x) (OperandType)((x - OperandBase) & 0x00FF)
 #define HITYPE(x) (OperandType)((x - OperandBase) & 0xFF00)

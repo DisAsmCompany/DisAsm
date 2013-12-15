@@ -123,7 +123,7 @@ uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 		{
 			result = (result << 8) + Fetch1(pContext, pInfo);
 		}
-		pInfo->length += count;
+		pInfo->length = pInfo->length + count;
 	}
 	else
 	{
@@ -150,13 +150,13 @@ OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * p
 {
 	uint32_t index = *opcode & 0xFF;
 	uint32_t offset = 0;
-	uint8_t i = 0;
 	/* check, if opcode has extensions for prefixes 0x66, 0xF2, 0xF3 */
 	if (pInfo->nPrefixes > 0)
 	{
 		uint32_t mask = ext[index >> 5];
 		if (mask & (1 << (index & 0x1F)))
 		{
+			uint8_t i = 0;
 			uint32_t prefix = pInfo->prefixes[0].opcode;
 			for (i = 1; i < pInfo->nPrefixes; ++i)
 			{
@@ -456,7 +456,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 			pOperand->hasIndex = 0;
 			pOperand->reg = MODRM_RM(pInfo->ModRM);
             pOperand->reg |= REX_B(pInfo->REX) ? 8 : 0;
-			pOperand->hasBase = !(5 == MODRM_RM(pInfo->ModRM) && 0 == MODRM_MOD(pInfo->ModRM));
+			pOperand->hasBase = (5 == MODRM_RM(pInfo->ModRM) && 0 == MODRM_MOD(pInfo->ModRM)) ? 0 : 1;
 		}
 		if (Mem == pOperand->type)
 		{
