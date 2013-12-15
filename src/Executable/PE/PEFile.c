@@ -101,7 +101,7 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 	}
 	CHECK_CALL(ReaderSeek(pContext->hReader, THIS->OffsetExport));
 	CHECK_CALL(THIS->hExportDirectory = SDFCreate(PEExportDirectory, pContext->hReader));
-	SDFPrint(THIS->hExportDirectory);
+	SDFDebugPrint(THIS->hExportDirectory);
 	THIS->NumberOfFunctions = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
     THIS->NumberOfNames     = SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryNumberOfFunctions);
 	OffsetExportFunctions = ExecutableRVAToOffset(pContext, SDFReadUInt32(THIS->hExportDirectory, PEExportDirectoryAddressOfFunctions));
@@ -151,14 +151,14 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
-			ConsoleIOPrintFormatted("[0x%04X] 0x%08LX \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
+			DebugPrintFormatted("[0x%04X] 0x%08LX \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
 			free(forwarder);
 
 			OBJ.pExports[i].Forwarder = address;
 		}
 		else
 		{
-            ConsoleIOPrintFormatted("[0x%04X] 0x%08LX \"%s\"\n", i, address, name ? name : "(null)");
+            DebugPrintFormatted("[0x%04X] 0x%08LX \"%s\"\n", i, address, name ? name : "(null)");
 		}
 		free(name);
 		name = NULL;
@@ -188,10 +188,10 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
             SDFDestroy(hImportDescriptor);
 			break;
 		}
-		SDFPrint(hImportDescriptor);
+		SDFDebugPrint(hImportDescriptor);
 		address = ExecutableRVAToOffset(pContext, SDFReadUInt32(hImportDescriptor, PEImportDescriptorName));
 		name = FetchString(pContext, address);
-		ConsoleIOPrintFormatted("Import %s\n", name ? name : "");
+		DebugPrintFormatted("Import %s\n", name ? name : "");
 		free(name);
 		address = ExecutableRVAToOffset(pContext, OriginalFirstThunk);
 		if (0 != address)
@@ -205,7 +205,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 				if (0 == element) break;
 				if (element & 0x80000000UL)
 				{
-					ConsoleIOPrintFormatted("ordinal 0x%08lX\n", element & ~0x80000000UL);
+					DebugPrintFormatted("ordinal 0x%08lX\n", element & ~0x80000000UL);
 				}
 				else
 				{
@@ -216,16 +216,16 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
                         ReaderSeek(pContext->hReader, ptr);
 					    ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
 					    name = FetchString(pContext, ptr + sizeof(uint16_t));
-					    ConsoleIOPrintFormatted("0x%04X %s\n", hint, name);
+					    DebugPrintFormatted("0x%04X %s\n", hint, name);
 					    free(name);
                     }
                     else
                     {
-                        ConsoleIOPrintFormatted("0x%04X\n", hint);
+                        DebugPrintFormatted("0x%04X\n", hint);
                     }
 				}
 			}
-			ConsoleIOPrint("\n");
+			DebugPrint("\n");
 		}
 		SDFDestroy(hImportDescriptor);
 		pos += SDFSizeInBytes(PEImportDescriptor);
@@ -246,7 +246,7 @@ int PEFileProcessDirectoryDebug(ExecutableContext * pContext, PEDataDirectory * 
 	}
 	CHECK_CALL(ReaderSeek(pContext->hReader, offset));
 	CHECK_CALL(THIS->hDebugDirectory = SDFCreate(PEDebugDirectory, pContext->hReader));
-	SDFPrint(THIS->hDebugDirectory);
+	SDFDebugPrint(THIS->hDebugDirectory);
 	return 1;
 }
 
@@ -265,7 +265,7 @@ int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirecto
 		return 0;
 	}
 	CHECK_CALL(THIS->hLoadConfigDirectory = SDFCreate(PELoadConfigDirectory, pContext->hReader));
-	SDFPrint(THIS->hLoadConfigDirectory);
+	SDFDebugPrint(THIS->hLoadConfigDirectory);
 	return 1;
 }
 
@@ -273,26 +273,26 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 {
 	switch (index)
 	{
-	case 0x00: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_EXPORT        \n"); break;
-	case 0x01: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_IMPORT        \n"); break;
-	case 0x02: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_RESOURCE      \n"); break;
-	case 0x03: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_EXCEPTION     \n"); break;
-	case 0x04: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_SECURITY      \n"); break;
-	case 0x05: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_BASERELOC     \n"); break;
-	case 0x06: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_DEBUG         \n"); break;
-	case 0x07: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_ARCHITECTURE  \n"); break;
-	case 0x08: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_GLOBALPTR     \n"); break;
-	case 0x09: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_TLS           \n"); break;
-	case 0x0A: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   \n"); break;
-	case 0x0B: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  \n"); break;
-	case 0x0C: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_IAT           \n"); break;
-	case 0x0D: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT  \n"); break;
-	case 0x0E: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR\n"); break;
-	case 0x0F: ConsoleIOPrint("IMAGE_DIRECTORY_ENTRY_RESERVED      \n"); break;
+	case 0x00: DebugPrint("IMAGE_DIRECTORY_ENTRY_EXPORT        \n"); break;
+	case 0x01: DebugPrint("IMAGE_DIRECTORY_ENTRY_IMPORT        \n"); break;
+	case 0x02: DebugPrint("IMAGE_DIRECTORY_ENTRY_RESOURCE      \n"); break;
+	case 0x03: DebugPrint("IMAGE_DIRECTORY_ENTRY_EXCEPTION     \n"); break;
+	case 0x04: DebugPrint("IMAGE_DIRECTORY_ENTRY_SECURITY      \n"); break;
+	case 0x05: DebugPrint("IMAGE_DIRECTORY_ENTRY_BASERELOC     \n"); break;
+	case 0x06: DebugPrint("IMAGE_DIRECTORY_ENTRY_DEBUG         \n"); break;
+	case 0x07: DebugPrint("IMAGE_DIRECTORY_ENTRY_ARCHITECTURE  \n"); break;
+	case 0x08: DebugPrint("IMAGE_DIRECTORY_ENTRY_GLOBALPTR     \n"); break;
+	case 0x09: DebugPrint("IMAGE_DIRECTORY_ENTRY_TLS           \n"); break;
+	case 0x0A: DebugPrint("IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   \n"); break;
+	case 0x0B: DebugPrint("IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  \n"); break;
+	case 0x0C: DebugPrint("IMAGE_DIRECTORY_ENTRY_IAT           \n"); break;
+	case 0x0D: DebugPrint("IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT  \n"); break;
+	case 0x0E: DebugPrint("IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR\n"); break;
+	case 0x0F: DebugPrint("IMAGE_DIRECTORY_ENTRY_RESERVED      \n"); break;
 	default: break;
 	}
-	ConsoleIOPrintFormatted("Size    : 0x%08X\n" , THIS->DataDirectories[index].Size);
-	ConsoleIOPrintFormatted("Address : 0x%08X\n" , THIS->DataDirectories[index].VirtualAddress);
+	DebugPrintFormatted("Size    : 0x%08X\n" , THIS->DataDirectories[index].Size);
+	DebugPrintFormatted("Address : 0x%08X\n" , THIS->DataDirectories[index].VirtualAddress);
 
 	if (THIS->DataDirectories[index].Size > 0 && THIS->DataDirectories[index].VirtualAddress > 0)
 	{
@@ -305,7 +305,7 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 		default: break;
 		}
 	}
-	ConsoleIOPrint("\n");
+	DebugPrint("\n");
 }
 
 void PEFileDestroy(ExecutableContext * pContext)
@@ -343,8 +343,8 @@ int PEFileOpen(ExecutableContext * pContext)
 		return 0;
 	}
 	CHECK_CALL(THIS->hFileHeader = SDFCreate(PEFileHeader, pContext->hReader));
-	SDFPrint(THIS->hDOSHeader);
-	SDFPrint(THIS->hFileHeader);
+	SDFDebugPrint(THIS->hDOSHeader);
+	SDFDebugPrint(THIS->hFileHeader);
 	
 	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
 	pContext->iObject = 0;
@@ -369,7 +369,7 @@ int OBJInit(ExecutableContext * pContext)
 	if (kPEMachineX86 == Machine || kPEMachineX64 == Machine)
 	{
 		uint32_t NumberOfSymbols = 0;
-		SDFPrint(THIS->hFileHeader);
+		SDFDebugPrint(THIS->hFileHeader);
 		THIS->PointerToSymbolTable = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderPointerToSymbolTable);
 		NumberOfSymbols = SDFReadUInt32(THIS->hFileHeader, PEFileHeaderNumberOfSymbols);
 		CHECK_ALLOC(OBJ.pExports = calloc(1, sizeof(ExecutableSymbol) * NumberOfSymbols));
@@ -426,7 +426,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 		}
 		for (i = 0; i < size; i += xstrlen(buffer + i) + 1)
 		{
-			ConsoleIOPrintFormatted("%s\n", buffer + i);
+			DebugPrintFormatted("%s\n", buffer + i);
 		}
 		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
 		{
@@ -446,19 +446,19 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			ReaderRead(pContext->hReader, &Symbol, 8);
 			if (0 == Symbol[0])
 			{
-				ConsoleIOPrintFormatted("%s\n", buffer + Symbol[1] - 4);
+				DebugPrintFormatted("%s\n", buffer + Symbol[1] - 4);
                 OBJ.pExports[i].Name = OBJ.Offset + OffsetNames + Symbol[1];
 			}
 			else
 			{
 				char name[9] = {0};
 				memcpy(name, &Symbol, 8);
-				ConsoleIOPrintFormatted("%s\n", name);
+				DebugPrintFormatted("%s\n", name);
                 OBJ.pExports[i].Name = OBJ.Offset + OffsetNames + i * 18;
 			}
 			
 			hSymbols = SDFCreate(COFFSymbolTable, pContext->hReader);
-			/* SDFPrint(hSymbols); */
+			SDFDebugPrint(hSymbols);
 
             Value = SDFReadUInt32(hSymbols, COFFSymbolTableValue);
             Section = SDFReadUInt16(hSymbols, COFFSymbolTableSectionNumber);
@@ -483,7 +483,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 				if (kCOFFSymbolClassFile == Class)
 				{
 					HSDF hAux = SDFCreate(COFFSymbolTableAuxiliaryFormatFiles, pContext->hReader);
-					SDFPrint(hAux);
+					SDFDebugPrint(hAux);
 					SDFDestroy(hAux);
 				}
 				else
@@ -522,13 +522,13 @@ int PEFileInit(ExecutableContext * pContext)
 			return 0;
 		}
 		THIS->PE64 = (kPEMagic64 == Magic) ? 1 : 0;
-		SDFPrint(THIS->hOptionalHeader);
+		SDFDebugPrint(THIS->hOptionalHeader);
 		Extra = THIS->PE64 ? PEOptionalHeaderExtra64 : PEOptionalHeaderExtra;
 		ExtraSize = SDFSizeInBytes(Extra);
 		if (SizeOfOptionalHeader >= PEOptionalHeaderSize + ExtraSize)
 		{
 			CHECK_CALL(THIS->hOptionalHeaderExtra = SDFCreate(Extra, pContext->hReader));
-			SDFPrint(THIS->hOptionalHeaderExtra);
+			SDFDebugPrint(THIS->hOptionalHeaderExtra);
 			
 			THIS->DataDirectoriesCount = MIN(kPEDataDirectoryCount, (SizeOfOptionalHeader - PEOptionalHeaderSize - ExtraSize / sizeof(PEDataDirectory)));
 			THIS->DataDirectoriesCount = MIN(SDFReadUInt32(THIS->hOptionalHeaderExtra, THIS->PE64 ? PEOptionalHeaderExtra64NumberOfRvaAndSizes : PEOptionalHeaderExtraNumberOfRvaAndSizes), THIS->DataDirectoriesCount);
@@ -571,7 +571,7 @@ int PEFileInit(ExecutableContext * pContext)
 		OBJ.pSections[i].FileSize       =
 		OBJ.pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, PESectionHeaderSizeOfRawData);
 
-		SDFPrint(hSectionHeader);
+		SDFDebugPrint(hSectionHeader);
 		SDFDestroy(hSectionHeader);
 	}
 	for (i = 0; i < THIS->DataDirectoriesCount; ++i)
@@ -599,9 +599,9 @@ int GetString(HREADER hReader)
 		{
 			break;
 		}
-		ConsoleIOPrintFormatted("%c", c);
+		DebugPrintFormatted("%c", c);
 	}
-	ConsoleIOPrint("\n");
+	DebugPrint("\n");
 	return 1;
 }
 
@@ -632,7 +632,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		return 0;
 	}
 	hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader);
-	SDFPrint(hHeader);
+	SDFDebugPrint(hHeader);
 	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* first linker member */
@@ -652,7 +652,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(CheckEOL(pContext->hReader));
 	}
 	CHECK_CALL(hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader));
-	SDFPrint(hHeader);
+	SDFDebugPrint(hHeader);
 	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* second linker member */
@@ -676,7 +676,7 @@ int LIBFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(CheckEOL(pContext->hReader));
 	}
 	CHECK_CALL(hHeader = SDFCreate(COFFLibraryHeader, pContext->hReader));
-	SDFPrint(hHeader);
+	SDFDebugPrint(hHeader);
 	Name = SDFReadUInt64(hHeader, 0);
 	SDFDestroy(hHeader);
 	/* long names member */

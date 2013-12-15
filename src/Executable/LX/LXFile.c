@@ -55,8 +55,8 @@ int LXFileOpen(ExecutableContext * pContext)
 		return 0;
 	}
 	CHECK_CALL(THIS->hFileHeader = SDFCreate(LXFileHeader, pContext->hReader));
-	SDFPrint(THIS->hDOSHeader);
-	SDFPrint(THIS->hFileHeader);
+	SDFDebugPrint(THIS->hDOSHeader);
+	SDFDebugPrint(THIS->hFileHeader);
 
 	/*EIP       = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIP);
 	EIPObject = SDFReadUInt32(THIS->hFileHeader, LXFileHeaderObjectEIPObject);*/
@@ -75,7 +75,7 @@ int LXFileOpen(ExecutableContext * pContext)
 	{
 		THIS->phObjectTable[i] = SDFCreate(LXObjectTable, pContext->hReader);
 
-		SDFPrint(THIS->phObjectTable[i]);
+		SDFDebugPrint(THIS->phObjectTable[i]);
 	}
 	OBJ.Arch = ArchX86;
 	return 1;

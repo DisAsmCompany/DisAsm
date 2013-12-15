@@ -70,10 +70,7 @@ int ELFProcessExport(ExecutableContext * pContext)
 		{
 			OBJ.pExports[i].Name = THIS->NamesAddress + name;
 		}
-#ifdef VERBOSE
-		/* too much to print */
-		SDFPrint(hSymbol);
-#endif /* VERBOSE */
+		SDFDebugPrint(hSymbol);
 		SDFDestroy(hSymbol);
 	}
 	return 1;
@@ -96,7 +93,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 	{
 		return 0;
 	}
-	SDFPrint(THIS->hHeader);
+	SDFDebugPrint(THIS->hHeader);
 
 	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
 	pContext->iObject = 0;
@@ -153,7 +150,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 				{
 					THIS->NamesAddress = OBJ.pSections[i].FileAddress;
 				}
-				ConsoleIOPrintFormatted("section %s\n", value);
+				DebugPrintFormatted("section %s\n", value);
 			}
             free(value);
 		}
@@ -164,7 +161,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 			THIS->ExportAddress = OBJ.pSections[i].FileAddress;
 			THIS->ExportSize = OBJ.pSections[i].FileSize;
 		}
-		SDFPrint(hSectionHeader);
+		SDFDebugPrint(hSectionHeader);
 		SDFDestroy(hSectionHeader);
 	}
 	OffsetPrograms   = SDFReadUInt32(THIS->hHeader, ELFHeaderOffsetPrograms);
@@ -179,7 +176,7 @@ int ELFFileOpen(ExecutableContext * pContext)
 	{
 		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetPrograms + SizeOfProgram * i));
 		CHECK_CALL(THIS->phProgramHeaders[i] = SDFCreate(ELFProgramHeader, pContext->hReader));
-		SDFPrint(THIS->phProgramHeaders[i]);
+		SDFDebugPrint(THIS->phProgramHeaders[i]);
 	}
 	OBJ.EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(THIS->hHeader, ELFHeaderAddressOfEntryPoint));
 	OBJ.StubEntryPoint = 0;

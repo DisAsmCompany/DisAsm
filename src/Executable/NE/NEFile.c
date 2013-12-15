@@ -44,7 +44,7 @@ int NEReadStringTable(ExecutableContext * pContext)
 		CHECK_CALL(ReaderRead(pContext->hReader, &ordinal, sizeof(uint16_t)));
 		buffer[length] = 0;
 
-		ConsoleIOPrintFormatted("%s\n", buffer);
+		DebugPrintFormatted("%s\n", buffer);
 
 		free(buffer);
 	}
@@ -70,8 +70,8 @@ int NEFileOpen(ExecutableContext * pContext)
 		return 0;
 	}
 	CHECK_CALL(THIS->hSegmentedHeader = SDFCreate(NESegmentedHeader, pContext->hReader));
-	SDFPrint(THIS->hDOSHeader);
-	SDFPrint(THIS->hSegmentedHeader);
+	SDFDebugPrint(THIS->hDOSHeader);
+	SDFDebugPrint(THIS->hSegmentedHeader);
 
 	Offset = SDFReadUInt16(THIS->hSegmentedHeader, NESegmentedHeaderResidentNamesTableOffset);
 	if (0 != Offset)

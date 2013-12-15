@@ -64,6 +64,12 @@ void SDFSetEndian(HSDF hSDF, uint8_t endian);
 
 void SDFDestroy(HSDF hSDF);
 
+#if defined(_DEBUG) || defined(DEBUG)
+#define SDFDebugPrint SDFPrint
+#else /* defined(_DEBUG) || defined(DEBUG) */
+#define SDFDebugPrint
+#endif /* defined(_DEBUG) || defined(DEBUG) */
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

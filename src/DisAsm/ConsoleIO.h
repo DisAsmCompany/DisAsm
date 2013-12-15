@@ -44,6 +44,14 @@ void PrintColoredString(const char * string, TextColor color, TextColor backgrou
 void PrintByte(uint64_t value);
 void ConsoleIOPrintFormatted(const char * format, ...);
 
+#if defined(_DEBUG) || defined(DEBUG)
+#define DebugPrint ConsoleIOPrint
+#define DebugPrintFormatted ConsoleIOPrintFormatted
+#else /* defined(_DEBUG) || defined(DEBUG) */
+#define DebugPrint
+#define DebugPrintFormatted
+#endif /* defined(_DEBUG) || defined(DEBUG) */
+
 #ifdef __cplusplus
 extern }
 #endif /* __cplusplus */

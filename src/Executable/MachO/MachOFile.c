@@ -66,7 +66,7 @@ uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
 	
 	CHECK_CALL(hSegment = SDFCreate(Segment, pContext->hReader));
 	NumberOfSections = SDFReadUInt32(hSegment, x64 ? kMachOSegment64NumberOfSections : kMachOSegmentNumberOfSections);
-	SDFPrint(hSegment);
+	SDFDebugPrint(hSegment);
 	SDFDestroy(hSegment);
 	count += SDFSizeInBytes(Segment);
 	
@@ -78,7 +78,7 @@ uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
 	for (i = 0; i < NumberOfSections; ++i)
 	{
 		HSDF hSection = SDFCreate(Section, pContext->hReader);
-		SDFPrint(hSection);
+		SDFDebugPrint(hSection);
 		
 		if (x64)
 		{
@@ -106,7 +106,7 @@ uint32_t MachOProcessCommandDylib(ExecutableContext * pContext)
 	uint32_t count = 0;
 	uint32_t i = 0;
 	HSDF hDylib = SDFCreate(MachODylib, pContext->hReader);
-	SDFPrint(hDylib);
+	SDFDebugPrint(hDylib);
 	SDFDestroy(hDylib);
 	count += SDFSizeInBytes(MachODylib);
 	for (i = 0; i < count; ++i)
@@ -117,10 +117,10 @@ uint32_t MachOProcessCommandDylib(ExecutableContext * pContext)
 		{
 			break;
 		}
-		ConsoleIOPrintFormatted("%c", c);
+		DebugPrintFormatted("%c", c);
 	}
 	count += i + 1;
-	ConsoleIOPrint("\n");
+	DebugPrint("\n");
 	return count;
 }
 
@@ -128,7 +128,7 @@ uint32_t MachOProcessCommandUUID(ExecutableContext * pContext)
 {
 	unsigned char uuid[16];
 	CHECK_CALL(ReaderRead(pContext->hReader, uuid, 16));
-	ConsoleIOPrintFormatted("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
+	DebugPrintFormatted("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
 		   uuid[0], uuid[1], uuid[2], uuid[3], uuid[4], uuid[5], uuid[6], uuid[7], uuid[8], uuid[9], uuid[10], uuid[11], uuid[12], uuid[13], uuid[14], uuid[15]);
 	return 16;
 }
@@ -136,7 +136,7 @@ uint32_t MachOProcessCommandUUID(ExecutableContext * pContext)
 uint32_t MachOProcessCommandSymTab(ExecutableContext * pContext)
 {
 	HSDF hSymTab = SDFCreate(MachOSymTab, pContext->hReader);
-	SDFPrint(hSymTab);
+	SDFDebugPrint(hSymTab);
 	SDFDestroy(hSymTab);
 	return SDFSizeInBytes(MachOSymTab);
 }
@@ -144,7 +144,7 @@ uint32_t MachOProcessCommandSymTab(ExecutableContext * pContext)
 uint32_t MachOProcessCommandThreadX86(ExecutableContext * pContext)
 {
 	HSDF hThread = SDFCreate(MachOThreadStatusX86, pContext->hReader);
-	SDFPrint(hThread);
+	SDFDebugPrint(hThread);
 	OBJ.EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt32(hThread, MachOThreadStatusX86EIP));
 	SDFDestroy(hThread);
 	return SDFSizeInBytes(MachOThreadStatusX86);
@@ -153,7 +153,7 @@ uint32_t MachOProcessCommandThreadX86(ExecutableContext * pContext)
 uint32_t MachOProcessCommandThreadX64(ExecutableContext * pContext)
 {
 	HSDF hThread = SDFCreate(MachOThreadStatusX64, pContext->hReader);
-	SDFPrint(hThread);
+	SDFDebugPrint(hThread);
 	OBJ.EntryPoint = ExecutableRVAToOffset(pContext, SDFReadUInt64(hThread, MachOThreadStatusX64EIP));
 	SDFDestroy(hThread);
 	return SDFSizeInBytes(MachOThreadStatusX64);
@@ -164,7 +164,7 @@ uint32_t MachOProcessCommandThread(ExecutableContext * pContext)
 	uint32_t result = 0;
 	
 	HSDF hThread = SDFCreate(MachOThreadStatus, pContext->hReader);
-	SDFPrint(hThread);
+	SDFDebugPrint(hThread);
 	SDFDestroy(hThread);
 	result += SDFSizeInBytes(MachOThreadStatus);
 	
@@ -213,7 +213,7 @@ int MachOFileInit(ExecutableContext * pContext)
 	{
 		CHECK_CALL(THIS->phFatHeaders[i] = SDFCreate(MachOFatHeader, pContext->hReader));
 		SDFSetEndian(THIS->phFatHeaders[i], (kMachOFatMagicBE == magic) ? 1 : 0);
-		SDFPrint(THIS->phFatHeaders[i]);
+		SDFDebugPrint(THIS->phFatHeaders[i]);
 	}
 	for (i = 0; i < pContext->nObjects; ++i)
 	{
@@ -231,7 +231,7 @@ int MachOFileInit(ExecutableContext * pContext)
 		
 		CHECK_CALL(ReaderSeek(pContext->hReader, OBJ.Offset));
 		CHECK_CALL(THIS->phMachHeaders[i] = SDFCreate(CpuType & kMachOCPUType64 ? MachOHeader64 : MachOHeader, pContext->hReader));
-		SDFPrint(THIS->phMachHeaders[i]);
+		SDFDebugPrint(THIS->phMachHeaders[i]);
 		
 		THIS->nCommands = SDFReadUInt32(THIS->phMachHeaders[i], MachOHeaderCountCommands);
 		for (j = 0; j < THIS->nCommands; ++j)
@@ -241,7 +241,7 @@ int MachOFileInit(ExecutableContext * pContext)
 			CHECK_CALL(hCommand = SDFCreate(MachOLoadCommand, pContext->hReader));
 			type = SDFReadUInt32(hCommand, MachOLoadCommandCommand);
 			count = SDFReadUInt32(hCommand, MachOLoadCommandCommandSize) - SDFSizeInBytes(MachOLoadCommand);
-			SDFPrint(hCommand);
+			SDFDebugPrint(hCommand);
 			
 			switch (type)
 			{

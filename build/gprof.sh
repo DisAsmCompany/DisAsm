@@ -10,6 +10,6 @@ cmake -G "Unix Makefiles" -DCMAKE_C_COMPILER=$COMPILER -DCMAKE_C_FLAGS="$FLAGS" 
 for file in /home/sse4/ipp/ia32/*
 do
 	echo $file
-	(cd $WORKDIR && ./DisAsmSample -p $file > /dev/null)
+	(cd $WORKDIR && ./DisAsmSample -p -q $file > /dev/null)
 done
 (cd $WORKDIR && gprof DisAsmSample DisAsmSample.gmon)

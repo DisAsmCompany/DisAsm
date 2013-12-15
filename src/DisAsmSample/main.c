@@ -13,6 +13,13 @@
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 
+uint8_t map = 0;
+uint8_t leaks = 0;
+uint8_t memory = 0;
+uint8_t help = 0;
+uint8_t preload = 0;
+uint8_t quiet = 0;
+
 address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 {
 	address_t destination = address;
@@ -47,21 +54,26 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 	for (;;)
 	{
 		uint8_t length;
+#if defined(PROFILE)
 		BenchmarkSampleBegin(hBenchmark);
+#endif /* defined(PROFILE) */
 		length = DisAsmInstructionDecode(bitness, hReader, &info);
+#if defined(PROFILE)
 		BenchmarkSampleEnd(hBenchmark);
+#endif /* defined(PROFILE) */
 		if (0 == length)
 		{
 			ConsoleIOPrintFormatted("[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
 			break;
 		}
-		ConsoleIOPrintFormatted("%08X ", address);
-
-		StrAsmPrintInstruction(&info);
-
+		if (!quiet)
+		{
+			ConsoleIOPrintFormatted("%08X ", address);
+			StrAsmPrintInstruction(&info);
+		}
 		address += length;
 
-		if (CALL == info.mnemonic && 1 == info.nOperands && Imm == info.operands[0].type)
+		if (!quiet && CALL == info.mnemonic && 1 == info.nOperands && Imm == info.operands[0].type)
 		{
 			address_t offset = AddressAdjust(address, info.imm, info.sizeImm);
 			ConsoleIOPrintFormatted("; call to %08LX", offset);
@@ -89,7 +101,10 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 				/* abort disassembler */
 				break;
 			}
-			ConsoleIOPrintFormatted("; jump to %08LX", destination);
+			if (!quiet)
+			{
+				ConsoleIOPrintFormatted("; jump to %08LX", destination);
+			}
 
 			/* branch somewhere into already disassembled part of function */
 			if (start <= destination && destination < base + address)
@@ -115,8 +130,10 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 				}
 			}
 		}
-		ConsoleIOPrint("\n");
-
+		if (!quiet)
+		{
+			ConsoleIOPrint("\n");
+		}
 		if (JO <= info.mnemonic && info.mnemonic <= JG)
 		{
 			/* conditional jump */
@@ -221,16 +238,45 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 		}
 	}
 	DynamicArrayDestroy(array);
+#if defined(PROFILE)
 	BenchmarkPrintData(hBenchmark);
+#endif /* defined(PROFILE) */
 	BenchmarkDestroy(hBenchmark);
 	return 1;
 }
 
-uint8_t map = 0;
-uint8_t leaks = 0;
-uint8_t memory = 0;
-uint8_t help = 0;
-uint8_t preload = 0;
+uint8_t CheckCommandLineOption(const char * arg, const char * longoption)
+{
+	uint8_t result = 0;
+	if (xstrlen(longoption) > 3 && '-' == longoption[0] && '-' == longoption[1])
+	{
+		char shortoption[3] = {0};
+		char c = longoption[2];
+
+		result |= (0 == xstrcmp(longoption, arg)) ? 1 : 0;
+
+		/* -x */
+		shortoption[0] = '-';
+		shortoption[1] = c;
+		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+		/* /x */
+		shortoption[0] = '/';
+		shortoption[1] = c;
+		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+
+		c &= ~0x20;
+
+		/* -X */
+		shortoption[0] = '-';
+		shortoption[1] = c;
+		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+		/* /X */
+		shortoption[0] = '/';
+		shortoption[1] = c;
+		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+	}
+	return result;
+}
 
 void ParseCommandLine(int argc, char * const argv[])
 {
@@ -238,26 +284,12 @@ void ParseCommandLine(int argc, char * const argv[])
 
 	for (i = 1; i < argc; ++i)
 	{
-		if (0 == xstrcmp("-l", argv[i]) || 0 == xstrcmp("--leaks", argv[i]))
-		{
-			leaks = 1;
-		}
-		if (0 == xstrcmp("-o", argv[i]) || 0 == xstrcmp("--opcodemap", argv[i]))
-		{
-			map = 1;
-		}
-		if (0 == xstrcmp("-m", argv[i]) || 0 == xstrcmp("--memory", argv[i]))
-		{
-			memory = 1;
-		}
-		if (0 == xstrcmp("-h", argv[i]) || 0 == xstrcmp("--help", argv[i]))
-		{
-			help = 1;
-		}
-		if (0 == xstrcmp("-p", argv[i]) || 0 == xstrcmp("--preload", argv[i]))
-		{
-			preload = 1;
-		}
+		leaks   |= CheckCommandLineOption(argv[i], "--leaks");
+		map     |= CheckCommandLineOption(argv[i], "--opcodemap");
+		memory  |= CheckCommandLineOption(argv[i], "--memory");
+		help    |= CheckCommandLineOption(argv[i], "--help");
+		preload |= CheckCommandLineOption(argv[i], "--preload");
+		quiet   |= CheckCommandLineOption(argv[i], "--quiet");
 	}
 }
 
