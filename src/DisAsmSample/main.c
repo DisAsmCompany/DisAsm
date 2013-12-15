@@ -230,6 +230,7 @@ uint8_t map = 0;
 uint8_t leaks = 0;
 uint8_t memory = 0;
 uint8_t help = 0;
+uint8_t preload = 0;
 
 void ParseCommandLine(int argc, char * const argv[])
 {
@@ -252,6 +253,10 @@ void ParseCommandLine(int argc, char * const argv[])
 		if (0 == xstrcmp("-h", argv[i]) || 0 == xstrcmp("--help", argv[i]))
 		{
 			help = 1;
+		}
+		if (0 == xstrcmp("-p", argv[i]) || 0 == xstrcmp("--preload", argv[i]))
+		{
+			preload = 1;
 		}
 	}
 }
@@ -292,6 +297,30 @@ int main(int argc, char * const argv[])
 		LeakTrackerInstall(1);
 	}
 
+	if (preload)
+	{
+		HREADER hFileHeader = FileReaderCreate(argv[argc - 1]);
+		if (NULL != hFileHeader)
+		{
+			uint64_t size = 0;
+			if (ReaderSize(hFileHeader, &size))
+			{
+				uint8_t * bytes = (uint8_t*) malloc((size_t)size);
+				if (bytes)
+				{
+					uint64_t offset = 0;
+					while (offset < size)
+					{
+						uint32_t count = ((size - offset) > 0x10000) ? 0x10000 : (size - offset);
+						ReaderRead(hFileHeader, bytes + offset, count);
+						offset += count;
+					}
+					hReader = MemoryReaderCreate((native_t)bytes, size);
+				}
+			}
+			ReaderDestroy(hFileHeader);
+		}
+	}
 	if (memory)
 	{
 		ModuleInfo info = {0};

@@ -89,6 +89,12 @@ uint8_t FileReaderSkip(ReaderContext * pContext, int64_t count)
 	return 0;
 }
 
+uint8_t FileReaderSize(ReaderContext * pContext, uint64_t * size)
+{
+	*size = THIS->size;
+	return 1;
+}
+
 void FileReaderDestroy(ReaderContext * pContext)
 {
 #ifdef OS_WINDOWS
@@ -142,6 +148,7 @@ HREADER FileReaderCreate(const char * path)
 	pContext->pRead    = FileReaderRead;
 	pContext->pSeek    = FileReaderSeek;
 	pContext->pSkip    = FileReaderSkip;
+	pContext->pSize    = FileReaderSize;
 	pContext->pDestroy = FileReaderDestroy;
 	pContext->pPrivate = pPrivate;
 	return (HREADER) pContext;

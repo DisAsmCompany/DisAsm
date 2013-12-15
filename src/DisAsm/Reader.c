@@ -29,6 +29,12 @@ uint8_t ReaderSkip(HREADER hReader, int64_t count)
 	return pContext->pSkip(hReader, count);
 }
 
+uint8_t ReaderSize(HREADER hReader, uint64_t * size)
+{
+	ReaderContext * pContext = (ReaderContext*) hReader;
+	return pContext->pSize(hReader, size);
+}
+
 uint8_t ReaderSetBase(HREADER hReader, uint64_t base)
 {
 	ReaderContext * pContext = (ReaderContext*) hReader;

@@ -53,6 +53,12 @@ uint8_t MemoryReaderSkip(ReaderContext * pContext, int64_t count)
 	return 0;
 }
 
+uint8_t MemoryReaderSize(ReaderContext * pContext, uint64_t * size)
+{
+	*size = THIS->size;
+	return 1;
+}
+
 void MemoryReaderDestroy(ReaderContext * pContext)
 {
 	free(pContext->pPrivate);
@@ -84,6 +90,7 @@ HREADER MemoryReaderCreate(native_t buffer, uint32_t size)
 	pContext->pRead    = MemoryReaderRead;
 	pContext->pSeek    = MemoryReaderSeek;
 	pContext->pSkip    = MemoryReaderSkip;
+	pContext->pSize    = MemoryReaderSize;
 	pContext->pDestroy = MemoryReaderDestroy;
 	pContext->pPrivate = pPrivate;
 	return (HREADER) pContext;
