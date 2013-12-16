@@ -208,7 +208,7 @@ OpCodeMapElement OpCodeMapX87[] =
 	X87LINE2(FLD)
 	X87LINE2(FXCH)
 	{FNOP}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FSTP1)
 	{FCHS}, {FABS}, {DB}, {DB}, {FTST}, {FXAM}, {DB}, {DB},
 	{FLD1}, {FLDL2T}, {FLDL2E}, {FLDPI}, {FLDLG2}, {FLDLN2}, {FLDZ}, {DB},
 	{F2XM1}, {FYL2X}, {FPTAN}, {FPATAN}, {FXTRACT}, {FPREM1}, {FDECSTP}, {FINCSTP},
@@ -234,15 +234,15 @@ OpCodeMapElement OpCodeMapX87[] =
 	/* DC */
 	X87LINE2I(FADD)
 	X87LINE2I(FMUL)
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FCOM2)
+	X87LINE1(FCOMP3)
 	X87LINE2I(FSUBR)
 	X87LINE2I(FSUB)
 	X87LINE2I(FDIVR)
 	X87LINE2I(FDIV)
 	/* DD */
 	X87LINE1(FFREE)
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FXCH4)
 	X87LINE1(FST)
 	X87LINE1(FSTP)
 	X87LINE2I(FUCOM)
@@ -252,7 +252,7 @@ OpCodeMapElement OpCodeMapX87[] =
 	/* DE */
 	X87LINE2I(FADDP)
 	X87LINE2I(FMULP)
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FCOMP5)
 	{DB}, {FCOMPP}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	X87LINE2I(FSUBRP)
 	X87LINE2I(FSUBP)
@@ -260,9 +260,9 @@ OpCodeMapElement OpCodeMapX87[] =
 	X87LINE2I(FDIVP)
 	/* DF */
 	X87LINE1(FFREEP)
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
-	{DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
+	X87LINE1(FXCH7)
+	X87LINE1(FSTP8)
+	X87LINE1(FSTP9)
 	{FNSTSW, OP1(AX)}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB}, {DB},
 	X87LINE2(FCOMIP)
 	X87LINE2(FUCOMIP)

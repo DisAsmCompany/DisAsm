@@ -325,9 +325,12 @@ _ENUM_ELEMENT(FMUL)     /* Multiply */
 _ENUM_ELEMENT(FMULP)    /* Multiply */
 _ENUM_ELEMENT(FIMUL)    /* Multiply */
 _ENUM_ELEMENT(FCOM)     /* Compare Floating Point Values */
+_ENUM_ELEMENT(FCOM2)    /* Compare Floating Point Values */
 _ENUM_ELEMENT(FICOM)    /* Compare Floating Point Values */
-_ENUM_ELEMENT(FCOMP)    /* Compare Floating Point Values */
-_ENUM_ELEMENT(FCOMPP)   /* Compare Floating Point Values */
+_ENUM_ELEMENT(FCOMP)    /* Compare Floating Point Values and Pop */
+_ENUM_ELEMENT(FCOMP3)   /* Compare Floating Point Values and Pop */
+_ENUM_ELEMENT(FCOMP5)   /* Compare Floating Point Values and Pop */
+_ENUM_ELEMENT(FCOMPP)   /* Compare Floating Point Values and Pop Twice */
 _ENUM_ELEMENT(FICOMP)   /* Compare Floating Point Values */
 _ENUM_ELEMENT(FCOMI)    /* Compare Floating Point Values and Set EFLAGS */
 _ENUM_ELEMENT(FCOMIP)   /* Compare Floating Point Values and Set EFLAGS */
@@ -353,7 +356,10 @@ _ENUM_ELEMENT(FLDENV)   /* Load x87 FPU Environment */
 _ENUM_ELEMENT(FLDCW)    /* Load x87 FPU Control Word */
 _ENUM_ELEMENT(FILD)     /* Load Integer */
 _ENUM_ELEMENT(FST)      /* Store Floating Point Value */
-_ENUM_ELEMENT(FSTP)     /* Store Floating Point Value */
+_ENUM_ELEMENT(FSTP)     /* Store Floating Point Value and Pop */
+_ENUM_ELEMENT(FSTP1)    /* Store Floating Point Value and Pop */
+_ENUM_ELEMENT(FSTP8)    /* Store Floating Point Value and Pop */
+_ENUM_ELEMENT(FSTP9)    /* Store Floating Point Value and Pop */
 _ENUM_ELEMENT(FSTENV)   /* Store x87 FPU Environment */
 _ENUM_ELEMENT(FSTCW)    /* Store x87 FPU Control Word */
 _ENUM_ELEMENT(FSTSW)    /* Store x87 FPU Status Word */
@@ -370,6 +376,8 @@ _ENUM_ELEMENT(FCMOVNE)  /* Move if Not Equal */
 _ENUM_ELEMENT(FCMOVNBE) /* Move if Not Below or Equal */
 _ENUM_ELEMENT(FCMOVNU)  /* Move if Not Unordered */
 _ENUM_ELEMENT(FXCH)     /* Exchange Register Contents */
+_ENUM_ELEMENT(FXCH4)    /* Exchange Register Contents */
+_ENUM_ELEMENT(FXCH7)    /* Exchange Register Contents */
 _ENUM_ELEMENT(FLD1)     /* Load Constant (1.0) */
 _ENUM_ELEMENT(FLDL2T)   /* Load Constant (log2 10) */
 _ENUM_ELEMENT(FLDL2E)   /* Load Constant (log2 e) */
