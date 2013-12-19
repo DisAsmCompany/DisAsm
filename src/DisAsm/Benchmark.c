@@ -13,12 +13,12 @@
 
 typedef struct BenchmarkContext_t
 {
-	uint64_t frequency;
-	uint64_t sample;
-	uint64_t count;
-	uint64_t total;
-	uint64_t _min;
-	uint64_t _max;
+	int64_t frequency;
+	int64_t sample;
+	int64_t count;
+	int64_t total;
+	int64_t _min;
+	int64_t _max;
 }
 BenchmarkContext;
 
@@ -35,7 +35,7 @@ HBENCHMARK BenchmarkCreate()
 	pContext->count = 0;
 	pContext->total = 0;
 	pContext->_max = 0;
-	pContext->_min = U64(0xFFFFFFFFFFFFFFFF);
+	pContext->_min = I64(0x7FFFFFFFFFFFFFFF);
 	return (HBENCHMARK) pContext;
 }
 

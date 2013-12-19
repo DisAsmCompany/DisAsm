@@ -13,6 +13,42 @@
 
 #ifdef OS_WINDOWS
 
+#ifndef VER_PLATFORM_WIN32s
+#define VER_PLATFORM_WIN32s             0
+#endif /* VER_PLATFORM_WIN32s */
+
+#ifndef VER_PLATFORM_WIN32_WINDOWS
+#define VER_PLATFORM_WIN32_WINDOWS      1
+#endif /* VER_PLATFORM_WIN32_WINDOWS */
+
+#ifndef VER_PLATFORM_WIN32_NT
+#define VER_PLATFORM_WIN32_NT           2
+#endif /* VER_PLATFORM_WIN32_NT */
+
+#ifndef VER_NT_WORKSTATION
+#define VER_NT_WORKSTATION              0x0000001
+#endif /* VER_NT_WORKSTATION */
+
+#ifndef VER_NT_DOMAIN_CONTROLLER
+#define VER_NT_DOMAIN_CONTROLLER        0x0000002
+#endif /* VER_NT_DOMAIN_CONTROLLER */
+
+#ifndef VER_NT_SERVER
+#define VER_NT_SERVER                   0x0000003
+#endif /* VER_NT_SERVER */
+
+#ifndef VER_SUITE_SMALLBUSINESS
+#define VER_SUITE_SMALLBUSINESS 0x00000001
+#endif /* VER_SUITE_SMALLBUSINESS */
+
+#ifndef VER_SUITE_ENTERPRISE
+#define VER_SUITE_ENTERPRISE 0x00000002
+#endif /* VER_SUITE_ENTERPRISE */
+
+#ifndef VER_SUITE_BACKOFFICE
+#define VER_SUITE_BACKOFFICE 0x00000004
+#endif /* VER_SUITE_BACKOFFICE */
+
 #ifndef VER_SUITE_COMMUNICATIONS
 #define VER_SUITE_COMMUNICATIONS 0x00000008
 #endif /* VER_SUITE_COMMUNICATIONS */
@@ -88,6 +124,13 @@ void InfoOperationSystem()
 
 	if (GetVersionEx((OSVERSIONINFO*)&osvi))
 	{
+#if defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
+		WORD wSuiteMask   = osvi.wReserved[0];
+		WORD wProductType = osvi.wReserved[1]; 
+#else /* defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6 */
+		WORD wSuiteMask   = osvi.wSuiteMask;
+		WORD wProductType = osvi.wProductType; 
+#endif /* defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6 */
 		ConsoleIOPrint("Operation System :\n");
 		ConsoleIOPrintFormatted("%d.%d.%d (Service Pack %d.%d)", osvi.dwMajorVersion, osvi.dwMinorVersion, osvi.dwBuildNumber,
 			osvi.wServicePackMajor, osvi.wServicePackMinor);
@@ -100,24 +143,24 @@ void InfoOperationSystem()
 		default: break;
 		}
 
-		if (0 != (osvi.wSuiteMask & VER_SUITE_SMALLBUSINESS))            ConsoleIOPrint(" VER_SUITE_SMALLBUSINESS");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_ENTERPRISE))               ConsoleIOPrint(" VER_SUITE_ENTERPRISE");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_BACKOFFICE))               ConsoleIOPrint(" VER_SUITE_BACKOFFICE");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_COMMUNICATIONS))           ConsoleIOPrint(" VER_SUITE_COMMUNICATIONS");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_TERMINAL))                 ConsoleIOPrint(" VER_SUITE_TERMINAL");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_SMALLBUSINESS_RESTRICTED)) ConsoleIOPrint(" VER_SUITE_SMALLBUSINESS_RESTRICTED");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_EMBEDDEDNT))               ConsoleIOPrint(" VER_SUITE_EMBEDDEDNT");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_DATACENTER))               ConsoleIOPrint(" VER_SUITE_DATACENTER");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_SINGLEUSERTS))             ConsoleIOPrint(" VER_SUITE_SINGLEUSERTS");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_PERSONAL))                 ConsoleIOPrint(" VER_SUITE_PERSONAL");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_BLADE))                    ConsoleIOPrint(" VER_SUITE_BLADE");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_EMBEDDED_RESTRICTED))      ConsoleIOPrint(" VER_SUITE_EMBEDDED_RESTRICTED");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_SECURITY_APPLIANCE))       ConsoleIOPrint(" VER_SUITE_SECURITY_APPLIANCE");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_STORAGE_SERVER))           ConsoleIOPrint(" VER_SUITE_STORAGE_SERVER");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_COMPUTE_SERVER))           ConsoleIOPrint(" VER_SUITE_COMPUTE_SERVER");
-		if (0 != (osvi.wSuiteMask & VER_SUITE_WH_SERVER))                ConsoleIOPrint(" VER_SUITE_WH_SERVER");
+		if (0 != (wSuiteMask & VER_SUITE_SMALLBUSINESS))            ConsoleIOPrint(" VER_SUITE_SMALLBUSINESS");
+		if (0 != (wSuiteMask & VER_SUITE_ENTERPRISE))               ConsoleIOPrint(" VER_SUITE_ENTERPRISE");
+		if (0 != (wSuiteMask & VER_SUITE_BACKOFFICE))               ConsoleIOPrint(" VER_SUITE_BACKOFFICE");
+		if (0 != (wSuiteMask & VER_SUITE_COMMUNICATIONS))           ConsoleIOPrint(" VER_SUITE_COMMUNICATIONS");
+		if (0 != (wSuiteMask & VER_SUITE_TERMINAL))                 ConsoleIOPrint(" VER_SUITE_TERMINAL");
+		if (0 != (wSuiteMask & VER_SUITE_SMALLBUSINESS_RESTRICTED)) ConsoleIOPrint(" VER_SUITE_SMALLBUSINESS_RESTRICTED");
+		if (0 != (wSuiteMask & VER_SUITE_EMBEDDEDNT))               ConsoleIOPrint(" VER_SUITE_EMBEDDEDNT");
+		if (0 != (wSuiteMask & VER_SUITE_DATACENTER))               ConsoleIOPrint(" VER_SUITE_DATACENTER");
+		if (0 != (wSuiteMask & VER_SUITE_SINGLEUSERTS))             ConsoleIOPrint(" VER_SUITE_SINGLEUSERTS");
+		if (0 != (wSuiteMask & VER_SUITE_PERSONAL))                 ConsoleIOPrint(" VER_SUITE_PERSONAL");
+		if (0 != (wSuiteMask & VER_SUITE_BLADE))                    ConsoleIOPrint(" VER_SUITE_BLADE");
+		if (0 != (wSuiteMask & VER_SUITE_EMBEDDED_RESTRICTED))      ConsoleIOPrint(" VER_SUITE_EMBEDDED_RESTRICTED");
+		if (0 != (wSuiteMask & VER_SUITE_SECURITY_APPLIANCE))       ConsoleIOPrint(" VER_SUITE_SECURITY_APPLIANCE");
+		if (0 != (wSuiteMask & VER_SUITE_STORAGE_SERVER))           ConsoleIOPrint(" VER_SUITE_STORAGE_SERVER");
+		if (0 != (wSuiteMask & VER_SUITE_COMPUTE_SERVER))           ConsoleIOPrint(" VER_SUITE_COMPUTE_SERVER");
+		if (0 != (wSuiteMask & VER_SUITE_WH_SERVER))                ConsoleIOPrint(" VER_SUITE_WH_SERVER");
 
-		switch (osvi.wProductType)
+		switch (wProductType)
 		{
 		case VER_NT_WORKSTATION:       ConsoleIOPrint(" VER_NT_WORKSTATION"); break;
 		case VER_NT_DOMAIN_CONTROLLER: ConsoleIOPrint(" VER_NT_DOMAIN_CONTROLLER"); break;

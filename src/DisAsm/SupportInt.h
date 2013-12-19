@@ -45,6 +45,11 @@ typedef unsigned long      uint32_t;
 typedef __int64            int64_t;
 typedef unsigned __int64   uint64_t;
 
+#elif defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
+
+typedef __int64            int64_t;
+typedef unsigned __int64   uint64_t;
+
 #else /* COMP_BORLANDC */
 
 typedef signed long long   int64_t;
@@ -60,6 +65,11 @@ typedef uint64_t address_t;
 typedef uint64_t offset_t;
 
 #ifdef COMP_BORLANDC
+
+#define  I64(x) (x)
+#define  U64(x) (x)
+
+#elif defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
 
 #define  I64(x) (x)
 #define  U64(x) (x)

@@ -57,6 +57,12 @@ add_executable(DisAsmSample ${SOURCES} ${HEADERS})
 target_link_libraries(DisAsmSample DisAsm StrAsm Executable PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO)
 add_dependencies(DisAsmSample DisAsm StrAsm Executable PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO)
 
+file(GLOB SOURCES ${SRC}/DisAsmGUI/*.c)
+file(GLOB HEADERS ${SRC}/DisAsmGUI/*.h)
+add_executable(DisAsmGUI ${SOURCES} ${HEADERS})
+target_link_libraries(DisAsmGUI DisAsm StrAsm Executable PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO)
+add_dependencies(DisAsmGUI DisAsm StrAsm Executable PluginFormatPE PluginFormatNE PluginFormatLX PluginFormatELF PluginFormatMachO)
+
 file(GLOB SOURCES ${SRC}/SDK/SampleDisAsmFromMemoryBuffer/*.c)
 file(GLOB HEADERS ${SRC}/SDK/SampleDisAsmFromMemoryBuffer/*.h)
 add_executable(SampleDisAsmFromMemoryBuffer ${SOURCES} ${HEADERS})

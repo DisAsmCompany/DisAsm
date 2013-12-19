@@ -117,6 +117,8 @@ extern "C" {
 
 #if defined(_MSC_VER)
 #define COMP_MICROSOFTC
+#define COMP_VERSION _MSC_VER
+#define COMP_MICROSOFTC6 1200
 #endif /* defined(_MSC_VER) */
 
 #if defined(__BORLANDC__) || defined(__CODEGEARC__)
