@@ -48,8 +48,8 @@ void ConsoleIOPrintFormatted(const char * format, ...);
 #define DebugPrint ConsoleIOPrint
 #define DebugPrintFormatted ConsoleIOPrintFormatted
 #else /* defined(_DEBUG) || defined(DEBUG) */
-#define DebugPrint
-#define DebugPrintFormatted
+#define DebugPrint (void)sizeof
+#define DebugPrintFormatted (void)sizeof
 #endif /* defined(_DEBUG) || defined(DEBUG) */
 
 #ifdef __cplusplus

@@ -67,7 +67,7 @@ void SDFDestroy(HSDF hSDF);
 #if defined(_DEBUG) || defined(DEBUG)
 #define SDFDebugPrint SDFPrint
 #else /* defined(_DEBUG) || defined(DEBUG) */
-#define SDFDebugPrint
+#define SDFDebugPrint (void)sizeof
 #endif /* defined(_DEBUG) || defined(DEBUG) */
 
 #ifdef __cplusplus

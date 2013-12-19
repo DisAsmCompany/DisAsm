@@ -368,13 +368,13 @@ int main(int argc, char * const argv[])
 	}
 	if (NULL == hReader)
 	{
-		ConsoleIOPrintFormatted("[ERROR] cannot open input file \"%s\"\n", argv[1]);
+		ConsoleIOPrintFormatted("[ERROR] cannot open input file \"%s\"\n", argv[argc - 1]);
 		return EXIT_FAILURE;
 	}
 	hExecutable = ExecutableCreate(hReader, memory);
 	if (NULL == hExecutable)
 	{
-		ConsoleIOPrintFormatted("[ERROR] cannot open executable file \"%s\"\n", argv[1]);
+		ConsoleIOPrintFormatted("[ERROR] cannot open executable file \"%s\"\n", argv[argc - 1]);
 		return EXIT_FAILURE;
 	}
 	count = ExecutableGetObjectCount(hExecutable);
