@@ -135,13 +135,13 @@ calculate operands count : how many non-zero bytes are in packed type definition
 */
 
 /* explicit register - range RegisterBase and higher */
-#define EXTRACT_REG(x) (((x) >= RegisterBase) ? (x) : 0)
+#define EXTRACT_REG(x) (((x) >= (OperandType)RegisterBase) ? (x) : 0)
 /* explicit immediate - range 00h - OperandBase */
-#define EXTRACT_IMM(x) ((0 < (x) && (x) < OperandBase) ? (x) : 0)
+#define EXTRACT_IMM(x) ((0 < (x) && (x) < (OperandType)OperandBase) ? (x) : 0)
 
 /* other type */
 #define EXTRACT_TYPE(x) (EXTRACT_REG(x) ? Reg : (EXTRACT_IMM(x) ? Imm : (x)))
-#define PACK_TYPE(x) (OperandType)((EXTRACT_TYPE(x) > OperandBase) ? (EXTRACT_TYPE(x)) : 0)
+#define PACK_TYPE(x) (OperandType)((EXTRACT_TYPE((OperandType)x) > (OperandType)OperandBase) ? (EXTRACT_TYPE((OperandType)x)) : 0)
 
 #define OP4(x, y, z, w) \
 	{(PACK_TYPE(x)), \

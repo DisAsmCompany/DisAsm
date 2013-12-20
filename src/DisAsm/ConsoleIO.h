@@ -40,16 +40,19 @@ char * ShortName(char * name);
 
 void ConsoleIOInit();
 void ConsoleIOPrint(const char * string);
+void ConsoleIOPrintFormatted(const char * format, ...);
 void PrintColoredString(const char * string, TextColor color, TextColor background);
 void PrintByte(uint64_t value);
+
+void ConsoleIOPrint(const char * string);
 void ConsoleIOPrintFormatted(const char * format, ...);
 
 #if defined(_DEBUG) || defined(DEBUG)
 #define DebugPrint ConsoleIOPrint
 #define DebugPrintFormatted ConsoleIOPrintFormatted
 #else /* defined(_DEBUG) || defined(DEBUG) */
-#define DebugPrint (void)sizeof
-#define DebugPrintFormatted (void)sizeof
+void DebugPrint(const char * string);
+void DebugPrintFormatted(const char * format, ...);
 #endif /* defined(_DEBUG) || defined(DEBUG) */
 
 #ifdef __cplusplus

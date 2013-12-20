@@ -435,9 +435,14 @@ void xFree(void * address)
 
 typedef enum ProtectType_t
 {
+	ProtectTypeNone = 0x00,
 	ProtectTypeRead = 0x01,
 	ProtectTypeWrite = 0x02,
-	ProtectTypeExecute = 0x04
+	ProtectTypeReadWrite = ProtectTypeRead | ProtectTypeWrite,
+	ProtectTypeExecute = 0x04,
+	ProtectTypeReadExecute = ProtectTypeRead | ProtectTypeExecute,
+	ProtectTypeWriteExecute = ProtectTypeWrite | ProtectTypeExecute,
+	ProtectTypeAll = ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute
 }
 ProtectType;
 
@@ -451,14 +456,14 @@ void Protect(native_t address, uint32_t size, ProtectType type)
 	SYSTEM_INFO si = {0};
     switch (type)
     {
-    case 0: protect = PAGE_NOACCESS; break;
+    case ProtectTypeNone: protect = PAGE_NOACCESS; break;
     case ProtectTypeRead: protect = PAGE_READONLY; break;
     case ProtectTypeWrite: protect = PAGE_WRITECOPY; break;
     case ProtectTypeExecute: protect = PAGE_EXECUTE; break;
-    case ProtectTypeRead | ProtectTypeWrite: protect = PAGE_READWRITE; break;
-    case ProtectTypeRead | ProtectTypeExecute: protect = PAGE_EXECUTE_READ; break;
-    case ProtectTypeExecute | ProtectTypeWrite: protect = PAGE_EXECUTE_WRITECOPY; break;
-    case ProtectTypeExecute | ProtectTypeWrite | ProtectTypeRead: protect = PAGE_EXECUTE_READWRITE; break;
+    case ProtectTypeReadWrite: protect = PAGE_READWRITE; break;
+    case ProtectTypeReadExecute: protect = PAGE_EXECUTE_READ; break;
+    case ProtectTypeWriteExecute: protect = PAGE_EXECUTE_WRITECOPY; break;
+    case ProtectTypeAll: protect = PAGE_EXECUTE_READWRITE; break;
     default: break;
     }
 	GetSystemInfo(&si);

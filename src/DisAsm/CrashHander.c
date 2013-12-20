@@ -235,7 +235,7 @@ modify [esi eax ebx ecx edx];
 
 uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
 {
-    uint32_t _eax, _ebx, _ecx, _edx;
+    uint32_t _eax = 0, _ebx = 0, _ecx = 0, _edx = 0;
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
     int info[4];
     __cpuid(info, level);
@@ -288,6 +288,8 @@ native_t ReadEFLAGS()
 {
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	return __readeflags();
+#else /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+	return 0;
 #endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
 }
 
@@ -617,7 +619,7 @@ void CrashHandlerInstall()
 	size_t i;
 	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
 	{
-		struct sigaction action = {0};
+		struct sigaction action;
 		action.sa_sigaction = CrashHandler;
 		action.sa_flags = SA_RESTART | SA_SIGINFO;
 		if (0 != sigaction(signals[i].signum, &action, NULL))

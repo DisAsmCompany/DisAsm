@@ -755,11 +755,10 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 
 	if (pInfo->flags & kHasModRM)
 	{
-		uint8_t ModRM_Mod, ModRM_RM, ModRM_Reg;
+		uint8_t ModRM_Mod, ModRM_RM;
 		pInfo->ModRM = Fetch1(&context, pInfo);
 		ModRM_Mod = MODRM_MOD(pInfo->ModRM);
 		ModRM_RM  = MODRM_RM(pInfo->ModRM);
-		ModRM_Reg = MODRM_REG(pInfo->ModRM);
 		pInfo->flags |= ((ModRM_Mod != 3) && (ModRM_RM == 4)) ? kHasSIB : 0;
 
 		GroupDecode(&context, pInfo);

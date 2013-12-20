@@ -83,7 +83,7 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	/* check, do we have actual console or redirection to file buffer? */
 	if (error ? g_isConsoleStdErr : g_isConsoleStdOut)
 	{
-		CONSOLE_SCREEN_BUFFER_INFO info = {0};
+		CONSOLE_SCREEN_BUFFER_INFO info;
 		/* set custom text color, if necessary */
 		if (kDefaultColor != color || kDefaultColor != background)
 		{
@@ -346,3 +346,8 @@ void ConsoleIOPrintFormatted(const char * format, ...)
 	va_end(args);
 	ConsoleIOPrint(message);
 }
+
+#if !defined(_DEBUG) && !defined(DEBUG)
+void DebugPrint(const char * string) { (void)(string); }
+void DebugPrintFormatted(const char * format, ...) { (void)(format); }
+#endif /* !defined(_DEBUG) && !defined(DEBUG) */
