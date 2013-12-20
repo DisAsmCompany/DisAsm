@@ -18,8 +18,6 @@ static const uint8_t jmp = 0xE9;
 
 enum {ThunkSize = 40 };
 
-uint8_t xThunkHeapAlloc[3 * ThunkSize], xThunkHeapReAlloc[3 * ThunkSize], xThunkHeapFree[3 * ThunkSize], xThunkRtlFreeHeap[3 * ThunkSize];
-
 typedef struct Allocation_t
 {
 	void * address;
@@ -224,10 +222,12 @@ typedef void * (__stdcall * pfnHeapAlloc)(void * hHeap, uint32_t flags, uint32_t
 typedef void * (__stdcall * pfnHeapReAlloc)(void * hHeap, uint32_t flags, void * memory, uint32_t size);
 typedef int (__stdcall * pfnHeapFree)(void * hHeap, uint32_t flags, LPVOID lpMem);
 
-static pfnHeapFree    pOriginalRtlFreeHeap = NULL;
-static pfnHeapAlloc   pOriginalHeapAlloc = NULL;
-static pfnHeapReAlloc pOriginalHeapReAlloc = NULL;
-static pfnHeapFree    pOriginalHeapFree = NULL;
+uint8_t xThunkHeapAlloc[3 * ThunkSize], xThunkHeapReAlloc[3 * ThunkSize], xThunkHeapFree[3 * ThunkSize], xThunkRtlFreeHeap[3 * ThunkSize];
+
+static pfnHeapFree    pOriginalRtlFreeHeap = (pfnHeapFree)   (native_t)(&xThunkRtlFreeHeap);
+static pfnHeapAlloc   pOriginalHeapAlloc   = (pfnHeapAlloc)  (native_t)(&xThunkHeapAlloc);
+static pfnHeapReAlloc pOriginalHeapReAlloc = (pfnHeapReAlloc)(native_t)(&xThunkHeapReAlloc);
+static pfnHeapFree    pOriginalHeapFree    = (pfnHeapFree)   (native_t)(&xThunkHeapFree);
 
 void * __stdcall xHeapAlloc(void * heap, uint32_t flags, uint32_t size)
 {
@@ -332,12 +332,12 @@ typedef void * (*pfnrealloc)(void *, size_t);
 typedef void   (*pfnfree)(void *);
 typedef void * (*pfncalloc)(size_t, size_t);
 
-static pfnmalloc  pOriginalMalloc = NULL;
-static pfncalloc  pOriginalCalloc = NULL;
-static pfnrealloc pOriginalRealloc = NULL;
-static pfnfree    pOriginalFree = NULL;
+uint8_t xThunkMalloc[3 * ThunkSize], xThunkCalloc[3 * ThunkSize], xThunkRealloc[3 * ThunkSize], xThunkFree[3 * ThunkSize];
 
-uint8_t xThunkMalloc[2 * ThunkSize], xThunkCalloc[2 * ThunkSize], xThunkRealloc[2 * ThunkSize], xThunkFree[2 * ThunkSize];
+static pfnmalloc  pOriginalMalloc  = (pfnmalloc) (native_t)(&xThunkMalloc);
+static pfncalloc  pOriginalCalloc  = (pfncalloc) (native_t)(&xThunkCalloc);
+static pfnrealloc pOriginalRealloc = (pfnrealloc)(native_t)(&xThunkRealloc);
+static pfnfree    pOriginalFree    = (pfnfree)   (native_t)(&xThunkFree);
 
 void * xmalloc(size_t size)
 {
@@ -547,49 +547,51 @@ void RestoreFunction(uint8_t * pOriginal, uint8_t * pThunk)
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute);
 }
 
+#ifdef OS_WINDOWS
+
+uint8_t * GetFunctionAddress(const char * module, const char * name)
+{
+	HMODULE hModule = GetModuleHandleA(module);
+	return (uint8_t*)(native_t)GetProcAddress(hModule, name);
+}
+
+#endif /* OS_WINDOWS */
+
 void LeakTrackerInstall(uint8_t install)
 {
 #if defined(CPU_X86) || defined(CPU_X64)
 #ifdef OS_WINDOWS
-    HMODULE hModule = GetModuleHandleA("ntdll.dll");
-    void * RtlFreeHeap = (void*) GetProcAddress(hModule, "RtlFreeHeap");
+	uint8_t * HeapAlloc   = GetFunctionAddress("kernel32.dll", "HeapAlloc");
+	uint8_t * HeapReAlloc = GetFunctionAddress("kernel32.dll", "HeapReAlloc");
+	uint8_t * HeapFree    = GetFunctionAddress("kernel32.dll", "HeapFree");
+    uint8_t * RtlFreeHeap = GetFunctionAddress("ntdll.dll", "RtlFreeHeap");
 #endif /* OS_WINDOWS */
 
 	if (install)
 	{
 #ifdef OS_WINDOWS
-		g_Allocations = (Allocation*)HeapAlloc(GetProcessHeap(), 0, sizeof(Allocation));
-
-		pOriginalHeapFree    = (pfnHeapFree)   (&xThunkHeapFree);
-		pOriginalHeapAlloc   = (pfnHeapAlloc)  (&xThunkHeapAlloc);
-		pOriginalHeapReAlloc = (pfnHeapReAlloc)(&xThunkHeapReAlloc);
-		pOriginalRtlFreeHeap = (pfnHeapFree)   (&xThunkRtlFreeHeap);
+		g_Allocations = (Allocation*)((pfnHeapAlloc)(native_t)HeapAlloc)(GetProcessHeap(), 0, sizeof(Allocation));
 		/* need to capture RtlFreeHeap, because sometimes memory allocated by HeapAlloc
 		is being freed directly by this function instead of HeapFree
 		but if RtlFreeHeap is the same function as HeapFree, no need to patch twice */
 
-		PatchFunction((uint8_t*)HeapReAlloc, (uint8_t*)xHeapReAlloc, xThunkHeapReAlloc);
-		PatchFunction((uint8_t*)HeapAlloc,   (uint8_t*)xHeapAlloc,   xThunkHeapAlloc);
+		PatchFunction(HeapReAlloc, (uint8_t*)(native_t)xHeapReAlloc, xThunkHeapReAlloc);
+		PatchFunction(HeapAlloc,   (uint8_t*)(native_t)xHeapAlloc,   xThunkHeapAlloc);
 #if defined(CPU_X86)
         /* relative CALL is ued in x64 implementation */
-		PatchFunction((uint8_t*)HeapFree,    (uint8_t*)xHeapFree,    xThunkHeapFree);
+		PatchFunction(HeapFree,    (uint8_t*)(native_t)xHeapFree,    xThunkHeapFree);
 #endif /* defined(CPU_X86) */
 		if (RtlFreeHeap != HeapFree)
 		{
-			PatchFunction((uint8_t*)RtlFreeHeap, (uint8_t*)xRtlFreeHeap, xThunkRtlFreeHeap);
+			PatchFunction(RtlFreeHeap, (uint8_t*)(native_t)xRtlFreeHeap, xThunkRtlFreeHeap);
 		}
 #else /* OS_WINDOWS */
 		g_Allocations = (Allocation*) malloc(sizeof(Allocation));
 		
-		pOriginalMalloc = (pfnmalloc) (&xThunkMalloc);
-		pOriginalCalloc = (pfncalloc) (&xThunkCalloc);
-		pOriginalRealloc = (pfnrealloc) (&xThunkRealloc);
-		pOriginalFree = (pfnfree) (&xThunkFree);
-		
-		PatchFunction((uint8_t*) malloc,  (uint8_t*) xmalloc,  xThunkMalloc);
-		PatchFunction((uint8_t*) realloc, (uint8_t*) xrealloc, xThunkRealloc);
-		PatchFunction((uint8_t*) calloc,  (uint8_t*) xcalloc,  xThunkCalloc);
-		PatchFunction((uint8_t*) free,    (uint8_t*) xfree,    xThunkFree);
+		PatchFunction((uint8_t*)(native_t)malloc,  (uint8_t*)(native_t)xmalloc,  xThunkMalloc);
+		PatchFunction((uint8_t*)(native_t)realloc, (uint8_t*)(native_t)xrealloc, xThunkRealloc);
+		PatchFunction((uint8_t*)(native_t)calloc,  (uint8_t*)(native_t)xcalloc,  xThunkCalloc);
+		PatchFunction((uint8_t*)(native_t)free,    (uint8_t*)(native_t)xfree,    xThunkFree);
 #endif /* OS_WINDOWS */
 	}
 	else
@@ -598,13 +600,20 @@ void LeakTrackerInstall(uint8_t install)
 		uint32_t j = 0;
 		uint32_t total = 0;
 #ifdef OS_WINDOWS
-		RestoreFunction((uint8_t*)HeapAlloc,   xThunkHeapAlloc);
-		RestoreFunction((uint8_t*)HeapReAlloc, xThunkHeapReAlloc);
-		RestoreFunction((uint8_t*)HeapFree,    xThunkHeapFree);
+		RestoreFunction(HeapAlloc,   xThunkHeapAlloc);
+		RestoreFunction(HeapReAlloc, xThunkHeapReAlloc);
+#if defined(CPU_X86)
+		RestoreFunction(HeapFree,    xThunkHeapFree);
+#endif /* defined(CPU_X86) */
 		if (RtlFreeHeap != HeapFree)
 		{
-			RestoreFunction((uint8_t*)RtlFreeHeap, xThunkRtlFreeHeap);
+			RestoreFunction(RtlFreeHeap, xThunkRtlFreeHeap);
 		}
+#else /* OS_WINDOWS */
+		RestoreFunction((uint8_t*)(native_t)malloc,  xThunkMalloc);
+		RestoreFunction((uint8_t*)(native_t)realloc, xThunkRealloc);
+		RestoreFunction((uint8_t*)(native_t)calloc,  xThunkCalloc);
+		RestoreFunction((uint8_t*)(native_t)free,    xThunkFree);
 #endif /* OS_WINDOWS */
 		for (i = 0; i < g_nTotalAllocations; ++i)
 		{
