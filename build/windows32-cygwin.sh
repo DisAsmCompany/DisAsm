@@ -1,7 +1,7 @@
 #!/bin/sh
 WORKDIR=windows32-cygwin
 COMPILER=gcc
-FLAGS="-Wall -std=c99"
+FLAGS="-Wall -Wextra -pedantic -std=c99"
 rm -rf $WORKDIR
 mkdir $WORKDIR
 cp CMakeLists.txt $WORKDIR/CMakeLists.txt

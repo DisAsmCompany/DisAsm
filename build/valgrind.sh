@@ -1,7 +1,7 @@
 #!/bin/sh
 WORKDIR=unix-valgrind
 COMPILER=gcc
-FLAGS="-Wall -std=c99"
+FLAGS="-Wall -Wextra -pedantic -std=c99"
 VALGRIND="valgrind -v --track-origins=yes --track-fds=yes --leak-check=full"
 rm -rf $WORKDIR
 mkdir $WORKDIR
