@@ -1,7 +1,7 @@
 #!/bin/sh
 WORKDIR=$1
 COMPILER=$2
-FLAGS="-Wall -Wextra -pedantic -std=c99"
+FLAGS=$3
 rm -rf $WORKDIR
 mkdir $WORKDIR
 cp CMakeLists.txt $WORKDIR/CMakeLists.txt
