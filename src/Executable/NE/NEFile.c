@@ -24,7 +24,7 @@ typedef struct NEFileContext_t
 NEFileContext;
 
 #undef THIS
-#define THIS ((NEFileContext*)(pContext->pPrivate))
+#define THIS ((NEFileContext*)(OBJ.pPrivate))
 
 int NEReadStringTable(ExecutableContext * pContext)
 {
@@ -56,6 +56,11 @@ int NEFileOpen(ExecutableContext * pContext)
 	uint16_t Signature;
 	uint32_t Offset;
 
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
+	pContext->iObject  = 0;
+	pContext->nObjects = 1;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(NEFileContext)));
+
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));
 	if (kMZDOSSignature != SDFReadUInt16(THIS->hDOSHeader, MZDOSHeaderSignature))
@@ -85,9 +90,6 @@ int NEFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(ReaderSeek(pContext->hReader, Offset));
 		CHECK_CALL(NEReadStringTable(pContext));
 	}
-	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
-	pContext->iObject  = 0;
-	pContext->nObjects = 1;
 	OBJ.Arch = ArchX86;
 	OBJ.StubEntryPoint = SDFSizeInBytes(MZDOSHeader);
 	return 1;
@@ -95,22 +97,22 @@ int NEFileOpen(ExecutableContext * pContext)
 
 void NEFileDestroy(ExecutableContext * pContext)
 {
-	SDFDestroy(THIS->hDOSHeader);
-	SDFDestroy(THIS->hSegmentedHeader);
-	free(THIS);
+	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
+	{
+		SDFDestroy(THIS->hDOSHeader);
+		SDFDestroy(THIS->hSegmentedHeader);
+		free(THIS);
+	}
 }
 
 int NEFileCreate(ExecutableContext * pContext)
 {
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(NEFileContext)));
+	pContext->pDestroy = NEFileDestroy;
 
 	if (0 == NEFileOpen(pContext))
 	{
-		NEFileDestroy(pContext);
+		ExecutableFree(pContext);
 		return 0;
 	}
-
-	pContext->pDestroy = NEFileDestroy;
-
 	return 1;
 }

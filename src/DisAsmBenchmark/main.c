@@ -50,6 +50,9 @@ int main(int argc, char * const argv[])
 	time = BenchmarkGetSample(hBenchmark);
 	freq = BenchmarkGetFrequency(hBenchmark);
 
+	ConsoleIOPrintFormatted("%Ld instructions per second\n", instructions * freq / time);
+	ConsoleIOPrintFormatted("%Ld bytes per second\n", offset * freq / time);
+
 	ReaderDestroy(hReader);
 	BenchmarkDestroy(hBenchmark);
 	return EXIT_SUCCESS;

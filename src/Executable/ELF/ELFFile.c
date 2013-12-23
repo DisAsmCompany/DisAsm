@@ -40,7 +40,7 @@ typedef struct ELFFileContext_t
 ELFFileContext;
 
 #undef THIS
-#define THIS ((ELFFileContext*)(pContext->pPrivate))
+#define THIS ((ELFFileContext*)(OBJ.pPrivate))
 
 int ELFProcessExport(ExecutableContext * pContext)
 {
@@ -87,6 +87,11 @@ int ELFFileOpen(ExecutableContext * pContext)
 	uint16_t IndexNames = 0;
 	uint32_t OffsetNames = 0;
 
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
+	pContext->iObject = 0;
+	pContext->nObjects = 1;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(ELFFileContext)));
+
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hHeader = SDFCreate(ELFHeader, pContext->hReader));
 	if (kELFMagic != SDFReadUInt32(THIS->hHeader, ELFHeaderMagic))
@@ -94,10 +99,6 @@ int ELFFileOpen(ExecutableContext * pContext)
 		return 0;
 	}
 	SDFDebugPrint(THIS->hHeader);
-
-	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
-	pContext->iObject = 0;
-	pContext->nObjects = 1;
 
 	Machine = SDFReadUInt16(THIS->hHeader, ELFHeaderMachine);
 	switch (Machine)
@@ -187,25 +188,27 @@ int ELFFileOpen(ExecutableContext * pContext)
 
 void ELFFileDestroy(ExecutableContext * pContext)
 {
-	uint16_t i = 0;
-	for (i = 0; i < THIS->NumberOfPrograms; ++i)
+	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		SDFDestroy(THIS->phProgramHeaders[i]);
+		uint16_t i = 0;
+		for (i = 0; i < THIS->NumberOfPrograms; ++i)
+		{
+			SDFDestroy(THIS->phProgramHeaders[i]);
+		}
+		free(THIS->phProgramHeaders);
+		SDFDestroy(THIS->hHeader);
+		free(THIS);
 	}
-	free(THIS->phProgramHeaders);
-	SDFDestroy(THIS->hHeader);
-	free(THIS);
 }
 
 int ELFFileCreate(ExecutableContext * pContext)
 {
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(ELFFileContext)));
-	if (0 == ELFFileOpen(pContext))
-	{
-		ELFFileDestroy(pContext);
-		return 0;
-	}
 	pContext->pDestroy = ELFFileDestroy;
 
+	if (0 == ELFFileOpen(pContext))
+	{
+		ExecutableFree(pContext);
+		return 0;
+	}
 	return 1;
 }

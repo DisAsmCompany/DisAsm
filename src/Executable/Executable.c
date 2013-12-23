@@ -33,9 +33,9 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, uint8_t memory)
 	{
 		return NULL;
 	}
+	CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
 	while (NULL != Registry[i])
 	{
-		CHECK_ALLOC(pContext = (ExecutableContext*) calloc(1, sizeof(ExecutableContext)));
 		pContext->memory = memory;
 		pContext->hReader = hReader;
 		if (0 != Registry[i](pContext))
@@ -44,18 +44,23 @@ HEXECUTABLE ExecutableCreate(HREADER hReader, uint8_t memory)
 		}
 		else
 		{
-			ExecutableDestroy(pContext);
+			ExecutableFree(pContext);
 		}
 		++i;
 	}
+	free(pContext);
 	return 0;
 }
 
-void ExecutableDestroy(HEXECUTABLE hExecutable)
+void ExecutableFree(HEXECUTABLE hExecutable)
 {
 	ExecutableContext * pContext = (ExecutableContext*) hExecutable;
 	if (NULL != pContext)
 	{
+		if (NULL != pContext->pDestroy)
+		{
+			pContext->pDestroy(hExecutable);
+		}
 		if (NULL != pContext->pObjects)
 		{
 			uint32_t i;
@@ -65,13 +70,15 @@ void ExecutableDestroy(HEXECUTABLE hExecutable)
 				free(pContext->pObjects[i].pExports);
 			}
 		}
-        free(pContext->pObjects);
-        if (NULL != pContext->pDestroy)
-        {
-            pContext->pDestroy(hExecutable);
-        }
+		free(pContext->pObjects);
+		pContext->pObjects = NULL;
 		pContext->nObjects = 0;
 	}
+}
+
+void ExecutableDestroy(HEXECUTABLE hExecutable)
+{
+	ExecutableFree(hExecutable);
 	free(hExecutable);
 }
 

@@ -62,6 +62,8 @@ typedef struct ExecutableObject_t
 	ExecutableSymbol * pExports;
 
 	uint8_t Object;
+
+	void * pPrivate;
 }
 ExecutableObject;
 
@@ -70,7 +72,6 @@ typedef struct ExecutableContext_t
 	uint8_t memory;
 	HREADER hReader;
 	pfnExecutableDestroy pDestroy;
-	void * pPrivate;
 	ExecutableObject * pObjects;
 	uint32_t nObjects;
 	uint32_t iObject;
@@ -78,6 +79,7 @@ typedef struct ExecutableContext_t
 ExecutableContext;
 
 HEXECUTABLE ExecutableCreate(HREADER hReader, uint8_t memory);
+void ExecutableFree(HEXECUTABLE hExecutable);
 void ExecutableDestroy(HEXECUTABLE hExecutable);
 Architecture ExecutableGetArchitecture(HEXECUTABLE hExecutable);
 address_t ExecutableGetBase(HEXECUTABLE hExecutable);

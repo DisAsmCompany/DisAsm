@@ -52,7 +52,7 @@ typedef struct MachOFileContext_t
 MachOFileContext;
 
 #undef THIS
-#define THIS ((MachOFileContext*)(pContext->pPrivate))
+#define THIS ((MachOFileContext*)(OBJ.pPrivate))
 
 uint32_t MachOProcessCommandSegment(ExecutableContext * pContext, uint8_t x64)
 {
@@ -179,15 +179,21 @@ uint32_t MachOProcessCommandThread(ExecutableContext * pContext)
 
 void MachOFileDestroy(ExecutableContext * pContext)
 {
-	uint32_t i = 0;
-	for (i = 0; i < pContext->nObjects; ++i)
+	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		SDFDestroy(THIS->phFatHeaders[i]);
-		SDFDestroy(THIS->phMachHeaders[i]);
+		if (NULL != pContext->pObjects)
+		{
+			uint32_t i = 0;
+			for (i = 0; i < pContext->nObjects; ++i)
+			{
+				SDFDestroy(THIS->phFatHeaders[i]);
+				SDFDestroy(THIS->phMachHeaders[i]);
+			}
+			free(THIS->phFatHeaders);
+			free(THIS->phMachHeaders);
+			free(THIS);
+		}
 	}
-	free(THIS->phFatHeaders);
-	free(THIS->phMachHeaders);
-	free(THIS);
 }
 
 int MachOFileInit(ExecutableContext * pContext)
@@ -207,6 +213,8 @@ int MachOFileInit(ExecutableContext * pContext)
 		return 0;
 	}
 	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject) * pContext->nObjects));
+	pContext->iObject = 0;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(MachOFileContext)));
 	CHECK_ALLOC(THIS->phFatHeaders = (HSDF*) calloc(1, sizeof(HSDF) * pContext->nObjects));
 	CHECK_ALLOC(THIS->phMachHeaders = (HSDF*) calloc(1, sizeof(HSDF) * pContext->nObjects));
 	for (i = 0; i < pContext->nObjects; ++i)
@@ -279,12 +287,11 @@ int MachOFileInit(ExecutableContext * pContext)
 
 int MachOFileCreate(ExecutableContext * pContext)
 {
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(MachOFileContext)));
+	pContext->pDestroy = MachOFileDestroy;
 	if (0 == MachOFileInit(pContext))
 	{
-		MachOFileDestroy(pContext);
+		ExecutableFree(pContext);
 		return 0;
 	}
-	pContext->pDestroy = MachOFileDestroy;
 	return 1;
 }

@@ -62,7 +62,7 @@ typedef struct PEFileContext_t
 PEFileContext;
 
 #undef THIS
-#define THIS ((PEFileContext*)(pContext->pPrivate))
+#define THIS ((PEFileContext*)(OBJ.pPrivate))
 
 address_t NameForOrdinal(ExecutableContext * pContext, uint32_t ordinal)
 {
@@ -310,24 +310,32 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 
 void PEFileDestroy(ExecutableContext * pContext)
 {
-	SDFDestroy(THIS->hDOSHeader);
-	SDFDestroy(THIS->hFileHeader);
-	SDFDestroy(THIS->hOptionalHeader);
-    SDFDestroy(THIS->hOptionalHeaderExtra);
-	SDFDestroy(THIS->hExportDirectory);
-	SDFDestroy(THIS->hDebugDirectory);
-	SDFDestroy(THIS->hLoadConfigDirectory);
-	free(THIS->ExportFunctions);
-	free(THIS->ExportNames);
-	free(THIS->ExportOrdinals);
-	free(THIS->DataDirectories);
-	free(THIS);
+	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
+	{
+		SDFDestroy(THIS->hDOSHeader);
+		SDFDestroy(THIS->hFileHeader);
+		SDFDestroy(THIS->hOptionalHeader);
+		SDFDestroy(THIS->hOptionalHeaderExtra);
+		SDFDestroy(THIS->hExportDirectory);
+		SDFDestroy(THIS->hDebugDirectory);
+		SDFDestroy(THIS->hLoadConfigDirectory);
+		free(THIS->ExportFunctions);
+		free(THIS->ExportNames);
+		free(THIS->ExportOrdinals);
+		free(THIS->DataDirectories);
+		free(THIS);
+	}
 }
 
 int PEFileOpen(ExecutableContext * pContext)
 {
 	uint32_t Signature;
 	uint16_t Machine;
+
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
+	pContext->iObject = 0;
+	pContext->nObjects = 1;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(PEFileContext)));
 
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));
@@ -346,10 +354,6 @@ int PEFileOpen(ExecutableContext * pContext)
 	SDFDebugPrint(THIS->hDOSHeader);
 	SDFDebugPrint(THIS->hFileHeader);
 	
-	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
-	pContext->iObject = 0;
-	pContext->nObjects = 1;
-
 	Machine = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderMachine);
 	switch (Machine)
 	{
@@ -392,6 +396,7 @@ int OBJFileOpen(ExecutableContext * pContext)
 	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
 	pContext->iObject = 0;
 	pContext->nObjects = 1;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(PEFileContext)));
 	if (0 != OBJInit(pContext))
 	{
 		return 1;
@@ -693,6 +698,10 @@ int LIBFileOpen(ExecutableContext * pContext)
 		CHECK_CALL(ReaderSeek(pContext->hReader, pContext->pObjects[pContext->iObject = i].Offset));
 		
 		ReaderSetBase(pContext->hReader, pContext->pObjects[pContext->iObject = i].Offset);
+
+		pContext->iObject = i;
+		CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(PEFileContext)));
+
  		if (1 == OBJInit(pContext))
 		{
 			CHECK_CALL(PEFileInit(pContext));
@@ -705,22 +714,25 @@ int LIBFileOpen(ExecutableContext * pContext)
 
 int PEFileCreate(ExecutableContext * pContext)
 {
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(PEFileContext)));
-
+	pContext->pDestroy = PEFileDestroy;
 	if (0 == LIBFileOpen(pContext))
 	{
-		if (0 == PEFileOpen(pContext) && 0 == OBJFileOpen(pContext))
+		ExecutableFree(pContext);
+
+		if (0 == PEFileOpen(pContext))
 		{
-			PEFileDestroy(pContext);
-			return 0;
+			ExecutableFree(pContext);
+			if (0 == OBJFileOpen(pContext))
+			{
+				ExecutableFree(pContext);
+				return 0;
+			}
 		}
 		if (0 == PEFileInit(pContext))
 		{
-			PEFileDestroy(pContext);
+			ExecutableFree(pContext);
 			return 0;
 		}
-	}
-	pContext->pDestroy = PEFileDestroy;
-	
+	}	
 	return 1;
 }

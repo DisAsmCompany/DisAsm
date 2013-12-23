@@ -30,7 +30,7 @@ typedef struct LXFileContext_t
 LXFileContext;
 
 #undef THIS
-#define THIS ((LXFileContext*)(pContext->pPrivate))
+#define THIS ((LXFileContext*)(OBJ.pPrivate))
 
 int LXFileOpen(ExecutableContext * pContext)
 {
@@ -40,6 +40,11 @@ int LXFileOpen(ExecutableContext * pContext)
 	/*uint32_t EIP = 0;
 	uint32_t EIPObject = 0;*/
 	uint32_t i = 0;
+
+	CHECK_ALLOC(pContext->pObjects = (ExecutableObject*) calloc(1, sizeof(ExecutableObject)));
+	pContext->iObject  = 0;
+	pContext->nObjects = 1;
+	CHECK_ALLOC(OBJ.pPrivate = calloc(1, sizeof(LXFileContext)));
 
 	CHECK_CALL(ReaderSeek(pContext->hReader, 0));
 	CHECK_CALL(THIS->hDOSHeader = SDFCreate(MZDOSHeader, pContext->hReader));
@@ -83,27 +88,27 @@ int LXFileOpen(ExecutableContext * pContext)
 
 void LXFileDestroy(ExecutableContext * pContext)
 {
-	uint32_t i = 0;
-	for (i = 0; i < THIS->NumberOfObjects; ++i)
+	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		SDFDestroy(THIS->phObjectTable[i]);
+		uint32_t i = 0;
+		for (i = 0; i < THIS->NumberOfObjects; ++i)
+		{
+			SDFDestroy(THIS->phObjectTable[i]);
+		}
+		free(THIS->phObjectTable);
+		SDFDestroy(THIS->hDOSHeader);
+		SDFDestroy(THIS->hFileHeader);
+		free(THIS);
 	}
-	free(THIS->phObjectTable);
-	SDFDestroy(THIS->hDOSHeader);
-	SDFDestroy(THIS->hFileHeader);
-	free(THIS);
 }
 
 int LXFileCreate(ExecutableContext * pContext)
 {
-	CHECK_ALLOC(pContext->pPrivate = calloc(1, sizeof(LXFileContext)));
-
+	pContext->pDestroy = LXFileDestroy;
 	if (0 == LXFileOpen(pContext))
 	{
-		LXFileDestroy(pContext);
+		ExecutableFree(pContext);
 		return 0;
 	}
-	pContext->pDestroy = LXFileDestroy;
-
 	return 1;
 }

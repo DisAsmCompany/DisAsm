@@ -178,6 +178,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 	Architecture architecture = ExecutableGetArchitecture(hExecutable);
 	if (ArchUnknown == architecture)
 	{
+		BenchmarkDestroy(hBenchmark);
 		ConsoleIOPrint("[ERROR] cannot open executable file (unknown/unsupported architecture) \n");
 		return 0;
 	}
@@ -186,6 +187,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
     case ArchX86: bitness = 32; break;
     case ArchX64: bitness = 64; break;
     default:
+		BenchmarkDestroy(hBenchmark);
         ConsoleIOPrint("[ERROR] cannot open executable file (unsupported architecture) \n");
         break;
     }
