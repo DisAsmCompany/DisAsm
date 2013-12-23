@@ -622,6 +622,7 @@ void CrashHandlerInstall()
 		struct sigaction action;
 		action.sa_sigaction = CrashHandler;
 		action.sa_flags = SA_RESTART | SA_SIGINFO;
+		sigemptyset(&action.sa_mask);
 		if (0 != sigaction(signals[i].signum, &action, NULL))
 		{
 			ConsoleIOPrintFormatted("[ERROR] cannot install signal handler for signal %s\n", signals[i].message);
