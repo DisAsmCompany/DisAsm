@@ -23,6 +23,8 @@ HBENCHMARK BenchmarkCreate();
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark);
 void BenchmarkSampleEnd(HBENCHMARK hBenchmark);
 void BenchmarkPrintData(HBENCHMARK hBenchmark);
+int64_t BenchmarkGetSample(HBENCHMARK hBenchmark);
+int64_t BenchmarkGetFrequency(HBENCHMARK hBenchmark);
 void BenchmarkDestroy(HBENCHMARK hBenchmark);
 
 #ifdef __cplusplus

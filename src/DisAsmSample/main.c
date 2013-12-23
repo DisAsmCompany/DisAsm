@@ -19,6 +19,7 @@ uint8_t memory = 0;
 uint8_t help = 0;
 uint8_t preload = 0;
 uint8_t quiet = 0;
+uint8_t raw = 0;
 
 address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 {
@@ -45,12 +46,20 @@ address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 	return destination;
 }
 
-void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array)
+typedef enum DisAsmFlags_t
+{
+	kStopOnRET = 0x00000001UL
+}
+DisAsmFlags;
+
+void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array, uint32_t flags)
 {
 	InstructionInfo info = {0};
 	uint8_t ret = 0;
 	/* store function start in order to analyze jumps */
 	address_t start = address + base;
+
+	(void)(hBenchmark);
 	for (;;)
 	{
 		uint8_t length;
@@ -138,7 +147,7 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		{
 			/* conditional jump */
 		}
-		if (RET == info.mnemonic)
+		if (flags & kStopOnRET && RET == info.mnemonic)
 		{
 			break;
 		}
@@ -191,7 +200,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 		if (0 != ReaderSeek(hReader, entry))
 		{
 			ConsoleIOPrint("Entry Point :\n");
-			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, array);
+			DisAsmFunction(bitness, hReader, hBenchmark, entry, base, array, kStopOnRET);
 			ConsoleIOPrint("\n");
 		}
 	}
@@ -201,7 +210,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 		ConsoleIOPrint("Stub Entry Point :\n");
 		if (0 != ReaderSeek(hReader, entry))
 		{
-			DisAsmFunction(16, hReader, hBenchmark, entry, base, array);
+			DisAsmFunction(16, hReader, hBenchmark, entry, base, array, kStopOnRET);
 			ConsoleIOPrint("\n");
 		}
 	}
@@ -220,7 +229,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 			else
 			{
 				ConsoleIOPrintFormatted("[0x%02X] %s\n", i, name ? name : "(null)");
-				DisAsmFunction(bitness, hReader, hBenchmark, address, base, array);
+				DisAsmFunction(bitness, hReader, hBenchmark, address, base, array, kStopOnRET);
 			}
 			ConsoleIOPrint("\n");
 		}
@@ -233,7 +242,7 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 		if (0 != element && 0 != ReaderSeek(hReader, element))
 		{
 			ConsoleIOPrintFormatted("function %d %08LX :\n", i, element);
-			DisAsmFunction(bitness, hReader, hBenchmark, element, base, array);
+			DisAsmFunction(bitness, hReader, hBenchmark, element, base, array, kStopOnRET);
 			ConsoleIOPrint("\n");
 		}
 	}
@@ -290,6 +299,7 @@ void ParseCommandLine(int argc, char * const argv[])
 		help    |= CheckCommandLineOption(argv[i], "--help");
 		preload |= CheckCommandLineOption(argv[i], "--preload");
 		quiet   |= CheckCommandLineOption(argv[i], "--quiet");
+		raw     |= CheckCommandLineOption(argv[i], "--raw");
 	}
 }
 
@@ -328,30 +338,9 @@ int main(int argc, char * const argv[])
 	{
 		LeakTrackerInstall(1);
 	}
-
 	if (preload)
 	{
-		HREADER hFileHeader = FileReaderCreate(argv[argc - 1]);
-		if (NULL != hFileHeader)
-		{
-			uint64_t size = 0;
-			if (ReaderSize(hFileHeader, &size))
-			{
-				uint8_t * bytes = (uint8_t*) malloc((size_t)size);
-				if (bytes)
-				{
-					uint64_t offset = 0;
-					while (offset < size)
-					{
-						uint32_t count = ((size - offset) > 0x10000) ? 0x10000 : (size - offset);
-						ReaderRead(hFileHeader, bytes + offset, count);
-						offset += count;
-					}
-					hReader = MemoryReaderCreate((native_t)bytes, size);
-				}
-			}
-			ReaderDestroy(hFileHeader);
-		}
+		hReader = CachedFileReaderCreate(argv[argc - 1]);
 	}
 	else if (memory)
 	{
@@ -371,19 +360,26 @@ int main(int argc, char * const argv[])
 		ConsoleIOPrintFormatted("[ERROR] cannot open input file \"%s\"\n", argv[argc - 1]);
 		return EXIT_FAILURE;
 	}
-	hExecutable = ExecutableCreate(hReader, memory);
-	if (NULL == hExecutable)
+	if (raw)
 	{
-		ConsoleIOPrintFormatted("[ERROR] cannot open executable file \"%s\"\n", argv[argc - 1]);
-		return EXIT_FAILURE;
+		DisAsmFunction(32, hReader, NULL, 0, 0, 0, 0);
 	}
-	count = ExecutableGetObjectCount(hExecutable);
-	for (i = 0; i < count; ++i)
+	else
 	{
-		ExecutableSetCurrentObject(hExecutable, i);
-		ProcessExecutable(hReader, hExecutable, base);
+		hExecutable = ExecutableCreate(hReader, memory);
+		if (NULL == hExecutable)
+		{
+			ConsoleIOPrintFormatted("[ERROR] cannot open executable file \"%s\"\n", argv[argc - 1]);
+			return EXIT_FAILURE;
+		}
+		count = ExecutableGetObjectCount(hExecutable);
+		for (i = 0; i < count; ++i)
+		{
+			ExecutableSetCurrentObject(hExecutable, i);
+			ProcessExecutable(hReader, hExecutable, base);
+		}
+		ExecutableDestroy(hExecutable);
 	}
-	ExecutableDestroy(hExecutable);
 	ReaderDestroy(hReader);
 
 	if (leaks)

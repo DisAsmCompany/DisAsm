@@ -1,3 +1,4 @@
+@setlocal
 set PATH=%PATH%;%MINGW32%\bin
 rmdir /s/q windows32-mingw
 mkdir windows32-mingw

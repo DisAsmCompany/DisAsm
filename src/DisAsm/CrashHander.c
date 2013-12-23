@@ -541,7 +541,7 @@ BOOL __stdcall CrashHandlerRoutine(DWORD CtrlType)
 		StackWalkSymbol(callstack[i]);
 		ConsoleIOPrint("\n");
 	}
-	return true;
+	return 0;
 }
 
 #endif /* OS_WINDOWS */

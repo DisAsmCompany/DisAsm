@@ -22,34 +22,40 @@ DynamicArray * DynamicArrayCreate()
 
 void DynamicArrayDestroy(DynamicArray * array)
 {
-	free(array->memory);
-	free(array);
+	if (array)
+	{
+		free(array->memory);
+		free(array);
+	}
 }
 
 uint32_t DynamicArraySize(DynamicArray * array)
 {
-	return array->used;
+	return array ? array->used : 0;
 }
 
 void DynamicArrayAdd(DynamicArray * array, uint64_t value)
 {
 	uint32_t i = 0;
-	for (i = 0; i < array->used; ++i)
+	if (array)
 	{
-		if (array->memory[i] == value)
+		for (i = 0; i < array->used; ++i)
 		{
-			return;
+			if (array->memory[i] == value)
+			{
+				return;
+			}
 		}
-	}
-	array->memory[array->used] = value;
-	if (++array->used == array->size)
-	{
-		array->size *= 2;
-		array->memory = realloc(array->memory, array->size * sizeof(uint64_t));
+		array->memory[array->used] = value;
+		if (++array->used == array->size)
+		{
+			array->size *= 2;
+			array->memory = realloc(array->memory, array->size * sizeof(uint64_t));
+		}
 	}
 }
 
 uint64_t DynamicArrayGet(DynamicArray * array, uint64_t index)
 {
-	return array->memory[index];
+	return array ? array->memory[index] : 0;
 }

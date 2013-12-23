@@ -83,6 +83,18 @@ void BenchmarkPrintData(HBENCHMARK hBenchmark)
 	}
 }
 
+int64_t BenchmarkGetSample(HBENCHMARK hBenchmark)
+{
+	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+	return pContext->sample;
+}
+
+int64_t BenchmarkGetFrequency(HBENCHMARK hBenchmark)
+{
+	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+	return pContext->frequency;
+}
+
 void BenchmarkDestroy(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;

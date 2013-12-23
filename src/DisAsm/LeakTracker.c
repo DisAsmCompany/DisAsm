@@ -224,10 +224,10 @@ typedef int (__stdcall * pfnHeapFree)(void * hHeap, uint32_t flags, LPVOID lpMem
 
 uint8_t xThunkHeapAlloc[3 * ThunkSize], xThunkHeapReAlloc[3 * ThunkSize], xThunkHeapFree[3 * ThunkSize], xThunkRtlFreeHeap[3 * ThunkSize];
 
-static pfnHeapFree    pOriginalRtlFreeHeap = (pfnHeapFree)   (native_t)(&xThunkRtlFreeHeap);
-static pfnHeapAlloc   pOriginalHeapAlloc   = (pfnHeapAlloc)  (native_t)(&xThunkHeapAlloc);
-static pfnHeapReAlloc pOriginalHeapReAlloc = (pfnHeapReAlloc)(native_t)(&xThunkHeapReAlloc);
-static pfnHeapFree    pOriginalHeapFree    = (pfnHeapFree)   (native_t)(&xThunkHeapFree);
+static pfnHeapFree    pOriginalRtlFreeHeap = NULL;
+static pfnHeapAlloc   pOriginalHeapAlloc   = NULL;
+static pfnHeapReAlloc pOriginalHeapReAlloc = NULL;
+static pfnHeapFree    pOriginalHeapFree    = NULL;
 
 void * __stdcall xHeapAlloc(void * heap, uint32_t flags, uint32_t size)
 {
@@ -334,10 +334,10 @@ typedef void * (*pfncalloc)(size_t, size_t);
 
 uint8_t xThunkMalloc[3 * ThunkSize], xThunkCalloc[3 * ThunkSize], xThunkRealloc[3 * ThunkSize], xThunkFree[3 * ThunkSize];
 
-static pfnmalloc  pOriginalMalloc  = (pfnmalloc) (native_t)(&xThunkMalloc);
-static pfncalloc  pOriginalCalloc  = (pfncalloc) (native_t)(&xThunkCalloc);
-static pfnrealloc pOriginalRealloc = (pfnrealloc)(native_t)(&xThunkRealloc);
-static pfnfree    pOriginalFree    = (pfnfree)   (native_t)(&xThunkFree);
+static pfnmalloc  pOriginalMalloc  = NULL;
+static pfncalloc  pOriginalCalloc  = NULL;
+static pfnrealloc pOriginalRealloc = NULL;
+static pfnfree    pOriginalFree    = NULL;
 
 void * xmalloc(size_t size)
 {
@@ -499,11 +499,11 @@ void PatchFunctionX86(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     pThunk[2 * ThunkSize] = length;
     memcpy(pThunk + 2 * ThunkSize + 1, pOriginal, length);
 
-	Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+	Protect((native_t) pThunk, ThunkSize, ProtectTypeAll);
 	Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
     PlaceJMP32(pOriginal, offset);
 	memset(pOriginal + 5, nop, length - 5);
-	Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
+	Protect((native_t) pOriginal, ThunkSize, ProtectTypeReadExecute);
 	
 	offset = CalculateOffsetForJMP((native_t)(pThunk + ThunkSize), (native_t)(pOriginal + length));
     PlaceJMP32(pThunk + ThunkSize, offset);
@@ -522,13 +522,13 @@ void PatchFunctionX64(uint8_t * pOriginal, uint8_t * pHook, uint8_t * pThunk)
     pThunk[2 * ThunkSize] = length;
     memcpy(pThunk + 2 * ThunkSize + 1, pOriginal, length);
 
-    Protect((native_t) pThunk, ThunkSize, ProtectTypeRead | ProtectTypeWrite | ProtectTypeExecute);
+    Protect((native_t) pThunk, ThunkSize, ProtectTypeAll);
     Protect((native_t) pOriginal, ThunkSize, ProtectTypeWrite);
 
     target = (native_t) pHook;
     PlaceJMP64(pOriginal, target);
 
-    Protect((native_t) pOriginal, ThunkSize, ProtectTypeExecute | ProtectTypeRead);
+    Protect((native_t) pOriginal, ThunkSize, ProtectTypeReadExecute);
 
     target = (native_t) (pOriginal + length);
     PlaceJMP64(pThunk + ThunkSize, target);
@@ -576,10 +576,15 @@ void LeakTrackerInstall(uint8_t install)
 	{
 #ifdef OS_WINDOWS
 		g_Allocations = (Allocation*)((pfnHeapAlloc)(native_t)HeapAlloc)(GetProcessHeap(), 0, sizeof(Allocation));
+		
+		pOriginalRtlFreeHeap = (pfnHeapFree)   (native_t)(&xThunkRtlFreeHeap);
+		pOriginalHeapAlloc   = (pfnHeapAlloc)  (native_t)(&xThunkHeapAlloc);
+		pOriginalHeapReAlloc = (pfnHeapReAlloc)(native_t)(&xThunkHeapReAlloc);
+		pOriginalHeapFree    = (pfnHeapFree)   (native_t)(&xThunkHeapFree);
+
 		/* need to capture RtlFreeHeap, because sometimes memory allocated by HeapAlloc
 		is being freed directly by this function instead of HeapFree
 		but if RtlFreeHeap is the same function as HeapFree, no need to patch twice */
-
 		PatchFunction(HeapReAlloc, (uint8_t*)(native_t)xHeapReAlloc, xThunkHeapReAlloc);
 		PatchFunction(HeapAlloc,   (uint8_t*)(native_t)xHeapAlloc,   xThunkHeapAlloc);
 #if defined(CPU_X86)
@@ -592,6 +597,11 @@ void LeakTrackerInstall(uint8_t install)
 		}
 #else /* OS_WINDOWS */
 		g_Allocations = (Allocation*) malloc(sizeof(Allocation));
+
+		pOriginalMalloc  = (pfnmalloc) (native_t)(&xThunkMalloc);
+		pOriginalCalloc  = (pfncalloc) (native_t)(&xThunkCalloc);
+		pOriginalRealloc = (pfnrealloc)(native_t)(&xThunkRealloc);
+		pOriginalFree    = (pfnfree)   (native_t)(&xThunkFree);
 		
 		PatchFunction((uint8_t*)(native_t)malloc,  (uint8_t*)(native_t)xmalloc,  xThunkMalloc);
 		PatchFunction((uint8_t*)(native_t)realloc, (uint8_t*)(native_t)xrealloc, xThunkRealloc);

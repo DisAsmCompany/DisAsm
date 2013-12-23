@@ -104,26 +104,29 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 		}
 		if (pInfo->flags & kHasDisp)
 		{
-			if (IsNegative(pInfo->disp, pInfo->sizeDisp))
+			if (0 != pInfo->disp || (!pOperand->hasBase && !pOperand->hasIndex))
 			{
-				if (pOperand->hasBase || pOperand->hasIndex)
+				if (IsNegative(pInfo->disp, pInfo->sizeDisp))
 				{
-					ConsoleIOPrint(" - ");
-				}
-				else 
-				{
-					ConsoleIOPrint("-");
-				}
+					if (pOperand->hasBase || pOperand->hasIndex)
+					{
+						ConsoleIOPrint(" - ");
+					}
+					else 
+					{
+						ConsoleIOPrint("-");
+					}
 
-				PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
-			}
-			else
-			{
-				if (pOperand->hasBase || pOperand->hasIndex)
-				{
-					ConsoleIOPrint(" + ");
+					PrintValue(Inverse(pInfo->disp, pInfo->sizeDisp));
 				}
-				PrintValue(pInfo->disp);
+				else
+				{
+					if (pOperand->hasBase || pOperand->hasIndex)
+					{
+						ConsoleIOPrint(" + ");
+					}
+					PrintValue(pInfo->disp);
+				}
 			}
 		}
 		ConsoleIOPrint("]");

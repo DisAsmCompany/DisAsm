@@ -84,6 +84,7 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	if (error ? g_isConsoleStdErr : g_isConsoleStdOut)
 	{
 		CONSOLE_SCREEN_BUFFER_INFO info;
+		info.wAttributes = 0;
 		/* set custom text color, if necessary */
 		if (kDefaultColor != color || kDefaultColor != background)
 		{
@@ -164,7 +165,6 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	{
 		write(error ? STDERR_FILENO : STDOUT_FILENO, str, length);
 	}
-
 #endif /* OS_WINDOWS */
 }
 
