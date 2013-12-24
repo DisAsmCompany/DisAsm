@@ -20,19 +20,16 @@ extern "C" {
 enum { PEOptionalHeaderMagic               = 0  };
 enum { PEOptionalHeaderAddressOfEntryPoint = 16 };
 
-static const SDFElement PEOptionalHeader[] =
-{
-	{"PE Optional Header"},
-	{"Magic                      ", kUnsigned, 2, 1, _PEMagic},
-	{"MajorLinkerVersion         ", kUnsigned, 1, 1},
-	{"MinorLinkerVersion         ", kUnsigned, 1, 1},
-	{"SizeOfCode                 ", kUnsigned, 4, 1},
-	{"SizeOfInitializedData      ", kUnsigned, 4, 1},
-	{"SizeOfUninitializedData    ", kUnsigned, 4, 1},
-	{"AddressOfEntryPoint        ", kUnsigned, 4, 1},
-	{"BaseOfCode                 ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(PEOptionalHeader, "PE Optional Header"),
+{"Magic                      ", kUnsigned, 2, 1, _PEMagic},
+{"MajorLinkerVersion         ", kUnsigned, 1, 1, NULL},
+{"MinorLinkerVersion         ", kUnsigned, 1, 1, NULL},
+{"SizeOfCode                 ", kUnsigned, 4, 1, NULL},
+{"SizeOfInitializedData      ", kUnsigned, 4, 1, NULL},
+{"SizeOfUninitializedData    ", kUnsigned, 4, 1, NULL},
+{"AddressOfEntryPoint        ", kUnsigned, 4, 1, NULL},
+{"BaseOfCode                 ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -20,16 +20,13 @@ extern "C" {
 enum { PEImportDescriptorOriginalFirstThunk = 0  };
 enum { PEImportDescriptorName               = 12 };
 
-static const SDFElement PEImportDescriptor[] =
-{
-	{"PE Import Descriptor"},
-	{"OriginalFirstThunk", kUnsigned, 4, 1},
-	{"TimeDateStamp     ", kUTC, 4, 1},
-	{"ForwarderChain    ", kUnsigned, 4, 1},
-	{"Name              ", kUnsigned, 4, 1},
-	{"FirstThunk        ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(PEImportDescriptor, "PE Import Descriptor"),
+{"OriginalFirstThunk", kUnsigned, 4, 1, NULL},
+{"TimeDateStamp     ", kUTC, 4, 1, NULL},
+{"ForwarderChain    ", kUnsigned, 4, 1, NULL},
+{"Name              ", kUnsigned, 4, 1, NULL},
+{"FirstThunk        ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -24,18 +24,15 @@ static const char kCOFFLibrarySignature[] = "!<arch>\n";
 static const char kCOFFMemberLinker[]    = "/       ";
 static const char kCOFFMemberLongNames[] = "//      ";
 
-static const SDFElement COFFLibraryHeader[] =
-{
-	{"COFF Library Header"},
-	{"Name         ", kStringASCII, 16, 1},
-	{"Date         ", kStringASCII, 12, 1},
-	{"User ID      ", kStringASCII, 6, 1},
-	{"Group ID     ", kStringASCII, 6, 1},
-	{"Mode         ", kStringASCII, 8, 1},
-	{"Size         ", kStringASCII, 10, 1},
-	{"End Of Header", kStringASCII, 2, 1},
-	{NULL}
-};
+SDFBegin(COFFLibraryHeader, "COFF Library Header"),
+{"Name         ", kStringASCII, 16, 1, NULL},
+{"Date         ", kStringASCII, 12, 1, NULL},
+{"User ID      ", kStringASCII, 6, 1, NULL},
+{"Group ID     ", kStringASCII, 6, 1, NULL},
+{"Mode         ", kStringASCII, 8, 1, NULL},
+{"Size         ", kStringASCII, 10, 1, NULL},
+{"End Of Header", kStringASCII, 2, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

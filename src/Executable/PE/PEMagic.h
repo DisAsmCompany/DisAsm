@@ -27,10 +27,10 @@ PEMagic;
 
 static const SDFEnum _PEMagic[] =
 {
-	{"IMAGE_NT_OPTIONAL_HDR32_MAGIC", kPEMagic32},
-	{"IMAGE_NT_OPTIONAL_HDR64_MAGIC", kPEMagic64},
-	{"IMAGE_ROM_OPTIONAL_HDR_MAGIC",  kPEMagicROM},
-	{NULL}
+	{"IMAGE_NT_OPTIONAL_HDR32_MAGIC", kPEMagic32, 0},
+	{"IMAGE_NT_OPTIONAL_HDR64_MAGIC", kPEMagic64, 0},
+	{"IMAGE_ROM_OPTIONAL_HDR_MAGIC",  kPEMagicROM, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

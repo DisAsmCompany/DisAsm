@@ -19,10 +19,10 @@ extern "C" {
 
 static const SDFEnum ELFData[] =
 {
-	{"ELFDATANONE", 0},
-	{"ELFDATA2LSB", 1},
-	{"ELFDATA2MSB", 2},
-	{NULL}
+	{"ELFDATANONE", 0, 0},
+	{"ELFDATA2LSB", 1, 0},
+	{"ELFDATA2MSB", 2, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

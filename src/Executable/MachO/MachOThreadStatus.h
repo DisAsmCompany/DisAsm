@@ -18,13 +18,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement MachOThreadStatus[] =
-{
-	{"Mach-O Thread Status"},
-	{"Flavor", kUnsigned, 4, 1},
-	{"Count ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOThreadStatus, "Mach-O Thread Status"),
+{"Flavor", kUnsigned, 4, 1, NULL},
+{"Count ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -20,16 +20,13 @@ extern "C" {
 enum { MachOFatHeaderCpuType = 0 };
 enum { MachOFatHeaderOffset  = 8 };
 
-static const SDFElement MachOFatHeader[] =
-{
-	{"Mach-O Fat Header"},
-	{"CpuType   ", kUnsigned, 4, 1, _MachOCPUType},
-	{"CpuSubType", kUnsigned, 4, 1},
-	{"Offset    ", kUnsigned, 4, 1},
-	{"Size      ", kUnsigned, 4, 1},
-	{"Align     ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOFatHeader, "Mach-O Fat Header"),
+{"CpuType   ", kUnsigned, 4, 1, _MachOCPUType},
+{"CpuSubType", kUnsigned, 4, 1, NULL},
+{"Offset    ", kUnsigned, 4, 1, NULL},
+{"Size      ", kUnsigned, 4, 1, NULL},
+{"Align     ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

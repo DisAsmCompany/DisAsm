@@ -62,7 +62,7 @@ static const SDFEnum PESectionCharacteristics[] =
     {"IMAGE_SCN_MEM_EXECUTE",            0x20000000UL, 0x20000000UL},
     {"IMAGE_SCN_MEM_READ",               0x40000000UL, 0x40000000UL},
     {"IMAGE_SCN_MEM_WRITE",              0x80000000UL, 0x80000000UL},
-    {NULL}
+    {NULL, 0, 0}
 };
 
 #ifdef __cplusplus

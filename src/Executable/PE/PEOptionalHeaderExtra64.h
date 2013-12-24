@@ -20,32 +20,29 @@ extern "C" {
 enum { PEOptionalHeaderExtra64ImageBase           = 0  };
 enum { PEOptionalHeaderExtra64NumberOfRvaAndSizes = 84 };
 
-static const SDFElement PEOptionalHeaderExtra64[] =
-{
-    {"PE Optional Header Extra 64"},
-    {"ImageBase                  ", kUnsigned, 8, 1},
-    {"SectionAlignment           ", kUnsigned, 4, 1},
-    {"FileAlignment              ", kUnsigned, 4, 1},
-    {"MajorOperatingSystemVersion", kUnsigned, 2, 1},
-    {"MinorOperatingSystemVersion", kUnsigned, 2, 1},
-    {"MajorImageVersion          ", kUnsigned, 2, 1},
-    {"MinorImageVersion          ", kUnsigned, 2, 1},
-    {"MajorSubsystemVersion      ", kUnsigned, 2, 1},
-    {"MinorSubsystemVersion      ", kUnsigned, 2, 1},
-    {"Win32VersionValue          ", kUnsigned, 4, 1},
-    {"SizeOfImage                ", kUnsigned, 4, 1},
-    {"SizeOfHeaders              ", kUnsigned, 4, 1},
-    {"CheckSum                   ", kUnsigned, 4, 1},
-    {"Subsystem                  ", kUnsigned, 2, 1, PESubsystem},
-    {"DllCharacteristics         ", kUnsigned, 2, 1, PEDllCharacteristics},
-    {"SizeOfStackReserve         ", kUnsigned, 8, 1},
-    {"SizeOfStackCommit          ", kUnsigned, 8, 1},
-    {"SizeOfHeapReserve          ", kUnsigned, 8, 1},
-    {"SizeOfHeapCommit           ", kUnsigned, 8, 1},
-    {"LoaderFlags                ", kUnsigned, 4, 1},
-    {"NumberOfRvaAndSizes        ", kUnsigned, 4, 1},
-    {NULL}
-};
+SDFBegin(PEOptionalHeaderExtra64, "PE Optional Header Extra 64"),
+{"ImageBase                  ", kUnsigned, 8, 1, NULL},
+{"SectionAlignment           ", kUnsigned, 4, 1, NULL},
+{"FileAlignment              ", kUnsigned, 4, 1, NULL},
+{"MajorOperatingSystemVersion", kUnsigned, 2, 1, NULL},
+{"MinorOperatingSystemVersion", kUnsigned, 2, 1, NULL},
+{"MajorImageVersion          ", kUnsigned, 2, 1, NULL},
+{"MinorImageVersion          ", kUnsigned, 2, 1, NULL},
+{"MajorSubsystemVersion      ", kUnsigned, 2, 1, NULL},
+{"MinorSubsystemVersion      ", kUnsigned, 2, 1, NULL},
+{"Win32VersionValue          ", kUnsigned, 4, 1, NULL},
+{"SizeOfImage                ", kUnsigned, 4, 1, NULL},
+{"SizeOfHeaders              ", kUnsigned, 4, 1, NULL},
+{"CheckSum                   ", kUnsigned, 4, 1, NULL},
+{"Subsystem                  ", kUnsigned, 2, 1, PESubsystem},
+{"DllCharacteristics         ", kUnsigned, 2, 1, PEDllCharacteristics},
+{"SizeOfStackReserve         ", kUnsigned, 8, 1, NULL},
+{"SizeOfStackCommit          ", kUnsigned, 8, 1, NULL},
+{"SizeOfHeapReserve          ", kUnsigned, 8, 1, NULL},
+{"SizeOfHeapCommit           ", kUnsigned, 8, 1, NULL},
+{"LoaderFlags                ", kUnsigned, 4, 1, NULL},
+{"NumberOfRvaAndSizes        ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

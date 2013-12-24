@@ -19,12 +19,12 @@ extern "C" {
 
 static const SDFEnum LXOSType[] =
 {
-	{"Unknown",     0x00},
-	{"OS/2",        0x01},
-	{"Windows",     0x02},
-	{"DOS 4.x",     0x03},
-	{"Windows 386", 0x04},
-	{NULL}
+	{"Unknown",     0x00, 0},
+	{"OS/2",        0x01, 0},
+	{"Windows",     0x02, 0},
+	{"DOS 4.x",     0x03, 0},
+	{"Windows 386", 0x04, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

@@ -23,21 +23,18 @@ enum { ELFSectionHeaderAddress = 12 };
 enum { ELFSectionHeaderOffset  = 16 };
 enum { ELFSectionHeaderSize    = 20 };
 
-static const SDFElement ELFSectionHeader[] =
-{
-	{"ELF Section Header"},
-	{"Name           ", kUnsigned, 4, 1},
-	{"Type           ", kUnsigned, 4, 1, _ELFSectionType},
-	{"Flags          ", kUnsigned, 4, 1, ELFSectionFlags},
-	{"Address        ", kUnsigned, 4, 1},
-	{"Offset         ", kUnsigned, 4, 1},
-	{"Size           ", kUnsigned, 4, 1},
-	{"Link           ", kUnsigned, 4, 1},
-	{"Info           ", kUnsigned, 4, 1},
-	{"Align          ", kUnsigned, 4, 1},
-	{"Size Of Entries", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(ELFSectionHeader, "ELF Section Header"),
+{"Name           ", kUnsigned, 4, 1, NULL},
+{"Type           ", kUnsigned, 4, 1, _ELFSectionType},
+{"Flags          ", kUnsigned, 4, 1, ELFSectionFlags},
+{"Address        ", kUnsigned, 4, 1, NULL},
+{"Offset         ", kUnsigned, 4, 1, NULL},
+{"Size           ", kUnsigned, 4, 1, NULL},
+{"Link           ", kUnsigned, 4, 1, NULL},
+{"Info           ", kUnsigned, 4, 1, NULL},
+{"Align          ", kUnsigned, 4, 1, NULL},
+{"Size Of Entries", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

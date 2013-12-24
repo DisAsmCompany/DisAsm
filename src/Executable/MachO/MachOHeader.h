@@ -19,18 +19,15 @@ extern "C" {
 
 enum { MachOHeaderCountCommands = 16 };
 
-static const SDFElement MachOHeader[] =
-{
-	{"Mach-O Header"},
-	{"Magic        ", kUnsigned, 4, 1},
-	{"CpuType      ", kUnsigned, 4, 1, _MachOCPUType},
-	{"CpuSubType   ", kUnsigned, 4, 1},
-	{"FileType     ", kUnsigned, 4, 1, MachOFileType},
-	{"CountCommands", kUnsigned, 4, 1},
-	{"SizeCommands ", kUnsigned, 4, 1},
-	{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
-	{NULL}
-};
+SDFBegin(MachOHeader, "Mach-O Header"),
+{"Magic        ", kUnsigned, 4, 1, NULL},
+{"CpuType      ", kUnsigned, 4, 1, _MachOCPUType},
+{"CpuSubType   ", kUnsigned, 4, 1, NULL},
+{"FileType     ", kUnsigned, 4, 1, MachOFileType},
+{"CountCommands", kUnsigned, 4, 1, NULL},
+{"SizeCommands ", kUnsigned, 4, 1, NULL},
+{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
+SDFEnd
 
 #ifdef __cplusplus
 }

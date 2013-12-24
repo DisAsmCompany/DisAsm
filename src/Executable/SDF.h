@@ -46,6 +46,9 @@ typedef struct SDFElement_t
 }
 SDFElement;
 
+#define SDFBegin(name, desc) static const SDFElement name[] = { {desc, kReserved, 0, 0, NULL}
+#define SDFEnd {NULL, kReserved, 0, 0, NULL} };
+
 typedef void * HSDF;
 
 uint64_t LE2BE64(uint64_t value);

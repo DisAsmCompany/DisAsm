@@ -21,21 +21,18 @@ enum { PESectionHeaderVirtualAddress   = 12 };
 enum { PESectionHeaderSizeOfRawData    = 16 };
 enum { PESectionHeaderPointerToRawData = 20 };
 
-static const SDFElement PESectionHeader[] =
-{
-	{"PE Section Header"},
-	{"Name                ", kStringASCII, 8, 1},
-	{"PhysicalAddress     ", kUnsigned, 4, 1},
-	{"VirtualAddress      ", kUnsigned, 4, 1},
-	{"SizeOfRawData       ", kUnsigned, 4, 1},
-	{"PointerToRawData    ", kUnsigned, 4, 1},
-	{"PointerToRelocations", kUnsigned, 4, 1},
-	{"PointerToLinenumbers", kUnsigned, 4, 1},
-	{"NumberOfRelocations ", kUnsigned, 2, 1},
-	{"NumberOfLinenumbers ", kUnsigned, 2, 1},
-	{"Characteristics     ", kUnsigned, 4, 1, PESectionCharacteristics},
-	{NULL}
-};
+SDFBegin(PESectionHeader, "PE Section Header"),
+{"Name                ", kStringASCII, 8, 1, NULL},
+{"PhysicalAddress     ", kUnsigned, 4, 1, NULL},
+{"VirtualAddress      ", kUnsigned, 4, 1, NULL},
+{"SizeOfRawData       ", kUnsigned, 4, 1, NULL},
+{"PointerToRawData    ", kUnsigned, 4, 1, NULL},
+{"PointerToRelocations", kUnsigned, 4, 1, NULL},
+{"PointerToLinenumbers", kUnsigned, 4, 1, NULL},
+{"NumberOfRelocations ", kUnsigned, 2, 1, NULL},
+{"NumberOfLinenumbers ", kUnsigned, 2, 1, NULL},
+{"Characteristics     ", kUnsigned, 4, 1, PESectionCharacteristics},
+SDFEnd
 
 #ifdef __cplusplus
 }

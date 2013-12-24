@@ -23,22 +23,19 @@ enum { PEExportDirectoryAddressOfFunctions    = 28 };
 enum { PEExportDirectoryAddressOfNames        = 32 };
 enum { PEExportDirectoryAddressOfNameOrdinals = 36 };
 
-static const SDFElement PEExportDirectory[] =
-{
-	{"PE Export Directory"},
-	{"Characteristics      ", kUnsigned, 4, 1},
-	{"TimeDateStamp        ", kUTC, 4, 1},
-	{"MajorVersion         ", kUnsigned, 2, 1},
-	{"MinorVersion         ", kUnsigned, 2, 1},
-	{"Name                 ", kUnsigned, 4, 1},
-	{"OrdinalBase          ", kUnsigned, 4, 1},
-	{"NumberOfFunctions    ", kUnsigned, 4, 1},
-	{"NumberOfNames        ", kUnsigned, 4, 1},
-	{"AddressOfFunctions   ", kUnsigned, 4, 1},
-	{"AddressOfNames       ", kUnsigned, 4, 1},
-	{"AddressOfNameOrdinals", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(PEExportDirectory, "PE Export Directory"),
+{"Characteristics      ", kUnsigned, 4, 1, NULL},
+{"TimeDateStamp        ", kUTC, 4, 1, NULL},
+{"MajorVersion         ", kUnsigned, 2, 1, NULL},
+{"MinorVersion         ", kUnsigned, 2, 1, NULL},
+{"Name                 ", kUnsigned, 4, 1, NULL},
+{"OrdinalBase          ", kUnsigned, 4, 1, NULL},
+{"NumberOfFunctions    ", kUnsigned, 4, 1, NULL},
+{"NumberOfNames        ", kUnsigned, 4, 1, NULL},
+{"AddressOfFunctions   ", kUnsigned, 4, 1, NULL},
+{"AddressOfNames       ", kUnsigned, 4, 1, NULL},
+{"AddressOfNameOrdinals", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -17,17 +17,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement LXObjectTable[] =
-{
-	{"LX Object Table"},
-	{"Virtual Size           ", kUnsigned, 4, 1},
-	{"Relocation Base Address", kUnsigned, 4, 1},
-	{"Object Flags           ", kUnsigned, 4, 1},
-	{"Page Table Index       ", kUnsigned, 4, 1},
-	{"Page Table Count       ", kUnsigned, 4, 1},
-	{"Reserved               ", kReserved, 4, 1},
-	{NULL}
-};
+SDFBegin(LXObjectTable, "LX Object Table"),
+{"Virtual Size           ", kUnsigned, 4, 1, NULL},
+{"Relocation Base Address", kUnsigned, 4, 1, NULL},
+{"Object Flags           ", kUnsigned, 4, 1, NULL},
+{"Page Table Index       ", kUnsigned, 4, 1, NULL},
+{"Page Table Count       ", kUnsigned, 4, 1, NULL},
+{"Reserved               ", kReserved, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

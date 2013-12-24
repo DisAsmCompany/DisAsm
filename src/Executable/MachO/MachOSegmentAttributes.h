@@ -23,7 +23,7 @@ static const SDFEnum MachOSegmentAttributes[] =
 	{"SG_FVMLIB",              0x00000002UL, 0x00000002UL},
 	{"SG_NORELOC",             0x00000004UL, 0x00000004UL},
 	{"SG_PROTECTED_VERSION_1", 0x00000008UL, 0x00000008UL},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

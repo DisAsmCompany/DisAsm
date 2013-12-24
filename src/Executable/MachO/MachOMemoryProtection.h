@@ -26,7 +26,7 @@ static const SDFEnum MachOMemoryProtection[] =
 	{"VM_PROT_NO_CHANGE", 0x00000008UL, 0x00000008UL},
 	{"VM_PROT_COPY",      0x00000010UL, 0x00000010UL},
 	{"VM_PROT_TRUSTED",   0x00000020UL, 0x00000020UL},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

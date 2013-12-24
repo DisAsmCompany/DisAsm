@@ -17,15 +17,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement MachOSymTab[] =
-{
-	{"Mach-O Sym Tab"},
-	{"SymbolTableOffset", kUnsigned, 4, 1},
-	{"NumberOfSymbols  ", kUnsigned, 4, 1},
-	{"StringTableOffset", kUnsigned, 4, 1},
-	{"StringTableSize  ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOSymTab, "Mach-O Sym Tab"),
+{"SymbolTableOffset", kUnsigned, 4, 1, NULL},
+{"NumberOfSymbols  ", kUnsigned, 4, 1, NULL},
+{"StringTableOffset", kUnsigned, 4, 1, NULL},
+{"StringTableSize  ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

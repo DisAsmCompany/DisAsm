@@ -17,19 +17,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement MachOHeader64[] =
-{
-	{"Mach-O Header 64"},
-	{"Magic        ", kUnsigned, 4, 1},
-	{"CpuType      ", kUnsigned, 4, 1, _MachOCPUType},
-	{"CpuSubType   ", kUnsigned, 4, 1},
-	{"FileType     ", kUnsigned, 4, 1, MachOFileType},
-	{"CountCommands", kUnsigned, 4, 1},
-	{"SizeCommands ", kUnsigned, 4, 1},
-	{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
-	{"Reserved     ", kReserved, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOHeader64, "Mach-O Header 64"),
+{"Magic        ", kUnsigned, 4, 1, NULL},
+{"CpuType      ", kUnsigned, 4, 1, _MachOCPUType},
+{"CpuSubType   ", kUnsigned, 4, 1, NULL},
+{"FileType     ", kUnsigned, 4, 1, MachOFileType},
+{"CountCommands", kUnsigned, 4, 1, NULL},
+{"SizeCommands ", kUnsigned, 4, 1, NULL},
+{"Flags        ", kUnsigned, 4, 1, MachOHeaderFlags},
+{"Reserved     ", kReserved, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

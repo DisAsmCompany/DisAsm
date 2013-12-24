@@ -33,16 +33,16 @@ MachOLoadCommandType;
 
 static const SDFEnum _MachOLoadCommandType[] =
 {
-	{"LC_SEGMENT",        kMachOLoadCommandSegment32},
-	{"LC_SEGMENT_64",     kMachOLoadCommandSegment64},
-	{"LC_THREAD",         kMachOLoadCommandThread},
-	{"LC_UNIXTHREAD",     kMachOLoadCommandUnixThread},
-	{"LC_SYMTAB",         kMachOLoadCommandSymTab},
-	{"LC_LOAD_DYLIB",     kMachOLoadCommandLoadDylib},
-	{"LC_ID_DYLIB",       kMachOLoadCommandIdDylib},
-	{"LC_REEXPORT_DYLIB", kMachOLoadCommandReexportDylib},
-	{"LC_UUID",           kMachOLoadCommandUUID},
-	{NULL}
+	{"LC_SEGMENT",        kMachOLoadCommandSegment32, 0},
+	{"LC_SEGMENT_64",     kMachOLoadCommandSegment64, 0},
+	{"LC_THREAD",         kMachOLoadCommandThread, 0},
+	{"LC_UNIXTHREAD",     kMachOLoadCommandUnixThread, 0},
+	{"LC_SYMTAB",         kMachOLoadCommandSymTab, 0},
+	{"LC_LOAD_DYLIB",     kMachOLoadCommandLoadDylib, 0},
+	{"LC_ID_DYLIB",       kMachOLoadCommandIdDylib, 0},
+	{"LC_REEXPORT_DYLIB", kMachOLoadCommandReexportDylib, 0},
+	{"LC_UUID",           kMachOLoadCommandUUID, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

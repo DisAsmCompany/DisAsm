@@ -21,17 +21,14 @@ enum { ELFSymbolName  = 0 };
 enum { ELFSymbolValue = 4 };
 enum { ELFSymbolIndex = 14 };
 
-static const SDFElement ELFSymbol[] =
-{
-	{"ELF Symbol"},
-	{"Name ", kUnsigned, 4, 1},
-	{"Value", kUnsigned, 4, 1},
-	{"Size ", kUnsigned, 4, 1},
-	{"Info ", kUnsigned, 1, 1, ELFSymbolType},
-	{"Other", kUnsigned, 1, 1},
-	{"Index", kUnsigned, 2, 1},
-	{NULL}
-};
+SDFBegin(ELFSymbol, "ELF Symbol"),
+{"Name ", kUnsigned, 4, 1, NULL},
+{"Value", kUnsigned, 4, 1, NULL},
+{"Size ", kUnsigned, 4, 1, NULL},
+{"Info ", kUnsigned, 1, 1, ELFSymbolType},
+{"Other", kUnsigned, 1, 1, NULL},
+{"Index", kUnsigned, 2, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

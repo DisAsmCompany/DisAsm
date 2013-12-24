@@ -20,13 +20,10 @@ extern "C" {
 enum { MachOLoadCommandCommand     = 0 };
 enum { MachOLoadCommandCommandSize = 4 };
 
-static const SDFElement MachOLoadCommand[] =
-{
-	{"Mach-O Load Command"},
-	{"Command    ", kUnsigned, 4, 1, _MachOLoadCommandType},
-	{"CommandSize", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOLoadCommand, "Mach-O Load Command"),
+{"Command    ", kUnsigned, 4, 1, _MachOLoadCommandType},
+{"CommandSize", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

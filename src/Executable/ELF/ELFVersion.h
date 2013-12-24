@@ -19,9 +19,9 @@ extern "C" {
 
 static const SDFEnum ELFVersion[] =
 {
-	{"EV_NONE",    0x0000},
-	{"EV_CURRENT", 0x0001},
-	{NULL}
+	{"EV_NONE",    0x0000, 0},
+	{"EV_CURRENT", 0x0001, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

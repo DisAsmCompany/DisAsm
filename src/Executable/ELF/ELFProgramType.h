@@ -19,16 +19,16 @@ extern "C" {
 
 static const SDFEnum ELFProgramType[] =
 {
-	{"PT_NULL",         0x00000000UL},
-	{"PT_LOAD",         0x00000001UL},
-	{"PT_DYNAMIC",      0x00000002UL},
-	{"PT_INTERP",       0x00000003UL},
-	{"PT_NOTE",         0x00000004UL},
-	{"PT_SHLIB",        0x00000005UL},
-	{"PT_PHDR",         0x00000006UL},
-	{"PT_GNU_EH_FRAME", 0x6474e550UL},
-	{"PT_GNU_STACK",    0x6474e551UL},
-	{NULL}
+	{"PT_NULL",         0x00000000UL, 0},
+	{"PT_LOAD",         0x00000001UL, 0},
+	{"PT_DYNAMIC",      0x00000002UL, 0},
+	{"PT_INTERP",       0x00000003UL, 0},
+	{"PT_NOTE",         0x00000004UL, 0},
+	{"PT_SHLIB",        0x00000005UL, 0},
+	{"PT_PHDR",         0x00000006UL, 0},
+	{"PT_GNU_EH_FRAME", 0x6474e550UL, 0},
+	{"PT_GNU_STACK",    0x6474e551UL, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

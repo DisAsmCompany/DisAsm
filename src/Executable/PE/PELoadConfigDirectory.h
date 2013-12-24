@@ -17,31 +17,27 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement PELoadConfigDirectory[] =
-{
-	{"PE Load Config Directory"},
-	/* Standard fields */
-	{"TimeDateStamp                ", kUTC, 4, 1},
-	{"MajorVersion                 ", kUnsigned, 2, 1},
-	{"MinorVersion                 ", kUnsigned, 2, 1},
-	{"GlobalFlagsClear             ", kUnsigned, 4, 1},
-	{"GlobalFlagsSet               ", kUnsigned, 4, 1},
-	{"CriticalSectionDefaultTimeout", kUnsigned, 4, 1},
-	{"DeCommitFreeBlockThreshold   ", kUnsigned, 4, 1},
-	{"DeCommitTotalFreeThreshold   ", kUnsigned, 4, 1},
-	{"LockPrefixTable              ", kUnsigned, 4, 1},
-	{"MaximumAllocationSize        ", kUnsigned, 4, 1},
-	{"VirtualMemoryThreshold       ", kUnsigned, 4, 1},
-	{"ProcessHeapFlags             ", kUnsigned, 4, 1},
-	{"ProcessAffinityMask          ", kUnsigned, 4, 1},
-	{"CSDVersion                   ", kUnsigned, 2, 1},
-	{"Reserved                     ", kReserved, 2, 1},
-	{"EditList                     ", kUnsigned, 4, 1},
-	{"SecurityCookie               ", kUnsigned, 4, 1},
-	{"SEHandlerTable               ", kUnsigned, 4, 1},
-	{"SEHandlerCount               ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(PELoadConfigDirectory, "PE Load Config Directory"),
+{"TimeDateStamp                ", kUTC, 4, 1, NULL},
+{"MajorVersion                 ", kUnsigned, 2, 1, NULL},
+{"MinorVersion                 ", kUnsigned, 2, 1, NULL},
+{"GlobalFlagsClear             ", kUnsigned, 4, 1, NULL},
+{"GlobalFlagsSet               ", kUnsigned, 4, 1, NULL},
+{"CriticalSectionDefaultTimeout", kUnsigned, 4, 1, NULL},
+{"DeCommitFreeBlockThreshold   ", kUnsigned, 4, 1, NULL},
+{"DeCommitTotalFreeThreshold   ", kUnsigned, 4, 1, NULL},
+{"LockPrefixTable              ", kUnsigned, 4, 1, NULL},
+{"MaximumAllocationSize        ", kUnsigned, 4, 1, NULL},
+{"VirtualMemoryThreshold       ", kUnsigned, 4, 1, NULL},
+{"ProcessHeapFlags             ", kUnsigned, 4, 1, NULL},
+{"ProcessAffinityMask          ", kUnsigned, 4, 1, NULL},
+{"CSDVersion                   ", kUnsigned, 2, 1, NULL},
+{"Reserved                     ", kReserved, 2, 1, NULL},
+{"EditList                     ", kUnsigned, 4, 1, NULL},
+{"SecurityCookie               ", kUnsigned, 4, 1, NULL},
+{"SEHandlerTable               ", kUnsigned, 4, 1, NULL},
+{"SEHandlerCount               ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

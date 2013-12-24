@@ -54,7 +54,7 @@ static const SDFEnum MachOSectionAttributes[] =
 	{"S_ATTR_STRIP_STATIC_SYMS",              0x20000000UL, 0x20000000UL},
 	{"S_ATTR_NO_TOC",                         0x40000000UL, 0x40000000UL},
 	{"S_ATTR_PURE_INSTRUCTIONS",              0x80000000UL, 0x80000000UL},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

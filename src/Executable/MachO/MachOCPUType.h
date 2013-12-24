@@ -27,13 +27,13 @@ MachOCPUType;
 
 static const SDFEnum _MachOCPUType[] =
 {
-	{"CPU_TYPE_MC680x0",   0x00000006UL},
-	{"CPU_TYPE_X86",       kMachOCPUTypeX86},
-	{"CPU_TYPE_X86_64",    kMachOCPUTypeX64},
-	{"CPU_TYPE_ARM",       0x0000000CUL},
-	{"CPU_TYPE_POWERPC",   0x00000012UL},
-	{"CPU_TYPE_POWERPC64", 0x01000012UL},
-	{NULL}
+	{"CPU_TYPE_MC680x0",   0x00000006UL, 0},
+	{"CPU_TYPE_X86",       kMachOCPUTypeX86, 0},
+	{"CPU_TYPE_X86_64",    kMachOCPUTypeX64, 0},
+	{"CPU_TYPE_ARM",       0x0000000CUL, 0},
+	{"CPU_TYPE_POWERPC",   0x00000012UL, 0},
+	{"CPU_TYPE_POWERPC64", 0x01000012UL, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

@@ -19,10 +19,10 @@ extern "C" {
 
 static const SDFEnum LXCPUType[] =
 {
-	{"80286", 0x00},
-	{"80386", 0x01},
-	{"80486", 0x02},
-	{NULL}
+	{"80286", 0x00, 0},
+	{"80386", 0x01, 0},
+	{"80486", 0x02, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

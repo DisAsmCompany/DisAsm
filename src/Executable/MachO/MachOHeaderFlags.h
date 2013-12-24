@@ -44,7 +44,7 @@ static const SDFEnum MachOHeaderFlags[] =
 	{"MH_DEAD_STRIPPABLE_DYLIB",   0x00400000UL, 0x04000000UL},
 	{"MH_HAS_TLV_DESCRIPTORS",     0x00800000UL, 0x00800000UL},
 	{"MH_NO_HEAP_EXECUTION",       0x01000000UL, 0x01000000UL},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

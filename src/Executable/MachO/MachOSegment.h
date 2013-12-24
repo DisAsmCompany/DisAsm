@@ -19,20 +19,17 @@ extern "C" {
 
 enum { kMachOSegmentNumberOfSections = 40 };
 
-static const SDFElement MachOSegment[] =
-{
-	{"Mach-O Segment"},
-	{"Name            ", kStringASCII, 16, 1},
-	{"VirtualAddress  ", kUnsigned, 4, 1},
-	{"VirtualSize     ", kUnsigned, 4, 1},
-	{"FileOffset      ", kUnsigned, 4, 1},
-	{"FileSize        ", kUnsigned, 4, 1},
-	{"ProtectionMax   ", kUnsigned, 4, 1, MachOMemoryProtection},
-	{"ProtectionInit  ", kUnsigned, 4, 1, MachOMemoryProtection},
-	{"NumberOfSections", kUnsigned, 4, 1},
-	{"Flags           ", kUnsigned, 4, 1, MachOSegmentAttributes},
-	{NULL}
-};
+SDFBegin(MachOSegment, "Mach-O Segment"),
+{"Name            ", kStringASCII, 16, 1, NULL},
+{"VirtualAddress  ", kUnsigned, 4, 1, NULL},
+{"VirtualSize     ", kUnsigned, 4, 1, NULL},
+{"FileOffset      ", kUnsigned, 4, 1, NULL},
+{"FileSize        ", kUnsigned, 4, 1, NULL},
+{"ProtectionMax   ", kUnsigned, 4, 1, MachOMemoryProtection},
+{"ProtectionInit  ", kUnsigned, 4, 1, MachOMemoryProtection},
+{"NumberOfSections", kUnsigned, 4, 1, NULL},
+{"Flags           ", kUnsigned, 4, 1, MachOSegmentAttributes},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -485,16 +485,7 @@ int OBJProcessSymbols(ExecutableContext * pContext)
             }
 			for (j = 0; j < Aux; ++j)
 			{
-				if (kCOFFSymbolClassFile == Class)
-				{
-					HSDF hAux = SDFCreate(COFFSymbolTableAuxiliaryFormatFiles, pContext->hReader);
-					SDFDebugPrint(hAux);
-					SDFDestroy(hAux);
-				}
-				else
-				{
-					ReaderSkip(pContext->hReader, 18);
-				}
+				ReaderSkip(pContext->hReader, 18);
 			}
 			i += Aux;
 			

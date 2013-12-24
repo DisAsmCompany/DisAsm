@@ -17,19 +17,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement ELFProgramHeader[] =
-{
-	{"ELF Program Header"},
-	{"Type            ", kUnsigned, 4, 1, ELFProgramType},
-	{"Offset          ", kUnsigned, 4, 1},
-	{"Virtual Address ", kUnsigned, 4, 1},
-	{"Physical Address", kUnsigned, 4, 1},
-	{"Physical Size   ", kUnsigned, 4, 1},
-	{"Virtual Size    ", kUnsigned, 4, 1},
-	{"Flags           ", kUnsigned, 4, 1, ELFProgramFlags},
-	{"Align           ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(ELFProgramHeader, "ELF Program Header"),
+{"Type            ", kUnsigned, 4, 1, ELFProgramType},
+{"Offset          ", kUnsigned, 4, 1, NULL},
+{"Virtual Address ", kUnsigned, 4, 1, NULL},
+{"Physical Address", kUnsigned, 4, 1, NULL},
+{"Physical Size   ", kUnsigned, 4, 1, NULL},
+{"Virtual Size    ", kUnsigned, 4, 1, NULL},
+{"Flags           ", kUnsigned, 4, 1, ELFProgramFlags},
+{"Align           ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

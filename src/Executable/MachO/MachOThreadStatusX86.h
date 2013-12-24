@@ -20,27 +20,24 @@ extern "C" {
 
 enum { MachOThreadStatusX86EIP = 40 };
 
-static const SDFElement MachOThreadStatusX86[] =
-{
-	{"Mach-O Thread Status X86"},
-	{"EAX   ", kUnsigned, 4, 1},
-	{"EBX   ", kUnsigned, 4, 1},
-	{"ECX   ", kUnsigned, 4, 1},
-	{"EDX   ", kUnsigned, 4, 1},
-	{"EDI   ", kUnsigned, 4, 1},
-	{"ESI   ", kUnsigned, 4, 1},
-	{"EBP   ", kUnsigned, 4, 1},
-	{"ESP   ", kUnsigned, 4, 1},
-	{"SS    ", kUnsigned, 4, 1},
-	{"EFLAGS", kUnsigned, 4, 1},
-	{"EIP   ", kUnsigned, 4, 1},
-	{"CS    ", kUnsigned, 4, 1},
-	{"DS    ", kUnsigned, 4, 1},
-	{"ES    ", kUnsigned, 4, 1},
-	{"FS    ", kUnsigned, 4, 1},
-	{"GS    ", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(MachOThreadStatusX86, "Mach-O Thread Status X86"),
+{"EAX   ", kUnsigned, 4, 1, NULL},
+{"EBX   ", kUnsigned, 4, 1, NULL},
+{"ECX   ", kUnsigned, 4, 1, NULL},
+{"EDX   ", kUnsigned, 4, 1, NULL},
+{"EDI   ", kUnsigned, 4, 1, NULL},
+{"ESI   ", kUnsigned, 4, 1, NULL},
+{"EBP   ", kUnsigned, 4, 1, NULL},
+{"ESP   ", kUnsigned, 4, 1, NULL},
+{"SS    ", kUnsigned, 4, 1, NULL},
+{"EFLAGS", kUnsigned, 4, 1, NULL},
+{"EIP   ", kUnsigned, 4, 1, NULL},
+{"CS    ", kUnsigned, 4, 1, NULL},
+{"DS    ", kUnsigned, 4, 1, NULL},
+{"ES    ", kUnsigned, 4, 1, NULL},
+{"FS    ", kUnsigned, 4, 1, NULL},
+{"GS    ", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

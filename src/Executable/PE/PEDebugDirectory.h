@@ -17,19 +17,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement PEDebugDirectory[] =
-{
-	{"PE Debug Directory"},
-	{"Characteristics ", kUnsigned, 4, 1},
-	{"TimeDateStamp   ", kUTC, 4, 1},
-	{"MajorVersion    ", kUnsigned, 2, 1},
-	{"MinorVersion    ", kUnsigned, 2, 1},
-	{"Type            ", kUnsigned, 4, 1, PEDebugType},
-	{"SizeOfData      ", kUnsigned, 4, 1},
-	{"AddressOfRawData", kUnsigned, 4, 1},
-	{"PointerToRawData", kUnsigned, 4, 1},
-	{NULL}
-};
+SDFBegin(PEDebugDirectory, "PE Debug Directory"),
+{"Characteristics ", kUnsigned, 4, 1, NULL},
+{"TimeDateStamp   ", kUTC, 4, 1, NULL},
+{"MajorVersion    ", kUnsigned, 2, 1, NULL},
+{"MinorVersion    ", kUnsigned, 2, 1, NULL},
+{"Type            ", kUnsigned, 4, 1, PEDebugType},
+{"SizeOfData      ", kUnsigned, 4, 1, NULL},
+{"AddressOfRawData", kUnsigned, 4, 1, NULL},
+{"PointerToRawData", kUnsigned, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

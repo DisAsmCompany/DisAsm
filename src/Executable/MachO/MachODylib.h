@@ -17,15 +17,12 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFElement MachODylib[] =
-{
-	{"Mach-O Dylib"},
-	{"OffsetString        ", kUnsigned, 4, 1},
-	{"TimeStamp           ", kUTC, 4, 1},
-	{"CurrentVersion      ", kVersion, 4, 1},
-	{"CompatibilityVersion", kVersion, 4, 1},
-	{NULL}
-};
+SDFBegin(MachODylib, "Mach-O Dylib"),
+{"OffsetString        ", kUnsigned, 4, 1, NULL},
+{"TimeStamp           ", kUTC, 4, 1, NULL},
+{"CurrentVersion      ", kVersion, 4, 1, NULL},
+{"CompatibilityVersion", kVersion, 4, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

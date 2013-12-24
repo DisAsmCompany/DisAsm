@@ -25,18 +25,15 @@ enum { PEFileHeaderPointerToSymbolTable = 8  };
 enum { PEFileHeaderNumberOfSymbols      = 12 };
 enum { PEFileHeaderSizeOfOptionalHeader = 16 };
 
-static const SDFElement PEFileHeader[] =
-{
-	{"PE File Header"},
-	{"Machine             ", kUnsigned, 2, 1, _PEMachine},
-	{"NumberOfSections    ", kUnsigned, 2, 1},
-	{"TimeDateStamp       ", kUTC, 4, 1},
-	{"PointerToSymbolTable", kUnsigned, 4, 1},
-	{"NumberOfSymbols     ", kUnsigned, 4, 1},
-	{"SizeOfOptionalHeader", kUnsigned, 2, 1},
-	{"Characteristics     ", kUnsigned, 2, 1, PECharacteristics},
-	{NULL}
-};
+SDFBegin(PEFileHeader, "PE File Header"),
+{"Machine             ", kUnsigned, 2, 1, _PEMachine},
+{"NumberOfSections    ", kUnsigned, 2, 1, NULL},
+{"TimeDateStamp       ", kUTC, 4, 1, NULL},
+{"PointerToSymbolTable", kUnsigned, 4, 1, NULL},
+{"NumberOfSymbols     ", kUnsigned, 4, 1, NULL},
+{"SizeOfOptionalHeader", kUnsigned, 2, 1, NULL},
+{"Characteristics     ", kUnsigned, 2, 1, PECharacteristics},
+SDFEnd
 
 #ifdef __cplusplus
 }

@@ -45,19 +45,19 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 00h - 07h */
 	{ADD, OP2(Eb, Gb)}, {ADD, OP2(Ev, Gv)}, {ADD, OP2(Gb, Eb)}, {ADD, OP2(Gv, Ev)}, {ADD, OP2(AL, Ib)}, {ADD, OP2(rAX, Iz)}, {PUSH, OP1(ES)}, {POP, OP1(ES)},
 	/* 08h - 0Fh */
-	{OR , OP2(Eb, Gb)}, {OR , OP2(Ev, Gv)}, {OR , OP2(Gb, Eb)}, {OR , OP2(Gv, Ev)}, {OR , OP2(AL, Ib)}, {OR , OP2(rAX, Iz)}, {PUSH, OP1(CS)}, {ESCAPE},
+	{OR , OP2(Eb, Gb)}, {OR , OP2(Ev, Gv)}, {OR , OP2(Gb, Eb)}, {OR , OP2(Gv, Ev)}, {OR , OP2(AL, Ib)}, {OR , OP2(rAX, Iz)}, {PUSH, OP1(CS)}, {ESCAPE, OP0},
 	/* 10h - 17h */
 	{ADC, OP2(Eb, Gb)}, {ADC, OP2(Ev, Gv)}, {ADC, OP2(Gb, Eb)}, {ADC, OP2(Gv, Ev)}, {ADC, OP2(AL, Ib)}, {ADC, OP2(rAX, Iz)}, {PUSH, OP1(SS)}, {POP, OP1(SS)},
 	/* 17h - 1Fh */
 	{SBB, OP2(Eb, Gb)}, {SBB, OP2(Ev, Gv)}, {SBB, OP2(Gb, Eb)}, {SBB, OP2(Gv, Ev)}, {SBB, OP2(AL, Ib)}, {SBB, OP2(rAX, Iz)}, {PUSH, OP1(DS)}, {POP, OP1(DS)},
 	/* 20h - 27h */
-	{AND, OP2(Eb, Gb)}, {AND, OP2(Ev, Gv)}, {AND, OP2(Gb, Eb)}, {AND, OP2(Gv, Ev)}, {AND, OP2(AL, Ib)}, {AND, OP2(rAX, Iz)}, {PrefixES}, {DAA},
+	{AND, OP2(Eb, Gb)}, {AND, OP2(Ev, Gv)}, {AND, OP2(Gb, Eb)}, {AND, OP2(Gv, Ev)}, {AND, OP2(AL, Ib)}, {AND, OP2(rAX, Iz)}, {PrefixES, OP0}, {DAA, OP0},
 	/* 28h - 2Fh */
-	{SUB, OP2(Eb, Gb)}, {SUB, OP2(Ev, Gv)}, {SUB, OP2(Gb, Eb)}, {SUB, OP2(Gv, Ev)}, {SUB, OP2(AL, Ib)}, {SUB, OP2(rAX, Iz)}, {PrefixCS}, {DAS},
+	{SUB, OP2(Eb, Gb)}, {SUB, OP2(Ev, Gv)}, {SUB, OP2(Gb, Eb)}, {SUB, OP2(Gv, Ev)}, {SUB, OP2(AL, Ib)}, {SUB, OP2(rAX, Iz)}, {PrefixCS, OP0}, {DAS, OP0},
 	/* 30h - 37h */
-	{XOR, OP2(Eb, Gb)}, {XOR, OP2(Ev, Gv)}, {XOR, OP2(Gb, Eb)}, {XOR, OP2(Gv, Ev)}, {XOR, OP2(AL, Ib)}, {XOR, OP2(rAX, Iz)}, {PrefixSS}, {AAA},
+	{XOR, OP2(Eb, Gb)}, {XOR, OP2(Ev, Gv)}, {XOR, OP2(Gb, Eb)}, {XOR, OP2(Gv, Ev)}, {XOR, OP2(AL, Ib)}, {XOR, OP2(rAX, Iz)}, {PrefixSS, OP0}, {AAA, OP0},
 	/* 38h - 3Fh */
-	{CMP, OP2(Eb, Gb)}, {CMP, OP2(Ev, Gv)}, {CMP, OP2(Gb, Eb)}, {CMP, OP2(Gv, Ev)}, {CMP, OP2(AL, Ib)}, {CMP, OP2(rAX, Iz)}, {PrefixDS}, {AAS},
+	{CMP, OP2(Eb, Gb)}, {CMP, OP2(Ev, Gv)}, {CMP, OP2(Gb, Eb)}, {CMP, OP2(Gv, Ev)}, {CMP, OP2(AL, Ib)}, {CMP, OP2(rAX, Iz)}, {PrefixDS, OP0}, {AAS, OP0},
 	/* 40h - 47h */
 	{INC, OP1(eAX)}, {INC, OP1(eCX)}, {INC, OP1(eDX)}, {INC, OP1(eBX)}, {INC, OP1(eSP)}, {INC, OP1(eBP)}, {INC, OP1(eSI)}, {INC, OP1(eDI)},
 	/* 48h - 4Fh */
@@ -67,7 +67,7 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 57h - 5Fh */
 	{POP , OP1(rAX)}, {POP , OP1(rCX)}, {POP , OP1(rDX)}, {POP , OP1(rBX)}, {POP , OP1(rSP)}, {POP , OP1(rBP)}, {POP , OP1(rSI)}, {POP , OP1(rDI)},
 	/* 60h - 67h */
-	{PUSHA}, {POPA}, {BOUND, OP2(Gv, Ma)}, {ARPL, OP2(Ew, Gw)}, {PrefixFS}, {PrefixGS}, {OperandSize}, {AddressSize},
+	{PUSHA, OP0}, {POPA, OP0}, {BOUND, OP2(Gv, Ma)}, {ARPL, OP2(Ew, Gw)}, {PrefixFS, OP0}, {PrefixGS, OP0}, {OperandSize, OP0}, {AddressSize, OP0},
 	/* 68h - 6Fh */
 	{PUSH, OP1(Iz)}, {IMUL, OP3(Gv, Ev, Iz)}, {PUSH, OP1(Ib)}, {IMUL, OP3(Gv, Ev, Ib)}, {INS, OP2(Yb, DX)}, {INS, OP2(Yz, DX)}, {OUTS, OP2(DX, Xb)}, {OUTS, OP2(DX, Xz)},
 	/* 70h - 77h */
@@ -79,9 +79,9 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* 88h - 8Fh */
 	{MOV, OP2(Eb, Gb)}, {MOV, OP2(Ev, Gv)}, {MOV, OP2(Gb, Eb)}, {MOV, OP2(Gv, Ev)}, {MOV, OP2(Ev, Sw)}, {LEA, OP2(Gv, M_)}, {MOV, OP2(Sw, Ev)}, {GROUP1A, OP1(Ev)},
 	/* 90h - 97h */
-	{NOP}, {XCHG, OP2(rCX, rAX)}, {XCHG, OP2(rDX, rAX)}, {XCHG, OP2(rBX, rAX)}, {XCHG, OP2(rSP, rAX)}, {XCHG, OP2(rBP, rAX)}, {XCHG, OP2(rSI, rAX)}, {XCHG, OP2(rDI, rAX)},
+	{NOP, OP0}, {XCHG, OP2(rCX, rAX)}, {XCHG, OP2(rDX, rAX)}, {XCHG, OP2(rBX, rAX)}, {XCHG, OP2(rSP, rAX)}, {XCHG, OP2(rBP, rAX)}, {XCHG, OP2(rSI, rAX)}, {XCHG, OP2(rDI, rAX)},
 	/* 98h - 9Fh */
-	{CBW}, {CWD}, {CALL, OP1(Ap)}, {WAIT}, {PUSHF, OP1(Fv)}, {POPF, OP1(Fv)}, {SAHF}, {LAHF},
+	{CBW, OP0}, {CWD, OP0}, {CALL, OP1(Ap)}, {WAIT, OP0}, {PUSHF, OP1(Fv)}, {POPF, OP1(Fv)}, {SAHF, OP0}, {LAHF, OP0},
 	/* A0h - A7h */
 	{MOV, OP2(AL, Ob)}, {MOV, OP2(rAX, Ov)}, {MOV, OP2(AL, Ob)}, {MOV, OP2(Ov, rAX)}, {MOVS, OP2(Yb, Xb)}, {MOVS, OP2(Yv, Xv)}, {CMPS, OP2(Yb, Xb)}, {CMPS, OP2(Yv, Xv)},
 	/* A8h - AFh */
@@ -91,21 +91,21 @@ OpCodeMapElement OpCodeMapOneByte[] =
 	/* B8h - BFh */
 	{MOV, OP2(rAX, Iv)}, {MOV, OP2(rCX, Iv)}, {MOV, OP2(rBX, Iv)}, {MOV, OP2(rDX, Iv)}, {MOV, OP2(rSP, Iv)}, {MOV, OP2(rBP, Iv)}, {MOV, OP2(rSI, Iv)}, {MOV, OP2(rDI, Iv)},
 	/* C0h - C7h */
-	{GROUP2, OP2(Eb, Ib)}, {GROUP2, OP2(Ev, Ib)}, {RET, OP1(Iw)}, {RET}, {LES, OP2(Gz, Mp)}, {LDS, OP2(Gz, Mp)}, {GROUP11, OP2(Eb, Ib)}, {GROUP11, OP2(Ev, Iz)},
+	{GROUP2, OP2(Eb, Ib)}, {GROUP2, OP2(Ev, Ib)}, {RET, OP1(Iw)}, {RET, OP0}, {LES, OP2(Gz, Mp)}, {LDS, OP2(Gz, Mp)}, {GROUP11, OP2(Eb, Ib)}, {GROUP11, OP2(Ev, Iz)},
 	/* C8h - CFh */
-	{ENTER, OP2(Iw, Ib)}, {LEAVE}, {RET, OP1(Iw)}, {RET}, {_INT, OP1(3)}, {_INT, OP1(Ib)}, {INTO}, {IRET},
+	{ENTER, OP2(Iw, Ib)}, {LEAVE, OP0}, {RET, OP1(Iw)}, {RET, OP0}, {_INT, OP1(3)}, {_INT, OP1(Ib)}, {INTO, OP0}, {IRET, OP0},
 	/* D0h - D7h */
-	{GROUP2, OP2(Eb, 1)}, {GROUP2, OP2(Ev, 1)}, {GROUP2, OP2(Eb, CL)}, {GROUP2, OP2(Ev, CL)}, {AAM, OP1(Ib)}, {AAD, OP1(Ib)}, {SACL}, {XLAT},
+	{GROUP2, OP2(Eb, 1)}, {GROUP2, OP2(Ev, 1)}, {GROUP2, OP2(Eb, CL)}, {GROUP2, OP2(Ev, CL)}, {AAM, OP1(Ib)}, {AAD, OP1(Ib)}, {SACL, OP0}, {XLAT, OP0},
 	/* D8h - DFh */
-	{ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87}, {ESCAPEX87},
+	{ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0}, {ESCAPEX87, OP0},
 	/* E0h - E7h */
 	{LOOPNE, OP1(Jb)}, {LOOPE, OP1(Jb)}, {LOOP, OP1(Jb)}, {JCXZ, OP1(Jb)}, {_IN, OP2(AL, Ib)}, {_IN, OP2(eAX, Ib)}, {_OUT, OP2(Ib, AL)}, {_OUT, OP2(Ib, eAX)},
 	/* E8h - EFh */
 	{CALL, OP1(Jz)}, {JMP, OP1(Jz)}, {JMP, OP1(Ap)}, {JMP, OP1(Jb)}, {_IN, OP2(AL, DX)}, {_IN, OP2(eAX, DX)}, {_OUT, OP2(DL, AL)}, {_OUT, OP2(DX, eAX)},
 	/* F0h - F7h */
-	{LOCK}, {_INT, OP1(1)}, {REPNE}, {REP}, {HLT}, {CMC}, {GROUP3_F6, OP1(Eb)}, {GROUP3_F7, OP1(Ev)},
+	{LOCK, OP0}, {_INT, OP1(1)}, {REPNE, OP0}, {REP, OP0}, {HLT, OP0}, {CMC, OP0}, {GROUP3_F6, OP1(Eb)}, {GROUP3_F7, OP1(Ev)},
 	/* F8h - FFh */
-	{CLC}, {STC}, {CLI}, {STI}, {CLD}, {STD}, {GROUP4}, {GROUP5},
+	{CLC, OP0}, {STC, OP0}, {CLI, OP0}, {STI, OP0}, {CLD, OP0}, {STD, OP0}, {GROUP4, OP0}, {GROUP5, OP0},
 };
 
 #ifdef __cplusplus

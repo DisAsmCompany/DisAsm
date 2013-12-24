@@ -19,9 +19,9 @@ extern "C" {
 
 static const SDFEnum LXOrdering[] =
 {
-	{"Little Endian", 0x00},
-	{"Big Endian",    0x01},
-	{NULL}
+	{"Little Endian", 0x00, 0},
+	{"Big Endian",    0x01, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

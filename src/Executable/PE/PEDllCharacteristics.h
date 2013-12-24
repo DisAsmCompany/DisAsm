@@ -35,7 +35,7 @@ static const SDFEnum PEDllCharacteristics[] =
     {"IMAGE_DLLCHARACTERISTICS_WDM_DRIVER",            0x2000, 0x2000},
     {"IMAGE_DLLCHARACTERISTICS_4000h",                 0x4000, 0x4000},
     {"IMAGE_DLLCHARACTERISTICS_TERMINAL_SERVER_AWARE", 0x8000, 0x8000},
-    {NULL}
+    {NULL, 0, 0}
 };
 
 #ifdef __cplusplus

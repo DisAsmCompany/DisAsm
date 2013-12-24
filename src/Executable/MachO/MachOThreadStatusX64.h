@@ -20,32 +20,29 @@ extern "C" {
 
 enum { MachOThreadStatusX64EIP = 128 };
 
-static const SDFElement MachOThreadStatusX64[] =
-{
-	{"Mach-O Thread Status X64"},
-	{"RAX   ", kUnsigned, 8, 1},
-	{"RBX   ", kUnsigned, 8, 1},
-	{"RCX   ", kUnsigned, 8, 1},
-	{"RDX   ", kUnsigned, 8, 1},
-	{"RDI   ", kUnsigned, 8, 1},
-	{"RSI   ", kUnsigned, 8, 1},
-	{"RBP   ", kUnsigned, 8, 1},
-	{"RSP   ", kUnsigned, 8, 1},
-	{"R8    ", kUnsigned, 8, 1},
-	{"R9    ", kUnsigned, 8, 1},
-	{"R10   ", kUnsigned, 8, 1},
-	{"R11   ", kUnsigned, 8, 1},
-	{"R12   ", kUnsigned, 8, 1},
-	{"R13   ", kUnsigned, 8, 1},
-	{"R14   ", kUnsigned, 8, 1},
-	{"R15   ", kUnsigned, 8, 1},
-	{"RIP   ", kUnsigned, 8, 1},
-	{"RFLAGS", kUnsigned, 8, 1},
-	{"CS    ", kUnsigned, 8, 1},
-	{"FS    ", kUnsigned, 8, 1},
-	{"GS    ", kUnsigned, 8, 1},
-	{NULL}
-};
+SDFBegin(MachOThreadStatusX64, "Mach-O Thread Status X64"),
+{"RAX   ", kUnsigned, 8, 1, NULL},
+{"RBX   ", kUnsigned, 8, 1, NULL},
+{"RCX   ", kUnsigned, 8, 1, NULL},
+{"RDX   ", kUnsigned, 8, 1, NULL},
+{"RDI   ", kUnsigned, 8, 1, NULL},
+{"RSI   ", kUnsigned, 8, 1, NULL},
+{"RBP   ", kUnsigned, 8, 1, NULL},
+{"RSP   ", kUnsigned, 8, 1, NULL},
+{"R8    ", kUnsigned, 8, 1, NULL},
+{"R9    ", kUnsigned, 8, 1, NULL},
+{"R10   ", kUnsigned, 8, 1, NULL},
+{"R11   ", kUnsigned, 8, 1, NULL},
+{"R12   ", kUnsigned, 8, 1, NULL},
+{"R13   ", kUnsigned, 8, 1, NULL},
+{"R14   ", kUnsigned, 8, 1, NULL},
+{"R15   ", kUnsigned, 8, 1, NULL},
+{"RIP   ", kUnsigned, 8, 1, NULL},
+{"RFLAGS", kUnsigned, 8, 1, NULL},
+{"CS    ", kUnsigned, 8, 1, NULL},
+{"FS    ", kUnsigned, 8, 1, NULL},
+{"GS    ", kUnsigned, 8, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

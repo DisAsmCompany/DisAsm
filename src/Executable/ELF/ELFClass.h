@@ -19,10 +19,10 @@ extern "C" {
 
 static const SDFEnum ELFClass[] =
 {
-	{"ELFCLASSNONE", 0},
-	{"ELFCLASS32",   1},
-	{"ELFCLASS64",   2},
-	{NULL}
+	{"ELFCLASSNONE", 0, 0},
+	{"ELFCLASS32",   1, 0},
+	{"ELFCLASS64",   2, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

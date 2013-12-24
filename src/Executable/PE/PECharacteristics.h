@@ -35,7 +35,7 @@ static const SDFEnum PECharacteristics[] =
     {"IMAGE_FILE_DLL",                     0x2000, 0x2000},
     {"IMAGE_FILE_UP_SYSTEM_ONLY",          0x4000, 0x4000},
     {"IMAGE_FILE_BYTES_REVERSED_HI",       0x8000, 0x8000},
-    {NULL}
+    {NULL, 0, 0}
 };
 
 #ifdef __cplusplus

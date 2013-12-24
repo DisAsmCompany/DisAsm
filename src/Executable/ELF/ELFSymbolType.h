@@ -23,7 +23,7 @@ static const SDFEnum ELFSymbolType[] =
 	{"STB_LOCAL",   0x00, 0xF0},
 	{"STB_GLOBAL",  0x10, 0xF0},
 	{"STB_WEAK",    0x20, 0xF0},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #endif /* __ELFSYMBOLTYPE_H__349063AE_BB81_4121_AE3B_83BB23C22844__ */

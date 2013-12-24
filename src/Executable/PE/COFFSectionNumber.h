@@ -19,10 +19,10 @@ extern "C" {
 
 static const SDFEnum COFFSectionNumber[] =
 {
-	{"IMAGE_SYM_UNDEFINED", 0x0000},
-	{"IMAGE_SYM_ABSOLUTE",  0xFFFF},
-	{"IMAGE_SYM_DEBUG",     0xFFFE},
-	{NULL}
+	{"IMAGE_SYM_UNDEFINED", 0x0000, 0},
+	{"IMAGE_SYM_ABSOLUTE",  0xFFFF, 0},
+	{"IMAGE_SYM_DEBUG",     0xFFFE, 0},
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus

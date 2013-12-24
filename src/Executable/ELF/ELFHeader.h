@@ -30,31 +30,28 @@ enum { ELFHeaderSizeOfSection       = 46 };
 enum { ELFHeaderNumberOfSections    = 48 };
 enum { ELFHeaderSectionHeaderIndex  = 50 };
 
-static const SDFElement ELFHeader[] =
-{
-	{"ELF Header"},
-	{"Magic                    ", kSignature, 4, 1},
-	{"Class                    ", kUnsigned, 1, 1, ELFClass},
-	{"Data                     ", kUnsigned, 1, 1, ELFData},
-	{"Version                  ", kUnsigned, 1, 1, ELFVersion},
-	{"OS ABI                   ", kUnsigned, 1, 1, ELFABI},
-	{"OS ABI Version           ", kUnsigned, 1, 1},
-	{"Padding                  ", kReserved, 1, 7},
-	{"Type                     ", kUnsigned, 2, 1, ELFType},
-	{"Machine                  ", kUnsigned, 2, 1, _ELFMachine},
-	{"Version                  ", kUnsigned, 4, 1, ELFVersion},
-	{"Address Of Entry Point   ", kUnsigned, 4, 1},
-	{"Offset Program Header    ", kUnsigned, 4, 1},
-	{"Offset Section Header    ", kUnsigned, 4, 1},
-	{"Flags                    ", kUnsigned, 4, 1},
-	{"ELF Header Size          ", kUnsigned, 2, 1},
-	{"Program Header Size      ", kUnsigned, 2, 1},
-	{"Number OF Program Headers", kUnsigned, 2, 1},
-	{"Section Header Size      ", kUnsigned, 2, 1},
-	{"Number OF Section Headers", kUnsigned, 2, 1},
-	{"Section Header Index     ", kUnsigned, 2, 1},
-	{NULL}
-};
+SDFBegin(ELFHeader, "ELF Header"),
+{"Magic                    ", kSignature, 4, 1, NULL},
+{"Class                    ", kUnsigned, 1, 1, ELFClass},
+{"Data                     ", kUnsigned, 1, 1, ELFData},
+{"Version                  ", kUnsigned, 1, 1, ELFVersion},
+{"OS ABI                   ", kUnsigned, 1, 1, ELFABI},
+{"OS ABI Version           ", kUnsigned, 1, 1, NULL},
+{"Padding                  ", kReserved, 1, 7, NULL},
+{"Type                     ", kUnsigned, 2, 1, ELFType},
+{"Machine                  ", kUnsigned, 2, 1, _ELFMachine},
+{"Version                  ", kUnsigned, 4, 1, ELFVersion},
+{"Address Of Entry Point   ", kUnsigned, 4, 1, NULL},
+{"Offset Program Header    ", kUnsigned, 4, 1, NULL},
+{"Offset Section Header    ", kUnsigned, 4, 1, NULL},
+{"Flags                    ", kUnsigned, 4, 1, NULL},
+{"ELF Header Size          ", kUnsigned, 2, 1, NULL},
+{"Program Header Size      ", kUnsigned, 2, 1, NULL},
+{"Number OF Program Headers", kUnsigned, 2, 1, NULL},
+{"Section Header Size      ", kUnsigned, 2, 1, NULL},
+{"Number OF Section Headers", kUnsigned, 2, 1, NULL},
+{"Section Header Index     ", kUnsigned, 2, 1, NULL},
+SDFEnd
 
 #ifdef __cplusplus
 }

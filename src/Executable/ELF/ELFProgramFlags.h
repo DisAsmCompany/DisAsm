@@ -22,7 +22,7 @@ static const SDFEnum ELFProgramFlags[] =
 	{"PF_X", 0x0001, 0x0001},
 	{"PF_W", 0x0002, 0x0002},
 	{"PF_R", 0x0004, 0x0004},
-	{NULL}
+	{NULL, 0, 0}
 };
 
 #ifdef __cplusplus
