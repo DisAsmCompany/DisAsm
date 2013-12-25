@@ -151,14 +151,9 @@ int PEFileProcessDirectoryExport(ExecutableContext * pContext, PEDataDirectory *
 		if (THIS->OffsetExport <= address && address + sizeof(uint32_t) <= THIS->OffsetExport + THIS->SizeExport)
 		{
 			char * forwarder = FetchString(pContext, address);
-			DebugPrintFormatted("[0x%04X] 0x%08LX \"%s\" -> \"%s\"\n", i, address, name ? name : "(null)", forwarder);
 			free(forwarder);
 
 			OBJ.pExports[i].Forwarder = address;
-		}
-		else
-		{
-            DebugPrintFormatted("[0x%04X] 0x%08LX \"%s\"\n", i, address, name ? name : "(null)");
 		}
 		free(name);
 		name = NULL;
@@ -191,7 +186,6 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 		SDFDebugPrint(hImportDescriptor);
 		address = ExecutableRVAToOffset(pContext, SDFReadUInt32(hImportDescriptor, PEImportDescriptorName));
 		name = FetchString(pContext, address);
-		DebugPrintFormatted("Import %s\n", name ? name : "");
 		free(name);
 		address = ExecutableRVAToOffset(pContext, OriginalFirstThunk);
 		if (0 != address)
@@ -205,7 +199,7 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
 				if (0 == element) break;
 				if (element & 0x80000000UL)
 				{
-					DebugPrintFormatted("ordinal 0x%08lX\n", element & ~0x80000000UL);
+					
 				}
 				else
 				{
@@ -216,16 +210,10 @@ int PEFileProcessDirectoryImport(ExecutableContext * pContext, PEDataDirectory *
                         ReaderSeek(pContext->hReader, ptr);
 					    ReaderRead(pContext->hReader, &hint, sizeof(uint16_t));
 					    name = FetchString(pContext, ptr + sizeof(uint16_t));
-					    DebugPrintFormatted("0x%04X %s\n", hint, name);
 					    free(name);
-                    }
-                    else
-                    {
-                        DebugPrintFormatted("0x%04X\n", hint);
                     }
 				}
 			}
-			DebugPrint("\n");
 		}
 		SDFDestroy(hImportDescriptor);
 		pos += SDFSizeInBytes(PEImportDescriptor);
@@ -271,29 +259,6 @@ int PEFileProcessDirectoryLoadConfig(ExecutableContext * pContext, PEDataDirecto
 
 void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 {
-	switch (index)
-	{
-	case 0x00: DebugPrint("IMAGE_DIRECTORY_ENTRY_EXPORT        \n"); break;
-	case 0x01: DebugPrint("IMAGE_DIRECTORY_ENTRY_IMPORT        \n"); break;
-	case 0x02: DebugPrint("IMAGE_DIRECTORY_ENTRY_RESOURCE      \n"); break;
-	case 0x03: DebugPrint("IMAGE_DIRECTORY_ENTRY_EXCEPTION     \n"); break;
-	case 0x04: DebugPrint("IMAGE_DIRECTORY_ENTRY_SECURITY      \n"); break;
-	case 0x05: DebugPrint("IMAGE_DIRECTORY_ENTRY_BASERELOC     \n"); break;
-	case 0x06: DebugPrint("IMAGE_DIRECTORY_ENTRY_DEBUG         \n"); break;
-	case 0x07: DebugPrint("IMAGE_DIRECTORY_ENTRY_ARCHITECTURE  \n"); break;
-	case 0x08: DebugPrint("IMAGE_DIRECTORY_ENTRY_GLOBALPTR     \n"); break;
-	case 0x09: DebugPrint("IMAGE_DIRECTORY_ENTRY_TLS           \n"); break;
-	case 0x0A: DebugPrint("IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG   \n"); break;
-	case 0x0B: DebugPrint("IMAGE_DIRECTORY_ENTRY_BOUND_IMPORT  \n"); break;
-	case 0x0C: DebugPrint("IMAGE_DIRECTORY_ENTRY_IAT           \n"); break;
-	case 0x0D: DebugPrint("IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT  \n"); break;
-	case 0x0E: DebugPrint("IMAGE_DIRECTORY_ENTRY_COM_DESCRIPTOR\n"); break;
-	case 0x0F: DebugPrint("IMAGE_DIRECTORY_ENTRY_RESERVED      \n"); break;
-	default: break;
-	}
-	DebugPrintFormatted("Size    : 0x%08X\n" , THIS->DataDirectories[index].Size);
-	DebugPrintFormatted("Address : 0x%08X\n" , THIS->DataDirectories[index].VirtualAddress);
-
 	if (THIS->DataDirectories[index].Size > 0 && THIS->DataDirectories[index].VirtualAddress > 0)
 	{
 		switch (index)
@@ -305,7 +270,6 @@ void PEFileProcessDirectory(ExecutableContext * pContext, uint32_t index)
 		default: break;
 		}
 	}
-	DebugPrint("\n");
 }
 
 void PEFileDestroy(ExecutableContext * pContext)
@@ -429,10 +393,6 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			free(buffer);
 			return 0;
 		}
-		for (i = 0; i < size; i += xstrlen(buffer + i) + 1)
-		{
-			DebugPrintFormatted("%s\n", buffer + i);
-		}
 		if (0 == ReaderSeek(pContext->hReader, THIS->PointerToSymbolTable))
 		{
 			free(buffer);
@@ -451,14 +411,12 @@ int OBJProcessSymbols(ExecutableContext * pContext)
 			ReaderRead(pContext->hReader, &Symbol, 8);
 			if (0 == Symbol[0])
 			{
-				DebugPrintFormatted("%s\n", buffer + Symbol[1] - 4);
                 OBJ.pExports[i].Name = OBJ.Offset + OffsetNames + Symbol[1];
 			}
 			else
 			{
 				char name[9] = {0};
 				memcpy(name, &Symbol, 8);
-				DebugPrintFormatted("%s\n", name);
                 OBJ.pExports[i].Name = OBJ.Offset + OffsetNames + i * 18;
 			}
 			
@@ -595,9 +553,7 @@ int GetString(HREADER hReader)
 		{
 			break;
 		}
-		DebugPrintFormatted("%c", c);
 	}
-	DebugPrint("\n");
 	return 1;
 }
 

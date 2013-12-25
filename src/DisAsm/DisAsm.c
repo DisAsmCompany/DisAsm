@@ -35,7 +35,7 @@ char * DisAsmRegisterToString(Register reg)
 	return RegisterToString(reg);
 }
 
-uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
+static uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint8_t result = 0;
 	if (pInfo->length + 1 <= kMaxInstruction)
@@ -51,7 +51,7 @@ uint8_t Fetch1(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
+static uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint16_t result = 0;
 	if (pInfo->length + 2 <= kMaxInstruction)
@@ -69,7 +69,7 @@ uint16_t Fetch2(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
+static uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint32_t result = 0;
 	if (pInfo->length + 4 <= kMaxInstruction)
@@ -89,7 +89,7 @@ uint32_t Fetch4(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
+static uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	uint64_t result = 0;
 	if (pInfo->length +  8 <= kMaxInstruction)
@@ -113,7 +113,7 @@ uint64_t Fetch8(DisAsmContext * pContext, InstructionInfo * pInfo)
 	return result;
 }
 
-uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
+static uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 {
 	uint64_t result = 0;
 	if (pInfo->length + count <= kMaxInstruction)
@@ -132,7 +132,7 @@ uint64_t Fetch(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 	return result;
 }
 
-uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
+static uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count)
 {
 	uint64_t result = 0;
 	switch (count)
@@ -146,45 +146,31 @@ uint64_t FetchN(DisAsmContext * pContext, InstructionInfo * pInfo, uint8_t count
 	return result;
 }
 
-OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * pInfo, uint32_t * opcode, OpCodeMapElement * map, uint32_t * ext)
+static OpCodeMapElement * ChooseOpCodeExt(DisAsmContext * pContext, InstructionInfo * pInfo, uint32_t * opcode, OpCodeMapElement * map, uint32_t * ext)
 {
 	uint32_t index = *opcode & 0xFF;
 	uint32_t offset = 0;
 	/* check, if opcode has extensions for prefixes 0x66, 0xF2, 0xF3 */
-	if (pInfo->nPrefixes > 0)
+	uint32_t mask = ext[index >> 5];
+	if (pInfo->LegacySSEPrefix && (mask & (1 << (index & 0x1F))))
 	{
-		uint32_t mask = ext[index >> 5];
-		if (mask & (1 << (index & 0x1F)))
+		switch (pInfo->LegacySSEPrefix)
 		{
-			uint8_t i = 0;
-			uint32_t prefix = pInfo->prefixes[0].opcode;
-			for (i = 1; i < pInfo->nPrefixes; ++i)
-			{
-				/* 0xF2 & 0xF3 overrides 0x66 */
-				prefix = (0xF2 == pInfo->prefixes[i].opcode) ? 0xF2 : prefix;
-				prefix = (0xF3 == pInfo->prefixes[i].opcode) ? 0xF3 : prefix;
-			}
-			switch (prefix)
-			{
-			case 0x66: offset =  8; break;
-			case 0xF2: offset = 16; break;
-			case 0xF3: offset = 24; break;
-			default: break;
-			}
-			if (offset > 0)
-			{
-				/* in that case, prefix is not a prefix actually, but part of unique opcode */
-				*opcode |= (*opcode & 0x00FF0000UL) ? (prefix << 24) : (prefix << 16);
-				pInfo->nPrefixes = 0;
-			}
-			pContext->currentSize = pContext->size;
+		case 0x66: offset =  8; break;
+		case 0xF2: offset = 16; break;
+		case 0xF3: offset = 24; break;
+		default: break;
 		}
+		/* in that case, prefix is not a prefix actually, but part of unique opcode */
+		*opcode |= (*opcode & 0x00FF0000UL) ? (pInfo->LegacySSEPrefix << 24) : (pInfo->LegacySSEPrefix << 16);
+		pInfo->nPrefixes = 0;
+		pContext->currentSize = pContext->size;
 	}
 	index = offset + ((index >> 3) << 5) + (index & 0x07);
 	return &map[index];
 }
 
-OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInfo)
+static OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	OpCodeMapElement * element = NULL;
 
@@ -294,6 +280,19 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 				{
 					pContext->currentSize = pContext->size / 2;
 				}
+				switch (opcode)
+				{
+				case 0x66:
+					/* 0x66 cannot override other SSE prefixes */
+					pInfo->LegacySSEPrefix = pInfo->LegacySSEPrefix ? pInfo->LegacySSEPrefix : opcode; 
+					break;
+				case 0xF2:
+				case 0xF3:
+					/* 0xF2 & 0xF3 overrides 0x66 */
+					pInfo->LegacySSEPrefix = opcode;
+					break;
+				default: break;
+				}
 				pInfo->prefixes[pInfo->nPrefixes].opcode = opcode;
 				pInfo->prefixes[pInfo->nPrefixes].mnemonic = element->mnemonic;
 				++pInfo->nPrefixes;
@@ -314,7 +313,7 @@ OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo * pInf
 	return element;
 }
 
-uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
+static uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 {
 	uint8_t result = 0;
 	switch (LOTYPE(type))
@@ -377,7 +376,7 @@ Register registers[][5] =
 	/* N */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
 };
 
-Register RegForType(DisAsmContext * pContext, OperandType type)
+static Register RegForType(DisAsmContext * pContext, OperandType type)
 {
 	Register reg = 0;
 	OperandType HiType = (HITYPE(type) - E) >> 8;
@@ -394,7 +393,7 @@ Register RegForType(DisAsmContext * pContext, OperandType type)
 	return reg;
 }
 
-void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
+static void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
 {
 	OperandType type = pOperand->type;
 	OperandType HiType = HITYPE(type);
@@ -524,7 +523,7 @@ void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * p
 	}
 }
 
-void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
+static void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 {
 	pInfo->mnemonic = pElement->mnemonic;
 	pInfo->nOperands = OPCOUNT(pElement->type);
@@ -538,7 +537,7 @@ void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
 	pInfo->operands[3].reg = pElement->reg[3];
 }
 
-void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
+static void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	if (GROUP1 <= pInfo->mnemonic && pInfo->mnemonic <= GROUPP)
 	{
@@ -559,7 +558,7 @@ void GroupDecode(DisAsmContext * pContext, InstructionInfo * pInfo)
 	}
 }
 
-void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
+static void x87Decode(DisAsmContext * pContext, InstructionInfo * pInfo)
 {
 	if (ESCAPEX87 == pInfo->mnemonic)
 	{
@@ -725,6 +724,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	pInfo->length = 0;
 	pInfo->nPrefixes = 0;
 	pInfo->REX = 0;
+	pInfo->LegacySSEPrefix = 0;
 	pInfo->mnemonic = DB;
 
 	context.error = 0;

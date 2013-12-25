@@ -9,7 +9,8 @@
  *
  */
 
-#include "DisAsm"
+#include "../DisAsm/DisAsm"
+#include "DisAsmPlatform"
 
 /* OpCode for NOP (No Operation - instruction that does nothing) */
 static const uint8_t nop = 0x90;

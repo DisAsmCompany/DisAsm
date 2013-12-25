@@ -9,7 +9,8 @@
 *
 */
 
-#include "DisAsm"
+#include "../DisAsm/DisAsm"
+#include "DisAsmPlatform"
 
 uint8_t CallbackRead(ReaderContext * pContext, void * buffer, uint32_t size)
 {

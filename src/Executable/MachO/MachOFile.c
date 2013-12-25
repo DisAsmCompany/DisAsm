@@ -117,10 +117,8 @@ uint32_t MachOProcessCommandDylib(ExecutableContext * pContext)
 		{
 			break;
 		}
-		DebugPrintFormatted("%c", c);
 	}
 	count += i + 1;
-	DebugPrint("\n");
 	return count;
 }
 
@@ -128,8 +126,6 @@ uint32_t MachOProcessCommandUUID(ExecutableContext * pContext)
 {
 	unsigned char uuid[16];
 	CHECK_CALL(ReaderRead(pContext->hReader, uuid, 16));
-	DebugPrintFormatted("UUID : %02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X\n", 
-		   uuid[0], uuid[1], uuid[2], uuid[3], uuid[4], uuid[5], uuid[6], uuid[7], uuid[8], uuid[9], uuid[10], uuid[11], uuid[12], uuid[13], uuid[14], uuid[15]);
 	return 16;
 }
 

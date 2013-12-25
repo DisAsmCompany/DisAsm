@@ -10,6 +10,7 @@
 */
 
 #include "../DisAsm/DisAsm"
+#include "../DisAsmPlatform/DisAsmPlatform"
 #include "StrAsm"
 
 uint8_t IsNegative(uint64_t value, uint8_t size)

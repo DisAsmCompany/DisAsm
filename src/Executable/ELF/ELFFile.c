@@ -151,7 +151,6 @@ int ELFFileOpen(ExecutableContext * pContext)
 				{
 					THIS->NamesAddress = OBJ.pSections[i].FileAddress;
 				}
-				DebugPrintFormatted("section %s\n", value);
 			}
             free(value);
 		}

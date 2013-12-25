@@ -56,6 +56,7 @@ typedef struct InstructionInfo_t
 	uint8_t nPrefixes;
 	Prefix prefixes[kMaxPrefixes];
 	uint8_t bytes[kMaxInstruction];
+	uint8_t LegacySSEPrefix;
 	InstructionSet set;
 }
 InstructionInfo;

@@ -10,6 +10,7 @@
 */
 
 #include "../../DisAsm/DisAsm"
+#include "../../DisAsmPlatform/DisAsmPlatform"
 #include "../../StrAsm/StrAsm"
 
 /* our buffer with RAW x86 machine code (with SSE instructions) */

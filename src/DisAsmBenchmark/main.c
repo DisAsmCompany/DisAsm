@@ -10,6 +10,7 @@
 */
 
 #include "../DisAsm/DisAsm"
+#include "../DisAsmPlatform/DisAsmPlatform"
 
 int main(int argc, char * const argv[])
 {

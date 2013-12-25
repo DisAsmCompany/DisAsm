@@ -10,6 +10,7 @@
 */
 
 #include "../DisAsm/DisAsm"
+#include "../DisAsmPlatform/DisAsmPlatform"
 #include "../StrAsm/StrAsm"
 #include "../Executable/Executable"
 

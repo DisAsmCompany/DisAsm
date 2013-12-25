@@ -9,7 +9,8 @@
  *
  */
 
-#include "DisAsm"
+#include "../DisAsm/DisAsm"
+#include "DisAsmPlatform"
 
 uint8_t g_isConsoleStdOut = 0;
 uint8_t g_isConsoleStdErr = 0;

@@ -9,7 +9,8 @@
 *
 */
 
-#include "DisAsm"
+#include "../DisAsm/DisAsm"
+#include "DisAsmPlatform"
 
 typedef struct BenchmarkContext_t
 {

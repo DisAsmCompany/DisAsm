@@ -1,0 +1,22 @@
+/*
+* Filename: DisAsmPlatform
+* Author:   DisAsmCompany
+* Date:     25/12/2013
+*
+* Description: all-in-one include file for DisAsm Platform API
+*              
+*              
+*
+*/
+
+#include "MemoryReader.h"
+#include "FileReader.h"
+#include "CachedFileReader.h"
+#include "CallbackReader.h"
+#include "Benchmark.h"
+#include "ConsoleIO.h"
+#include "Module.h"
+#include "DynamicArray.h"
+#include "StackWalker.h"
+#include "LeakTracker.h"
+#include "CrashHandler.h"
