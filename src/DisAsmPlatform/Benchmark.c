@@ -16,10 +16,14 @@ typedef struct BenchmarkContext_t
 {
 	int64_t frequency;
 	int64_t sample;
+	int64_t thread;
 	int64_t count;
 	int64_t total;
 	int64_t _min;
 	int64_t _max;
+#ifdef OS_WINDOWS
+	DWORD affinity;
+#endif /* OS_WINDOWS */
 }
 BenchmarkContext;
 
@@ -45,8 +49,14 @@ void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
 #ifdef OS_WINDOWS
 	LARGE_INTEGER li;
+	FILETIME CreationTime, ExitTime, KernelTime, UserTime;
+	pContext->affinity = SetThreadAffinityMask(GetCurrentThread(), 1);
+	GetThreadTimes(GetCurrentThread(), &CreationTime, &ExitTime, &KernelTime, &UserTime);
 	QueryPerformanceCounter(&li);
 	pContext->sample = li.QuadPart;
+	pContext->thread = KernelTime.dwHighDateTime + UserTime.dwHighDateTime;
+	pContext->thread <<= 32;
+	pContext->thread += KernelTime.dwLowDateTime + UserTime.dwLowDateTime;
 #else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
@@ -59,8 +69,16 @@ void BenchmarkSampleEnd(HBENCHMARK hBenchmark)
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
 #ifdef OS_WINDOWS
 	LARGE_INTEGER li;
+	FILETIME CreationTime, ExitTime, KernelTime, UserTime;
+	int64_t time;
+	GetThreadTimes(GetCurrentThread(), &CreationTime, &ExitTime, &KernelTime, &UserTime);
 	QueryPerformanceCounter(&li);
+	SetThreadAffinityMask(GetCurrentThread(), pContext->affinity);
 	pContext->sample = li.QuadPart - pContext->sample;
+	time = KernelTime.dwHighDateTime + UserTime.dwHighDateTime;
+	time <<= 32;
+	time += KernelTime.dwLowDateTime + UserTime.dwLowDateTime;
+	pContext->thread = time - pContext->thread;
 #else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
@@ -90,10 +108,27 @@ int64_t BenchmarkGetSample(HBENCHMARK hBenchmark)
 	return pContext->sample;
 }
 
+int64_t BenchmarkGetThreadSample(HBENCHMARK hBenchmark)
+{
+	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
+	return pContext->thread;
+}
+
 int64_t BenchmarkGetFrequency(HBENCHMARK hBenchmark)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
 	return pContext->frequency;
+}
+
+int64_t BenchmarkGetThreadFrequency(HBENCHMARK hBenchmark)
+{
+	(void)hBenchmark;
+#ifdef OS_WINDOWS
+	/* FILETIME is in 100-nanosecond intervals */
+	return 10000000;
+#else /* OS_WINDOWS */
+	return 0;
+#endif /* OS_WINDOWS */
 }
 
 void BenchmarkDestroy(HBENCHMARK hBenchmark)

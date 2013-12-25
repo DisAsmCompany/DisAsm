@@ -18,10 +18,10 @@ extern "C" {
 #endif /* __cplusplus */
 
 _ENUM_START(Mnemonic, 0)
+_ENUM_ELEMENT(DB)     /* Data Binary (not decoded instruction) */
 _ENUM_ELEMENT(ESCAPE) /* Escape to another OpCode Map */
 _ENUM_ELEMENT(ESCAPEX87) /* Escape to CoProcessor Instruction Set */
 _ENUM_ELEMENT(ESCAPE3DNOW) /* Escape to 3DNow! Instruction Set */
-_ENUM_ELEMENT(DB)     /* Data Binary (not decoded instruction) */
 _ENUM_ELEMENT(DAA)    /* Decimal Adjust AL after Addition */
 _ENUM_ELEMENT(AAA)    /* ASCII Adjust AL after Addition */
 _ENUM_ELEMENT(DAS)    /* Decimal Adjust AL after Subtraction */

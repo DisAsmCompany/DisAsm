@@ -21,6 +21,10 @@ int main(int argc, char * const argv[])
 	uint64_t instructions = 0;
 	int64_t time = 0;
 	int64_t freq = 0;
+	int64_t threadtime = 0;
+	int64_t threadfreq = 0;
+	uint8_t i;
+	uint64_t speed = 0;
 	InstructionInfo info;
 
 	ConsoleIOInit();
@@ -37,23 +41,55 @@ int main(int argc, char * const argv[])
 	}
 	ReaderSize(hReader, &size);
 
-	BenchmarkSampleBegin(hBenchmark);
-	while (offset < size)
+	for (i = 0; i < 10; ++i)
 	{
-		if (0 == DisAsmInstructionDecode(32, hReader, &info))
+		ReaderSeek(hReader, 0);
+		offset = 0;
+		instructions = 0;
+
+		BenchmarkSampleBegin(hBenchmark);
+		while (offset < size)
 		{
+			if (0 == DisAsmInstructionDecode(32, hReader, &info))
+			{
 				break;
+			}
+			offset += info.length;
+			++instructions;
 		}
-		offset += info.length;
-		++instructions;
+		BenchmarkSampleEnd(hBenchmark);
+
+		time = BenchmarkGetSample(hBenchmark);
+		freq = BenchmarkGetFrequency(hBenchmark);
+		
+		threadtime = BenchmarkGetThreadSample(hBenchmark);
+		threadfreq = BenchmarkGetThreadFrequency(hBenchmark);
+
+		speed = offset * freq / time;
+		ConsoleIOPrintFormatted("%Ld instructions per second\n", instructions * freq / time);
+		ConsoleIOPrintFormatted("%Ld bytes per second ", speed);
+		if (speed > 1024 * 1024)
+		{
+			ConsoleIOPrintFormatted("(%Ld Mb per second)", speed / (1024 * 1024));
+		}
+		else if (speed > 1024)
+		{
+			ConsoleIOPrintFormatted("(%Ld Mb per second)", speed / 1024);
+		}
+		ConsoleIOPrint("\n");
+		speed = offset * threadfreq / threadtime;
+		ConsoleIOPrintFormatted("[T] %Ld instructions per second\n", instructions * threadfreq / threadtime);
+		ConsoleIOPrintFormatted("[T] %Ld bytes per second ", speed);
+		if (speed > 1024 * 1024)
+		{
+			ConsoleIOPrintFormatted("([T] %Ld Mb per second)", speed / (1024 * 1024));
+		}
+		else if (speed > 1024)
+		{
+			ConsoleIOPrintFormatted("([T] %Ld Mb per second)", speed / 1024);
+		}
+		ConsoleIOPrint("\n");
 	}
-	BenchmarkSampleEnd(hBenchmark);
-	time = BenchmarkGetSample(hBenchmark);
-	freq = BenchmarkGetFrequency(hBenchmark);
-
-	ConsoleIOPrintFormatted("%Ld instructions per second\n", instructions * freq / time);
-	ConsoleIOPrintFormatted("%Ld bytes per second\n", offset * freq / time);
-
 	ReaderDestroy(hReader);
 	BenchmarkDestroy(hBenchmark);
 	return EXIT_SUCCESS;

@@ -196,7 +196,7 @@ uint32_t AppendDec(char * buffer, uint64_t value, uint32_t width)
 {
 	uint32_t length = 0;
 	uint32_t i = 0;
-	uint32_t divider = 1;
+	uint64_t divider = 1;
 	if (0 == value)
 	{
 		buffer[0] = '0';

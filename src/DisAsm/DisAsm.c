@@ -359,21 +359,25 @@ static uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 	return result;
 }
 
-Register registers[][5] =
+#define REGLINE(size1, size2, size4, size8, size16) \
+{size1, size2, 0, size4, 0, 0, 0, size8, 0, 0, 0, 0, 0, 0, 0, size16},
+
+Register registers[][16] =
 {
-	/* E */ {Reg8, Reg16, Reg32, Reg64, 0},
-	/* G */ {Reg8, Reg16, Reg32, Reg64, 0},
-	/* M */ {Reg8, Reg16, Reg32, Reg64, 0},
-	/* S */ {0, RegSeg, 0, 0, 0},
-	/* R */ {Reg8, Reg16, Reg32, Reg64, 0},
-	/* D */ {0, RegDebug, RegDebug, RegDebug, 0},
-	/* C */ {0, RegControl, RegControl, RegControl, 0},
-	/* U */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
-	/* V */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
-	/* W */ {RegSSE, RegSSE, RegSSE, RegSSE, RegSSE},
-	/* P */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
-	/* Q */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
-	/* N */ {RegMMX, RegMMX, RegMMX, RegMMX, RegMMX},
+	/* sizes 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 */
+	/* E */ REGLINE(Reg8, Reg16, Reg32, Reg64, 0)
+	/* G */ REGLINE(Reg8, Reg16, Reg32, Reg64, 0)
+	/* M */ REGLINE(Reg8, Reg16, Reg32, Reg64, 0)
+	/* S */ REGLINE(0, RegSeg, 0, 0, 0)
+	/* R */ REGLINE(Reg8, Reg16, Reg32, Reg64, 0)
+	/* D */ REGLINE(0, RegDebug, RegDebug, RegDebug, 0)
+	/* C */ REGLINE(0, RegControl, RegControl, RegControl, 0)
+	/* U */ REGLINE(RegSSE, RegSSE, RegSSE, RegSSE, RegSSE)
+	/* V */ REGLINE(RegSSE, RegSSE, RegSSE, RegSSE, RegSSE)
+	/* W */ REGLINE(RegSSE, RegSSE, RegSSE, RegSSE, RegSSE)
+	/* P */ REGLINE(RegMMX, RegMMX, RegMMX, RegMMX, RegMMX)
+	/* Q */ REGLINE(RegMMX, RegMMX, RegMMX, RegMMX, RegMMX)
+	/* N */ REGLINE(RegMMX, RegMMX, RegMMX, RegMMX, RegMMX)
 };
 
 static Register RegForType(DisAsmContext * pContext, OperandType type)
@@ -381,16 +385,7 @@ static Register RegForType(DisAsmContext * pContext, OperandType type)
 	Register reg = 0;
 	OperandType HiType = (HITYPE(type) - E) >> 8;
 
-	switch (SizeForType(pContext, type))
-	{
-	case 1 : reg = registers[HiType][0]; break;
-	case 2 : reg = registers[HiType][1]; break;
-	case 4 : reg = registers[HiType][2]; break;
-	case 8 : reg = registers[HiType][3]; break;
-	case 16: reg = registers[HiType][4]; break;
-	default: reg = registers[HiType][2]; break;
-	}
-	return reg;
+	return registers[HiType][SizeForType(pContext, type) - 1];
 }
 
 static void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Operand * pOperand)
@@ -788,8 +783,28 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 		}
 	}
 	for (i = 0; i < pInfo->nOperands; ++i) OperandDecode(&context, pInfo, &pInfo->operands[i]);
-	pInfo->disp = (pInfo->flags & kHasDisp) ? FetchN(&context, pInfo, pInfo->sizeDisp) : 0;
-	pInfo->seg  = (pInfo->flags & kHasSeg)  ? Fetch2(&context, pInfo) : 0;
-	pInfo->imm  = (pInfo->flags & kHasImm)  ? FetchN(&context, pInfo, pInfo->sizeImm)  : 0;
+	{
+		/* to avoid unnecessary branches, let's fetch displacement, segment and immediate operand at once */
+		uint8_t offset = pInfo->length;
+		uint8_t size;
+		uint8_t offsetDisp;
+		uint8_t offsetSeg;
+		uint8_t offsetImm;
+
+		static const uint64_t mask[9] = {0, U64(0xFF), U64(0xFFFF), 0, U64(0xFFFFFFFF), 0, 0, 0, U64(0xFFFFFFFFFFFFFFFF)};
+
+		offsetDisp = offset;
+		size = (pInfo->flags & kHasDisp) ? pInfo->sizeDisp : 0;
+		offsetSeg = offset + size;
+		size += (pInfo->flags & kHasSeg) ? 2 : 0;
+		offsetImm = offset + size;
+		size += (pInfo->flags & kHasImm) ? pInfo->sizeImm : 0;
+
+		FetchN(&context, pInfo, size);
+
+		pInfo->disp = *(uint64_t*)(pInfo->bytes + offsetDisp) & mask[pInfo->sizeDisp];
+		pInfo->seg = *(uint16_t*)(pInfo->bytes + offsetSeg);
+		pInfo->imm = *(uint64_t*)(pInfo->bytes + offsetImm) & mask[pInfo->sizeImm];
+	}
 	return pInfo->length;
 }
