@@ -12,6 +12,13 @@
 #include "../DisAsm/DisAsm"
 #include "DisAsmPlatform"
 
+#if defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
+
+WINBASEAPI BOOL WINAPI GetFileSizeEx(HANDLE hFile, PLARGE_INTEGER lpFileSize);
+WINBASEAPI BOOL WINAPI SetFilePointerEx(HANDLE hFile, LARGE_INTEGER liDistanceToMove, PLARGE_INTEGER lpNewFilePointer, DWORD dwMoveMethod);
+
+#endif /* defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6 */
+
 #ifdef OS_WINDOWS
 typedef HANDLE FileHandle;
 #else /* OS_WINDOWS */

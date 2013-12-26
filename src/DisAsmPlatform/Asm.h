@@ -108,9 +108,24 @@ typedef enum CPUIDFeaturesExtendedEDX_t
 }
 CPUIDFeaturesExtendedEDX;
 
-uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx);
 native_t ReadEFLAGS();
 void WriteEFLAGS(native_t eflags);
+
+uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx);
 uint8_t Check80286();
 uint8_t Check80386();
 uint8_t CheckCPUID();
+
+uint8_t CheckFPU();
+uint8_t CheckMMX();
+
+void CallPREFETCH(void * p);
+void CallPREFETCHW(void * p);
+void CallPREFETCHT0(void *p);
+void CallPREFETCHT1(void *p);
+void CallPREFETCHT2(void *p);
+void CallPREFETCHNTA(void *p);
+
+void CallLFENCE();
+void CallMFENCE();
+void CallSFENCE();

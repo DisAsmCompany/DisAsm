@@ -12,6 +12,50 @@
 #include "../DisAsm/DisAsm"
 #include "DisAsmPlatform"
 
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+#include <xmmintrin.h>
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+
+#if defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
+
+/* old Microsoft C versions have no __cpuid, __readeflags, __writeeflags available */
+void __cpuid(int CPUInfo[4], int InfoType)
+{
+	__asm
+	{
+		mov eax, InfoType;
+		cpuid;
+		mov CPUInfo[0], eax;
+		mov CPUInfo[1], ebx;
+		mov CPUInfo[2], ecx;
+		mov CPUInfo[3], edx;
+	}
+}
+
+native_t __readeflags(void)
+{
+	native_t result;
+	__asm
+	{
+		pushfd;
+		pop eax;
+		mov result, eax;
+	}
+	return result;
+}
+
+void __writeeflags(native_t value)
+{
+	__asm
+	{
+		mov eax, value;
+		push eax;
+		popfd;
+	}
+}
+
+#endif /* defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6 */
+
 #if defined(COMP_WATCOMC)
 
 #pragma aux WatcomCallCPUID = \
@@ -52,6 +96,7 @@ uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_
 {
     uint32_t _eax = 0, _ebx = 0, _ecx = 0, _edx = 0;
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	/* use intrinsic because x64 doesn't allow inline assembly */
     int info[4];
     __cpuid(info, level);
     _eax = info[0];
@@ -177,4 +222,105 @@ uint8_t CheckCPUID()
 	supported = ((eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID)) ? 1 : 0;
     WriteEFLAGS(eflags);
     return supported;
+}
+
+uint8_t CheckFPU()
+{
+	uint8_t result = 0;
+	if (CheckCPUID())
+	{
+		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, NULL, NULL, NULL);
+		if (MaxBasicLevel >= 0x00000001UL)
+		{
+			uint32_t featuresEDX = 0;
+			CallCPUID(0x00000001UL, NULL, NULL, NULL, &featuresEDX);
+			result = kCPUIDFeature_X87 == (featuresEDX & kCPUIDFeature_X87) ? 1 : 0;
+		}
+	}
+	return result;
+}
+
+uint8_t CheckMMX()
+{
+	uint8_t result = 0;
+	/*
+	1. Check that the processor supports the CPUID instruction by attempting to execute the CPUID instruction. If the 
+	processor does not support the CPUID instruction, this will generate an invalid-opcode exception (#UD)
+	*/
+	if (CheckCPUID())
+	{
+		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, NULL, NULL, NULL);
+		if (MaxBasicLevel >= 0x00000001UL)
+		{
+			/*
+			2. Check that the processor supports the MMX technology (if CPUID.01H:EDX.MMX[bit 23] = 1)
+			*/
+			uint32_t featuresEDX = 0;
+			CallCPUID(0x00000001UL, NULL, NULL, NULL, &featuresEDX);
+			result = kCPUIDFeature_MMX == (featuresEDX & kCPUIDFeature_MMX) ? 1 : 0;
+		}
+	}
+	return result;
+}
+
+void CallPREFETCH(void * p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_m_prefetch(p);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallPREFETCHW(void * p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_m_prefetchw(p);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+void CallPREFETCHT0(void *p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_prefetch(p, _MM_HINT_T0);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallPREFETCHT1(void *p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_prefetch(p, _MM_HINT_T1);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallPREFETCHT2(void *p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_prefetch(p, _MM_HINT_T2);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallPREFETCHNTA(void *p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_prefetch(p, _MM_HINT_NTA);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallLFENCE()
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_lfence();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallMFENCE()
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_mfence();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+}
+
+void CallSFENCE()
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_sfence();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
 }
