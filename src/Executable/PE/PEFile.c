@@ -276,18 +276,21 @@ void PEFileDestroy(ExecutableContext * pContext)
 {
 	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		SDFDestroy(THIS->hDOSHeader);
-		SDFDestroy(THIS->hFileHeader);
-		SDFDestroy(THIS->hOptionalHeader);
-		SDFDestroy(THIS->hOptionalHeaderExtra);
-		SDFDestroy(THIS->hExportDirectory);
-		SDFDestroy(THIS->hDebugDirectory);
-		SDFDestroy(THIS->hLoadConfigDirectory);
-		free(THIS->ExportFunctions);
-		free(THIS->ExportNames);
-		free(THIS->ExportOrdinals);
-		free(THIS->DataDirectories);
-		free(THIS);
+		if (THIS)
+		{
+			SDFDestroy(THIS->hDOSHeader);
+			SDFDestroy(THIS->hFileHeader);
+			SDFDestroy(THIS->hOptionalHeader);
+			SDFDestroy(THIS->hOptionalHeaderExtra);
+			SDFDestroy(THIS->hExportDirectory);
+			SDFDestroy(THIS->hDebugDirectory);
+			SDFDestroy(THIS->hLoadConfigDirectory);
+			free(THIS->ExportFunctions);
+			free(THIS->ExportNames);
+			free(THIS->ExportOrdinals);
+			free(THIS->DataDirectories);
+			free(THIS);
+		}
 	}
 }
 

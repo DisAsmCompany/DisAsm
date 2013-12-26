@@ -177,17 +177,20 @@ void MachOFileDestroy(ExecutableContext * pContext)
 {
 	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		if (NULL != pContext->pObjects)
+		if (THIS)
 		{
-			uint32_t i = 0;
-			for (i = 0; i < pContext->nObjects; ++i)
+			if (NULL != pContext->pObjects)
 			{
-				SDFDestroy(THIS->phFatHeaders[i]);
-				SDFDestroy(THIS->phMachHeaders[i]);
+				uint32_t i = 0;
+				for (i = 0; i < pContext->nObjects; ++i)
+				{
+					SDFDestroy(THIS->phFatHeaders[i]);
+					SDFDestroy(THIS->phMachHeaders[i]);
+				}
+				free(THIS->phFatHeaders);
+				free(THIS->phMachHeaders);
+				free(THIS);
 			}
-			free(THIS->phFatHeaders);
-			free(THIS->phMachHeaders);
-			free(THIS);
 		}
 	}
 }

@@ -90,15 +90,18 @@ void LXFileDestroy(ExecutableContext * pContext)
 {
 	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		uint32_t i = 0;
-		for (i = 0; i < THIS->NumberOfObjects; ++i)
+		if (THIS)
 		{
-			SDFDestroy(THIS->phObjectTable[i]);
+			uint32_t i = 0;
+			for (i = 0; i < THIS->NumberOfObjects; ++i)
+			{
+				SDFDestroy(THIS->phObjectTable[i]);
+			}
+			free(THIS->phObjectTable);
+			SDFDestroy(THIS->hDOSHeader);
+			SDFDestroy(THIS->hFileHeader);
+			free(THIS);
 		}
-		free(THIS->phObjectTable);
-		SDFDestroy(THIS->hDOSHeader);
-		SDFDestroy(THIS->hFileHeader);
-		free(THIS);
 	}
 }
 

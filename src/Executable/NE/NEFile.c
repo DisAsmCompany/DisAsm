@@ -97,9 +97,12 @@ void NEFileDestroy(ExecutableContext * pContext)
 {
 	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		SDFDestroy(THIS->hDOSHeader);
-		SDFDestroy(THIS->hSegmentedHeader);
-		free(THIS);
+		if (THIS)
+		{
+			SDFDestroy(THIS->hDOSHeader);
+			SDFDestroy(THIS->hSegmentedHeader);
+			free(THIS);
+		}
 	}
 }
 

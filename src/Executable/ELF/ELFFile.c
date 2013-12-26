@@ -189,14 +189,17 @@ void ELFFileDestroy(ExecutableContext * pContext)
 {
 	for (pContext->iObject = 0; pContext->iObject < pContext->nObjects; ++pContext->iObject)
 	{
-		uint16_t i = 0;
-		for (i = 0; i < THIS->NumberOfPrograms; ++i)
+		if (THIS)
 		{
-			SDFDestroy(THIS->phProgramHeaders[i]);
+			uint16_t i = 0;
+			for (i = 0; i < THIS->NumberOfPrograms; ++i)
+			{
+				SDFDestroy(THIS->phProgramHeaders[i]);
+			}
+			free(THIS->phProgramHeaders);
+			SDFDestroy(THIS->hHeader);
+			free(THIS);
 		}
-		free(THIS->phProgramHeaders);
-		SDFDestroy(THIS->hHeader);
-		free(THIS);
 	}
 }
 

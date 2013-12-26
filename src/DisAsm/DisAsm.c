@@ -354,7 +354,7 @@ static uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
 		break;
     /* double-word or quad-word, depending on operand size attribute */
     case y: result = 8; break;
-	default: break;
+	default: result = 4; break;
 	}
 	return result;
 }
@@ -382,7 +382,6 @@ Register registers[][16] =
 
 static Register RegForType(DisAsmContext * pContext, OperandType type)
 {
-	Register reg = 0;
 	OperandType HiType = (HITYPE(type) - E) >> 8;
 
 	return registers[HiType][SizeForType(pContext, type) - 1];
@@ -516,6 +515,7 @@ static void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Oper
 	default:
 		break;
 	}
+	
 }
 
 static void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)

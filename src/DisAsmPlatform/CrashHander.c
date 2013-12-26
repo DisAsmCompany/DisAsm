@@ -12,6 +12,396 @@
 #include "../DisAsm/DisAsm"
 #include "DisAsmPlatform"
 
+typedef struct CacheInfo_t
+{
+	uint8_t level;
+	uint8_t pages;
+	uint8_t associative;
+	uint8_t entries;
+}
+CacheInfo;
+
+static const CacheInfo CacheTable[] =
+{
+	{0, 0, 0, 0}, /* 00h */
+	{0, 0, 0, 0}, /* 01h */
+	{0, 0, 0, 0}, /* 02h */
+	{0, 0, 0, 0}, /* 03h */
+	{0, 0, 0, 0}, /* 04h */
+	{0, 0, 0, 0}, /* 05h */
+	{0, 0, 0, 0}, /* 06h */
+	{0, 0, 0, 0}, /* 07h */
+	{0, 0, 0, 0}, /* 08h */
+	{0, 0, 0, 0}, /* 09h */
+	{0, 0, 0, 0}, /* 0Ah */
+	{0, 0, 0, 0}, /* 0Bh */
+	{0, 0, 0, 0}, /* 0Ch */
+	{0, 0, 0, 0}, /* 0Dh */
+	{0, 0, 0, 0}, /* 0Eh */
+	{0, 0, 0, 0}, /* 0Fh */
+
+	{0, 0, 0, 0}, /* 10h */
+	{0, 0, 0, 0}, /* 11h */
+	{0, 0, 0, 0}, /* 12h */
+	{0, 0, 0, 0}, /* 13h */
+	{0, 0, 0, 0}, /* 14h */
+	{0, 0, 0, 0}, /* 15h */
+	{0, 0, 0, 0}, /* 16h */
+	{0, 0, 0, 0}, /* 17h */
+	{0, 0, 0, 0}, /* 18h */
+	{0, 0, 0, 0}, /* 19h */
+	{0, 0, 0, 0}, /* 1Ah */
+	{0, 0, 0, 0}, /* 1Bh */
+	{0, 0, 0, 0}, /* 1Ch */
+	{0, 0, 0, 0}, /* 1Dh */
+	{0, 0, 0, 0}, /* 1Eh */
+	{0, 0, 0, 0}, /* 1Fh */
+
+	{0, 0, 0, 0}, /* 20h */
+	{0, 0, 0, 0}, /* 21h */
+	{0, 0, 0, 0}, /* 22h */
+	{0, 0, 0, 0}, /* 23h */
+	{0, 0, 0, 0}, /* 24h */
+	{0, 0, 0, 0}, /* 25h */
+	{0, 0, 0, 0}, /* 26h */
+	{0, 0, 0, 0}, /* 27h */
+	{0, 0, 0, 0}, /* 28h */
+	{0, 0, 0, 0}, /* 29h */
+	{0, 0, 0, 0}, /* 2Ah */
+	{0, 0, 0, 0}, /* 2Bh */
+	{0, 0, 0, 0}, /* 2Ch */
+	{0, 0, 0, 0}, /* 2Dh */
+	{0, 0, 0, 0}, /* 2Eh */
+	{0, 0, 0, 0}, /* 2Fh */
+
+	{0, 0, 0, 0}, /* 30h */
+	{0, 0, 0, 0}, /* 31h */
+	{0, 0, 0, 0}, /* 32h */
+	{0, 0, 0, 0}, /* 33h */
+	{0, 0, 0, 0}, /* 34h */
+	{0, 0, 0, 0}, /* 35h */
+	{0, 0, 0, 0}, /* 36h */
+	{0, 0, 0, 0}, /* 37h */
+	{0, 0, 0, 0}, /* 38h */
+	{0, 0, 0, 0}, /* 39h */
+	{0, 0, 0, 0}, /* 3Ah */
+	{0, 0, 0, 0}, /* 3Bh */
+	{0, 0, 0, 0}, /* 3Ch */
+	{0, 0, 0, 0}, /* 3Dh */
+	{0, 0, 0, 0}, /* 3Eh */
+	{0, 0, 0, 0}, /* 3Fh */
+
+	{0, 0, 0, 0}, /* 40h */
+	{0, 0, 0, 0}, /* 41h */
+	{0, 0, 0, 0}, /* 42h */
+	{0, 0, 0, 0}, /* 43h */
+	{0, 0, 0, 0}, /* 44h */
+	{0, 0, 0, 0}, /* 45h */
+	{0, 0, 0, 0}, /* 46h */
+	{0, 0, 0, 0}, /* 47h */
+	{0, 0, 0, 0}, /* 48h */
+	{0, 0, 0, 0}, /* 49h */
+	{0, 0, 0, 0}, /* 4Ah */
+	{0, 0, 0, 0}, /* 4Bh */
+	{0, 0, 0, 0}, /* 4Ch */
+	{0, 0, 0, 0}, /* 4Dh */
+	{0, 0, 0, 0}, /* 4Eh */
+	{0, 0, 0, 0}, /* 4Fh */
+
+	{0, 0, 0, 0}, /* 50h */
+	{0, 0, 0, 0}, /* 51h */
+	{0, 0, 0, 0}, /* 52h */
+	{0, 0, 0, 0}, /* 53h */
+	{0, 0, 0, 0}, /* 54h */
+	{0, 0, 0, 0}, /* 55h */
+	{0, 0, 0, 0}, /* 56h */
+	{0, 0, 0, 0}, /* 57h */
+	{0, 0, 0, 0}, /* 58h */
+	{0, 0, 0, 0}, /* 59h */
+	{0, 0, 0, 0}, /* 5Ah */
+	{0, 0, 0, 0}, /* 5Bh */
+	{0, 0, 0, 0}, /* 5Ch */
+	{0, 0, 0, 0}, /* 5Dh */
+	{0, 0, 0, 0}, /* 5Eh */
+	{0, 0, 0, 0}, /* 5Fh */
+
+	{0, 0, 0, 0}, /* 60h */
+	{0, 0, 0, 0}, /* 61h */
+	{0, 0, 0, 0}, /* 62h */
+	{0, 0, 0, 0}, /* 63h */
+	{0, 0, 0, 0}, /* 64h */
+	{0, 0, 0, 0}, /* 65h */
+	{0, 0, 0, 0}, /* 66h */
+	{0, 0, 0, 0}, /* 67h */
+	{0, 0, 0, 0}, /* 68h */
+	{0, 0, 0, 0}, /* 69h */
+	{0, 0, 0, 0}, /* 6Ah */
+	{0, 0, 0, 0}, /* 6Bh */
+	{0, 0, 0, 0}, /* 6Ch */
+	{0, 0, 0, 0}, /* 6Dh */
+	{0, 0, 0, 0}, /* 6Eh */
+	{0, 0, 0, 0}, /* 6Fh */
+
+	{0, 0, 0, 0}, /* 70h */
+	{0, 0, 0, 0}, /* 71h */
+	{0, 0, 0, 0}, /* 72h */
+	{0, 0, 0, 0}, /* 73h */
+	{0, 0, 0, 0}, /* 74h */
+	{0, 0, 0, 0}, /* 75h */
+	{0, 0, 0, 0}, /* 76h */
+	{0, 0, 0, 0}, /* 77h */
+	{0, 0, 0, 0}, /* 78h */
+	{0, 0, 0, 0}, /* 79h */
+	{0, 0, 0, 0}, /* 7Ah */
+	{0, 0, 0, 0}, /* 7Bh */
+	{0, 0, 0, 0}, /* 7Ch */
+	{0, 0, 0, 0}, /* 7Dh */
+	{0, 0, 0, 0}, /* 7Eh */
+	{0, 0, 0, 0}, /* 7Fh */
+
+	{0, 0, 0, 0}, /* 80h */
+	{0, 0, 0, 0}, /* 81h */
+	{0, 0, 0, 0}, /* 82h */
+	{0, 0, 0, 0}, /* 83h */
+	{0, 0, 0, 0}, /* 84h */
+	{0, 0, 0, 0}, /* 85h */
+	{0, 0, 0, 0}, /* 86h */
+	{0, 0, 0, 0}, /* 87h */
+	{0, 0, 0, 0}, /* 88h */
+	{0, 0, 0, 0}, /* 89h */
+	{0, 0, 0, 0}, /* 8Ah */
+	{0, 0, 0, 0}, /* 8Bh */
+	{0, 0, 0, 0}, /* 8Ch */
+	{0, 0, 0, 0}, /* 8Dh */
+	{0, 0, 0, 0}, /* 8Eh */
+	{0, 0, 0, 0}, /* 8Fh */
+
+	{0, 0, 0, 0}, /* 90h */
+	{0, 0, 0, 0}, /* 91h */
+	{0, 0, 0, 0}, /* 92h */
+	{0, 0, 0, 0}, /* 93h */
+	{0, 0, 0, 0}, /* 94h */
+	{0, 0, 0, 0}, /* 95h */
+	{0, 0, 0, 0}, /* 96h */
+	{0, 0, 0, 0}, /* 97h */
+	{0, 0, 0, 0}, /* 98h */
+	{0, 0, 0, 0}, /* 99h */
+	{0, 0, 0, 0}, /* 9Ah */
+	{0, 0, 0, 0}, /* 9Bh */
+	{0, 0, 0, 0}, /* 9Ch */
+	{0, 0, 0, 0}, /* 9Dh */
+	{0, 0, 0, 0}, /* 9Eh */
+	{0, 0, 0, 0}, /* 9Fh */
+
+	{0, 0, 0, 0}, /* A0h */
+	{0, 0, 0, 0}, /* A1h */
+	{0, 0, 0, 0}, /* A2h */
+	{0, 0, 0, 0}, /* A3h */
+	{0, 0, 0, 0}, /* A4h */
+	{0, 0, 0, 0}, /* A5h */
+	{0, 0, 0, 0}, /* A6h */
+	{0, 0, 0, 0}, /* A7h */
+	{0, 0, 0, 0}, /* A8h */
+	{0, 0, 0, 0}, /* A9h */
+	{0, 0, 0, 0}, /* AAh */
+	{0, 0, 0, 0}, /* ABh */
+	{0, 0, 0, 0}, /* ACh */
+	{0, 0, 0, 0}, /* ADh */
+	{0, 0, 0, 0}, /* AEh */
+	{0, 0, 0, 0}, /* AFh */
+
+	{0, 0, 0, 0}, /* B0h */
+	{0, 0, 0, 0}, /* B1h */
+	{0, 0, 0, 0}, /* B2h */
+	{0, 0, 0, 0}, /* B3h */
+	{0, 0, 0, 0}, /* B4h */
+	{0, 0, 0, 0}, /* B5h */
+	{0, 0, 0, 0}, /* B6h */
+	{0, 0, 0, 0}, /* B7h */
+	{0, 0, 0, 0}, /* B8h */
+	{0, 0, 0, 0}, /* B9h */
+	{0, 0, 0, 0}, /* BAh */
+	{0, 0, 0, 0}, /* BBh */
+	{0, 0, 0, 0}, /* BCh */
+	{0, 0, 0, 0}, /* BDh */
+	{0, 0, 0, 0}, /* BEh */
+	{0, 0, 0, 0}, /* BFh */
+
+	{0, 0, 0, 0}, /* C0h */
+	{0, 0, 0, 0}, /* C1h */
+	{0, 0, 0, 0}, /* C2h */
+	{0, 0, 0, 0}, /* C3h */
+	{0, 0, 0, 0}, /* C4h */
+	{0, 0, 0, 0}, /* C5h */
+	{0, 0, 0, 0}, /* C6h */
+	{0, 0, 0, 0}, /* C7h */
+	{0, 0, 0, 0}, /* C8h */
+	{0, 0, 0, 0}, /* C9h */
+	{0, 0, 0, 0}, /* CAh */
+	{0, 0, 0, 0}, /* CBh */
+	{0, 0, 0, 0}, /* CCh */
+	{0, 0, 0, 0}, /* CDh */
+	{0, 0, 0, 0}, /* CEh */
+	{0, 0, 0, 0}, /* CFh */
+
+	{0, 0, 0, 0}, /* D0h */
+	{0, 0, 0, 0}, /* D1h */
+	{0, 0, 0, 0}, /* D2h */
+	{0, 0, 0, 0}, /* D3h */
+	{0, 0, 0, 0}, /* D4h */
+	{0, 0, 0, 0}, /* D5h */
+	{0, 0, 0, 0}, /* D6h */
+	{0, 0, 0, 0}, /* D7h */
+	{0, 0, 0, 0}, /* D8h */
+	{0, 0, 0, 0}, /* D9h */
+	{0, 0, 0, 0}, /* DAh */
+	{0, 0, 0, 0}, /* DBh */
+	{0, 0, 0, 0}, /* DCh */
+	{0, 0, 0, 0}, /* DDh */
+	{0, 0, 0, 0}, /* DEh */
+	{0, 0, 0, 0}, /* DFh */
+
+	{0, 0, 0, 0}, /* E0h */
+	{0, 0, 0, 0}, /* E1h */
+	{0, 0, 0, 0}, /* E2h */
+	{0, 0, 0, 0}, /* E3h */
+	{0, 0, 0, 0}, /* E4h */
+	{0, 0, 0, 0}, /* E5h */
+	{0, 0, 0, 0}, /* E6h */
+	{0, 0, 0, 0}, /* E7h */
+	{0, 0, 0, 0}, /* E8h */
+	{0, 0, 0, 0}, /* E9h */
+	{0, 0, 0, 0}, /* EAh */
+	{0, 0, 0, 0}, /* EBh */
+	{0, 0, 0, 0}, /* ECh */
+	{0, 0, 0, 0}, /* EDh */
+	{0, 0, 0, 0}, /* EEh */
+	{0, 0, 0, 0}, /* EFh */
+
+	{0, 0, 0, 0}, /* F0h */
+	{0, 0, 0, 0}, /* F1h */
+	{0, 0, 0, 0}, /* F2h */
+	{0, 0, 0, 0}, /* F3h */
+	{0, 0, 0, 0}, /* F4h */
+	{0, 0, 0, 0}, /* F5h */
+	{0, 0, 0, 0}, /* F6h */
+	{0, 0, 0, 0}, /* F7h */
+	{0, 0, 0, 0}, /* F8h */
+	{0, 0, 0, 0}, /* F9h */
+	{0, 0, 0, 0}, /* FAh */
+	{0, 0, 0, 0}, /* FBh */
+	{0, 0, 0, 0}, /* FCh */
+	{0, 0, 0, 0}, /* FDh */
+	{0, 0, 0, 0}, /* FEh */
+	{0, 0, 0, 0}, /* FFh */
+};
+
+void InfoCPUCache()
+{
+	uint8_t descriptors[16];
+	uint8_t count = 1;
+	uint8_t i;
+
+	for (i = 0; i < count; ++i)
+	{
+		CallCPUID(0x00000002UL, (uint32_t*)descriptors, (uint32_t*)(descriptors + 4), (uint32_t*)(descriptors + 8), (uint32_t*)(descriptors + 12));
+		count = descriptors[0];
+	}
+}
+
+void InfoCPU()
+{
+	if (CheckCPUID())
+	{
+		char name[13] = {0};
+		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, (uint32_t*)name, (uint32_t*)(name + 8), (uint32_t*)(name + 4));
+		uint32_t MaxExtendedLevel = CallCPUID(0x80000000UL, NULL, NULL, NULL, NULL);
+
+		ConsoleIOPrint("CPU :\n");
+		ConsoleIOPrintFormatted("CPU name : %s\n", name);
+
+		if (MaxBasicLevel >= 0x00000001UL)
+		{
+			uint32_t featuresECX = 0, featuresEDX = 0;
+			CallCPUID(0x00000001UL, NULL, NULL, &featuresECX, &featuresEDX);
+
+			ConsoleIOPrintFormatted("X87     : %s\n", featuresEDX & kCPUIDFeature_X87   ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("MMX     : %s\n", featuresEDX & kCPUIDFeature_MMX   ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SSE     : %s\n", featuresEDX & kCPUIDFeature_SSE   ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SSE2    : %s\n", featuresEDX & kCPUIDFeature_SSE2  ? "YES" : "NO ");
+
+			ConsoleIOPrintFormatted("SSE3    : %s\n", featuresECX & kCPUIDFeature_SSE3  ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("VMX     : %s\n", featuresECX & kCPUIDFeature_VMX   ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SMX     : %s\n", featuresECX & kCPUIDFeature_SMX   ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SSSE3   : %s\n", featuresECX & kCPUIDFeature_SSSE3 ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SSE4.1  : %s\n", featuresECX & kCPUIDFeature_SSE41 ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("SSE4.2  : %s\n", featuresECX & kCPUIDFeature_SSE42 ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("AESNI   : %s\n", featuresECX & kCPUIDFeature_AESNI ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("AVX     : %s\n", featuresECX & kCPUIDFeature_AVX   ? "YES" : "NO ");
+
+			if (MaxBasicLevel >= 0x00000002UL)
+			{
+				InfoCPUCache();
+
+				if (MaxBasicLevel >= 0x00000003UL && (featuresEDX & kCPUIDFeature_PSN))
+				{
+					char PSN[17] = {0};
+					CallCPUID(0x00000003UL, (uint32_t*)PSN, (uint32_t*)(PSN + 4), (uint32_t*)(PSN + 8), (uint32_t*)(PSN + 12));
+					ConsoleIOPrintFormatted("PSN : %s\n", PSN);
+				}
+				if (MaxBasicLevel >= 0x00000007UL)
+				{
+					uint32_t featuresEBX = 0;
+					CallCPUID(0x00000007UL, NULL, &featuresEBX, NULL, NULL);
+
+					ConsoleIOPrintFormatted("AVX2    : %s\n", featuresEBX & kCPUIDFeature_AVX2  ? "YES" : "NO ");
+				}
+			}
+		}
+		if (MaxExtendedLevel >= 0x80000001UL)
+		{
+			uint32_t featuresECX = 0, featuresEDX = 0;
+			CallCPUID(0x80000001UL, NULL, NULL, &featuresECX, &featuresEDX);
+
+			ConsoleIOPrintFormatted("EM64T   : %s\n", featuresEDX & kCPUIDFeature_EM64T  ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("3DNow!  : %s\n", featuresEDX & kCPUIDFeature_3DNOW  ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("3DNow!+ : %s\n", featuresEDX & kCPUIDFeature_E3DNOW ? "YES" : "NO ");
+
+			ConsoleIOPrintFormatted("SSE4.a  : %s\n", featuresEDX & kCPUIDFeature_SSE4A  ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("XOP     : %s\n", featuresEDX & kCPUIDFeature_XOP    ? "YES" : "NO ");
+			ConsoleIOPrintFormatted("FMA4    : %s\n", featuresEDX & kCPUIDFeature_FMA4   ? "YES" : "NO ");
+
+			if (MaxExtendedLevel >= 0x80000004UL)
+			{
+				char brand[49] = {0};
+				CallCPUID(0x80000002UL, (uint32_t*)(brand + 0x00), (uint32_t*)(brand + 0x04), (uint32_t*)(brand + 0x08), (uint32_t*)(brand + 0x0C));
+				CallCPUID(0x80000003UL, (uint32_t*)(brand + 0x10), (uint32_t*)(brand + 0x14), (uint32_t*)(brand + 0x18), (uint32_t*)(brand + 0x1C));
+				CallCPUID(0x80000004UL, (uint32_t*)(brand + 0x20), (uint32_t*)(brand + 0x24), (uint32_t*)(brand + 0x28), (uint32_t*)(brand + 0x2C));
+				ConsoleIOPrintFormatted("CPU brand : %s\n", brand);
+			}
+		}
+		ConsoleIOPrint("\n");
+	}
+	else
+	{
+		if (Check80286())
+		{
+			if (Check80386())
+			{
+				ConsoleIOPrint("CPU : Intel 80386\n");
+			}
+			else
+			{
+				ConsoleIOPrint("CPU : Intel 80286\n");
+			}
+		}
+		else
+		{
+			ConsoleIOPrint("CPU : Intel 8086\n");
+		}
+	}
+}
+
 #ifdef OS_WINDOWS
 
 #ifndef VER_PLATFORM_WIN32s
@@ -196,293 +586,6 @@ void InfoEnvironment()
 	}
 }
 
-uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx);
-
-#if defined(COMP_WATCOMC)
-
-#pragma aux CallCPUID = \
-".586" \
-"push eax" \
-"push ebx" \
-"push ecx" \
-"push edx" \
-"mov eax, esi" \
-"cpuid" \
-"mov esi, [esp]" \
-"test esi, esi" \
-"jmp skip_edx" \
-"mov [esi], edx" \
-"skip_edx: nop" \
-"mov esi, [esp + 4]" \
-"test esi, esi" \
-"jmp skip_ecx" \
-"mov [esi], ecx" \
-"skip_ecx: nop" \
-"mov esi, [esp + 8]" \
-"test esi, esi" \
-"jmp skip_ebx" \
-"mov [esi], ebx" \
-"skip_ebx: nop" \
-"mov esi, [esp + 12]" \
-"test esi, esi" \
-"jmp skip_eax" \
-"mov [esi], eax" \
-"skip_eax: nop" \
-"add esp, 16" \
-parm [esi][eax][ebx][ecx][edx] \
-modify [esi eax ebx ecx edx];
-
-#else /* defined(COMP_WATCOMC) */
-
-uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
-{
-    uint32_t _eax = 0, _ebx = 0, _ecx = 0, _edx = 0;
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
-    int info[4];
-    __cpuid(info, level);
-    _eax = info[0];
-    _ebx = info[1];
-    _ecx = info[2];
-    _edx = info[3];
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
-#if defined(COMP_BORLANDC)
-	__asm
-	{
-		mov eax, level
-		cpuid
-		mov _eax, eax
-		mov _ebx, ebx
-		mov _ecx, ecx
-		mov _edx, edx
-	}
-#endif /* defined(COMP_BORLANDC) */
-    if (outeax) *outeax = _eax;
-    if (outebx) *outebx = _ebx;
-    if (outecx) *outecx = _ecx;
-    if (outedx) *outedx = _edx;
-    return _eax;
-}
-
-#endif /* defined(COMP_WATCOMC) */
-
-native_t ReadEFLAGS();
-void WriteEFLAGS(native_t eflags);
-
-#if defined(COMP_WATCOMC)
-
-#pragma aux ReadEFLAGS = \
-	".586" \
-	"pushfd" \
-	"pop eax" \
-	modify [eax];
-
-#pragma aux WriteEFLAGS = \
-	".586" \
-	"push eax" \
-	"popfd" \
-	parm [eax] \
-	modify [eax];
-
-#else /* defined(COMP_WATCOMC) */
-
-native_t ReadEFLAGS()
-{
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
-	return __readeflags();
-#else /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
-	return 0;
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
-}
-
-void WriteEFLAGS(native_t eflags)
-{
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
-	__writeeflags(eflags);
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
-}
-
-#endif /* defined(COMP_WATCOMC) */
-
-uint8_t CheckCPUID()
-{
-	/*
-	The ID flag (bit 21) in the EFLAGS register indicates support for the CPUID instruction.
-	If a software procedure can set and clear this flag, 
-	the processor executing the procedure supports the CPUID instruction. 
-	This instruction operates the same in non-64-bit modes and 64-bit mode.
-	*/
-    native_t kFlagCPUID = 1 << 21;
-    uint8_t supported = 0;
-    native_t eflags = ReadEFLAGS();
-    WriteEFLAGS(eflags ^ kFlagCPUID);
-	supported = ((eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID)) ? 1 : 0;
-    WriteEFLAGS(eflags);
-    return supported;
-}
-
-typedef enum CPUIDFeaturesECX_t
-{
-    kCPUIDFeature_SSE3       = 1 << 0,
-    kCPUIDFeature_PCLMULDQ   = 1 << 1,
-    kCPUIDFeature_DTES64     = 1 << 2,
-    kCPUIDFeature_MONITOR    = 1 << 3,
-    kCPUIDFeature_DSCPL      = 1 << 4,
-    kCPUIDFeature_VMX        = 1 << 5,
-    kCPUIDFeature_SMX        = 1 << 6,
-    kCPUIDFeature_EIST       = 1 << 7,
-    kCPUIDFeature_TM2        = 1 << 8,
-    kCPUIDFeature_SSSE3      = 1 << 9,
-    kCPUIDFeature_CNTXID     = 1 << 10,
-    kCPUIDFeature_RESERVED11 = 1 << 11,
-    kCPUIDFeature_FMA        = 1 << 12,
-    kCPUIDFeature_CMPXCHG16B = 1 << 13,
-    kCPUIDFeature_XTPR       = 1 << 14,
-    kCPUIDFeature_PDCM       = 1 << 15,
-    kCPUIDFeature_RESERVED16 = 1 << 16,
-    kCPUIDFeature_PCID       = 1 << 17,
-    kCPUIDFeature_DCA        = 1 << 18,
-    kCPUIDFeature_SSE41      = 1 << 19,
-    kCPUIDFeature_SSE42      = 1 << 20,
-    kCPUIDFeature_X2APIC     = 1 << 21,
-    kCPUIDFeature_MOVBE      = 1 << 22,
-    kCPUIDFeature_POPCNT     = 1 << 23,
-    kCPUIDFeature_TSCD       = 1 << 24,
-    kCPUIDFeature_AESNI      = 1 << 25,
-    kCPUIDFeature_XSAVE      = 1 << 26,
-    kCPUIDFeature_OSXSAVE    = 1 << 27,
-    kCPUIDFeature_AVX        = 1 << 28,
-    kCPUIDFeature_F16C       = 1 << 29,
-    kCPUIDFeature_RDRAND     = 1 << 30,
-    kCPUIDFeature_RESERVED31 = 1 << 31,
-}
-CPUIDFeaturesECX;
-
-typedef enum CPUIDFeaturesEDX_t
-{
-    kCPUIDFeature_X87        = 1 << 0,
-    kCPUIDFeature_VME        = 1 << 1,
-    kCPUIDFeature_DE         = 1 << 2,
-    kCPUIDFeature_PSE        = 1 << 3,
-    kCPUIDFeature_TSC        = 1 << 4,
-    kCPUIDFeature_MSR        = 1 << 5,
-    kCPUIDFeature_PAE        = 1 << 6,
-    kCPUIDFeature_MCE        = 1 << 7,
-    kCPUIDFeature_CMPXCHG8B  = 1 << 8,
-    kCPUIDFeature_APIC       = 1 << 9,
-    kCPUIDFeature_RESERVED10 = 1 << 10,
-    kCPUIDFeature_SEP        = 1 << 11,
-    kCPUIDFeature_MTRR       = 1 << 12,
-    kCPUIDFeature_PGE        = 1 << 13,
-    kCPUIDFeature_MCA        = 1 << 14,
-    kCPUIDFeature_CMOV       = 1 << 15,
-    kCPUIDFeature_PAT        = 1 << 16,
-    kCPUIDFeature_PSE36      = 1 << 17,
-    kCPUIDFeature_PSN        = 1 << 18,
-    kCPUIDFeature_CLFLSH     = 1 << 19,
-    kCPUIDFeature_RESERVED20 = 1 << 20,
-    kCPUIDFeature_DS         = 1 << 21,
-    kCPUIDFeature_ACPI       = 1 << 22,
-    kCPUIDFeature_MMX        = 1 << 23,
-    kCPUIDFeature_FXSR       = 1 << 24,
-    kCPUIDFeature_SSE        = 1 << 25,
-    kCPUIDFeature_SSE2       = 1 << 26,
-    kCPUIDFeature_SS         = 1 << 27,
-    kCPUIDFeature_HTT        = 1 << 28,
-    kCPUIDFeature_TM         = 1 << 29,
-    kCPUIDFeature_RESERVED30 = 1 << 30,
-    kCPUIDFeature_PBE        = 1 << 31,
-}
-CPUIDFeaturesEDX;
-
-typedef enum CPUIDFeaturesEBX_t
-{
-    kCPUIDFeature_AVX2       = 1 << 5,
-}
-CPUIDFeaturesEBX;
-
-typedef enum CPUIDFeaturesExtendedECX_t
-{
-    kCPUIDFeature_LZCNT      = 1 << 5,
-    kCPUIDFeature_SSE4A      = 1 << 6,
-    kCPUIDFeature_MSSE       = 1 << 7,
-    kCPUIDFeature_PREFETCHW  = 1 << 8,
-    kCPUIDFeature_XOP        = 1 << 11,
-    kCPUIDFeature_FMA4       = 1 << 16,
-}
-CPUIDFeaturesExtendedECX;
-
-typedef enum CPUIDFeaturesExtendedEDX_t
-{
-    kCPUIDFeature_EM64T      = 1 << 29,
-    kCPUIDFeature_3DNOW      = 1 << 30,
-    kCPUIDFeature_E3DNOW     = 1 << 31,
-}
-CPUIDFeaturesExtendedEDX;
-
-void InfoCPU()
-{
-    if (CheckCPUID())
-    {
-        char name[13] = {0};
-        uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, (uint32_t*)name, (uint32_t*)(name + 8), (uint32_t*)(name + 4));
-        uint32_t MaxExtendedLevel = CallCPUID(0x80000000UL, NULL, NULL, NULL, NULL);
-
-        ConsoleIOPrint("CPU :\n");
-        ConsoleIOPrintFormatted("CPU name : %s\n", name);
-
-        if (MaxBasicLevel >= 0x00000001UL)
-        {
-            uint32_t featuresECX = 0, featuresEDX = 0;
-            CallCPUID(0x00000001UL, NULL, NULL, &featuresECX, &featuresEDX);
-
-            ConsoleIOPrintFormatted("X87     : %s\n", featuresEDX & kCPUIDFeature_X87   ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("MMX     : %s\n", featuresEDX & kCPUIDFeature_MMX   ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SSE     : %s\n", featuresEDX & kCPUIDFeature_SSE   ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SSE2    : %s\n", featuresEDX & kCPUIDFeature_SSE2  ? "YES" : "NO ");
-
-            ConsoleIOPrintFormatted("SSE3    : %s\n", featuresECX & kCPUIDFeature_SSE3  ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("VMX     : %s\n", featuresECX & kCPUIDFeature_VMX   ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SMX     : %s\n", featuresECX & kCPUIDFeature_SMX   ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SSSE3   : %s\n", featuresECX & kCPUIDFeature_SSSE3 ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SSE4.1  : %s\n", featuresECX & kCPUIDFeature_SSE41 ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("SSE4.2  : %s\n", featuresECX & kCPUIDFeature_SSE42 ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("AESNI   : %s\n", featuresECX & kCPUIDFeature_AESNI ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("AVX     : %s\n", featuresECX & kCPUIDFeature_AVX   ? "YES" : "NO ");
-
-            if (MaxBasicLevel >= 0x00000007UL)
-            {
-                uint32_t featuresEBX = 0;
-                CallCPUID(0x00000007UL, NULL, &featuresEBX, NULL, NULL);
-
-                ConsoleIOPrintFormatted("AVX2    : %s\n", featuresEBX & kCPUIDFeature_AVX2  ? "YES" : "NO ");
-            }
-        }
-        if (MaxExtendedLevel >= 0x80000001UL)
-        {
-            uint32_t featuresECX = 0, featuresEDX = 0;
-            CallCPUID(0x80000001UL, NULL, NULL, &featuresECX, &featuresEDX);
-
-            ConsoleIOPrintFormatted("EM64T   : %s\n", featuresEDX & kCPUIDFeature_EM64T  ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("3DNow!  : %s\n", featuresEDX & kCPUIDFeature_3DNOW  ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("3DNow!+ : %s\n", featuresEDX & kCPUIDFeature_E3DNOW ? "YES" : "NO ");
-
-            ConsoleIOPrintFormatted("SSE4.a  : %s\n", featuresEDX & kCPUIDFeature_SSE4A  ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("XOP     : %s\n", featuresEDX & kCPUIDFeature_XOP    ? "YES" : "NO ");
-            ConsoleIOPrintFormatted("FMA4    : %s\n", featuresEDX & kCPUIDFeature_FMA4   ? "YES" : "NO ");
-
-            if (MaxExtendedLevel >= 0x80000004UL)
-            {
-                char brand[49] = {0};
-                CallCPUID(0x80000002UL, (uint32_t*)(brand + 0x00), (uint32_t*)(brand + 0x04), (uint32_t*)(brand + 0x08), (uint32_t*)(brand + 0x0C));
-                CallCPUID(0x80000003UL, (uint32_t*)(brand + 0x10), (uint32_t*)(brand + 0x14), (uint32_t*)(brand + 0x18), (uint32_t*)(brand + 0x1C));
-                CallCPUID(0x80000004UL, (uint32_t*)(brand + 0x20), (uint32_t*)(brand + 0x24), (uint32_t*)(brand + 0x28), (uint32_t*)(brand + 0x2C));
-                ConsoleIOPrintFormatted("CPU brand : %s\n", brand);
-            }
-        }
-        ConsoleIOPrint("\n");
-    }
-}
-
 LONG __stdcall CrashHandlerExceptionFilter(struct _EXCEPTION_POINTERS * pExceptionInfo)
 {
 	native_t callstack[MaxCallStack] = {0};
@@ -612,6 +715,7 @@ void CrashHandler(int signum, siginfo_t * info, void * ucontext)
 
 void CrashHandlerInstall()
 {
+	InfoCPU();
 #ifdef OS_WINDOWS
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);

@@ -21,7 +21,7 @@ windows64-icc12/
 windows32-msvc6/
 windows32-msvc2005/
 windows64-msvc2005/
-windows32-bcc/
+windows32-bcc5/
 windows32-wcc/
 windows32-mingw/
 windows32-cygwin/
