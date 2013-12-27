@@ -159,7 +159,8 @@ uint8_t PatchLength(uint8_t * pData, uint8_t * pOut, uint32_t required)
 {
     InstructionInfo info;
     uint8_t total = 0;
-	CallbackReader reader = {0};
+	CallbackReader reader;
+	memset(&reader, 0, sizeof(reader));
     reader.pRead    = CallbackRead;
     reader.pPrivate = &reader;
     reader.buffer = pData;

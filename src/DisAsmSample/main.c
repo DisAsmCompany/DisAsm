@@ -55,12 +55,13 @@ DisAsmFlags;
 
 void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, address_t address, address_t base, DynamicArray * array, uint32_t flags)
 {
-	InstructionInfo info = {0};
+	InstructionInfo info;
 	uint8_t ret = 0;
 	/* store function start in order to analyze jumps */
 	address_t start = address + base;
 
 	(void)(hBenchmark);
+	memset(&info, 0, sizeof(info));
 	for (;;)
 	{
 		uint8_t length;
@@ -347,8 +348,9 @@ int main(int argc, char * const argv[])
 	}
 	else if (memory)
 	{
-		ModuleInfo info = {0};
+		ModuleInfo info;
 		native_t address = ModuleLoad(argv[argc - 1]);
+		memset(&info, 0, sizeof(info));
 		ModuleGetInfo(address, &info);
 		hReader = MemoryReaderCreate(address, info.size);
 		base = (uint32_t) address;

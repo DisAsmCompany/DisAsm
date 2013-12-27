@@ -42,7 +42,8 @@ uint8_t buffer[] =
 int main()
 {
 	/* initialize callback reader */
-	CallbackReader reader = {0};
+	CallbackReader reader;
+	memset(&reader, 0, sizeof(reader));
 	reader.pRead    = CallbackRead;
 	reader.pPrivate = &reader;
 	reader.buffer = (uint8_t*) buffer;

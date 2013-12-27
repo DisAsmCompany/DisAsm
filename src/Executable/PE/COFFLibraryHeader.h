@@ -22,7 +22,6 @@ enum { kCOFFLibrarySignatureSize = 8 };
 static const char kCOFFLibrarySignature[] = "!<arch>\n";
 
 static const char kCOFFMemberLinker[]    = "/       ";
-static const char kCOFFMemberLongNames[] = "//      ";
 
 SDFBegin(COFFLibraryHeader, "COFF Library Header"),
 {"Name         ", kStringASCII, 16, 1, NULL},

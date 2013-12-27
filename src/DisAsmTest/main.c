@@ -19,10 +19,13 @@
 
 void VerifyInstruction(uint8_t * bytes, uint8_t size, Mnemonic mnemonic)
 {
-	InstructionInfo info = {0};
-	CallbackReader reader = {0};
+	InstructionInfo info;
+	CallbackReader reader;
 	uint8_t length;
 	uint8_t i;
+
+	memset(&info, 0, sizeof(info));
+	memset(&reader, 0, sizeof(reader));
 
 	ConsoleIOPrint("Verify Instruction ");
 	for (i = 0; i < size; ++i)
@@ -56,8 +59,8 @@ void VerifyInstructionWithModRM(uint8_t * bytes, uint8_t size, Mnemonic mnemonic
 
 	do
 	{
-		CallbackReader reader = {0};
-		InstructionInfo info = {0};
+		CallbackReader reader;
+		InstructionInfo info;
 		uint8_t ModRM;
 		uint8_t hasSIB;
 		uint8_t * buffer = malloc(size + 6);
@@ -67,6 +70,8 @@ void VerifyInstructionWithModRM(uint8_t * bytes, uint8_t size, Mnemonic mnemonic
 		uint8_t length = 0;
 		uint32_t expected = size + 1;
 
+		memset(&info, 0, sizeof(info));
+		memset(&reader, 0, sizeof(reader));
 		memcpy(buffer, bytes, size);
 
 		reader.pRead    = CallbackRead;
@@ -357,6 +362,7 @@ void TestSSE()
 int main()
 {
 	ConsoleIOInit();
+	CrashHandlerInstall();
 
 	TestChooseOpCode();
 	TestNOP();

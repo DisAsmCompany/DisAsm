@@ -58,6 +58,8 @@ void __writeeflags(native_t value)
 
 #if defined(COMP_WATCOMC)
 
+uint32_t WatcomCallCPUID(uint32_t, uint32_t *, uint32_t *, uint32_t *, uint32_t *);
+
 #pragma aux WatcomCallCPUID = \
 ".586" \
 "push eax" \
@@ -92,12 +94,13 @@ modify [esi eax ebx ecx edx];
 
 #endif /* defined(COMP_WATCOMC) */
 
-uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
+uint32_t CallCPUID(uint32_t level, uint32_t selector, uint32_t * outeax, uint32_t * outebx, uint32_t * outecx, uint32_t * outedx)
 {
     uint32_t _eax = 0, _ebx = 0, _ecx = 0, _edx = 0;
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	/* use intrinsic because x64 doesn't allow inline assembly */
     int info[4];
+	(void) selector;
     __cpuid(info, level);
     _eax = info[0];
     _ebx = info[1];
@@ -108,6 +111,7 @@ uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_
 	__asm
 	{
 		mov eax, level
+		mov ecx, selector
 		cpuid
 		mov _eax, eax
 		mov _ebx, ebx
@@ -122,7 +126,7 @@ uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_
 	__asm__ __volatile__(
 	"cpuid"
 	: "=a" (_eax), "=b" (_ebx), "=c" (_ecx), "=d" (_edx)
-	: "a" (level)
+	: "a" (level), "c" (selector)
 	);
 #endif /* defined(COMP_GNUC) */
     if (outeax) *outeax = _eax;
@@ -134,27 +138,30 @@ uint32_t CallCPUID(uint32_t level, uint32_t * outeax, uint32_t * outebx, uint32_
 
 #if defined(COMP_WATCOMC)
 
-#pragma aux ReadEFLAGS = \
+native_t __readeflags();
+void __writeeflags(native_t);
+
+#pragma aux __readeflags = \
 	".586" \
 	"pushfd" \
 	"pop eax" \
 	modify [eax];
 
-#pragma aux WriteEFLAGS = \
+#pragma aux __writeeflags = \
 	".586" \
 	"push eax" \
 	"popfd" \
 	parm [eax] \
 	modify [eax];
 
-#else /* defined(COMP_WATCOMC) */
+#endif /* defined(COMP_WATCOMC) */
 
 native_t ReadEFLAGS()
 {
 	native_t value = 0;
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC)
 	value = __readeflags();
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__(
 		"pushf\n"
@@ -167,9 +174,9 @@ native_t ReadEFLAGS()
 
 void WriteEFLAGS(native_t eflags)
 {
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC)
 	__writeeflags(eflags);
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__(
 		"push %%eax\n"
@@ -180,94 +187,14 @@ void WriteEFLAGS(native_t eflags)
 #endif /* defined(COMP_GNUC) */
 }
 
-#endif /* defined(COMP_WATCOMC) */
-
-uint8_t Check80286()
-{
-	/* Bits 12-15 are always set on the 8086 and always clear on 80386 and later */
-	native_t kFlags8086 = (1 << 12) | (1 << 13) | (1 << 14) | (1 << 15);
-	uint8_t supported = 0;
-	/* clear bits 12-15 */
-	native_t eflags = ReadEFLAGS();
-	WriteEFLAGS(eflags & ~kFlags8086);
-	supported = (0 == (ReadEFLAGS() & kFlags8086)) ? 1 : 0;
-	WriteEFLAGS(eflags);
-	return supported;
-}
-
-uint8_t Check80386()
-{
-	/* The AC flag (bit 18) is always set on 80386 and later */
-	native_t kFlag80386 = 1 << 18;
-	uint8_t supported = 0;
-	native_t eflags = ReadEFLAGS();
-	WriteEFLAGS(eflags ^ kFlag80386);
-	supported = ((eflags & kFlag80386) != (ReadEFLAGS() & kFlag80386)) ? 1 : 0;
-	WriteEFLAGS(eflags);
-	return supported;
-}
-
-uint8_t CheckCPUID()
-{
-	/*
-	The ID flag (bit 21) in the EFLAGS register indicates support for the CPUID instruction.
-	If a software procedure can set and clear this flag, 
-	the processor executing the procedure supports the CPUID instruction. 
-	This instruction operates the same in non-64-bit modes and 64-bit mode.
-	*/
-    native_t kFlagCPUID = 1 << 21;
-    uint8_t supported = 0;
-    native_t eflags = ReadEFLAGS();
-    WriteEFLAGS(eflags ^ kFlagCPUID);
-	supported = ((eflags & kFlagCPUID) != (ReadEFLAGS() & kFlagCPUID)) ? 1 : 0;
-    WriteEFLAGS(eflags);
-    return supported;
-}
-
-uint8_t CheckFPU()
-{
-	uint8_t result = 0;
-	if (CheckCPUID())
-	{
-		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, NULL, NULL, NULL);
-		if (MaxBasicLevel >= 0x00000001UL)
-		{
-			uint32_t featuresEDX = 0;
-			CallCPUID(0x00000001UL, NULL, NULL, NULL, &featuresEDX);
-			result = kCPUIDFeature_X87 == (featuresEDX & kCPUIDFeature_X87) ? 1 : 0;
-		}
-	}
-	return result;
-}
-
-uint8_t CheckMMX()
-{
-	uint8_t result = 0;
-	/*
-	1. Check that the processor supports the CPUID instruction by attempting to execute the CPUID instruction. If the 
-	processor does not support the CPUID instruction, this will generate an invalid-opcode exception (#UD)
-	*/
-	if (CheckCPUID())
-	{
-		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, NULL, NULL, NULL, NULL);
-		if (MaxBasicLevel >= 0x00000001UL)
-		{
-			/*
-			2. Check that the processor supports the MMX technology (if CPUID.01H:EDX.MMX[bit 23] = 1)
-			*/
-			uint32_t featuresEDX = 0;
-			CallCPUID(0x00000001UL, NULL, NULL, NULL, &featuresEDX);
-			result = kCPUIDFeature_MMX == (featuresEDX & kCPUIDFeature_MMX) ? 1 : 0;
-		}
-	}
-	return result;
-}
-
 void CallPREFETCH(void * p)
 {
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_m_prefetch(p);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetch (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallPREFETCHW(void * p)
@@ -275,12 +202,18 @@ void CallPREFETCHW(void * p)
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_m_prefetchw(p);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetchw (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 void CallPREFETCHT0(void *p)
 {
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_prefetch(p, _MM_HINT_T0);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetcht0 (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallPREFETCHT1(void *p)
@@ -288,6 +221,9 @@ void CallPREFETCHT1(void *p)
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_prefetch(p, _MM_HINT_T1);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetcht1 (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallPREFETCHT2(void *p)
@@ -295,6 +231,9 @@ void CallPREFETCHT2(void *p)
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_prefetch(p, _MM_HINT_T2);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetcht1 (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallPREFETCHNTA(void *p)
@@ -302,6 +241,19 @@ void CallPREFETCHNTA(void *p)
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_prefetch(p, _MM_HINT_NTA);
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("prefetchnta (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
+}
+
+void CallCLFLUSH(void *p)
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_clflush(p);
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("clflush (%0)" :: "d"(p));
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallLFENCE()
@@ -309,6 +261,9 @@ void CallLFENCE()
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_lfence();
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("lfence");
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallMFENCE()
@@ -316,6 +271,9 @@ void CallMFENCE()
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_mfence();
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("mfence");
+#endif /* defined(COMP_GNUC) */
 }
 
 void CallSFENCE()
@@ -323,4 +281,32 @@ void CallSFENCE()
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	_mm_sfence();
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("sfence");
+#endif /* defined(COMP_GNUC) */
+}
+
+int64_t CallRDTSC()
+{
+	int64_t result = 0;
+	/* serialize unfinished instructions */
+	CallCPUID(0, 0, NULL, NULL, NULL, NULL);
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	result = __rdtsc();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+	return result;
+}
+
+native_t CallXGETBV()
+{
+	native_t result = 0;
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	/* we cannot use neither inline assembler, nor intrinsic,
+	since XGETBV is pretty new instruction and not supported yet */
+	typedef native_t (*code)();
+	uint8_t raw[] = {0x0F, 0x01, 0xD0, 0xC3}; /* XGETBV; RET; */
+	code p = (code)(native_t)raw;
+	result = p();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+	return result;
 }
