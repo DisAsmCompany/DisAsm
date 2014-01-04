@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(DisAsm)
 
-set(SRC ../../src)
+set(SRC ../src)
 
 file(GLOB SOURCES ${SRC}/DisAsm/*.c)
 file(GLOB HEADERS ${SRC}/DisAsm/*.h)
