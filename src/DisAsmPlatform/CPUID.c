@@ -497,7 +497,7 @@ void CPUIDCacheInfo(CacheInfo * pOutInfo)
 			uint32_t eax, ebx, ecx;
 			for (;;)
 			{
-				CacheLevel level;
+				CacheLevel level = kCacheLevel_None;
 				uint32_t index, type, partitions, sets;
 				CallCPUID(0x00000004UL, selector, &eax, &ebx, &ecx, NULL);
 				type = eax & 0x1F;

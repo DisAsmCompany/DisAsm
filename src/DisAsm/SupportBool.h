@@ -27,9 +27,9 @@ extern "C" {
 
 #else /* defined(__STDC_VERSION__) && (__STDC_VERSION__ >= __C99__) */
 
-#if defined(COMP_BORLANDC) || defined(COMP_MICROSOFTC)
+#if defined(COMP_BORLANDC) || (defined(COMP_MICROSOFTC) && COMP_VERSION < COMP_MICROSOFTC2013)
 typedef int _Bool;
-#endif /* defined(COMP_BORLANDC) || defined(COMP_MICROSOFTC) */
+#endif /* defined(COMP_BORLANDC) || (defined(COMP_MICROSOFTC) && COMP_VERSION < COMP_MICROSOFTC2013) */
 
 #define true  1
 #define false 0

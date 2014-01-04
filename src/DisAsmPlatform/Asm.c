@@ -12,13 +12,22 @@
 #include "../DisAsm/DisAsm"
 #include "DisAsmPlatform"
 
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+#if (defined(COMP_MICROSOFTC) && COMP_VERSION >= COMP_MICROSOFTC2005) || defined(COMP_INTELC)
+#include <intrin.h>
 #include <xmmintrin.h>
 #endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
 
-#if defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6
+#if defined(COMP_MICROSOFTC)
 
 /* old Microsoft C versions have no __cpuid, __readeflags, __writeeflags available */
+
+#if COMP_VERSION < COMP_MICROSOFTC2005
+
+#define _MM_HINT_T0     1
+#define _MM_HINT_T1     2
+#define _MM_HINT_T2     3
+#define _MM_HINT_NTA    0
+
 void __cpuid(int CPUInfo[4], int InfoType)
 {
 	__asm
@@ -31,6 +40,15 @@ void __cpuid(int CPUInfo[4], int InfoType)
 		mov CPUInfo[3], edx;
 	}
 }
+
+int64_t __rdtsc()
+{
+	return 0;
+}
+
+#endif /* COMP_VERSION <= COMP_MICROSOFTC6 */
+
+#if COMP_VERSION < COMP_MICROSOFTC2005
 
 native_t __readeflags(void)
 {
@@ -54,7 +72,9 @@ void __writeeflags(native_t value)
 	}
 }
 
-#endif /* defined(COMP_MICROSOFTC) && COMP_VERSION <= COMP_MICROSOFTC6 */
+#endif /* COMP_VERSION < COMP_MICROSOFTC2005 */
+
+#endif /* defined(COMP_MICROSOFTC) */
 
 #if defined(COMP_WATCOMC)
 
@@ -99,7 +119,7 @@ uint32_t CallCPUID(uint32_t level, uint32_t selector, uint32_t * outeax, uint32_
     uint32_t _eax = 0, _ebx = 0, _ecx = 0, _edx = 0;
 #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
 	/* use intrinsic because x64 doesn't allow inline assembly */
-    int info[4];
+	int info[4] = {0};
 	(void) selector;
     __cpuid(info, level);
     _eax = info[0];
@@ -156,12 +176,38 @@ void __writeeflags(native_t);
 
 #endif /* defined(COMP_WATCOMC) */
 
+#if defined(COMP_BORLANDC)
+
+native_t __readeflags()
+{
+	native_t _eflags;
+	__asm
+	{
+		pushfd
+		pop eax
+		mov _eflags, eax
+	}
+	return _eflags;
+}
+
+void __writeeflags(native_t _eflags)
+{
+	__asm
+	{
+		mov eax, _eflags
+		push eax
+		popfd
+	}
+}
+
+#endif /* defined(COMP_BORLANDC) */
+
 native_t ReadEFLAGS()
 {
 	native_t value = 0;
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC)
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC)
 	value = __readeflags();
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) */
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__(
 		"pushf\n"
@@ -174,9 +220,9 @@ native_t ReadEFLAGS()
 
 void WriteEFLAGS(native_t eflags)
 {
-#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC)
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC)
 	__writeeflags(eflags);
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) */
+#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__(
 		"push %%eax\n"
