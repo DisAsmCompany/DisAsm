@@ -78,8 +78,7 @@ void __writeeflags(native_t value)
 
 #if defined(COMP_WATCOMC)
 
-uint32_t WatcomCallCPUID(uint32_t, uint32_t *, uint32_t *, uint32_t *, uint32_t *);
-
+void WatcomCallCPUID(uint32_t, uint32_t, uint32_t *, uint32_t *, uint32_t *, uint32_t *); 
 #pragma aux WatcomCallCPUID = \
 ".586" \
 "push eax" \
@@ -87,30 +86,19 @@ uint32_t WatcomCallCPUID(uint32_t, uint32_t *, uint32_t *, uint32_t *, uint32_t 
 "push ecx" \
 "push edx" \
 "mov eax, esi" \
+"mov ecx, edi" \
 "cpuid" \
 "mov esi, [esp]" \
-"test esi, esi" \
-"jmp skip_edx" \
 "mov [esi], edx" \
-"skip_edx: nop" \
-"mov esi, [esp + 4]" \
-"test esi, esi" \
-"jmp skip_ecx" \
+"mov esi, [esp+4]" \
 "mov [esi], ecx" \
-"skip_ecx: nop" \
-"mov esi, [esp + 8]" \
-"test esi, esi" \
-"jmp skip_ebx" \
+"mov esi, [esp+8]" \
 "mov [esi], ebx" \
-"skip_ebx: nop" \
-"mov esi, [esp + 12]" \
-"test esi, esi" \
-"jmp skip_eax" \
+"mov esi, [esp+12]" \
 "mov [esi], eax" \
-"skip_eax: nop" \
 "add esp, 16" \
-parm [esi][eax][ebx][ecx][edx] \
-modify [esi eax ebx ecx edx];
+parm [esi] [edi] [eax] [ebx] [ecx] [edx] \
+modify [esi edi eax ebx ecx edx];
 
 #endif /* defined(COMP_WATCOMC) */
 
@@ -140,7 +128,7 @@ uint32_t CallCPUID(uint32_t level, uint32_t selector, uint32_t * outeax, uint32_
 	}
 #endif /* defined(COMP_BORLANDC) */
 #if defined(COMP_WATCOMC)
-	WatcomCallCPUID(level, &_eax, &_ebx, &_ecx, &_edx);
+	WatcomCallCPUID(level, selector, &_eax, &_ebx, &_ecx, &_edx);
 #endif /* defined(COMP_WATCOMC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__(
