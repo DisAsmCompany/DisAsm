@@ -14,9 +14,7 @@
 
 typedef struct BenchmarkContext_t
 {
-	int64_t frequency;
-	int64_t sample;
-	int64_t thread;
+	BenchmarkSample sample;
 	int64_t count;
 	int64_t total;
 	int64_t _min;
@@ -33,15 +31,23 @@ HBENCHMARK BenchmarkCreate()
 #ifdef OS_WINDOWS
 	LARGE_INTEGER li;
 	QueryPerformanceFrequency(&li);
-	pContext->frequency = li.QuadPart;
+	pContext->sample.frequency = li.QuadPart;
 #else /* OS_WINDOWS */
-	pContext->frequency = 1000;
+	pContext->sample.frequency = 1000;
 #endif /* OS_WINDOWS */
 	pContext->count = 0;
 	pContext->total = 0;
 	pContext->_max = 0;
 	pContext->_min = I64(0x7FFFFFFFFFFFFFFF);
 	return (HBENCHMARK) pContext;
+}
+
+static int64_t HighLow(uint32_t high, uint32_t low)
+{
+	int64_t value = high;
+	value <<= 32;
+	value += low;
+	return value;
 }
 
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
@@ -53,14 +59,14 @@ void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
 	pContext->affinity = SetThreadAffinityMask(GetCurrentThread(), 1);
 	GetThreadTimes(GetCurrentThread(), &CreationTime, &ExitTime, &KernelTime, &UserTime);
 	QueryPerformanceCounter(&li);
-	pContext->sample = li.QuadPart;
-	pContext->thread = KernelTime.dwHighDateTime + UserTime.dwHighDateTime;
-	pContext->thread <<= 32;
-	pContext->thread += KernelTime.dwLowDateTime + UserTime.dwLowDateTime;
+	pContext->sample.tick = CallRDTSC();
+	pContext->sample.time = li.QuadPart;
+	pContext->sample.user = HighLow(UserTime.dwHighDateTime, UserTime.dwLowDateTime);
+	pContext->sample.kernel = HighLow(KernelTime.dwHighDateTime, KernelTime.dwLowDateTime);
 #else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
-	pContext->sample = 1000000 * t.tv_sec + t.tv_usec;
+	pContext->sample.time = 1000000 * t.tv_sec + t.tv_usec;
 #endif /* OS_WINDOWS */
 }
 
@@ -70,65 +76,28 @@ void BenchmarkSampleEnd(HBENCHMARK hBenchmark)
 #ifdef OS_WINDOWS
 	LARGE_INTEGER li;
 	FILETIME CreationTime, ExitTime, KernelTime, UserTime;
-	int64_t time;
+	pContext->sample.tick = CallRDTSC() - pContext->sample.tick;
 	GetThreadTimes(GetCurrentThread(), &CreationTime, &ExitTime, &KernelTime, &UserTime);
 	QueryPerformanceCounter(&li);
+	pContext->sample.time = li.QuadPart - pContext->sample.time;
+	pContext->sample.user = HighLow(UserTime.dwHighDateTime, UserTime.dwLowDateTime) - pContext->sample.user;
+	pContext->sample.kernel = HighLow(KernelTime.dwHighDateTime, KernelTime.dwLowDateTime) - pContext->sample.kernel;
 	SetThreadAffinityMask(GetCurrentThread(), pContext->affinity);
-	pContext->sample = li.QuadPart - pContext->sample;
-	time = KernelTime.dwHighDateTime + UserTime.dwHighDateTime;
-	time <<= 32;
-	time += KernelTime.dwLowDateTime + UserTime.dwLowDateTime;
-	pContext->thread = time - pContext->thread;
 #else /* OS_WINDOWS */
 	struct timeval t;
 	gettimeofday(&t, NULL);
-	pContext->sample = (1000000 * t.tv_sec + t.tv_usec) - pContext->sample;
+	pContext->sample.time = (1000000 * t.tv_sec + t.tv_usec) - pContext->sample.time;
 #endif /* OS_WINDOWS */
-	pContext->total += pContext->sample;
+	pContext->total += pContext->sample.time;
 	++pContext->count;
-	pContext->_max = (pContext->_max < pContext->sample) ? pContext->sample : pContext->_max;
-	pContext->_min = (pContext->_min > pContext->sample) ? pContext->sample : pContext->_min;
+	pContext->_max = (pContext->_max < pContext->sample.time) ? pContext->sample.time : pContext->_max;
+	pContext->_min = (pContext->_min > pContext->sample.time) ? pContext->sample.time : pContext->_min;
 }
 
-void BenchmarkPrintData(HBENCHMARK hBenchmark)
+void BenchmarkGetSample(HBENCHMARK hBenchmark, BenchmarkSample * pSample)
 {
 	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-
-	if (pContext->count > 0)
-	{
-		ConsoleIOPrintFormatted("avg : %.4f\n", (float) pContext->total / (pContext->frequency * pContext->count));
-		ConsoleIOPrintFormatted("min : %.4f\n", (float) pContext->_min / pContext->frequency);
-		ConsoleIOPrintFormatted("max : %.4f\n", (float) pContext->_max / pContext->frequency);
-	}
-}
-
-int64_t BenchmarkGetSample(HBENCHMARK hBenchmark)
-{
-	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-	return pContext->sample;
-}
-
-int64_t BenchmarkGetThreadSample(HBENCHMARK hBenchmark)
-{
-	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-	return pContext->thread;
-}
-
-int64_t BenchmarkGetFrequency(HBENCHMARK hBenchmark)
-{
-	BenchmarkContext * pContext = (BenchmarkContext*) hBenchmark;
-	return pContext->frequency;
-}
-
-int64_t BenchmarkGetThreadFrequency(HBENCHMARK hBenchmark)
-{
-	(void)hBenchmark;
-#ifdef OS_WINDOWS
-	/* FILETIME is in 100-nanosecond intervals */
-	return 10000000;
-#else /* OS_WINDOWS */
-	return 0;
-#endif /* OS_WINDOWS */
+	memcpy(pSample, &pContext->sample, sizeof(BenchmarkSample));
 }
 
 void BenchmarkDestroy(HBENCHMARK hBenchmark)

@@ -251,9 +251,6 @@ uint8_t ProcessExecutable(HREADER hReader, HEXECUTABLE hExecutable, address_t ba
 		}
 	}
 	DynamicArrayDestroy(array);
-#if defined(PROFILE)
-	BenchmarkPrintData(hBenchmark);
-#endif /* defined(PROFILE) */
 	BenchmarkDestroy(hBenchmark);
 	return 1;
 }

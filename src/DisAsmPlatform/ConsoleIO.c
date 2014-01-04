@@ -42,6 +42,18 @@ void xstrcat(char * dst, uint32_t size, const char * src)
 	memcpy(dst + sizedst, src, copy);
 }
 
+const char * xstrchr(const char * str, char c)
+{
+	if (NULL != str)
+	{
+		for (; 0 != *str; ++str)
+		{
+			if (c == *str) return str;
+		}
+	}
+	return NULL;
+}
+
 uint8_t xstrcmp(const char * str1, const char * str2)
 {
 	for (; *str1 == *str2; ++str1, ++str2)
@@ -214,29 +226,11 @@ uint32_t AppendDec(char * buffer, uint64_t value, uint32_t width)
 	}
 	for (i = 0; i < length; ++i)
 	{
-		uint32_t divider10 = divider / 10;
+		uint64_t divider10 = divider / 10;
 		buffer[width - length + i] = (char)((value % divider) / divider10 + '0');
 		divider = divider10;
 	}
 	return width;
-}
-
-uint32_t AppendDouble(char * buffer, double value, uint32_t width, uint32_t precision)
-{
-	uint64_t bytes = *((uint64_t*) &value);
-	//uint8_t sign = (bytes & U64(0x8000000000000000)) ? 1 : 0;
-	//uint64_t exponent = ((bytes >> 52) & U64(0x07FF)) - 1027;
-	uint64_t fraction = bytes & U64(0xFFFFFFFFFFFFF);
-	uint32_t i = 0;
-
-	while (fraction)
-	{
-		buffer[i] = fraction % 10 + '0';
-		fraction /= 10;
-		++i;
-	}
-
-	return i;
 }
 
 uint32_t AppendHex(char * buffer, uint64_t value, uint32_t width)
@@ -257,95 +251,17 @@ uint32_t AppendHex(char * buffer, uint64_t value, uint32_t width)
 void ConsoleIOPrintFormatted(const char * format, ...)
 {
 	enum {MaxLength = 4096};
+	uint32_t size = MaxLength;
 	char message[MaxLength] = {0};
-	uint32_t length = xstrlen(format);
-	uint32_t i = 0;
-	uint32_t j = 0;
-	va_list args;
 
-	va_start(args, format);
-	for (i = 0; i < length; ++i)
-	{
-		/* seems like format specifier */
-		if (format[i] == '%')
-		{
-			uint32_t width = 0;
-			uint32_t precision = 0;
-			uint8_t period = 0;
-			uint8_t stop = 1;
-			uint8_t large = 0;
+#include "ConsoleIOFormat.h"
 
-			do
-			{
-				char specifier = format[i + 1];
-				stop = 1;
-				switch (specifier)
-				{
-				case '0': case '1': case '2': case '3': case '4':
-				case '5': case '6': case '7': case '8': case '9':
-					if (period)
-					{
-						precision = precision * 10 + specifier - '0';
-					}
-					else
-					{
-						width = width * 10 + specifier - '0';
-					}
-					stop = 0;
-					++i;
-					break;
-				case '.': period = 1; ++i; stop = 0; break;
-				case '%': message[j] = '%'; ++i; ++j; break;
-				case 'c':
-					{
-						/* char is promoted to int */
-						message[j] = va_arg(args, int); ++i; ++j;
-					}
-					break;
-				case 'd':
-					{
-						uint64_t value = large ? va_arg(args, uint64_t) : va_arg(args, uint32_t);
-						++i;
-						j += AppendDec(message + j, value, width);
-					}
-					break;
-				case 'f':
-					{
-						/* float is promoted to double */
-						double value = va_arg(args, double);
-						j += AppendDouble(message + j, value, width, precision);
-					}
-					break;
-				case 'l':
-				case 'L': stop = 0; large = 1; ++i; break;
-				case 's':
-					{
-						const char * value = va_arg(args, const char *);
-						xstrcat(message + j, MaxLength, value);
-						j += xstrlen(value);
-						++i;
-					}
-					break;
-				case 'X':
-					{
-						uint64_t value = large ? va_arg(args, uint64_t) : va_arg(args, uint32_t);
-						++i;
-						j += AppendHex(message + j, value, width);
-					}
-					break;
-				default: break;
-				}
-			}
-			while (!stop);
-		}
-		else
-		{
-			message[j] = format[i];
-			++j;
-		}
-	}
-	va_end(args);
 	ConsoleIOPrint(message);
+}
+
+void ConsoleIOFormat(char * message, uint32_t size, const char * format, ...)
+{
+#include "ConsoleIOFormat.h"
 }
 
 #if !defined(_DEBUG) && !defined(DEBUG)

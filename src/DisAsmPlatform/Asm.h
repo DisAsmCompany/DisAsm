@@ -33,6 +33,7 @@ void CallCLFLUSH(void *p);
 void CallLFENCE();
 void CallMFENCE();
 void CallSFENCE();
+void CallPAUSE();
 
 void __cpuidex(int * CPUInfo, int InfoType, int ECXValue);
 

@@ -15,7 +15,7 @@
 #if (defined(COMP_MICROSOFTC) && COMP_VERSION >= COMP_MICROSOFTC2005) || defined(COMP_INTELC)
 #include <intrin.h>
 #include <xmmintrin.h>
-#endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#endif /* (defined(COMP_MICROSOFTC) && COMP_VERSION >= COMP_MICROSOFTC2005) || defined(COMP_INTELC) */
 
 #if defined(COMP_MICROSOFTC)
 
@@ -317,6 +317,16 @@ void CallSFENCE()
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
 #if defined(COMP_GNUC)
 	__asm__ __volatile__("sfence");
+#endif /* defined(COMP_GNUC) */
+}
+
+void CallPAUSE()
+{
+#if defined(COMP_MICROSOFTC) || defined(COMP_INTELC)
+	_mm_pause();
+#endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	__asm__ __volatile__("pause");
 #endif /* defined(COMP_GNUC) */
 }
 

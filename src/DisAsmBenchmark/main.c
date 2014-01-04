@@ -16,13 +16,10 @@ int main(int argc, char * const argv[])
 {
 	HBENCHMARK hBenchmark = BenchmarkCreate();
 	HREADER hReader = NULL;
+	BenchmarkSample sample;
 	uint64_t size = 0;
 	uint64_t offset = 0;
 	uint64_t instructions = 0;
-	int64_t time = 0;
-	int64_t freq = 0;
-	int64_t threadtime = 0;
-	int64_t threadfreq = 0;
 	uint8_t i;
 	uint64_t speed = 0;
 	InstructionInfo info;
@@ -58,15 +55,10 @@ int main(int argc, char * const argv[])
 			++instructions;
 		}
 		BenchmarkSampleEnd(hBenchmark);
+		BenchmarkGetSample(hBenchmark, &sample);
 
-		time = BenchmarkGetSample(hBenchmark);
-		freq = BenchmarkGetFrequency(hBenchmark);
-		
-		threadtime = BenchmarkGetThreadSample(hBenchmark);
-		threadfreq = BenchmarkGetThreadFrequency(hBenchmark);
-
-		speed = offset * freq / time;
-		ConsoleIOPrintFormatted("%Ld instructions per second\n", instructions * freq / time);
+		speed = offset * sample.frequency / sample.time;
+		ConsoleIOPrintFormatted("%Ld instructions per second\n", instructions * sample.frequency / sample.time);
 		ConsoleIOPrintFormatted("%Ld bytes per second ", speed);
 		if (speed > 1024 * 1024)
 		{
@@ -75,18 +67,6 @@ int main(int argc, char * const argv[])
 		else if (speed > 1024)
 		{
 			ConsoleIOPrintFormatted("(%Ld Mb per second)", speed / 1024);
-		}
-		ConsoleIOPrint("\n");
-		speed = offset * threadfreq / threadtime;
-		ConsoleIOPrintFormatted("[T] %Ld instructions per second\n", instructions * threadfreq / threadtime);
-		ConsoleIOPrintFormatted("[T] %Ld bytes per second ", speed);
-		if (speed > 1024 * 1024)
-		{
-			ConsoleIOPrintFormatted("([T] %Ld Mb per second)", speed / (1024 * 1024));
-		}
-		else if (speed > 1024)
-		{
-			ConsoleIOPrintFormatted("([T] %Ld Mb per second)", speed / 1024);
 		}
 		ConsoleIOPrint("\n");
 	}

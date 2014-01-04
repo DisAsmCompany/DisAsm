@@ -17,16 +17,22 @@
 extern "C" {
 #endif /* __cplusplus */
 
+typedef struct BenchmarkSample_t
+{
+	int64_t frequency;
+	int64_t time;
+	int64_t user;
+	int64_t kernel;
+	int64_t tick;
+}
+BenchmarkSample;
+
 typedef void * HBENCHMARK;
 
 HBENCHMARK BenchmarkCreate();
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark);
 void BenchmarkSampleEnd(HBENCHMARK hBenchmark);
-void BenchmarkPrintData(HBENCHMARK hBenchmark);
-int64_t BenchmarkGetSample(HBENCHMARK hBenchmark);
-int64_t BenchmarkGetThreadSample(HBENCHMARK hBenchmark);
-int64_t BenchmarkGetFrequency(HBENCHMARK hBenchmark);
-int64_t BenchmarkGetThreadFrequency(HBENCHMARK hBenchmark);
+void BenchmarkGetSample(HBENCHMARK hBenchmark, BenchmarkSample * pSample);
 void BenchmarkDestroy(HBENCHMARK hBenchmark);
 
 #ifdef __cplusplus

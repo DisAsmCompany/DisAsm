@@ -394,8 +394,8 @@ static const CacheInfo IntelCacheDescriptors[] =
 	{kCacheLevel_None, 0, 0, 0, 0}, /* EEh */
 	{kCacheLevel_None, 0, 0, 0, 0}, /* EFh */
 
-	{kCacheLevel_Prefetching64,  0, 0, 0, 0}, /* F0h : 64-Byte prefetching */
-	{kCacheLevel_Prefetching128, 0, 0, 0, 0}, /* F1h : 128-Byte prefetching */
+	{kCacheLevel_None, 0, 0, 0, 0}, /* F0h : 64-Byte prefetching */
+	{kCacheLevel_None, 0, 0, 0, 0}, /* F1h : 128-Byte prefetching */
 	{kCacheLevel_None, 0, 0, 0, 0}, /* F2h */
 	{kCacheLevel_None, 0, 0, 0, 0}, /* F3h */
 	{kCacheLevel_None, 0, 0, 0, 0}, /* F4h */

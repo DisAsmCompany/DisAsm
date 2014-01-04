@@ -12,12 +12,55 @@
 #include "../DisAsm/DisAsm"
 #include "DisAsmPlatform"
 
+void InfoCache(CacheLevel level)
+{
+	CacheInfo info;
+	info.level = level;
+	CPUIDCacheInfo(&info);
+	if (level == info.level)
+	{
+		switch (level)
+		{
+		case kCacheLevel_L1Code:
+			ConsoleIOPrint("L1 (Code) : ");
+			break;
+		case kCacheLevel_L1Data:
+			ConsoleIOPrint("L1 (Data) : ");
+			break;
+		case kCacheLevel_L2:
+			ConsoleIOPrint("L2 : ");
+			break;
+		case kCacheLevel_L3:
+			ConsoleIOPrint("L3 : ");
+			break;
+		default:
+			break;
+		}
+		if (info.size >= 1024 && 0 == (info.size % 1024))
+		{
+			ConsoleIOPrintFormatted("%dMb size", info.size / 1024);
+		}
+		else
+		{
+			ConsoleIOPrintFormatted("%dKb size", info.size);
+		}
+		if (0 == info.ways)
+		{
+			ConsoleIOPrint(", fully associative");
+		}
+		else
+		{
+			ConsoleIOPrintFormatted(", %d-way set associative", info.ways);	
+		}
+		ConsoleIOPrintFormatted(", %d line size\n", info.line);
+	}
+}
+
 void InfoCPU()
 {
 	if (CheckCPUID())
 	{
 		char name[13] = {0};
-		CacheInfo info;
 		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, 0, NULL, (uint32_t*)name, (uint32_t*)(name + 8), (uint32_t*)(name + 4));
 		uint32_t MaxExtendedLevel = CallCPUID(0x80000000UL, 0, NULL, NULL, NULL, NULL);
 
@@ -53,21 +96,10 @@ void InfoCPU()
 		ConsoleIOPrintFormatted("XOP      : %s\n", CheckCPUIDFeature(kCPUIDFeature_XOP)    ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("FMA4     : %s\n", CheckCPUIDFeature(kCPUIDFeature_FMA4)   ? "YES" : "NO ");
 
-		info.level = kCacheLevel_L1Code;
-		CPUIDCacheInfo(&info);
-		ConsoleIOPrintFormatted("L1 Code %d size, %d associative, %d line size\n", info.size, info.ways, info.line);
-
-		info.level = kCacheLevel_L1Data;
-		CPUIDCacheInfo(&info);
-		ConsoleIOPrintFormatted("L1 Data %d size, %d associative, %d line size\n", info.size, info.ways, info.line);
-
-		info.level = kCacheLevel_L2;
-		CPUIDCacheInfo(&info);
-		ConsoleIOPrintFormatted("L2 %d size, %d associative, %d line size\n", info.size, info.ways, info.line);
-
-		info.level = kCacheLevel_L3;
-		CPUIDCacheInfo(&info);
-		ConsoleIOPrintFormatted("L3 %d size, %d associative, %d line size\n", info.size, info.ways, info.line);
+		InfoCache(kCacheLevel_L1Code);
+		InfoCache(kCacheLevel_L1Data);
+		InfoCache(kCacheLevel_L2);
+		InfoCache(kCacheLevel_L3);
 
 		if (MaxBasicLevel >= 0x00000003UL && CheckCPUIDFeature(kCPUIDFeature_PSN))
 		{
@@ -278,6 +310,183 @@ void InfoOperationSystem()
 	}
 }
 
+typedef BOOL (__stdcall *pfnEnumDeviceDrivers)(LPVOID *lpImageBase, DWORD cb, LPDWORD lpcbNeeded);
+typedef DWORD (__stdcall *pfnGetDeviceDriverNameA)(LPVOID ImageBase, LPCSTR lpBaseName, DWORD nSize);
+
+typedef BOOL (__stdcall *pfnGetFileVersionInfoA)(LPCSTR lptstrFilename, DWORD dwHandle, DWORD dwLen, LPVOID lpData);
+typedef DWORD (__stdcall *pfnGetFileVersionInfoSizeA)(LPCSTR lptstrFilename, LPDWORD lpdwHandle); 
+typedef BOOL (__stdcall *pfnVerQueryValueA)(const LPVOID pBlock, LPSTR lpSubBlock, LPVOID * lplpBuffer, PUINT puLen);
+
+enum { kMaxVersionString = 256 };
+
+typedef struct VersionInfo_t
+{
+	char Comments[kMaxVersionString];
+	char CompanyName[kMaxVersionString];
+	char FileDescription[kMaxVersionString];
+	char FileVersion[kMaxVersionString];
+	char InternalName[kMaxVersionString];
+	char LegalCopyright[kMaxVersionString];
+	char LegalTrademarks[kMaxVersionString];
+	char OriginalFilename[kMaxVersionString];
+	char ProductName[kMaxVersionString];
+	char ProductVersion[kMaxVersionString];
+	char PrivateBuild[kMaxVersionString];
+	char SpecialBuild[kMaxVersionString];
+}
+VersionInfo;
+
+void GetVersionInfo(const char * name, VersionInfo * pInfo)
+{
+	HMODULE hVersion = LoadLibraryA("version.dll");
+	memset(pInfo, 0, sizeof(VersionInfo));
+	if (NULL != hVersion)
+	{
+		pfnGetFileVersionInfoA GetFileVersionInfoA = (pfnGetFileVersionInfoA) GetProcAddress(hVersion, "GetFileVersionInfoA");
+		pfnGetFileVersionInfoSizeA GetFileVersionInfoSizeA = (pfnGetFileVersionInfoSizeA) GetProcAddress(hVersion, "GetFileVersionInfoSizeA");
+		pfnVerQueryValueA VerQueryValueA = (pfnVerQueryValueA) GetProcAddress(hVersion, "VerQueryValueA");
+		if (NULL != GetFileVersionInfoA && NULL != GetFileVersionInfoSizeA && NULL != VerQueryValueA)
+		{
+			DWORD dummy = 0;
+			DWORD size = GetFileVersionInfoSize(name, &dummy);
+			if (size > 0 && size <= 8192)
+			{
+				char block[8192];
+				if (GetFileVersionInfo(name, dummy, size, block))
+				{
+					struct LANGANDCODEPAGE
+					{
+						WORD language;
+						WORD codepage;
+					}
+					* pTranslate;
+					UINT blocksize;
+					if (VerQueryValueA(block, "\\VarFileInfo\\Translation", (LPVOID*)&pTranslate, &blocksize))
+					{
+						uint32_t i;
+						for (i = 0; i < blocksize / sizeof(struct LANGANDCODEPAGE); ++i)
+						{
+							UINT dummy;
+							char * value = NULL;
+							char subblock[50];
+							char * tokens[] =
+							{
+								"Comments",
+								"CompanyName",
+								"FileDescription",
+								"FileVersion",
+								"InternalName",
+								"LegalCopyright",
+								"LegalTrademarks",
+								"OriginalFilename",
+								"ProductName",
+								"ProductVersion",
+								"PrivateBuild",
+								"SpecialBuild"
+							};
+							size_t j;
+							for (j = 0; j < sizeof(tokens) / sizeof(tokens[0]); ++j)
+							{
+								ConsoleIOFormat(subblock, 50, "\\StringFileInfo\\%04x%04x\\%s", pTranslate[i].language, pTranslate[i].codepage, tokens[j]);
+								if (VerQueryValueA(block, subblock, &value, &dummy))
+								{
+									xstrcat((char*)pInfo + kMaxVersionString * j, kMaxVersionString, value);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		FreeLibrary(hVersion);
+	}
+}
+
+void InfoModules()
+{
+	ModuleInfo * modules = NULL;
+	uint32_t count = ModuleEnum(&modules);
+	uint32_t i;
+	ConsoleIOPrint("Modules : \n");
+	for (i = 0; i < count; ++i)
+	{
+		VersionInfo info;
+		GetVersionInfo(modules[i].path, &info);
+		ConsoleIOPrintFormatted("%s, %s, %s, %s\n", modules[i].path, info.FileDescription, info.CompanyName, info.ProductVersion);
+	}
+	free(modules);
+}
+
+void InfoDrivers()
+{
+	HMODULE hPSAPI = LoadLibraryA("psapi.dll");
+	if (NULL != hPSAPI)
+	{
+		pfnEnumDeviceDrivers EnumDeviceDrivers = (pfnEnumDeviceDrivers) GetProcAddress(hPSAPI, "EnumDeviceDrivers");
+		pfnGetDeviceDriverNameA GetDeviceDriverBaseNameA = (pfnGetDeviceDriverNameA) GetProcAddress(hPSAPI, "GetDeviceDriverBaseNameA");
+		pfnGetDeviceDriverNameA GetDeviceDriverFileNameA = (pfnGetDeviceDriverNameA) GetProcAddress(hPSAPI, "GetDeviceDriverFileNameA");
+		if (NULL != EnumDeviceDrivers && NULL != GetDeviceDriverBaseNameA && NULL != GetDeviceDriverFileNameA)
+		{
+			LPVOID * drivers = NULL;
+			DWORD needed = 0;
+			EnumDeviceDrivers(NULL, 0, &needed);
+			drivers = (LPVOID*) malloc(needed);
+
+			if (EnumDeviceDrivers(drivers, needed, &needed))
+			{
+				DWORD i;
+				char windir[NtfsMaxPath] = {0};
+				if (!GetWindowsDirectoryA(windir, NtfsMaxPath))
+				{
+					xstrcat(windir, NtfsMaxPath, "C:\\Windows");
+				}
+				ConsoleIOPrint("Drivers : \n");
+				for (i = 0; i < needed / sizeof(LPVOID); ++i)
+				{
+					char name[NtfsMaxPath] = {0};
+					
+					if (GetDeviceDriverFileNameA(drivers[i], name, NtfsMaxPath) || GetDeviceDriverBaseNameA(drivers[i], name, NtfsMaxPath))
+					{
+						VersionInfo info;
+						char full[NtfsMaxPath] = {0};
+						char * path = name;
+						if (0 == memcmp(path, "\\??\\", 4))
+						{
+							path += 4;
+						}
+						if (0 == memcmp(path, "\\SystemRoot\\", xstrlen("\\SystemRoot\\")))
+						{
+							xstrcat(full, NtfsMaxPath, windir);
+							xstrcat(full, NtfsMaxPath, path + xstrlen("\\SystemRoot\\") - 1);
+						}
+						else if (0 == memcmp(path, "\\WINDOWS\\", xstrlen("\\WINDOWS\\")))
+						{
+							xstrcat(full, NtfsMaxPath, windir);
+							xstrcat(full, NtfsMaxPath, path + xstrlen("\\WINDOWS\\") - 1);
+						}
+						else
+						{
+							if (NULL == xstrchr(path, '\\'))
+							{
+								xstrcat(full, NtfsMaxPath, windir);
+								xstrcat(full, NtfsMaxPath, "\\system32\\drivers\\");
+								xstrcat(full, NtfsMaxPath, path);
+							}
+							else
+							{
+								xstrcat(full, NtfsMaxPath, path);
+							}
+						}
+						GetVersionInfo(full, &info);
+						ConsoleIOPrintFormatted("%s, %s, %s, %s\n", full, info.FileDescription, info.CompanyName, info.ProductVersion);
+					}
+				}
+			}
+		}
+		FreeLibrary(hPSAPI);
+	}
+}
+
 void InfoEnvironment()
 {
 	char * env = NULL;
@@ -426,6 +635,10 @@ void CrashHandlerInstall()
 {
 	InfoCPU();
 #ifdef OS_WINDOWS
+	InfoModules();
+	InfoDrivers();
+	InfoOperationSystem();
+
 	SetUnhandledExceptionFilter(CrashHandlerExceptionFilter);
 	SetConsoleCtrlHandler(CrashHandlerRoutine, 1);
 #endif /* OS_WINDOWS */

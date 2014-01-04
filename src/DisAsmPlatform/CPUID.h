@@ -205,8 +205,6 @@ typedef enum CacheLevel_t
 	kCacheLevel_L1Code,
 	kCacheLevel_L2,
 	kCacheLevel_L3,
-	kCacheLevel_Prefetching64,
-	kCacheLevel_Prefetching128,
 	kCacheLevel_Max
 }
 CacheLevel;

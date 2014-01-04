@@ -35,12 +35,14 @@ TextColor;
 uint32_t xstrlen(const char * str);
 void xstrcat(char * dst, uint32_t size, const char * src);
 uint8_t xstrcmp(const char * str1, const char * str2);
+const char * xstrchr(const char * str, char c);
 
 char * ShortName(char * name);
 
 void ConsoleIOInit();
 void ConsoleIOPrint(const char * string);
 void ConsoleIOPrintFormatted(const char * format, ...);
+void ConsoleIOFormat(char * message, uint32_t size, const char * format, ...);
 void PrintColoredString(const char * string, TextColor color, TextColor background);
 void PrintByte(uint64_t value);
 
