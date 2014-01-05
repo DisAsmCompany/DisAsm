@@ -459,7 +459,8 @@ void InfoDrivers()
 							xstrcat(full, NtfsMaxPath, windir);
 							xstrcat(full, NtfsMaxPath, path + xstrlen("\\SystemRoot\\") - 1);
 						}
-						else if (0 == memcmp(path, "\\WINDOWS\\", xstrlen("\\WINDOWS\\")))
+						else if (0 == memcmp(path, "\\WINDOWS\\", xstrlen("\\WINDOWS\\")) ||
+							0 == memcmp(path, "\\Windows\\", xstrlen("\\Windows\\")))
 						{
 							xstrcat(full, NtfsMaxPath, windir);
 							xstrcat(full, NtfsMaxPath, path + xstrlen("\\WINDOWS\\") - 1);

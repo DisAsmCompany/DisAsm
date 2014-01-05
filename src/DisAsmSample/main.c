@@ -263,27 +263,16 @@ uint8_t CheckCommandLineOption(const char * arg, const char * longoption)
 		char shortoption[3] = {0};
 		char c = longoption[2];
 
-		result |= (0 == xstrcmp(longoption, arg)) ? 1 : 0;
+		result |= (0 == xstricmp(longoption, arg)) ? 1 : 0;
 
 		/* -x */
 		shortoption[0] = '-';
 		shortoption[1] = c;
-		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+		result |= (0 == xstricmp(shortoption, arg)) ? 1 : 0;
 		/* /x */
 		shortoption[0] = '/';
 		shortoption[1] = c;
-		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
-
-		c &= ~0x20;
-
-		/* -X */
-		shortoption[0] = '-';
-		shortoption[1] = c;
-		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
-		/* /X */
-		shortoption[0] = '/';
-		shortoption[1] = c;
-		result |= (0 == xstrcmp(shortoption, arg)) ? 1 : 0;
+		result |= (0 == xstricmp(shortoption, arg)) ? 1 : 0;
 	}
 	return result;
 }

@@ -63,6 +63,51 @@ uint8_t xstrcmp(const char * str1, const char * str2)
 	return *str1 < *str2 ? -1 : 1;
 }
 
+uint8_t xisdigit(char c)
+{
+	return ('0' <= c && c <= '9') ? 1 : 0;
+}
+
+uint8_t xislower(char c)
+{
+	return ('a' <= c && c <= 'z') ? 1 : 0;
+}
+
+uint8_t xisupper(char c)
+{
+	return ('A' <= c && c <= 'Z') ? 1 : 0;
+}
+
+uint8_t xisalpha(char c)
+{
+	return xisupper(c) | xislower(c);
+}
+
+uint8_t xisalnum(char c)
+{
+	return xisalpha(c) | xisdigit(c);
+}
+
+char xtolower(char c)
+{
+	return xisalnum(c) ? (c & ~0x20) : c;
+}
+
+char xtoupper(char c)
+{
+	return xisalnum(c) ? (c | 0x20) : c;
+}
+
+uint8_t xstricmp(const char * str1, const char * str2)
+{
+	for (; xtolower(*str1) == xtolower(*str2); ++str1, ++str2)
+	{
+		if (0 == *str1) return 0;
+	}
+	return *str1 < *str2 ? -1 : 1;
+}
+
+
 char * ShortName(char * name)
 {
 	char * ptr = name + xstrlen(name) - 1;

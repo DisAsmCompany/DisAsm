@@ -138,11 +138,6 @@ void UTC(uint64_t TimeStamp)
 	ConsoleIOPrintFormatted(" (%s %s %ld %02ld:%02ld:%02ld %ld)", Days[dayofweek], Months[month], day, hours, minutes, seconds, year);
 }
 
-uint8_t IsAlphaNumeric(char c)
-{
-	return (('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '9'));
-}
-
 void SDFPrintSignature(uint64_t Signature, uint32_t size)
 {
     uint32_t i = 0;
@@ -150,7 +145,7 @@ void SDFPrintSignature(uint64_t Signature, uint32_t size)
     for (i = 0; i < size; ++i)
     {
         char byte = (char)((Signature >> (i * 8)) & 0xFF);
-        if (IsAlphaNumeric(byte))
+        if (xisalnum(byte))
         {
             ConsoleIOPrintFormatted("%c", byte);
         }
