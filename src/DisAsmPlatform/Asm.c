@@ -197,11 +197,20 @@ native_t ReadEFLAGS()
 	value = __readeflags();
 #endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC) */
 #if defined(COMP_GNUC)
+#if defined(CPU_X86)
 	__asm__ __volatile__(
 		"pushf\n"
-		"pop %%eax"
+		"popl %%eax"
 		: "=a" (value)
 		);
+#endif /* defined(CPU_X86) */
+#if defined(CPU_X64)
+	__asm__ __volatile__(
+		"pushf\n"
+		"popq %%rax"
+		: "=a" (value)
+		);
+#endif /* defined(CPU_X64) */
 #endif /* defined(COMP_GNUC) */
 	return value;
 }
@@ -212,12 +221,22 @@ void WriteEFLAGS(native_t eflags)
 	__writeeflags(eflags);
 #endif /* defined(COMP_MICROSOFTC) || defined(COMP_INTELC) || defined(COMP_WATCOMC) || defined(COMP_BORLANDC) */
 #if defined(COMP_GNUC)
+#if defined(CPU_X86)
 	__asm__ __volatile__(
-		"push %%eax\n"
+		"pushl %%eax\n"
 		"popf"
 		:
 		: "a" (eflags)
 		);
+#endif /* defined(CPU_X86) */
+#if defined(CPU_X64)
+	__asm__ __volatile__(
+		"pushq %%rax\n"
+		"popf"
+		:
+		: "a" (eflags)
+		);
+#endif /* defined(CPU_X64) */
 #endif /* defined(COMP_GNUC) */
 }
 
