@@ -329,6 +329,10 @@ void xFree(void * address)
 
 #else /* OS_WINDOWS */
 
+#ifndef _SC_PAGE_SIZE
+#define _SC_PAGE_SIZE 29
+#endif /* _SC_PAGE_SIZE */
+
 typedef void * (*pfnmalloc)(size_t);
 typedef void * (*pfnrealloc)(void *, size_t);
 typedef void   (*pfnfree)(void *);
