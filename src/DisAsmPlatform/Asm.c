@@ -367,9 +367,20 @@ native_t CallXGETBV()
 	/* we cannot use neither inline assembler, nor intrinsic,
 	since XGETBV is pretty new instruction and not supported yet */
 	typedef native_t (*code)();
-	uint8_t raw[] = {0x0F, 0x01, 0xD0, 0xC3}; /* XGETBV; RET; */
+	uint8_t raw[] = {0x33, 0xC9, 0x0F, 0x01, 0xD0, 0xC3}; /* XOR ECX, ECX; XGETBV; RET; */
 	code p = (code)(native_t)raw;
 	result = p();
 #endif /* #if defined(COMP_MICROSOFTC) || defined(COMP_INTELC) */
+#if defined(COMP_GNUC)
+	uint32_t _eax, _edx;
+	__asm__ __volatile__(
+		"xor %%ecx, %%ecx\n"
+		".byte 0x0f, 0x01, 0xd0"
+		: "=a"(_eax), "=d"(_edx)
+		);
+	result = _edx;
+	result <<= 32;
+	result |= _eax;
+#endif /* defined(COMP_GNUC) */
 	return result;
 }
