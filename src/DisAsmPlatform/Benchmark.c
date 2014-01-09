@@ -42,6 +42,8 @@ HBENCHMARK BenchmarkCreate()
 	return (HBENCHMARK) pContext;
 }
 
+#ifdef OS_WINDOWS
+
 static int64_t HighLow(uint32_t high, uint32_t low)
 {
 	int64_t value = high;
@@ -49,6 +51,8 @@ static int64_t HighLow(uint32_t high, uint32_t low)
 	value += low;
 	return value;
 }
+
+#endif /* OS_WINDOWS */
 
 void BenchmarkSampleBegin(HBENCHMARK hBenchmark)
 {

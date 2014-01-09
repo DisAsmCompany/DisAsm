@@ -577,9 +577,25 @@ typedef struct SignalRecord_t
 }
 SignalRecord;
 
+#ifndef SIGTRAP
+#define SIGTRAP 5
+#endif /* SIGTRAP */
+
 #ifndef SIGEMT
 #define SIGEMT 7
 #endif /* SIGEMT */
+
+#ifndef SIGBUS
+#define SIGBUS 10
+#endif /* SIGBUS */
+
+#ifndef SIGSYS
+#define SIGSYS 12
+#endif /* SIGSYS */
+
+#ifndef SIGURG
+#define SIGURG 16
+#endif /* SIGURG */
 
 #ifndef SIGCONT
 #define SIGCONT 19
@@ -601,6 +617,22 @@ SignalRecord;
 #define SIGIO 23
 #endif /* SIGIO */
 
+#ifndef SIGXCPU
+#define SIGXCPU 24
+#endif /* SIGXCPU */
+
+#ifndef SIGXFSZ
+#define SIGXFSZ 25
+#endif /* SIGXFSZ */
+
+#ifndef SIGVTALRM
+#define SIGVTALRM 26
+#endif /* SIGVTALRM */
+
+#ifndef SIGPROF
+#define SIGPROF 27
+#endif /* SIGPROF */
+
 #ifndef SIGWINCH
 #define SIGWINCH 28
 #endif /* SIGWINCH */
@@ -609,46 +641,66 @@ SignalRecord;
 #define SIGINFO 29
 #endif /* SIGINFO */
 
+#ifndef SA_RESTART
+#define SA_RESTART 0x0002
+#endif /* SA_RESTART */
+
+#ifndef SA_SIGINFO
+#define SA_SIGINFO 0x0040
+#endif /* SA_SIGINFO */
+
+typedef void (*SignalHandler)(int);
+
 static const SignalRecord signals[] =
 {
-    {SIGHUP,  "SIGHUP (hangup)"},
-    {SIGINT,  "SIGINT (Ctrl-C)"},
-    {SIGQUIT, "SIGQUIT (quit program)"},
-    {SIGTRAP, "SIGTRAP (trace trap)"},
-    {SIGABRT, "SIGABRT (abnormal termination)"},
-    {SIGEMT,  "SIGEMT (emulation trap)"},
-    {SIGBUS,  "SIGBUS (bus error)"},
-    {SIGSYS,  "SIGSYS (invalid argument)"},
-    {SIGILL,  "SIGILL (illegal instruction)"},
-    {SIGPIPE, "SIGPIPE (pipe error)"},
-    {SIGALRM, "SIGALRM (alarm clock)"},
-    {SIGFPE,  "SIGFPE (floating-point exception)"},
-    {SIGSEGV, "SIGSEGV (segmentation fault)"},
-    {SIGTERM, "SIGTERM (termination request)"},
-    {SIGTSTP, "SIGTSTP (terminal stop)"},
-    {SIGCONT, "SIGCONT (continue after stop)"},
-    {SIGURG,  "SIGURG (urgent condition)"},
-    {SIGABRT, "SIGABRT (abort)"},
-    {SIGCHLD, "SIGCHLD (child terminated)"},
-    {SIGTTIN, "SIGTTIN (tty input)"},
-    {SIGTTOU, "SIGTTOU (tty output)"},
-    {SIGIO,   "SIGIO (pollable event)"},
+    {SIGHUP,    "SIGHUP (hangup)"},
+    {SIGINT,    "SIGINT (Ctrl-C)"},
+    {SIGQUIT,   "SIGQUIT (quit program)"},
+    {SIGTRAP,   "SIGTRAP (trace trap)"},
+    {SIGABRT,   "SIGABRT (abnormal termination)"},
+    {SIGEMT,    "SIGEMT (emulation trap)"},
+    {SIGBUS,    "SIGBUS (bus error)"},
+    {SIGSYS,    "SIGSYS (invalid argument)"},
+    {SIGILL,    "SIGILL (illegal instruction)"},
+    {SIGPIPE,   "SIGPIPE (pipe error)"},
+    {SIGALRM,   "SIGALRM (alarm clock)"},
+    {SIGFPE,    "SIGFPE (floating-point exception)"},
+    {SIGSEGV,   "SIGSEGV (segmentation fault)"},
+    {SIGTERM,   "SIGTERM (termination request)"},
+    {SIGTSTP,   "SIGTSTP (terminal stop)"},
+    {SIGCONT,   "SIGCONT (continue after stop)"},
+    {SIGURG,    "SIGURG (urgent condition)"},
+    {SIGABRT,   "SIGABRT (abort)"},
+    {SIGCHLD,   "SIGCHLD (child terminated)"},
+    {SIGTTIN,   "SIGTTIN (tty input)"},
+    {SIGTTOU,   "SIGTTOU (tty output)"},
+    {SIGIO,     "SIGIO (pollable event)"},
     {SIGXCPU,   "SIGXCPU (CPU time limit exceeded)"},
     {SIGXFSZ,   "SIGXFSZ (file size limit exceeded)"},
     {SIGVTALRM, "SIGVTALRM (virtual timer alarm)"},
     {SIGPROF,   "SIGPROF (profiler timer alarm)"},
-    {SIGWINCH, "SIGWINCH (size changed)"},
-    {SIGINFO, "SIGINFO (status request)"},
+    {SIGWINCH,  "SIGWINCH (size changed)"},
+    {SIGINFO,   "SIGINFO (status request)"},
     {SIGUSR1,   "SIGUSR1 (user defined signal 1)"},
     {SIGUSR2,   "SIGUSR2 (user defined signal 2)"},
 };
 
-void CrashHandler(int signum, struct siginfo * info, void * ucontext)
+typedef struct siginfo_t siginfo;
+
+void CrashHandler(int signum, siginfo * info, void * ucontext)
 {
 	native_t callstack[MaxCallStack] = {0};
-	uint32_t i = 0;
+	size_t i = 0;
 	
-	ConsoleIOPrintFormatted("[ERROR] crash! received signal %s\n", signals[signum]);
+	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
+	{
+		if (signals[i].signum == signum)
+		{
+			ConsoleIOPrintFormatted("[ERROR] crash! received signal %s\n", signals[i].message);
+			break;
+		}
+	}
+	
 	StackWalk(callstack, NULL);
 	for (i = 0; i < MaxCallStack; ++i)
 	{
@@ -663,10 +715,6 @@ void CrashHandler(int signum, struct siginfo * info, void * ucontext)
 }
 
 #endif /* OS_UNIX */
-
-#ifndef SA_RESTART
-#define SA_RESTART 0x0002
-#endif /* SA_RESTART */
 
 void CrashHandlerInstall()
 {
@@ -684,7 +732,7 @@ void CrashHandlerInstall()
 	for (i = 0; i < sizeof(signals) / sizeof(signals[0]); ++i)
 	{
 		struct sigaction action;
-		action.sa_handler = CrashHandler;
+		action.sa_handler = (SignalHandler) CrashHandler;
 		action.sa_flags = SA_RESTART | SA_SIGINFO;
 		sigemptyset(&action.sa_mask);
 		if (0 != sigaction(signals[i].signum, &action, NULL))
