@@ -447,8 +447,8 @@ void StackWalk(native_t * callstack, Context * context)
 
 void StackWalkSymbol(native_t address)
 {
-/* cygwin doesn't have Dl_info and dladdr */
-#ifndef OS_CYGWIN
+/* cygwin and linux don't have Dl_info and dladdr */
+#if !defined(OS_CYGWIN) && !defined(OS_LINUX)
 	Dl_info info = {0};
 	
 	ConsoleIOPrintFormatted("%08X", address);
@@ -460,7 +460,7 @@ void StackWalkSymbol(native_t address)
 			ConsoleIOPrintFormatted(" %s", symbol);
 		}
 	}
-#endif /* OS_CYGWIN */
+#endif /* !defined(OS_CYGWIN) && !defined(OS_LINUX) */
 }
 
 #endif /* OS_WINDOWS */
