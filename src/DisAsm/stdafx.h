@@ -51,6 +51,7 @@ extern "C" {
 
 #if defined(__linux__) || defined(linux) || defined(__linux)
 #define OS_LINUX
+#define _POSIX_C_SOURCE 1
 #endif /* defined(__linux__) || defined(linux) || defined(__linux) */
 
 #if defined(__FreeBSD__) || defined(__FreeBSD_kernel__)
