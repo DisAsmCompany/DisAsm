@@ -17,10 +17,10 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define VEX2_R(VEX)    (((VEX)     ) & 0x01)
-#define VEX2_vvvv(VEX) (((VEX) >> 1) & 0x0F)
-#define VEX2_L(VEX)    (((VEX) >> 5) & 0x01)
-#define VEX2_pp(VEX)   (((VEX) >> 6) & 0x03)
+#define VEX2_R(VEX)    ((((VEX) >> 7) & 0x01) ^ 0x01)
+#define VEX2_vvvv(VEX) (0x10 - (((VEX) >> 3) & 0x0F))
+#define VEX2_L(VEX)    (((VEX) >> 2) & 0x01)
+#define VEX2_pp(VEX)   (((VEX)     ) & 0x03)
 
 #ifdef __cplusplus
 }

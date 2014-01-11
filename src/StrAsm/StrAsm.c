@@ -83,6 +83,8 @@ void PrintOperand(InstructionInfo * pInfo, Operand * pOperand)
 		case 4 : ConsoleIOPrint("DWORD PTR "); break;
 		case 8 : ConsoleIOPrint("QWORD PTR "); break;
 		case 16: ConsoleIOPrint("XMMWORD PTR "); break;
+		case 32: ConsoleIOPrint("YMMWORD PTR "); break;
+		case 64: ConsoleIOPrint("ZMMWORD PTR "); break;
 		}
 		PrintSegment(pInfo);
 		ConsoleIOPrint("[");

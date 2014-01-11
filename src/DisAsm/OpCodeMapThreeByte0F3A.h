@@ -3,7 +3,7 @@
 * Author:   DisAsmCompany
 * Date:     22/09/2013
 *
-* Description: Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh)
+* Description: Three-Byte OpCode Map (OpCodes 0F3A00h - 0F3AFFh)
 *              
 *              
 *
@@ -16,7 +16,7 @@
 extern "C" {
 #endif /* __cplusplus */
 
-/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0FF3AFh) */
+/* Three-Byte OpCode Map (OpCodes 0F3A00h - 0F3AFFh) */
 
 /* 
        0 1 2 3 4 5 6 7   8 9 A B C D E F

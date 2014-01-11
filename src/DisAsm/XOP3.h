@@ -17,14 +17,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define XOP3_R(XOP)      (((XOP)      ) & 0x01)
-#define XOP3_X(XOP)      (((XOP) >>  1) & 0x01)
-#define XOP3_B(XOP)      (((XOP) >>  2) & 0x01)
-#define XOP3_mmmmmm(XOP) (((XOP) >>  3) & 0x1F)
-#define XOP3_W(XOP)      (((XOP) >>  8) & 0x01)
-#define XOP3_vvvv(XOP)   (((XOP) >>  9) & 0x0F)
-#define XOP3_L(XOP)      (((XOP) >> 13) & 0x01)
-#define XOP3_pp(XOP)     (((XOP) >> 14) & 0x03)
+#define XOP3_R(XOP)      ((((XOP) >> 15) & 0x01) ^ 0x01)
+#define XOP3_X(XOP)      ((((XOP) >> 14) & 0x01) ^ 0x01)
+#define XOP3_B(XOP)      ((((XOP) >> 13) & 0x01) ^ 0x01)
+#define XOP3_mmmmmm(XOP) (((XOP) >> 8) & 0x1F)
+#define XOP3_W(XOP)      ((((XOP) >>  7) & 0x01) ^ 0x01)
+#define XOP3_vvvv(XOP)   (0x10 - (((XOP) >> 3) & 0x0F))
+#define XOP3_L(XOP)      (((XOP) >> 2) & 0x01)
+#define XOP3_pp(XOP)     ((XOP) & 0x03)
 
 #ifdef __cplusplus
 }

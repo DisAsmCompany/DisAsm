@@ -126,6 +126,67 @@ void TestNOP()
 	VerifyInstruction(bytes, sizeof(bytes), NOP);
 }
 
+/* verify multi-byte NOP sequencs */
+void TestMultiByteNOP()
+{
+	{
+		uint8_t bytes[] = {0x66, 0x90};
+		VerifyInstruction(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0xF3, 0x90};
+		VerifyInstruction(bytes, sizeof(bytes), PAUSE);
+	}
+	{
+		uint8_t bytes[] = {0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x90};
+		VerifyInstruction(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0xF3, 0x90};
+		VerifyInstruction(bytes, sizeof(bytes), PAUSE);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x19};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1A};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1B};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1C};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1D};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1E};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x1F};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x66, 0x0F, 0x1F};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
+	}
+	{
+		uint8_t bytes[] = {0x0F, 0x0D};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), PREFETCHW);
+	}
+	{
+		uint8_t bytes[] = {0x66, 0x0F, 0x0D};
+		VerifyInstructionWithModRM(bytes, sizeof(bytes), PREFETCHW);
+	}
+}
+
 /* Primary Opcode Table (OpCodes 00h - FFh) */
 
 /* 
@@ -366,6 +427,7 @@ int main()
 
 	TestChooseOpCode();
 	TestNOP();
+	TestMultiByteNOP();
 	TestPrimaryOpCodeTable();
 	TestSecondaryOpCodeTable();
 	TestSSE();

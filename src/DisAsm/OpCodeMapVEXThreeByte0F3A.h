@@ -1,41 +1,41 @@
 /*
-* Filename: OpCodeMapThreeByte0F38.h
+* Filename: OpCodeMapVEXThreeByte0F3A.h
 * Author:   DisAsmCompany
-* Date:     22/09/2013
+* Date:     12/01/2014
 *
-* Description: Three-Byte OpCode Map (OpCodes 0F3800h - 0F38FFh)
+* Description: VEX OpCode Map (OpCodes 0F3A00h - 0F3AFFh)
 *              
 *              
 *
 */
 
-#ifndef __OPCODEMAPTHREEBYTE0F38_H__7F439552_B615_4319_8D18_685E1201A3B8__
-#define __OPCODEMAPTHREEBYTE0F38_H__7F439552_B615_4319_8D18_685E1201A3B8__
+#ifndef __OPCODEMAPTVEXTHREBYTE0F3A_B5013828_49C0_46A5_96F4_9656E4912BF1__
+#define __OPCODEMAPTVEXTHREBYTE0F3A_B5013828_49C0_46A5_96F4_9656E4912BF1__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-/* Three-Byte OpCode Map (OpCodes 0F3800h - 0F38FFh) */
+/* VEX OpCode Map (OpCodes 0F3A00h - 0F3AFFh) */
 
 /* 
        0 1 2 3 4 5 6 7   8 9 A B C D E F
-NONE 0 X X X X         0                 0
-0x66 0 X X X X         0                 0
-0xF2 0 U U U U         0                 0
-0xF3 0 U U U U         0                 0
-NONE 1                 1 U U U U X X X U 1
-0 66 1                 1 U U U U X X X U 1
-0xF2 1                 1 U U U U U U U U 1
-0xF3 1                 1 U U U U U U U U 1
-NONE 2 U U U U U U U U 2                 2
-0 66 2 X X X X X X U U 2                 2
-0xF2 2 U U U U U U U U 2                 2
-0xF3 2 U U U U U U U U 2                 2
-NONE 3 U U U U U U U   3 U U U U U U U U 3
-0 66 3 X X X X X X U   3 X X X X X X X X 3
-0xF2 3 U U U U U U U   3 U U U U U U U U 3
-0xF3 3 U U U U U U U   3 U U U U U U U U 3
+NONE 0                 0                 0
+0x66 0                 0                 0
+0xF2 0                 0                 0
+0xF3 0                 0                 0
+NONE 1                 1                 1
+0 66 1                 1                 1
+0xF2 1                 1                 1
+0xF3 1                 1                 1
+NONE 2                 2                 2
+0 66 2                 2                 2
+0xF2 2                 2                 2
+0xF3 2                 2                 2
+NONE 3                 3                 3
+0 66 3                 3                 3
+0xF2 3                 3                 3
+0xF3 3                 3                 3
 NONE 4                 4                 4
 0 66 4                 4                 4
 0xF2 4                 4                 4
@@ -81,192 +81,192 @@ NONE E                 E                 E
 0 66 E                 E                 E
 0xF2 E                 E                 E
 0xF3 E                 E                 E
-NONE F X X             F                 F
-0 66 F X X             F                 F
-0xF2 F X X             F                 F
-0xF3 F U U             F                 F
+NONE F                 F                 F
+0 66 F                 F                 F
+0xF2 F                 F                 F
+0xF3 F                 F                 F
        0 1 2 3 4 5 6 7   8 9 A B C D E F
 */
 
 /* each bit indicates does opcode has extensions for prefixes 0x66, 0xF2 or 0xF3 */
-uint32_t OpCodeMapThreeByte0F38Ext[] =
+uint32_t OpCodeMapVEXThreeByte0F3AExt[] =
 {
-	/* 0F3800h - 0F381Fh */
-	0x70FFFFFFUL,
-	/* 0F3820h - 0F383Fh */
-	0xFFFFFF3FUL,
-	/* 0F3840h - 0F385Fh */
-	0x000000FFUL,
-	/* 0F3860h - 0F387Fh */
+	/* 0F3A00h - 0F3A1Fh */
+	0x0000FFFFUL,
+	/* 0F3A20h - 0F3A3Fh */
 	0x00000000UL,
-	/* 0F3880h - 0F389Fh */
+	/* 0F3A40h - 0F3A5Fh */
 	0x00000000UL,
-	/* 0F38A0h - 0F38BFh */
+	/* 0F3A60h - 0F3A7Fh */
 	0x00000000UL,
-	/* 0F38C0h - 0F38DFh */
+	/* 0F3A80h - 0F3A9Fh */
 	0x00000000UL,
-	/* 0F38E0h - 0F38FFh */
-	0x00FF0000UL
+	/* 0F3AA0h - 0F3ABFh */
+	0x00000000UL,
+	/* 0F3AC0h - 0F3ADFh */
+	0x00000000UL,
+	/* 0F3AE0h - 0F3AFFh */
+	0x00000000UL
 };
 
-OpCodeMapElement OpCodeMapThreeByte0F38[] =
+OpCodeMapElement OpCodeMapVEXThreeByte0F3A[] =
 {
-	/* 0F3800h - 0F3807h */
-	{PSHUFB, OP2(Ppb, Qpb)}, {PHADDW, OP2(Ppi, Qpi)}, {PHADDD, OP2(Ppj, Qpj)}, {PHADDSW, OP2(Ppi, Qpi)}, {PMADDUBSW, OP2(Ppk, Qpk)}, {PHSUBW, OP2(Ppi, Qpi)}, {PHSUBD, OP2(Ppj, Qpj)}, {PHSUBSW, OP2(Ppi, Qpi)},
-	{PSHUFB, OP2(Vpb, Wpb)}, {PHADDW, OP2(Vpi, Wpi)}, {PHADDD, OP2(Vpj, Wpj)}, {PHADDSW, OP2(Vpi, Wpi)}, {PMADDUBSW, OP2(Vpk, Wpk)}, {PHSUBW, OP2(Vpi, Wpi)}, {PHSUBD, OP2(Vpj, Wpj)}, {PHSUBSW, OP2(Vpi, Wpi)},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                     {DB, OP0},                       {DB, OP0},                    {DB, OP0},                    {DB, OP0},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                     {DB, OP0},                       {DB, OP0},                    {DB, OP0},                    {DB, OP0},
-	/* 0F3808h - 0F380Fh */
-	{PSIGNB, OP2(Qpk, Ppk)}, {PSIGNW, OP2(Ppi, Qpi)}, {PSIGND, OP2(Ppj, Qpk)}, {PMULHRSW, OP2(Ppi, Qpi)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{PSIGNB, OP2(Vpk, Wpk)}, {PSIGNW, OP2(Vpi, Wpi)}, {PSIGND, OP2(Vpj, Wpk)}, {PMULHRSW, OP2(Vpi, Qpi)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                      {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                      {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3810h - 0F3817h */
-	{DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0},
-	{PBLENVB, OP2(Vpb, Wpb)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {BLENDPS, OP2(Vps, Wps)}, {BLENDPD, OP2(Vpd, Wpd)}, {DB, OP0}, {PTEST, OP2(Vo, Wo)},
-	{DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0},
-	{DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0},
-	/* 0F3817h - 0F381Fh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {PABSB, OP2(Ppk, Qpk)}, {PABSW, OP2(Ppi, Qpi)}, {PABSD, OP2(Ppj, Qpj)}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {PABSB, OP2(Vpk, Wpk)}, {PABSW, OP2(Vpi, Wpi)}, {PABSD, OP2(Vpj, Wpj)}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                   {DB, OP0},                   {DB, OP0},                   {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                   {DB, OP0},                   {DB, OP0},                   {DB, OP0},
-	/* 0F3820h - 0F3827h */
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	{PMOVSXBW, OP2(Vpi, Wpk)}, {PMOVSXBD, OP2(Vpj, Wpk)}, {PMOVSXBQ, OP2(Vpq, Wpk)}, {PMOVSXWD, OP2(Vpj, Wpi)}, {PMOVSXWQ, OP2(Vpq, Wpi)}, {PMOVSXDQ, OP2(Vpq, Wpj)}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	/* 0F3828h - 0F382Fh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                    {DB, OP0},                      {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {MOVNTDQA, OP2(Vo, Mo)}, {PACKUSDW, OP2(Vpi, Wpj)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                    {DB, OP0},                      {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                    {DB, OP0},                      {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3830h - 0F3837h */
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	{PMOVZXBW, OP2(Vpi, Wpk)}, {PMOVZXBD, OP2(Vpj, Wpk)}, {PMOVZXBQ, OP2(Vpq, Wpk)}, {PMOVZXWD, OP2(Vpj, Wpi)}, {PMOVZXWQ, OP2(Vpq, Wpi)}, {PMOVZXDQ, OP2(Vpq, Wpj)}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	{DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0},                      {DB, OP0}, {DB, OP0},
-	/* 0F3838h - 0F383Fh */
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},
-	{PMINSB, OP2(Vpk, Wpk)}, {PMINSD, OP2(Vpj, Wpj)}, {PMINUW, OP2(Vpi, Wpi)}, {PMINUD, OP2(Vpj, Wpj)}, {PMAXSB, OP2(Vpk, Wpk)}, {PMAXSD, OP2(Vpj, Wpj)}, {PMAXUW, OP2(Vpi, Wpi)}, {PMAXUD, OP2(Vpj, Wpj)},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},
-	{DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},                    {DB, OP0},
-	/* 0F3840h - 0F3847h */
-	{DB, OP0},               {DB, OP0},                   {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{PMULLD, OP2(Vpj, Wpj)}, {PHMINPOSUW, OP2(Vpi, Wpi)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},               {DB, OP0},                   {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},               {DB, OP0},                   {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3848h - 0F384Fh */
+	/* 0F3A00h - 0F3A07h */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                            {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPERM2F128, OP4(Vqq, Hqq, Wqq, Ib)}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                            {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                            {DB, OP0},
+	/* 0F3A08h - 0F3A0Fh */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                       {DB, OP0},                       {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VBLENDPS, OP4(Vx, Hx, Wx, Ib)}, {VBLENDPD, OP4(Vx, Hx, Wx, Ib)}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                       {DB, OP0},                       {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                       {DB, OP0},                       {DB, OP0}, {DB, OP0},
+	/* 0F3A10h - 0F3A17h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3850h - 0F3857h */
+	/* 0F3A17h - 0F3A1Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3857h - 0F385Fh */
+	/* 0F3A20h - 0F3A27h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3860h - 0F3867h */
+	/* 0F3A28h - 0F3A2Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3868h - 0F386Fh */
+	/* 0F3A30h - 0F3A37h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3870h - 0F3877h */
+	/* 0F3A38h - 0F3A3Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3878h - 0F387Fh */
+	/* 0F3A40h - 0F3A47h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3880h - 0F3887h */
+	/* 0F3A48h - 0F3A4Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3888h - 0F388Fh */
+	/* 0F3A50h - 0F3A57h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3890h - 0F3897h */
+	/* 0F3A58h - 0F3A5Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3898h - 0F389Fh */
+	/* 0F3A60h - 0F3A67h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38A0h - 0F38A7h */
+	/* 0F3A68h - 0F3A6Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38A8h - 0F38AFh */
+	/* 0F3A70h - 0F3A77h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38B0h - 0F38B7h */
+	/* 0F3A78h - 0F3A7Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38B8h - 0F38BFh */
+	/* 0F3A80h - 0F3A87h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38C0h - 0F38C7h */
+	/* 0F3A88h - 0F3A8Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38C8h - 0F38CFh */
+	/* 0F3A90h - 0F3A97h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38D0h - 0F38D7h */
+	/* 0F3A98h - 0F3A9Fh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38D8h - 0F38DFh */
+	/* 0F3AA0h - 0F3AA7h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38E0h - 0F38E7h */
+	/* 0F3AA8h - 0F3AAFh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38E8h - 0F38EFh */
+	/* 0F3AB0h - 0F3AB7h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38F0h - 0F38F7h */
-	{MOVBE, OP2(Gv, Mv)}, {MOVBE, OP2(Mv, Gv)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{MOVBE, OP2(Gw, Mw)}, {MOVBE, OP2(Mw, Gw)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{CRC32, OP2(Gd, Eb)}, {CRC32, OP2(Gd, Ev)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0},                 {DB, OP0},                 {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F38F8h - 0F38FFh */
+	/* 0F3AB8h - 0F3ABFh */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AC0h - 0F3AC7h */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AC8h - 0F3ACFh */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AD0h - 0F3AD7h */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AD8h - 0F3ADFh */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AE0h - 0F3AE7h */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AE8h - 0F3AEFh */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AF0h - 0F3AF7h */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3AF8h - 0F3AFFh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
@@ -277,4 +277,4 @@ OpCodeMapElement OpCodeMapThreeByte0F38[] =
 }
 #endif /* __cplusplus */
 
-#endif /* __OPCODEMAPTHREEBYTE0F38_H__7F439552_B615_4319_8D18_685E1201A3B8__ */
+#endif /* __OPCODEMAPTVEXTHREBYTE0F3A_B5013828_49C0_46A5_96F4_9656E4912BF1__ */

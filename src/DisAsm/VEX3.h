@@ -17,14 +17,14 @@
 extern "C" {
 #endif /* __cplusplus */
 
-#define VEX3_R(VEX)      (((VEX)      ) & 0x01)
-#define VEX3_X(VEX)      (((VEX) >>  1) & 0x01)
-#define VEX3_B(VEX)      (((VEX) >>  2) & 0x01)
-#define VEX3_mmmmmm(VEX) (((VEX) >>  3) & 0x1F)
-#define VEX3_W(VEX)      (((VEX) >>  8) & 0x01)
-#define VEX3_vvvv(VEX)   (((VEX) >>  9) & 0x0F)
-#define VEX3_L(VEX)      (((VEX) >> 13) & 0x01)
-#define VEX3_pp(VEX)     (((VEX) >> 14) & 0x03)
+#define VEX3_R(VEX)      ((((VEX) >> 7) & 0x01) ^ 0x01)
+#define VEX3_X(VEX)      ((((VEX) >> 6) & 0x01) ^ 0x01)
+#define VEX3_B(VEX)      ((((VEX) >> 5) & 0x01) ^ 0x01)
+#define VEX3_mmmmmm(VEX) (((VEX)) & 0x1F)
+#define VEX3_W(VEX)      ((((VEX >> 8) >>  7) & 0x01) ^ 0x01)
+#define VEX3_vvvv(VEX)   (0x10 - (((VEX >> 8) >> 3) & 0x0F))
+#define VEX3_L(VEX)      (((VEX >> 8) >> 2) & 0x01)
+#define VEX3_pp(VEX)     ((VEX >> 8) & 0x03)
 
 #ifdef __cplusplus
 }

@@ -346,11 +346,11 @@ void StackWalkCleanup()
 #ifdef COMP_MICROSOFTC
 #define GETCONTEXT(c) \
 { \
-	__asm    call x \
-	__asm x: pop eax \
-	__asm    mov c.Eip, eax \
-	__asm    mov c.Ebp, ebp \
-	__asm    mov c.Esp, esp \
+	__asm        call label \
+	__asm label: pop eax \
+	__asm        mov c.Eip, eax \
+	__asm        mov c.Ebp, ebp \
+	__asm        mov c.Esp, esp \
 }
 #else /* COMP_MICROSOFTC */
 #define GETCONTEXT(c)

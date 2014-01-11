@@ -71,7 +71,7 @@ HREADER CachedFileReaderCreate(const char * path)
 	ReaderSize(hFileReader, &size64);
 	if (size64 > 0x80000000UL)
 	{
-		/* two big to cache in memory */
+		/* too big to cache in memory */
 		ReaderDestroy(hFileReader);
 		return NULL;
 	}

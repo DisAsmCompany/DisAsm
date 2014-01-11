@@ -19,7 +19,7 @@ extern "C" {
 
 enum { kMaxOperands = 4 };
 enum { kMaxInstruction = 15 };
-enum { kMaxPrefixes = 4 };
+enum { kMaxPrefixes = 14 };
 
 enum
 {
@@ -28,9 +28,10 @@ enum
 	kHasSeg   = 0x00000004UL,
 	kHasDisp  = 0x00000008UL,
 	kHasImm   = 0x00000010UL,
-	kHasVEX2  = 0x00000020UL,
-	kHasVEX3  = 0x00000040UL,
-	kHasXOP3  = 0x00000080UL,
+	kHasREX   = 0x00000020UL,
+	kHasVEX2  = 0x00000040UL,
+	kHasVEX3  = 0x00000080UL,
+	kHasXOP3  = 0x00000100UL,
 };
 
 typedef struct InstructionInfo_t
@@ -46,10 +47,15 @@ typedef struct InstructionInfo_t
 	uint8_t ModRM;
 	uint8_t SIB;
 	uint8_t REX;
+	uint8_t REXW;
+	uint8_t REXR;
+	uint8_t REXX;
+	uint8_t REXB;
 	uint8_t VEX2;
 	uint16_t VEX3;
 	uint16_t XOP3;
 	uint8_t nOperands;
+	uint8_t vvvv;
 	Operand operands[kMaxOperands];
 	uint64_t disp;
 	uint64_t imm;

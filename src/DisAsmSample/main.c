@@ -74,7 +74,13 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 #endif /* defined(PROFILE) */
 		if (0 == length)
 		{
-			ConsoleIOPrintFormatted("[ERROR] cannot decode opcode 0x%08X\n", info.opcode);
+			uint8_t i;
+			ConsoleIOPrint("[ERROR] cannot decode instruction\n");
+			for (i = 0; i < info.length; ++i)
+			{
+				ConsoleIOPrintFormatted("%02X", info.bytes[i]);
+			}
+			ConsoleIOPrint("\n");
 			break;
 		}
 		if (!quiet)

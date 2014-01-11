@@ -43,9 +43,10 @@ typedef enum OperandType_t
 	U = 0x0F00 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
 	V = 0x1000 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in Reg field */
 	W = 0x1100 | MaskModRM, /* instruction has ModR/M byte, 128-bit XMM or 256-bit YMM operand is defined in R/M field */
-	P = 0x1200 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
-	Q = 0x1300 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
-	N = 0x1400 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field (packed quadword) */
+	H = 0x1200 | MaskModRM, /* The VEX.vvvv field of the VEX prefix selects a 128-bit XMM register or a 256-bit YMM register, determined by operand type */
+	P = 0x1300 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in Reg field */
+	Q = 0x1400 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field */
+	N = 0x1500 | MaskModRM, /* instruction has ModR/M byte, MMX operand is defined in R/M field (packed quadword) */
 
     _  = 0x00, /* no type */
 	b  = 0x01, /* byte, regardless of operand size attribute*/
@@ -69,6 +70,8 @@ typedef enum OperandType_t
 	a  = 0x13, /* two one-word operands in memory or two double-word operands in memory, depending on operand-size attribute (used only by the BOUND instruction) */
 	y  = 0x14, /* double-word or quad-word, depending on operand-size attribute */
 	oq = 0x15, /* operand is either the upper or lower half of 128-bit value */
+	x  = 0x16, /* dq or qq based on operand size attribute */
+	qq = 0x17, /* quad quad word */
 
 #define DEFINE_TYPE(T) \
 	T##b  = OperandBase | T | b, \
@@ -93,6 +96,8 @@ typedef enum OperandType_t
 	T##_  = OperandBase | T | _, \
 	T##y  = OperandBase | T | y, \
 	T##oq = OperandBase | T | oq, \
+	T##x  = OperandBase | T | x, \
+	T##qq = OperandBase | T | qq, \
 
 	DEFINE_TYPE(E)
 	DEFINE_TYPE(G)
@@ -114,6 +119,7 @@ typedef enum OperandType_t
 	DEFINE_TYPE(Q)
 	DEFINE_TYPE(A)
 	DEFINE_TYPE(N)
+	DEFINE_TYPE(H)
 }
 OperandType;
 

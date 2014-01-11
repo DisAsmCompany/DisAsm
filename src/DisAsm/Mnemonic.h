@@ -31,6 +31,7 @@ _ENUM_ELEMENT(AAD)    /* ASCII Adjust AX before Division */
 _ENUM_ELEMENT(HLT)    /* Halt */
 _ENUM_ELEMENT(CMC)    /* Complement Carry Flag */
 _ENUM_ELEMENT(NOP)    /* No Operation */
+_ENUM_ELEMENT(PAUSE)  /* Pause Spin Loop Hint */
 _ENUM_ELEMENT(CLC)    /* Clear Carry Flag */
 _ENUM_ELEMENT(STC)    /* Set Carry Flag */
 _ENUM_ELEMENT(CLI)    /* Clear Interrupt Flag */
@@ -663,7 +664,8 @@ _ENUM_ELEMENT(PTEST)    /* Logical Compare */
 _ENUM_ELEMENT(PHMINPOSUW) /* Packed Horizontal Word Minimum */
 _ENUM_ELEMENT(DPPS)     /* Dot Product of Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(DPPD)     /* Dot Product of Packed Double-Precision Floating Point Values */
-_ENUM_ELEMENT(MPSADBW)  /* Compute Multiple Packd Sums of Absolute Differences */
+_ENUM_ELEMENT(MPSADBW)  /* Compute Multiple Packed Sums of Absolute Differences */
+_ENUM_ELEMENT(PMULLD)   /* Multiply Packed Signed Double-Word Integers and Store Low Result */
 /* SSE4.2 */
 _ENUM_ELEMENT(PCMPESTRM)/* Packed Compare Explicit Length Strings and Return Mask */
 _ENUM_ELEMENT(PCMPESTRI)/* Packed Compare Explicit Length Strings and Return Index */
@@ -674,6 +676,51 @@ _ENUM_ELEMENT(MOVNTSS)  /* Store Scalar Single-Precision Floating Point Values U
 _ENUM_ELEMENT(MOVNTSD)  /* Store Scalar Single-Precision Floating Point Values Using Non-Temporal Hint */
 _ENUM_ELEMENT(EXTRQ)    /* Extract Field From Register */
 _ENUM_ELEMENT(INSERTQ)  /* Insert Field */
+/* AVX */
+_ENUM_ELEMENT(VZEROUPPER) /* Zero Upper Bits of YMM Registers */
+_ENUM_ELEMENT(VMOVUPS)    /* Move Unaligned Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVAPS)    /* Move Aligned Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVUPD)    /* Move Unaligned Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVAPD)    /* Move Aligned Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVDQA)    /* Move Aligned Double-Quadword */
+_ENUM_ELEMENT(VMOVDQU)    /* Move Unaligned Double-Quadword */
+_ENUM_ELEMENT(VSHUFPS)    /* Shuffle Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VSHUFPD)    /* Shuffle Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VANDPS)     /* Bitwise Logical AND of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VANDNPS)    /* Bitwise Logical AND-NOT of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VORPS)      /* Bitwise Logical OR of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VXORPS)     /* Bitwise Logical XOR of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VANDPD)     /* Bitwise Logical AND of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VANDNPD)    /* Bitwise Logical AND-NOT of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VORPD)      /* Bitwise Logical OR of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VXORPD)     /* Bitwise Logical XOR of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VADDPS)     /* Add Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VADDSS)     /* Add Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMULPS)     /* Multiply Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMULSS)     /* Multiply Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VSUBPS)     /* Subtract Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VSUBSS)     /* Subtract Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMINPS)     /* Minimum Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMINSS)     /* Minimum Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VDIVPS)     /* Divide Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VDIVSS)     /* Divide Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMAXPS)     /* Maximum Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMAXSS)     /* Maximum Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VADDPD)     /* Add Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VADDSD)     /* Add Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMULPD)     /* Multiply Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMULSD)     /* Multiply Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VSUBPD)     /* Subtract Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VSUBSD)     /* Subtract Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMINPD)     /* Minimum Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMINSD)     /* Minimum Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VDIVPD)     /* Divide Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VDIVSD)     /* Divide Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMAXPD)     /* Maximum Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMAXSD)     /* Maximum Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VPERM2F128) /* Permute Floating Point Values */
+_ENUM_ELEMENT(VBLENDPS)   /* Blend Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VBLENDPD)   /* Blend Packed Double-Precision Floating Point Values */
 
 _ENUM_ELEMENT(MOVBE)    /* Move Data after Swapping Bytes */
 _ENUM_ELEMENT(CRC32)    /* Accumulate CRC32 Value */
