@@ -317,6 +317,12 @@ _ENUM_ELEMENT(GROUP14_66)
 _ENUM_ELEMENT(GROUP15)
 _ENUM_ELEMENT(GROUP16)
 _ENUM_ELEMENT(GROUP17)
+_ENUM_ELEMENT(GROUP12VEX)
+_ENUM_ELEMENT(GROUP13VEX)
+_ENUM_ELEMENT(GROUP14VEX)
+_ENUM_ELEMENT(GROUP15VEX)
+_ENUM_ELEMENT(GROUP16VEX)
+_ENUM_ELEMENT(GROUP17VEX)
 _ENUM_ELEMENT(GROUPP)
 /* x87 FPU */
 _ENUM_ELEMENT(FADD)     /* Add */
@@ -678,10 +684,16 @@ _ENUM_ELEMENT(EXTRQ)    /* Extract Field From Register */
 _ENUM_ELEMENT(INSERTQ)  /* Insert Field */
 /* AVX */
 _ENUM_ELEMENT(VZEROUPPER) /* Zero Upper Bits of YMM Registers */
+_ENUM_ELEMENT(VBROADCASTSS)/* Broadcast Floating-Point Data */
+_ENUM_ELEMENT(VBROADCASTSD)/* Broadcast Floating-Point Data */
 _ENUM_ELEMENT(VMOVUPS)    /* Move Unaligned Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(VMOVAPS)    /* Move Aligned Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(VMOVUPD)    /* Move Unaligned Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(VMOVAPD)    /* Move Aligned Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVSS)     /* Move Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVSD)     /* Move Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVD)      /* Move Double Word */
+_ENUM_ELEMENT(VMOVQ)      /* Move Quad Word */
 _ENUM_ELEMENT(VMOVDQA)    /* Move Aligned Double-Quadword */
 _ENUM_ELEMENT(VMOVDQU)    /* Move Unaligned Double-Quadword */
 _ENUM_ELEMENT(VSHUFPS)    /* Shuffle Packed Single-Precision Floating Point Values */
@@ -718,9 +730,81 @@ _ENUM_ELEMENT(VDIVPD)     /* Divide Packed Double-Precision Floating Point Value
 _ENUM_ELEMENT(VDIVSD)     /* Divide Scalar Double-Precision Floating Point Values */
 _ENUM_ELEMENT(VMAXPD)     /* Maximum Packed Double-Precision Floating Point Values */
 _ENUM_ELEMENT(VMAXSD)     /* Maximum Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VCMPPS)     /* Compare Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VCMPSS)     /* Compare Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VCMPPD)     /* Compare Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VCMPSD)     /* Compare Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VSQRTPS)    /* Square Root of Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VSQRTSS)    /* Square Root of Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VSQRTPD)    /* Square Root of Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VSQRTSD)    /* Square Root of Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VPAND)      /* Bitwise Logical AND */
+_ENUM_ELEMENT(VPANDN)     /* Bitwise Logical AND-NOT */
+_ENUM_ELEMENT(VPOR)       /* Bitwise Logical OR */
+_ENUM_ELEMENT(VPXOR)      /* Bitwise Logical XOR */
 _ENUM_ELEMENT(VPERM2F128) /* Permute Floating Point Values */
+_ENUM_ELEMENT(VINSERTF128)/* Insert Packed Floating-Point Values */
+_ENUM_ELEMENT(VEXTRACTF128)/* Extract Packed Floating-Point Values */
 _ENUM_ELEMENT(VBLENDPS)   /* Blend Packed Single-Precision Floating Point Values */
 _ENUM_ELEMENT(VBLENDPD)   /* Blend Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTSI2SS)  /* Convert Scalar Double Word Integers to Scalar Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTSI2SD)  /* Convert Scalar Double Word Integers to Scalar Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VCOMISS)    /* Compare Scalar Ordered Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VUCOMISS)   /* Compare Scalar Unordered Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VCOMISD)    /* Compare Scalar Ordered Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VUCOMISD)   /* Compare Scalar Unordered Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTPS2PD)  /* Converter Packed Packed Single-Precision Floating Point Values to Double Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTPD2PS)  /* Converter Packed Packed Double-Precision Floating Point Values to Single Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTSS2SD)  /* Converter Packed Scalar Single-Precision Floating Point Values to Double Precision Floating Point Values */
+_ENUM_ELEMENT(VCVTSD2SS)  /* Converter Packed Scalar Double-Precision Floating Point Values to Single Precision Floating Point Values */
+_ENUM_ELEMENT(VUNPCKLPS)  /* Unpack and Interleave Low Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VUNPCKHPS)  /* Unpack and Interleave High Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VUNPCKLPD)  /* Unpack and Interleave Low Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VUNPCKHPD)  /* Unpack and Interleave High Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VPUNPCKLBW) /* Unpack and Interleave Low-Order Bytes */
+_ENUM_ELEMENT(VPUNPCKLWD) /* Unpack and Interleave Low-Order Words */
+_ENUM_ELEMENT(VPUNPCKLDQ) /* Unpack and Interleave Low-Order Double-Words */
+_ENUM_ELEMENT(VPUNPCKLQDQ)/* Unpack and Interleave Low-Order Quad-Words */
+_ENUM_ELEMENT(VPUNPCKHBW) /* Unpack and Interleave High-Order Bytes */
+_ENUM_ELEMENT(VPUNPCKHWD) /* Unpack and Interleave High-Order Words */
+_ENUM_ELEMENT(VPUNPCKHDQ) /* Unpack and Interleave High-Order Double-Words */
+_ENUM_ELEMENT(VPUNPCKHQDQ)/* Unpack and Interleave High-Order Quad-Words */
+_ENUM_ELEMENT(VHADDPS)    /* Horizontal Add Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VHADDPD)    /* Horizontal Add Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VHSUBPS)    /* Horizontal Subtract Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VHSUBPD)    /* Horizontal Subtract Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVLPS)    /* Move Low Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVHPS)    /* Move High Packed Single-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVLPD)    /* Move Low Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVHPD)    /* Move High Packed Double-Precision Floating Point Values */
+_ENUM_ELEMENT(VMOVSLDUP)  /* Move Packed Single-Precision Floating Point Values Low and Duplicate */
+_ENUM_ELEMENT(VMOVSHDUP)  /* Move Packed Single-Precision Floating Point Values High and Duplicate */
+_ENUM_ELEMENT(VPMINUB)    /* Minimum Packed Integer */
+_ENUM_ELEMENT(VPMINSW)    /* Minimum Packed Integer */
+_ENUM_ELEMENT(VPMAXUB)    /* Maximum Packed Integer */
+_ENUM_ELEMENT(VPMAXSW)    /* Maximum Packed Integer */
+_ENUM_ELEMENT(VPSHUFW)    /* Shuffle Packed Words */
+_ENUM_ELEMENT(VPSHUFD)    /* Shuffle Packed Double-Words */
+_ENUM_ELEMENT(VPSHUFHW)   /* Shuffle Packed High Words */ 
+_ENUM_ELEMENT(VPSHUFLW)   /* Shuffle Packed Low Words */
+_ENUM_ELEMENT(VPSUBB)     /* Subtract Packed Integer */
+_ENUM_ELEMENT(VPSUBW)     /* Subtract Packed Integer */
+_ENUM_ELEMENT(VPSUBD)     /* Subtract Packed Integer */
+_ENUM_ELEMENT(VPSUBQ)     /* Subtract Packed Integer */
+_ENUM_ELEMENT(VPADDB)     /* Add Packed Integer */
+_ENUM_ELEMENT(VPADDW)     /* Add Packed Integer */
+_ENUM_ELEMENT(VPADDD)     /* Add Packed Integer */
+_ENUM_ELEMENT(VPSLLW)     /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(VPSLLD)     /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(VPSLLQ)     /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(VPSLLDQ)    /* Shift Packed Data Left Logical */
+_ENUM_ELEMENT(VPSRLW)     /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(VPSRLD)     /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(VPSRLQ)     /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(VPSRLDQ)    /* Shift Packed Data Right Logical */
+_ENUM_ELEMENT(VPSRAW)     /* Shift Packed Data Right Arithmetic */
+_ENUM_ELEMENT(VPSRAD)     /* Shift Packed Data Right Arithmetic */
+_ENUM_ELEMENT(VPMULLW)    /* Multiply Packed Signed Integers and Store Low Result */
 
 _ENUM_ELEMENT(MOVBE)    /* Move Data after Swapping Bytes */
 _ENUM_ELEMENT(CRC32)    /* Accumulate CRC32 Value */

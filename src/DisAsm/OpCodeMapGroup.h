@@ -78,6 +78,18 @@ OpCodeMapElement OpCodeMapGroup[] =
 	/* GROUP17 */
 	/* SSE4A - appears in AMD manual but not in Intel */
 	{EXTRQ, OP3(Voq, Ib, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* GROUP12VEX */
+	{DB, OP0}, {DB, OP0}, {VPSRLW, OP3(Hx, Ux, Ib)}, {DB, OP0},                  {VPSRAW, OP3(Hx, Ux, Ib)}, {DB, OP0}, {VPSLLW, OP3(Hx, Ux, Ib)}, {DB, OP0},
+	/* GROUP13VEX */
+	{DB, OP0}, {DB, OP0}, {VPSRLD, OP3(Hx, Ux, Ib)}, {DB, OP0},                  {VPSRAD, OP3(Hx, Ux, Ib)}, {DB, OP0}, {VPSLLD, OP3(Hx, Ux, Ib)}, {DB, OP0},
+	/* GROUP14VEX */
+	{DB, OP0}, {DB, OP0}, {VPSRLQ, OP3(Hx, Ux, Ib)}, {VPSRLDQ, OP3(Hx, Ux, Ib)}, {DB, OP0},                 {DB, OP0}, {VPSLLQ, OP3(Hx, Ux, Ib)}, {VPSLLDQ, OP3(Hx, Ux, Ib)},
+	/* GROUP15VEX */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* GROUP16VEX */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* GROUP17VEX */
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* GROUPP */
 	/*
 	Intel defines just /0 for PREFETCHW

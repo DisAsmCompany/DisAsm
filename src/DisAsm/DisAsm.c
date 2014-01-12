@@ -22,6 +22,7 @@ typedef struct DisAsmContext_t
     uint8_t size;
     uint8_t currentSize;
     uint8_t error;
+	uint8_t ModRMRead;
 }
 DisAsmContext;
 
@@ -179,11 +180,13 @@ static OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo
 	uint8_t byte = Fetch1(pContext, pInfo);
 	uint32_t opcode = 0;
 
+	opcode = byte;
+
 	if (8 == pContext->size)
 	{
-		/* REX prefix */
 		switch (byte)
 		{
+		/* REX prefix */
 		case 0x40: case 0x41: case 0x42: case 0x43:
 		case 0x44: case 0x45: case 0x46: case 0x47:
 		case 0x48: case 0x49: case 0x4A: case 0x4B:
@@ -200,32 +203,50 @@ static OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo
 			pInfo->REXX = (uint8_t) REX_X(byte);
 			pInfo->REXB = (uint8_t) REX_B(byte);
 			return ChooseOpCode(pContext, pInfo);
-		/* 2-byte VEX prefix */
-		case 0xC5:
+		}
+	}
+
+	switch (opcode)
+	{
+	/* 2-byte VEX prefix */
+	case 0xC5:
+		byte = Fetch1(pContext, pInfo);
+		if (byte & 0xC0)
+		{
 			if (pInfo->flags & (kHasREX | kHasVEX2 | kHasVEX3 | kHasXOP3))
 			{
 				pContext->error = 1;
 				return NULL;
 			}
+			pInfo->VEX2 = byte;
 			pInfo->flags |= kHasVEX2;
-			pInfo->VEX2 = Fetch1(pContext, pInfo);
 			pInfo->LegacySSEPrefix = LegacySSEPrefixes[VEX2_pp(pInfo->VEX2)];
 			pInfo->vvvv = (uint8_t) VEX2_vvvv(pInfo->VEX2);
 			pInfo->REXR = (uint8_t) VEX2_R(pInfo->VEX2);
 			opcode = Fetch1(pContext, pInfo);
 			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXTwoByte0F, OpCodeMapVEXTwoByte0FExt);
-			pInfo->opcode = opcode;
-			pContext->error |= (DB == element->mnemonic) ? 1 : 0;
-			return element;
-		/* 3-byte VEX prefix */
-		case 0xC4:
+		}
+		else
+		{
+			pInfo->ModRM = byte;
+			pContext->ModRMRead = 1;
+			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapOneByte, OpCodeMapOneByteExt);
+		}
+		pInfo->opcode = opcode;
+		pContext->error |= (DB == element->mnemonic) ? 1 : 0;
+		return element;
+	/* 3-byte VEX prefix */
+	case 0xC4:
+		byte = Fetch1(pContext, pInfo);
+		if (byte & 0xC0)
+		{
 			if (pInfo->flags & (kHasREX | kHasVEX2 | kHasVEX3 | kHasXOP3))
 			{
 				pContext->error = 1;
 				return NULL;
 			}
 			pInfo->flags |= kHasVEX3;
-			pInfo->VEX3 = Fetch2(pContext, pInfo);
+			pInfo->VEX3 = byte | (Fetch1(pContext, pInfo) << 8);
 			pInfo->LegacySSEPrefix = LegacySSEPrefixes[VEX3_pp(pInfo->VEX3)];
 			pInfo->vvvv = (uint8_t) VEX3_vvvv(pInfo->VEX3);
 			pInfo->REXW = (uint8_t) VEX3_W(pInfo->VEX3);
@@ -238,45 +259,40 @@ static OpCodeMapElement * ChooseOpCode(DisAsmContext * pContext, InstructionInfo
 			case 0x01: element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXTwoByte0F, OpCodeMapVEXTwoByte0FExt); break;
 			case 0x02: element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXThreeByte0F38, OpCodeMapVEXThreeByte0F38Ext); break;
 			case 0x03: element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXThreeByte0F3A, OpCodeMapVEXThreeByte0F3AExt); break;
-			default: return NULL;
+			default: pContext->error = 1; return NULL;
 			}
-			pInfo->opcode = opcode;
-			pContext->error |= (DB == element->mnemonic) ? 1 : 0;
-			return element;
-		/* 3-byte XOP prefix */
-		case 0x8F:
-			if (pInfo->flags & (kHasREX | kHasVEX2 | kHasVEX3 | kHasXOP3))
-			{
-				pContext->error = 1;
-				return NULL;
-			}
-			pInfo->flags |= kHasXOP3;
-			pInfo->XOP3 = Fetch2(pContext, pInfo);
-			pInfo->LegacySSEPrefix = LegacySSEPrefixes[XOP3_pp(pInfo->XOP3)];
-			pInfo->vvvv = (uint8_t) XOP3_vvvv(pInfo->XOP3);
-			pInfo->REXW = (uint8_t) XOP3_W(pInfo->XOP3);
-			pInfo->REXR = (uint8_t) XOP3_R(pInfo->XOP3);
-			pInfo->REXX = (uint8_t) XOP3_X(pInfo->XOP3);
-			pInfo->REXB = (uint8_t) XOP3_B(pInfo->XOP3);
-			opcode = Fetch1(pContext, pInfo);
-			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXTwoByte0F, OpCodeMapVEXTwoByte0FExt);
-			pInfo->opcode = opcode;
-			pContext->error |= (DB == element->mnemonic) ? 1 : 0;
-			return element;
-		/* MVEX */
-		case 0x62:
-			return ChooseOpCode(pContext, pInfo);
-		/* L1OM */
-		case 0xD6:
-			return ChooseOpCode(pContext, pInfo);
-		default:
-			break;
 		}
- 	}
-	opcode = byte;
-
-	switch (opcode)
-	{
+		else
+		{
+			pInfo->ModRM = byte;
+			pContext->ModRMRead = 1;
+			element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapOneByte, OpCodeMapOneByteExt);
+		}
+		break;
+	/* 3-byte XOP prefix */
+	case 0x8F:
+		if (pInfo->flags & (kHasREX | kHasVEX2 | kHasVEX3 | kHasXOP3))
+		{
+			pContext->error = 1;
+			return NULL;
+		}
+		pInfo->flags |= kHasXOP3;
+		pInfo->XOP3 = Fetch2(pContext, pInfo);
+		pInfo->LegacySSEPrefix = LegacySSEPrefixes[XOP3_pp(pInfo->XOP3)];
+		pInfo->vvvv = (uint8_t) XOP3_vvvv(pInfo->XOP3);
+		pInfo->REXW = (uint8_t) XOP3_W(pInfo->XOP3);
+		pInfo->REXR = (uint8_t) XOP3_R(pInfo->XOP3);
+		pInfo->REXX = (uint8_t) XOP3_X(pInfo->XOP3);
+		pInfo->REXB = (uint8_t) XOP3_B(pInfo->XOP3);
+		opcode = Fetch1(pContext, pInfo);
+		element = ChooseOpCodeExt(pContext, pInfo, &opcode, OpCodeMapVEXTwoByte0F, OpCodeMapVEXTwoByte0FExt);
+		break;
+	/* MVEX */
+	//case 0x62:
+	//	return ChooseOpCode(pContext, pInfo);
+	/* L1OM */
+	//case 0xD6:
+	//	return ChooseOpCode(pContext, pInfo);
 	case 0x0F:
 		opcode = (opcode << 8) | Fetch1(pContext, pInfo);
 		switch (opcode)
@@ -403,6 +419,7 @@ static uint8_t SizeForType(DisAsmContext *pContext, OperandType type)
     case y: result = 8; break;
 	case x: result = 32; break;
 	case qq: result = 32; break;
+	case dq: result = 16; break;
 	default: result = 4; break;
 	}
 	return result;
@@ -481,7 +498,7 @@ static void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Oper
 	switch (HiType)
 	{
 	case M: case R: case E:
-	case Q: case W:
+	case Q: case W: case U:
 		pOperand->type = (MODRM_MOD(pInfo->ModRM) != 3) ? Mem : Reg;
 		pOperand->scale = pOperand->hasBase = pOperand->hasIndex = 0;
 		pOperand->size = SizeForType(pContext, type);
@@ -570,7 +587,6 @@ static void OperandDecode(DisAsmContext *pContext, InstructionInfo * pInfo, Oper
 	default:
 		break;
 	}
-	
 }
 
 static void CopyElementInfo(InstructionInfo * pInfo, OpCodeMapElement * pElement)
@@ -781,6 +797,7 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	context.error = 0;
 	context.hReader = hReader;
 	context.currentSize = context.size = bitness >> 3;
+	context.ModRMRead = 0;
 
 	pElement = ChooseOpCode(&context, pInfo);
 	if (1 == context.error)
@@ -807,7 +824,10 @@ uint8_t DisAsmInstructionDecode(uint8_t bitness, HREADER hReader, InstructionInf
 	if (pInfo->flags & kHasModRM)
 	{
 		uint8_t ModRM_Mod, ModRM_RM;
-		pInfo->ModRM = Fetch1(&context, pInfo);
+		if (!context.ModRMRead)
+		{
+			pInfo->ModRM = Fetch1(&context, pInfo);
+		}
 		ModRM_Mod = MODRM_MOD(pInfo->ModRM);
 		ModRM_RM  = MODRM_RM(pInfo->ModRM);
 		pInfo->flags |= ((ModRM_Mod != 3) && (ModRM_RM == 4)) ? kHasSIB : 0;

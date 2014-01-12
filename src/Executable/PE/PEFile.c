@@ -512,24 +512,23 @@ int PEFileInit(ExecutableContext * pContext)
 		CHECK_ALLOC(THIS->DataDirectories = (PEDataDirectory*) calloc(1, sizeof(PEDataDirectory) * THIS->DataDirectoriesCount));
 		CHECK_CALL(ReaderRead(pContext->hReader, THIS->DataDirectories, sizeof(PEDataDirectory) * THIS->DataDirectoriesCount));
 	}
-	if (0 == (OBJ.nSections = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderNumberOfSections)))
+	if (0 != (OBJ.nSections = SDFReadUInt16(THIS->hFileHeader, PEFileHeaderNumberOfSections)))
 	{
-		return 0;
-	}
-	CHECK_ALLOC(OBJ.pSections = calloc(1, sizeof(ExecutableSection) * OBJ.nSections));
-	CHECK_CALL(ReaderSeek(pContext->hReader, OffsetSectionHeaders));
-	for (i = 0; i < OBJ.nSections; ++i)
-	{
-		HSDF hSectionHeader = NULL;
-		CHECK_CALL(hSectionHeader = SDFCreate(PESectionHeader, pContext->hReader));
+		CHECK_ALLOC(OBJ.pSections = calloc(1, sizeof(ExecutableSection) * OBJ.nSections));
+		CHECK_CALL(ReaderSeek(pContext->hReader, OffsetSectionHeaders));
+		for (i = 0; i < OBJ.nSections; ++i)
+		{
+			HSDF hSectionHeader = NULL;
+			CHECK_CALL(hSectionHeader = SDFCreate(PESectionHeader, pContext->hReader));
 
-		OBJ.pSections[i].VirtualAddress = SDFReadUInt32(hSectionHeader, PESectionHeaderVirtualAddress);
-		OBJ.pSections[i].FileAddress    = SDFReadUInt32(hSectionHeader, PESectionHeaderPointerToRawData);
-		OBJ.pSections[i].FileSize       =
-		OBJ.pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, PESectionHeaderSizeOfRawData);
+			OBJ.pSections[i].VirtualAddress = SDFReadUInt32(hSectionHeader, PESectionHeaderVirtualAddress);
+			OBJ.pSections[i].FileAddress    = SDFReadUInt32(hSectionHeader, PESectionHeaderPointerToRawData);
+			OBJ.pSections[i].FileSize       =
+			OBJ.pSections[i].VirtualSize    = SDFReadUInt32(hSectionHeader, PESectionHeaderSizeOfRawData);
 
-		SDFDebugPrint(hSectionHeader);
-		SDFDestroy(hSectionHeader);
+			SDFDebugPrint(hSectionHeader);
+			SDFDestroy(hSectionHeader);
+		}
 	}
 	for (i = 0; i < THIS->DataDirectoriesCount; ++i)
 	{

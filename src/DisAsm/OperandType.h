@@ -72,6 +72,7 @@ typedef enum OperandType_t
 	oq = 0x15, /* operand is either the upper or lower half of 128-bit value */
 	x  = 0x16, /* dq or qq based on operand size attribute */
 	qq = 0x17, /* quad quad word */
+	dq = 0x18, /* double quad word */
 
 #define DEFINE_TYPE(T) \
 	T##b  = OperandBase | T | b, \
@@ -98,6 +99,7 @@ typedef enum OperandType_t
 	T##oq = OperandBase | T | oq, \
 	T##x  = OperandBase | T | x, \
 	T##qq = OperandBase | T | qq, \
+	T##dq = OperandBase | T | dq, \
 
 	DEFINE_TYPE(E)
 	DEFINE_TYPE(G)

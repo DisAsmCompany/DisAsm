@@ -177,6 +177,10 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 	{
 		WriteFile(hConsole, str, length, &written, NULL);
 	}
+	if (error)
+	{
+		OutputDebugString(str);
+	}
 #else /* OS_WINDOWS */
 	if (error ? g_isConsoleStdErr : g_isConsoleStdOut)
 	{
@@ -226,15 +230,18 @@ void ConsoleIOPrintInternal(const char * str, uint32_t length, TextColor color, 
 #endif /* OS_WINDOWS */
 }
 
+void ConsoleIOError(const char * str)
+{
+	ConsoleIOPrintInternal(str, xstrlen(str), kDefaultColor, kDefaultColor, 0);
+	ConsoleIOPrintInternal(str, xstrlen(str), kDefaultColor, kDefaultColor, 1);
+}
+
 void ConsoleIOPrint(const char * str)
 {
 	uint32_t length = xstrlen(str);
 	if (length >= 7 && 0 == memcmp(str, "[ERROR]", 7))
 	{
 		ConsoleIOPrintInternal(str, xstrlen(str), kRed, kDefaultColor, 1);
-#ifdef OS_WINDOWS
-		OutputDebugString(str);
-#endif /* OS_WINDOWS */
 	}
 	ConsoleIOPrintInternal(str, length, kDefaultColor, kDefaultColor, 0);
 }
@@ -291,6 +298,17 @@ uint32_t AppendHex(char * buffer, uint64_t value, uint32_t width)
 		shift -= 4;
 	}
 	return width;
+}
+
+void ConsoleIOErrorFormatted(const char * format, ...)
+{
+	enum {MaxLength = 4096};
+	uint32_t size = MaxLength;
+	char message[MaxLength] = {0};
+
+#include "ConsoleIOFormat.h"
+
+	ConsoleIOError(message);
 }
 
 void ConsoleIOPrintFormatted(const char * format, ...)

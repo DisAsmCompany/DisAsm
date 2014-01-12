@@ -75,12 +75,12 @@ void DisAsmFunction(uint8_t bitness, HREADER hReader, HBENCHMARK hBenchmark, add
 		if (0 == length)
 		{
 			uint8_t i;
-			ConsoleIOPrint("[ERROR] cannot decode instruction\n");
+			ConsoleIOError("[ERROR] cannot decode instruction ");
 			for (i = 0; i < info.length; ++i)
 			{
-				ConsoleIOPrintFormatted("%02X", info.bytes[i]);
+				ConsoleIOErrorFormatted("%02X", info.bytes[i]);
 			}
-			ConsoleIOPrint("\n");
+			ConsoleIOError("\n");
 			break;
 		}
 		if (!quiet)

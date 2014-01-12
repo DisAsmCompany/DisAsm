@@ -92,7 +92,7 @@ NONE F                 F                 F
 uint32_t OpCodeMapVEXThreeByte0F38Ext[] =
 {
 	/* 0F3800h - 0F381Fh */
-	0x00000000UL,
+	0xFF000000UL,
 	/* 0F3820h - 0F383Fh */
 	0x00000000UL,
 	/* 0F3840h - 0F385Fh */
@@ -126,11 +126,11 @@ OpCodeMapElement OpCodeMapVEXThreeByte0F38[] =
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3817h - 0F381Fh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3818h - 0F381Fh */
+	{DB, OP0},                   {DB, OP0},                    {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{VBROADCASTSS, OP2(Vx, Wd)}, {VBROADCASTSD, OP2(Vqq, Wq)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0},                   {DB, OP0},                    {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0},                   {DB, OP0},                    {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0F3820h - 0F3827h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},

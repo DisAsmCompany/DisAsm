@@ -92,7 +92,7 @@ NONE F                 F                 F
 uint32_t OpCodeMapVEXThreeByte0F3AExt[] =
 {
 	/* 0F3A00h - 0F3A1Fh */
-	0x0000FFFFUL,
+	0xFF00FFFFUL,
 	/* 0F3A20h - 0F3A3Fh */
 	0x00000000UL,
 	/* 0F3A40h - 0F3A5Fh */
@@ -126,11 +126,11 @@ OpCodeMapElement OpCodeMapVEXThreeByte0F3A[] =
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	/* 0F3A17h - 0F3A1Fh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	/* 0F3A18h - 0F3A1Fh */
+	{DB, OP0},                             {DB, OP0},                         {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{VINSERTF128, OP4(Vqq, Hqq, Qqq, Ib)}, {VEXTRACTF128, OP3(Wdq, Vqq, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0},                             {DB, OP0},                         {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0},                             {DB, OP0},                         {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0F3A20h - 0F3A27h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},

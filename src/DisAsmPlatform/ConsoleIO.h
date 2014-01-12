@@ -48,7 +48,9 @@ void ConsoleIOFormat(char * message, uint32_t size, const char * format, ...);
 void PrintColoredString(const char * string, TextColor color, TextColor background);
 void PrintByte(uint64_t value);
 
+void ConsoleIOError(const char * string);
 void ConsoleIOPrint(const char * string);
+void ConsoleIOErrorFormatted(const char * format, ...);
 void ConsoleIOPrintFormatted(const char * format, ...);
 
 #if defined(_DEBUG) || defined(DEBUG)
