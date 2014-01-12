@@ -6,4 +6,5 @@ cd windows32-wcc
 cmake -G "Watcom WMake" ..
 wmake
 DisAsmTest.exe
+DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
 cd ..

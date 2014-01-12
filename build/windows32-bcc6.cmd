@@ -6,4 +6,5 @@ cd windows32-bcc6
 cmake -G "Borland Makefiles" ..
 make
 DisAsmTest.exe
+DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
 cd ..

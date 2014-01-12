@@ -6,4 +6,6 @@ cd windows32-mingw
 cmake -G "MinGW Makefiles" -DCMAKE_C_FLAGS="-Wall -std=c99" ..
 mingw32-make
 DisAsmTest.exe
+DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
+Release\DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
 cd ..

@@ -38,7 +38,7 @@ int main(int argc, char * const argv[])
 	}
 	ReaderSize(hReader, &size);
 
-	for (i = 0; i < 10; ++i)
+	for (i = 0; i < 25; ++i)
 	{
 		ReaderSeek(hReader, 0);
 		offset = 0;

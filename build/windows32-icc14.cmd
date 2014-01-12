@@ -6,4 +6,5 @@ cmake -G "Visual Studio 9 2008" -DCMAKE_C_FLAGS="/W4" ..
 %IntelCommon%"\Intel\shared files\ia32\Bin\ICProjConvert140.exe" DisAsm.sln /IC
 "%VS90COMNTOOLS%\..\IDE\devenv.com" DisAsm.sln /Build "Release|Win32"
 Release\DisAsmTest.exe
+Release\DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
 cd ..

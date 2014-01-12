@@ -4,4 +4,5 @@ cd windows32-msvc2010
 cmake -G "Visual Studio 10" -DCMAKE_C_FLAGS="/W4" ..
 "%VS100COMNTOOLS%\..\IDE\devenv.com" DisAsm.sln /Build "Release|Win32"
 Release\DisAsmTest.exe
+Release\DisAsmBenchmark.exe %IPP_HOME%\ipp.bin
 cd ..
