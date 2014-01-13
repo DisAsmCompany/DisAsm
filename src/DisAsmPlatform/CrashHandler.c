@@ -17,7 +17,7 @@ void InfoCache(CacheLevel level)
 	CacheInfo info;
 	info.level = level;
 	CPUIDCacheInfo(&info);
-	if (level == info.level)
+	if (info.size > 0)
 	{
 		switch (level)
 		{
@@ -71,6 +71,7 @@ void InfoCPU()
 		ConsoleIOPrintFormatted("MMX      : %s\n", CheckCPUIDFeature(kCPUIDFeature_MMX)   ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("SSE      : %s\n", CheckCPUIDFeature(kCPUIDFeature_SSE)   ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("SSE2     : %s\n", CheckCPUIDFeature(kCPUIDFeature_SSE2)  ? "YES" : "NO ");
+		ConsoleIOPrintFormatted("HTT      : %s\n", CheckCPUIDFeature(kCPUIDFeature_HTT)   ? "YES" : "NO ");
 
 		ConsoleIOPrintFormatted("SSE3     : %s\n", CheckCPUIDFeature(kCPUIDFeature_SSE3)  ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("VMX      : %s\n", CheckCPUIDFeature(kCPUIDFeature_VMX)   ? "YES" : "NO ");
@@ -95,6 +96,11 @@ void InfoCPU()
 		ConsoleIOPrintFormatted("SSE4.a   : %s\n", CheckCPUIDFeature(kCPUIDFeature_SSE4A)  ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("XOP      : %s\n", CheckCPUIDFeature(kCPUIDFeature_XOP)    ? "YES" : "NO ");
 		ConsoleIOPrintFormatted("FMA4     : %s\n", CheckCPUIDFeature(kCPUIDFeature_FMA4)   ? "YES" : "NO ");
+
+		ConsoleIOPrint("\n");
+		ConsoleIOPrintFormatted("SpeedSteep : %s\n", CheckCPUIDFeature(kCPUIDFeature_EIST) ? "YES" : "NO ");
+		ConsoleIOPrintFormatted("TurboBoost : %s\n", CheckCPUIDFeature(kCPUIDFeature_TB)   ? "YES" : "NO ");
+		ConsoleIOPrintFormatted("CoolnQuiet : %s\n", CheckCPUIDFeature(kCPUIDFeature_FID)  ? "YES" : "NO ");
 
 		InfoCache(kCacheLevel_L1Code);
 		InfoCache(kCacheLevel_L1Data);

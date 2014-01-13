@@ -24,9 +24,11 @@ uint8_t CheckCPUIDFeature(CPUIDFeature feature)
 	features[2] = 00000007h EBX
 	features[3] = 80000001h EDX
 	features[4] = 80000001h ECX
+	features[5] = 00000006h EAX
+	features[6] = 80000007h EDX
 	*/
 	static uint8_t checked;
-	static uint32_t features[5];
+	static uint32_t features[7];
 
 	/* did we already check for features? */
 	if (!checked)
@@ -39,15 +41,25 @@ uint8_t CheckCPUIDFeature(CPUIDFeature feature)
 			if (MaxBasicLevel >= 0x00000001UL)
 			{
 				CallCPUID(0x00000001UL, 0, NULL, NULL, &features[1], &features[0]);
-				
-				if (MaxBasicLevel >= 0x00000007UL)
+
+				if (MaxBasicLevel >= 0x00000006UL)
 				{
-					CallCPUID(0x00000007UL, 0, NULL, &features[2], NULL, NULL);
+					CallCPUID(0x00000006UL, 0, &features[5], NULL, NULL, NULL);
+
+					if (MaxBasicLevel >= 0x00000007UL)
+					{
+						CallCPUID(0x00000007UL, 0, NULL, &features[2], NULL, NULL);
+					}
 				}
 			}
 			if (MaxExtendedLevel >= 0x80000001UL)
 			{
 				CallCPUID(0x80000001UL, 0, NULL, NULL, &features[4], &features[3]);
+
+				if (MaxExtendedLevel >= 0x80000007UL)
+				{
+					CallCPUID(0x80000007UL, 0, NULL, NULL, NULL, &features[6]);
+				}
 			}
 			/* for AVX, AVX2, AVX512 check the OS support
 			http://software.intel.com/en-us/articles/how-to-detect-new-instruction-support-in-the-4th-generation-intel-core-processor-family
@@ -435,9 +447,9 @@ uint32_t AMDCacheWays(uint32_t field)
 
 void CPUIDCacheInfo(CacheInfo * pOutInfo)
 {
+	pOutInfo->size = 0;
 	if (CheckCPUID())
 	{
-		CacheInfo info[kCacheLevel_Max];
 		uint32_t MaxBasicLevel = CallCPUID(0x00000000UL, 0, NULL, NULL, NULL, NULL);
 		uint32_t MaxExtendedLevel = CallCPUID(0x80000000UL, 0, NULL, NULL, NULL, NULL);
 		uint8_t count = 1;
@@ -482,11 +494,13 @@ void CPUIDCacheInfo(CacheInfo * pOutInfo)
 							level = kCacheLevel_L2;
 						}
 					}
-					info[level].level       = level;
-					info[level].size        = entry->size;
-					info[level].line        = entry->line;
-					info[level].ways        = entry->ways;
-					info[level].sector      = entry->sector;
+					if (level == pOutInfo->level)
+					{
+						pOutInfo->size   = entry->size;
+						pOutInfo->line   = entry->line;
+						pOutInfo->ways   = entry->ways;
+						pOutInfo->sector = entry->sector;
+					}
 				}
 			}
 		}
@@ -498,7 +512,7 @@ void CPUIDCacheInfo(CacheInfo * pOutInfo)
 			for (;;)
 			{
 				CacheLevel level = kCacheLevel_None;
-				uint32_t index, type, partitions, sets;
+				uint32_t index, type;
 				CallCPUID(0x00000004UL, selector, &eax, &ebx, &ecx, NULL);
 				type = eax & 0x1F;
 				index = (eax >> 5) & 0x7;
@@ -512,64 +526,80 @@ void CPUIDCacheInfo(CacheInfo * pOutInfo)
 				case 3: level = kCacheLevel_L3; break;
 				default: break;
 				}
-				/*
-				This Cache Size in Bytes
-				= (Ways + 1) * (Partitions + 1) * (Line_Size + 1) * (Sets + 1)
-				= (EBX[31:22] + 1) * (EBX[21:12] + 1) * (EBX[11:0] + 1) * (ECX + 1)
-				*/
-				info[level].level = level;
-				info[level].ways  = (ebx >> 22) + 1;
-				info[level].line  = (ebx & 0xFFF) + 1;
-				partitions = ((ebx >> 12) & 0x3FF) + 1;
-				sets = ecx + 1;
-				info[level].size = (info[level].ways * info[level].line * partitions * sets) >> 10;
+				if (level == pOutInfo->level)
+				{
+					/*
+					This Cache Size in Bytes
+					= (Ways + 1) * (Partitions + 1) * (Line_Size + 1) * (Sets + 1)
+					= (EBX[31:22] + 1) * (EBX[21:12] + 1) * (EBX[11:0] + 1) * (ECX + 1)
+					*/
+					uint32_t partitions = ((ebx >> 12) & 0x3FF) + 1;
+					uint32_t sets = ecx + 1;
+					pOutInfo->ways  = (ebx >> 22) + 1;
+					pOutInfo->line  = (ebx & 0xFFF) + 1;
+					pOutInfo->size = (pOutInfo->ways * pOutInfo->line * partitions * sets) >> 10;
+					break;
+				}
 				++selector;
 			}
 		}
-		/* AMD Way */
-		if (0 == count && MaxExtendedLevel >= 0x80000005UL)
+		else if (0 == count && MaxExtendedLevel >= 0x80000005UL)
 		{
+			/* AMD Way */
 			uint32_t TLB2M4M, TLB4K, L1Code, L1Data;
 			CallCPUID(0x80000005UL, 0, &TLB2M4M, &TLB4K, &L1Data, &L1Code);
 
-			info[kCacheLevel_TLB2M4MCode].size = TLB2M4M & 0xFF;
-			info[kCacheLevel_TLB2M4MCode].ways = (TLB2M4M >> 8) & 0xFF;
-			info[kCacheLevel_TLB2M4MData].size = (TLB2M4M >> 16) & 0xFF;
-			info[kCacheLevel_TLB2M4MData].ways = TLB2M4M >> 24;
-
-			info[kCacheLevel_TLB4KCode].size = TLB4K & 0xFF;
-			info[kCacheLevel_TLB4KCode].ways = (TLB4K >> 8) & 0xFF;
-			info[kCacheLevel_TLB4KData].size = (TLB4K >> 16) & 0xFF;
-			info[kCacheLevel_TLB4KData].ways = TLB4K >> 24;
-
-			info[kCacheLevel_L1Data].size = L1Data >> 24;
-			info[kCacheLevel_L1Data].ways = (L1Data >> 8) & 0xFF;
-			info[kCacheLevel_L1Data].line = L1Data & 0xFF;
-
-			info[kCacheLevel_L1Code].size = L1Code >> 24;
-			info[kCacheLevel_L1Code].ways = (L1Code >> 8) & 0xFF;
-			info[kCacheLevel_L1Code].line = L1Code & 0xFF;
-
-			if (MaxExtendedLevel >= 0x80000006UL)
+			switch (pOutInfo->level)
 			{
-				uint32_t L2, L3;
-				CallCPUID(0x80000006UL, 0, NULL, NULL, &L2, &L3);
-
-				info[kCacheLevel_L2].size = L2 >> 16;
-				info[kCacheLevel_L2].ways = AMDCacheWays((L2 >> 12) & 0x0F);
-				info[kCacheLevel_L2].line = L2 & 0xFF;
-
-				info[kCacheLevel_L3].size = 512 * (L3 >> 18);
-				info[kCacheLevel_L3].ways = AMDCacheWays((L3 >> 12) & 0x0F);
-				info[kCacheLevel_L3].line = L3 & 0xFF;
+			case kCacheLevel_TLB2M4MCode:
+				pOutInfo->size = TLB2M4M & 0xFF;
+				pOutInfo->ways = (TLB2M4M >> 8) & 0xFF;
+				break;
+			case kCacheLevel_TLB2M4MData:
+				pOutInfo->size = (TLB2M4M >> 16) & 0xFF;
+				pOutInfo->ways = TLB2M4M >> 24;
+				break;
+			case kCacheLevel_TLB4KCode:
+				pOutInfo->size = TLB4K & 0xFF;
+				pOutInfo->ways = (TLB4K >> 8) & 0xFF;
+				break;
+			case kCacheLevel_TLB4KData:
+				pOutInfo->size = (TLB4K >> 16) & 0xFF;
+				pOutInfo->ways = TLB4K >> 24;
+				break;
+			case kCacheLevel_L1Data:
+				pOutInfo->size = L1Data >> 24;
+				pOutInfo->ways = (L1Data >> 8) & 0xFF;
+				pOutInfo->line = L1Data & 0xFF;
+				break;
+			case kCacheLevel_L1Code:
+				pOutInfo->size = L1Code >> 24;
+				pOutInfo->ways = (L1Code >> 8) & 0xFF;
+				pOutInfo->line = L1Code & 0xFF;
+				break;
+			case kCacheLevel_L2:
+				if (MaxExtendedLevel >= 0x80000006UL)
+				{
+					uint32_t L2 = 0;
+					CallCPUID(0x80000006UL, 0, NULL, NULL, &L2, NULL);
+					pOutInfo->size = L2 >> 16;
+					pOutInfo->ways = AMDCacheWays((L2 >> 12) & 0x0F);
+					pOutInfo->line = L2 & 0xFF;
+				}
+				break;
+			case kCacheLevel_L3:
+				if (MaxExtendedLevel >= 0x80000006UL)
+				{
+					uint32_t L3 = 0;
+					CallCPUID(0x80000006UL, 0, NULL, NULL, NULL, &L3);
+					pOutInfo->size = L3 >> 16;
+					pOutInfo->ways = AMDCacheWays((L3 >> 12) & 0x0F);
+					pOutInfo->line = L3 & 0xFF;
+				}
+				break;
+			default:
+				break;
 			}
-		}
-		if (NULL != pOutInfo)
-		{
-			pOutInfo->size   = info[pOutInfo->level].size;
-			pOutInfo->line   = info[pOutInfo->level].line;
-			pOutInfo->ways   = info[pOutInfo->level].ways;
-			pOutInfo->sector = info[pOutInfo->level].sector;
 		}
 	}
 }
