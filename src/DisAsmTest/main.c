@@ -126,67 +126,6 @@ void TestNOP()
 	VerifyInstruction(bytes, sizeof(bytes), NOP);
 }
 
-/* verify multi-byte NOP sequencs */
-void TestMultiByteNOP()
-{
-	{
-		uint8_t bytes[] = {0x66, 0x90};
-		VerifyInstruction(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0xF3, 0x90};
-		VerifyInstruction(bytes, sizeof(bytes), PAUSE);
-	}
-	{
-		uint8_t bytes[] = {0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x90};
-		VerifyInstruction(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0x66, 0xF3, 0x90};
-		VerifyInstruction(bytes, sizeof(bytes), PAUSE);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x19};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1A};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1B};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1C};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1D};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1E};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x1F};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x66, 0x0F, 0x1F};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), NOP);
-	}
-	{
-		uint8_t bytes[] = {0x0F, 0x0D};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), PREFETCHW);
-	}
-	{
-		uint8_t bytes[] = {0x66, 0x0F, 0x0D};
-		VerifyInstructionWithModRM(bytes, sizeof(bytes), PREFETCHW);
-	}
-}
-
 /* Primary Opcode Table (OpCodes 00h - FFh) */
 
 /* 
@@ -418,6 +357,188 @@ void TestSSE()
 		uint8_t bytes[] = {0xF3, 0xF2, 0x66, 0x0F, 0x59};
 		VerifyInstructionWithModRM(bytes, sizeof(bytes), MULSD);
 	}
+	{
+		uint8_t bytes[] = {0xC3};
+	        VerifyInstruction(bytes, sizeof(bytes), RET);
+	}
+	{
+                uint8_t bytes[] = {0xCB};
+                VerifyInstruction(bytes, sizeof(bytes), RET);
+        }
+	{
+                uint8_t bytes[] = {0xCE};
+                VerifyInstruction(bytes, sizeof(bytes), INTO);
+        }
+	{
+                uint8_t bytes[] = {0x60};
+                VerifyInstruction(bytes, sizeof(bytes), PUSHA);
+        }
+	{
+                uint8_t bytes[] = {0x61};
+                VerifyInstruction(bytes, sizeof(bytes), POPA);
+        }
+        {
+                uint8_t bytes[] = {0xD7};
+                VerifyInstruction(bytes, sizeof(bytes), XLAT);
+        }
+        {
+                uint8_t bytes[] = {0x98};
+                VerifyInstruction(bytes, sizeof(bytes), CBW);
+        }
+        {
+                uint8_t bytes[] = {0x99};
+                VerifyInstruction(bytes, sizeof(bytes), CWD);
+        }
+        {
+                uint8_t bytes[] = {0x9B};
+                VerifyInstruction(bytes, sizeof(bytes), WAIT);
+        }
+        {
+                uint8_t bytes[] = {0x9E};
+                VerifyInstruction(bytes, sizeof(bytes), SAHF);
+        }
+        {
+                uint8_t bytes[] = {0x9F};
+                VerifyInstruction(bytes, sizeof(bytes), LAHF);
+        }
+        {
+                uint8_t bytes[] = {0xC9};
+                VerifyInstruction(bytes, sizeof(bytes), LEAVE);
+        }
+        {
+                uint8_t bytes[] = {0xCF};
+                VerifyInstruction(bytes, sizeof(bytes), IRET);
+        }
+        {
+                uint8_t bytes[] = {0x00};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADD);
+        }
+        {
+                uint8_t bytes[] = {0x01};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADD);
+        }
+        {
+                uint8_t bytes[] = {0x02};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADD);
+        }
+        {
+                uint8_t bytes[] = {0x03};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADD);
+        }
+        {
+                uint8_t bytes[] = {0x10};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADC);
+        }
+        {
+                uint8_t bytes[] = {0x11};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADC);
+        }
+        {
+                uint8_t bytes[] = {0x12};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADC);
+        }
+        {
+                uint8_t bytes[] = {0x13};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), ADC);
+        }
+        {
+                uint8_t bytes[] = {0x20};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), AND);
+        }
+        {
+                uint8_t bytes[] = {0x21};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), AND);
+        }
+        {
+                uint8_t bytes[] = {0x22};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), AND);
+        }
+        {
+                uint8_t bytes[] = {0x23};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), AND);
+        }
+        {
+                uint8_t bytes[] = {0x30};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XOR);
+        }
+        {
+                uint8_t bytes[] = {0x31};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XOR);
+        }
+        {
+                uint8_t bytes[] = {0x32};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XOR);
+        }
+        {
+                uint8_t bytes[] = {0x33};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XOR);
+        }
+        {
+                uint8_t bytes[] = {0x08};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), OR);
+        }
+        {
+                uint8_t bytes[] = {0x09};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), OR);
+        }
+        {
+                uint8_t bytes[] = {0x0A};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), OR);
+        }
+        {
+                uint8_t bytes[] = {0x0B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), OR);
+        }
+        {
+                uint8_t bytes[] = {0x18};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SBB);
+        }
+        {
+                uint8_t bytes[] = {0x19};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SBB);
+        }
+        {
+                uint8_t bytes[] = {0x1A};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SBB);
+        }
+        {
+                uint8_t bytes[] = {0x1B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SBB);
+        }
+        {
+                uint8_t bytes[] = {0x28};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SUB);
+        }
+        {
+                uint8_t bytes[] = {0x29};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SUB);
+        }
+        {
+                uint8_t bytes[] = {0x2A};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SUB);
+        }
+        {
+                uint8_t bytes[] = {0x2B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), SUB);
+        }
+        {
+                uint8_t bytes[] = {0x38};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
+        }
+        {
+                uint8_t bytes[] = {0x39};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
+        }
+        {
+                uint8_t bytes[] = {0x3A};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
+        }
+        {
+                uint8_t bytes[] = {0x3B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
+        }
+
+
 }
 
 int main()
@@ -427,7 +548,6 @@ int main()
 
 	TestChooseOpCode();
 	TestNOP();
-	TestMultiByteNOP();
 	TestPrimaryOpCodeTable();
 	TestSecondaryOpCodeTable();
 	TestSSE();
