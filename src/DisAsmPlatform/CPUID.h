@@ -172,7 +172,7 @@ typedef enum CPUIDFeature_t
 	kCPUIDFeature_PREFETCHW      = 128 + 8,  /* 3DNow! PREFETCH and PREFETCHW */
 	kCPUIDFeature_OSVW           = 128 + 9,  /* OS Visible Workaround */
 	kCPUIDFeature_IBS            = 128 + 10, /* IBS, Instruction Based Sampling */
-	kCPUIDFeature_XOP            = 128 + 11, /* AMD XOP, Extended Operation Support */
+	kCPUIDFeature_XOP            = 128 + 11, /* AMD XOP, Extended Operation Support (formely used for SSE5) */
 	kCPUIDFeature_SKINIT         = 128 + 12, /* SKINIT, Secure Init and Jump with Attestation */
 	kCPUIDFeature_WDT            = 128 + 13, /* WDT, Watchdog Timer */
 	kCPUIDFeature_RESERVEDECXE14 = 128 + 14, /* Bit 14 is Reserved */
@@ -183,8 +183,29 @@ typedef enum CPUIDFeature_t
 	kCPUIDFeature_NODEID         = 128 + 19, /* Node ID */
 	kCPUIDFeature_RESERVEDECXE20 = 128 + 20, /* Bit 20 is Reserved */
 	kCPUIDFeature_TBM            = 128 + 21, /* TBM, Translation Bit Manipulation */
-	kCPUIDFeature_TOPX           = 128 + 22  /* Topology Extensions */
+	kCPUIDFeature_TOPX           = 128 + 22, /* Topology Extensions */
 	/* bits 23:31 are currently reserved and not yet defined */
+	/* 00000006h EAX */
+	kCPUIDFeature_DTS            = 160 + 0,  /* Digital Thermal Sensor */
+	kCPUIDFeature_TB             = 160 + 1,  /* Turbo Boost (Dynamic Acceleration) */
+	kCPUIDFeature_ARAT           = 160 + 2,  /* Always Running APIC Timer */
+	kCPUIDFeature_PLN            = 160 + 4,  /* Power Limit Notification */
+	kCPUIDFeature_ECMD           = 160 + 5,  /* ECMD, Clock Modulation Duty Cycle Extension */
+	kCPUIDFeature_PTM            = 160 + 6,  /* Package Thermal Status */
+	/* 80000007h EAX */
+	kCPUIDFeature_TS             = 192 + 0,  /* Temperature Sensor */
+	kCPUIDFeature_FID            = 192 + 1,  /* Frequency ID Control */
+	kCPUIDFeature_VID            = 192 + 2,  /* Voltage ID Control */
+	kCPUIDFeature_TTP            = 192 + 3,  /* Thermal Trip */
+	kCPUIDFeature_HTC            = 192 + 4,  /* HTC, Hardware Thermal Control */
+	kCPUIDFeature_STC            = 192 + 5,  /* STC, Software Thermal Control */
+	kCPUIDFeature_MUL100         = 192 + 6,  /* 100 MHz Multiplier Control */
+	kCPUIDFeature_HWPS           = 192 + 7,  /* Hardware P-State Support */
+	kCPUIDFeature_ITSC           = 192 + 8,  /* Invariant TSC */
+	kCPUIDFeature_CPB            = 192 + 9,  /* Core Performance Boost */
+	kCPUIDFeature_EFRO           = 192 + 10, /* Read-Only Effective Frequency Interface */
+	kCPUIDFeature_PFI            = 192 + 11, /* Processor Feedback Interface */
+	kCPUIDFeature_PA             = 192 + 12  /* Processor Accumulator */
 }
 CPUIDFeature;
 
