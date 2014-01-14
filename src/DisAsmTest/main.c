@@ -530,11 +530,15 @@ void TestSSE()
                 VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
         }
         {
+                uint8_t bytes[] = {0x3B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
+        }
+        {
                 uint8_t bytes[] = {0x3A};
                 VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
         }
         {
-                uint8_t bytes[] = {0x3B};
+                uint8_t bytes[] = {0x3C};
                 VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
         }
 
