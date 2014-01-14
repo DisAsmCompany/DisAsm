@@ -104,9 +104,9 @@ uint32_t OpCodeMapVEXTwoByte0FExt[] =
 	/* 0FA0h - 0FBFh */
 	0x00000000UL,
 	/* 0FC0h - 0FDFh */
-	0xFFFF0000UL,
+	0xFFFF00FFUL,
 	/* 0FE0h - 0FFFh */
-	0xFF00FF00UL
+	0xFFFFFFFFUL
 };
 
 OpCodeMapElement OpCodeMapVEXTwoByte0F[] =
@@ -173,7 +173,7 @@ OpCodeMapElement OpCodeMapVEXTwoByte0F[] =
 	{VADDSS, OP3(Vss, Hss, Wss)}, {VMULSS, OP3(Vss, Hss, Wss)}, {VCVTSS2SD, OP3(Vss, Hx, Wsd)}, {DB, OP0}, {VSUBSS, OP3(Vss, Hss, Wss)}, {VMINSS, OP3(Vss, Hss, Wss)}, {VDIVSS, OP3(Vss, Hss, Wss)}, {VMAXSS, OP3(Vss, Hss, Wss)},
 	/* 0F60h - 0F67h */
 	{DB, OP0},                     {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{VPUNPCKLBW, OP3(Vx, Hx, Wx)}, {VPUNPCKLWD, OP3(Vx, Hx, Wx)}, {VPUNPCKLDQ, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{VPUNPCKLBW, OP3(Vx, Hx, Wx)}, {VPUNPCKLWD, OP3(Vx, Hx, Wx)}, {VPUNPCKLDQ, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPACKUSWB, OP3(Vx, Hx, Wx)},
 	{DB, OP0},                     {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0},                     {DB, OP0},                     {DB, OP0},                     {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0F68h - 0F6Fh */
@@ -232,10 +232,10 @@ OpCodeMapElement OpCodeMapVEXTwoByte0F[] =
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0FC0h - 0FC7h */
-	{DB, OP0}, {DB, OP0}, {VCMPPS, OP4(Vps, Hps, Wps, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VSHUFPS, OP4(Vps, Hps, Wps, Ib)}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {VCMPPD, OP4(Vpd, Hpd, Wpd, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VSHUFPD, OP4(Vpd, Hpd, Wpd, Ib)}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {VCMPSD, OP4(Vsd, Hsd, Wsd, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                         {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {VCMPSS, OP4(Vss, Hss, Wss, Ib)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                         {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {VCMPPS, OP4(Vps, Hps, Wps, Ib)}, {DB, OP0}, {DB, OP0},                        {DB, OP0},                   {VSHUFPS, OP4(Vps, Hps, Wps, Ib)}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {VCMPPD, OP4(Vpd, Hpd, Wpd, Ib)}, {DB, OP0}, {VPINSRW, OP4(Vdq, Hdq, Ry, Ib)}, {VPEXTRW, OP3(Gd, Udq, Ib)}, {VSHUFPD, OP4(Vpd, Hpd, Wpd, Ib)}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {VCMPSD, OP4(Vsd, Hsd, Wsd, Ib)}, {DB, OP0}, {DB, OP0},                        {DB, OP0},                   {DB, OP0},                         {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {VCMPSS, OP4(Vss, Hss, Wss, Ib)}, {DB, OP0}, {DB, OP0},                        {DB, OP0},                   {DB, OP0},                         {DB, OP0},
 	/* 0FC8h - 0FCFh */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
@@ -247,23 +247,23 @@ OpCodeMapElement OpCodeMapVEXTwoByte0F[] =
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},            {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},            {DB, OP0},
 	/* 0FD8h - 0FDFh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {VPMINUB, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPMAXUB, OP3(Vx, Hx, Wx)}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},                {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {VPMINUB, OP3(Vx, Hx, Wx)}, {VPAND, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0}, {VPMAXUB, OP3(Vx, Hx, Wx)}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},                {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},                {DB, OP0}, {DB, OP0}, {DB, OP0},                  {DB, OP0},
 	/* 0FE0h - 0FE7h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPMULHW, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0FE8h - 0FEFh */
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPXOR, OP3(Vx, Hx, Wx)},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},               {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {VPOR, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPXOR, OP3(Vx, Hx, Wx)},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},               {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},               {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0FF0h - 0FF7h */
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
-	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
+	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {VPMADDWD, OP3(Vx, Hx, Wx)}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	{DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0}, {DB, OP0},
 	/* 0FF8h - 0FFFh */
