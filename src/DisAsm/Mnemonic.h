@@ -805,6 +805,13 @@ _ENUM_ELEMENT(VPSRLDQ)    /* Shift Packed Data Right Logical */
 _ENUM_ELEMENT(VPSRAW)     /* Shift Packed Data Right Arithmetic */
 _ENUM_ELEMENT(VPSRAD)     /* Shift Packed Data Right Arithmetic */
 _ENUM_ELEMENT(VPMULLW)    /* Multiply Packed Signed Integers and Store Low Result */
+_ENUM_ELEMENT(VPINSRW)    /* Insert Word */
+_ENUM_ELEMENT(VPEXTRW)    /* Extract Word */
+_ENUM_ELEMENT(VPMADDWD)   /* Multiply and Add Packed Integers */
+_ENUM_ELEMENT(VPMULHW)    /* Multiply Packed Signed Integers and Store High Result */
+_ENUM_ELEMENT(VPACKSSWB)  /* Pack with Signed Saturation */
+_ENUM_ELEMENT(VPACKUSWB)  /* Pack with Unsigned Saturation */
+_ENUM_ELEMENT(VPACKSSDW)  /* Pack with Signed Saturation */
 
 _ENUM_ELEMENT(MOVBE)    /* Move Data after Swapping Bytes */
 _ENUM_ELEMENT(CRC32)    /* Accumulate CRC32 Value */
