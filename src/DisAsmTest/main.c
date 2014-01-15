@@ -537,6 +537,39 @@ void TestSSE()
                 uint8_t bytes[] = {0x3B};
                 VerifyInstructionWithModRM(bytes, sizeof(bytes), CMP);
         }
+        {
+                uint8_t bytes[] = {0x84};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), TEST);
+        }
+        {
+                uint8_t bytes[] = {0x85};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), TEST);
+        }
+        {
+                uint8_t bytes[] = {0x86};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XCHG);
+        }
+        {
+                uint8_t bytes[] = {0x87};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), XCHG);
+        }
+        {
+                uint8_t bytes[] = {0x88};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), MOV);
+        }
+        {
+                uint8_t bytes[] = {0x89};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), MOV);
+        }
+        {
+                uint8_t bytes[] = {0x8A};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), MOV);
+        }
+        {
+                uint8_t bytes[] = {0x8B};
+                VerifyInstructionWithModRM(bytes, sizeof(bytes), MOV);
+        }
+
 }
 
 int main()
