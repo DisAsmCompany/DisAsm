@@ -22,6 +22,8 @@ uint8_t preload = 0;
 uint8_t quiet = 0;
 uint8_t raw = 0;
 
+char * bytes = NULL;
+
 address_t AddressAdjust(address_t address, offset_t offset, uint8_t size)
 {
 	address_t destination = address;
@@ -296,6 +298,14 @@ void ParseCommandLine(int argc, char * const argv[])
 		preload |= CheckCommandLineOption(argv[i], "--preload");
 		quiet   |= CheckCommandLineOption(argv[i], "--quiet");
 		raw     |= CheckCommandLineOption(argv[i], "--raw");
+		if (CheckCommandLineOption(argv[i], "--bytes"))
+		{
+			if (argc >= i + 1)
+			{
+				++i;
+				bytes = argv[i];
+			}
+		}
 	}
 }
 
@@ -348,6 +358,33 @@ int main(int argc, char * const argv[])
 		base = (uint32_t) address;
 		ConsoleIOPrint("[WARNING] : --memory option specified, will attempt to load executable file\n");
 	}
+	else if (NULL != bytes)
+	{
+		uint32_t length = xstrlen(bytes);
+		uint8_t * buffer = (uint8_t*) malloc(length / 2);
+		uint32_t i;
+		for (i = 0; i < length; ++i)
+		{
+			char c = bytes[i];
+			if (i % 2)
+			{
+				buffer[i / 2] <<= 4;
+			}
+			else
+			{
+				buffer[i / 2] = 0;
+			}
+			if ('0' <= c && c <= '9')
+			{
+				buffer[i / 2] += c - '0';
+			}
+			else if (('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'))
+			{
+				buffer[i / 2] += (c & ~0x20) - 'A' + 10;
+			}
+		}
+		hReader = MemoryReaderCreate((native_t)buffer, length / 2);
+	}
 	else
 	{
 		hReader = FileReaderCreate(argv[argc - 1]);
@@ -357,7 +394,7 @@ int main(int argc, char * const argv[])
 		ConsoleIOPrintFormatted("[ERROR] cannot open input file \"%s\"\n", argv[argc - 1]);
 		return EXIT_FAILURE;
 	}
-	if (raw)
+	if (raw || NULL != bytes)
 	{
 		DisAsmFunction(32, hReader, NULL, 0, 0, 0, 0);
 	}
