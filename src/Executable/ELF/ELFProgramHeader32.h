@@ -1,5 +1,5 @@
 /*
- * Filename: ELFProgramHeader.h
+ * Filename: ELFProgramHeader32.h
  * Author:   DisAsmCompany
  * Date:     22/10/2013
  *
@@ -10,14 +10,14 @@
  */
 
 #pragma once
-#ifndef __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
-#define __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
+#ifndef __ELFPROGRAMHEADER32_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
+#define __ELFPROGRAMHEADER32_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-SDFBegin(ELFProgramHeader, "ELF Program Header"),
+SDFBegin(ELFProgramHeader32, "ELF Program Header 32"),
 {"Type            ", kUnsigned, 4, 1, ELFProgramType},
 {"Offset          ", kUnsigned, 4, 1, NULL},
 {"Virtual Address ", kUnsigned, 4, 1, NULL},
@@ -32,4 +32,4 @@ SDFEnd
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFPROGRAMHEADER_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__ */
+#endif /* __ELFPROGRAMHEADER32_H__B4C72014_DF53_4AB5_88C0_F5E02D7DD9C7__ */

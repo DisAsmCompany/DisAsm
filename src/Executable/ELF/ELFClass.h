@@ -17,7 +17,16 @@
 extern "C" {
 #endif /* __cplusplus */
 
-static const SDFEnum ELFClass[] =
+
+typedef enum ELFClass_t
+{
+	kELFClassNone = 0x00,
+	kELFClass32   = 0x01,
+	kELFClass64   = 0x02
+}
+ELFClass;
+
+static const SDFEnum _ELFClass[] =
 {
 	{"ELFCLASSNONE", 0, 0},
 	{"ELFCLASS32",   1, 0},

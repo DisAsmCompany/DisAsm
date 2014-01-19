@@ -1,5 +1,5 @@
 /*
- * Filename: ELFSymbol.h
+ * Filename: ELFSymbol32.h
  * Author:   DisAsmCompany
  * Date:     06/11/2013
  *
@@ -10,18 +10,18 @@
  */
 
 #pragma once
-#ifndef __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
-#define __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
+#ifndef __ELFSYMBOL32_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
+#define __ELFSYMBOL32_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-enum { ELFSymbolName  = 0 };
-enum { ELFSymbolValue = 4 };
-enum { ELFSymbolIndex = 14 };
+enum { ELFSymbol32Name  = 0 };
+enum { ELFSymbol32Value = 4 };
+enum { ELFSymbol32Index = 14 };
 
-SDFBegin(ELFSymbol, "ELF Symbol"),
+SDFBegin(ELFSymbol32, "ELF Symbol 32"),
 {"Name ", kUnsigned, 4, 1, NULL},
 {"Value", kUnsigned, 4, 1, NULL},
 {"Size ", kUnsigned, 4, 1, NULL},
@@ -34,4 +34,4 @@ SDFEnd
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSYMBOL_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__ */
+#endif /* __ELFSYMBOL32_H__DFEC7F1E_9027_43D9_9393_A4074A350AB6__ */

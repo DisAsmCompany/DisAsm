@@ -1,5 +1,5 @@
 /*
- * Filename: ELFSectionHeader.h
+ * Filename: ELFSectionHeader32.h
  * Author:   DisAsmCompany
  * Date:     22/10/2013
  *
@@ -10,20 +10,20 @@
  */
 
 #pragma once
-#ifndef __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
-#define __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
+#ifndef __ELFSECTIONHEADER32_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
+#define __ELFSECTIONHEADER32_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__
 
 #ifdef __cplusplus
 extern "C" {
 #endif /* __cplusplus */
 
-enum { ELFSectionHeaderName    = 0  };
-enum { ELFSectionHeaderType    = 4  };
-enum { ELFSectionHeaderAddress = 12 };
-enum { ELFSectionHeaderOffset  = 16 };
-enum { ELFSectionHeaderSize    = 20 };
+enum { ELFSectionHeader32Name    = 0  };
+enum { ELFSectionHeader32Type    = 4  };
+enum { ELFSectionHeader32Address = 12 };
+enum { ELFSectionHeader32Offset  = 16 };
+enum { ELFSectionHeader32Size    = 20 };
 
-SDFBegin(ELFSectionHeader, "ELF Section Header"),
+SDFBegin(ELFSectionHeader32, "ELF Section Header 32"),
 {"Name           ", kUnsigned, 4, 1, NULL},
 {"Type           ", kUnsigned, 4, 1, _ELFSectionType},
 {"Flags          ", kUnsigned, 4, 1, ELFSectionFlags},
@@ -40,4 +40,4 @@ SDFEnd
 }
 #endif /* __cplusplus */
 
-#endif /* __ELFSECTIONHEADER_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__ */
+#endif /* __ELFSECTIONHEADER32_H__FD58648C_3640_4AA5_AEC7_ADFB57A35C97__ */
